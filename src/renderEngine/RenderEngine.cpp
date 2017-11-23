@@ -1,32 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 17:18:16 by tpierron         ###   ########.fr       */
+/*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
+/*   Updated: 2017/11/23 17:18:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "bomberman.hpp"
-#include "Sdl_gl_win.hpp"
-#include "GameEngine.hpp"
 #include "RenderEngine.hpp"
 
-int main() {
-	Sdl_gl_win		window;
-	GameEngine		game;
-	RenderEngine	renderer;
+RenderEngine::RenderEngine() {}
 
-	std::vector<Action::Enum> actions;
+RenderEngine::~RenderEngine() {}
 
-	while(actions.size() == 0 || actions[0] != Action::ESCAPE) {
-		window.eventManager(actions);
-		game.compute(actions);
-		renderer.render(game.getMap(), game.getEntityList());
-	}
-	
-	return 0;
+void	RenderEngine::render(Map const & map, std::vector<IGameEntity const *> const & entities) {
+	(void)map; //////////
+	(void)entities; ////////////
 }

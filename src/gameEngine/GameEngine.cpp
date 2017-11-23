@@ -1,32 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   GameEngine.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 17:18:16 by tpierron         ###   ########.fr       */
+/*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
+/*   Updated: 2017/11/23 17:16:57 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "bomberman.hpp"
-#include "Sdl_gl_win.hpp"
 #include "GameEngine.hpp"
-#include "RenderEngine.hpp"
 
-int main() {
-	Sdl_gl_win		window;
-	GameEngine		game;
-	RenderEngine	renderer;
+GameEngine::GameEngine() {}
 
-	std::vector<Action::Enum> actions;
+GameEngine::~GameEngine() {}
 
-	while(actions.size() == 0 || actions[0] != Action::ESCAPE) {
-		window.eventManager(actions);
-		game.compute(actions);
-		renderer.render(game.getMap(), game.getEntityList());
-	}
-	
-	return 0;
+void	GameEngine::compute(std::vector<Action::Enum> actions) {
+	(void)actions; //////////////////
+}
+
+Map const &		GameEngine::getMap() const {
+	return map;
+}
+
+std::vector<IGameEntity const * >	GameEngine::getEntityList() const {
+	return entityList;
 }

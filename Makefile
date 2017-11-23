@@ -8,12 +8,17 @@ CFLAGS = -Wall -Wextra -Werror
 SRC_PATH = ./src/
 SRC_NAME =	\
 			Sdl_gl_win.cpp \
+			gameEngine/GameEngine.cpp \
+			renderEngine/RenderEngine.cpp \
+			Map.cpp \
 			main.cpp \
 
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)
 
-INC_PATH = src/includes/
+INC_PATH = src/includes/ \
+			src/gameEngine/includes \
+			src/renderEngine/includes
 
 PACKAGES = sdl2 freetype2 glm
 
@@ -31,6 +36,8 @@ all: $(NAME)
 $(OBJ_PATH)%.o: %.cpp
 	@mkdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src 2> /dev/null || echo "" > /dev/null
+	@mkdir $(OBJ_PATH)/src/gameEngine 2> /dev/null || echo "" > /dev/null
+	@mkdir $(OBJ_PATH)/src/renderEngine 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/libs 2> /dev/null || echo "" > /dev/null
 	$(CC) $(CFLAGS) -o $@ -c $(INC) -Isrc $(PATHS) $< -std=c++11
 

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 11:21:56 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/23 16:06:35 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <iostream>
 # include <vector>
 
-# include "constants.hpp"
+# include "bomberman.hpp"
 
 class Sdl_gl_win {
 	public:

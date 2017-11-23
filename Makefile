@@ -13,7 +13,7 @@ SRC_NAME =	\
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)
 
-INC_PATH = /includes/
+INC_PATH = src/includes/
 
 PACKAGES = sdl2 freetype2 glm
 
@@ -24,7 +24,7 @@ OPENGL = -framework OpenGl -framework AppKit
 
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
-INC = $(subst $() $(), -I, $(addprefix $(SRC_PATH), $(INC_PATH)))
+INC = $(subst $() $(), -I, $(INC_PATH))
 
 
 all: $(NAME)

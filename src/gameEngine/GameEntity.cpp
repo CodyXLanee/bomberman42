@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GameEntity.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 15:01:13 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/24 15:33:05 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/24 17:30:32 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,24 +23,24 @@ _position(glm::vec2(pos)), _state(State::STAND), _speed(0.), _type(type){
 GameEntity::~GameEntity(){
 }
 
-glm::vec2	    GameEntity::getPositon(){
+glm::vec2	    GameEntity::getPosition() const {
     return _position;
 }
 
-State::Enum	    GameEntity::getState(){
+State::Enum	    GameEntity::getState() const {
     return _state;
 }
 
-float		    GameEntity::getSpeed(){
+float		    GameEntity::getSpeed() const {
     return _speed;
 }
 
-Type::Enum	    GameEntity::getType(){
+Type::Enum	    GameEntity::getType() const {
     return _type;
 }
 
 
-void	GameEntity::setPositon(const glm::vec2 &position){
+void	GameEntity::setPosition(const glm::vec2 &position){
     _position = position;
 }
 

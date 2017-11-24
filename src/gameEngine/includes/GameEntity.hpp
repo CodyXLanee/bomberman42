@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GameEntity.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 15:01:33 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/24 15:33:54 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/24 17:28:20 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ public:
     GameEntity(const Type::Enum & type, const glm::vec2 & pos);
     virtual ~GameEntity();
     
-    virtual glm::vec2	getPositon();
-    virtual State::Enum	getState();
-    virtual float		getSpeed();
-    virtual Type::Enum	getType();
+    virtual glm::vec2	getPosition() const;
+    virtual State::Enum	getState() const;
+    virtual float		getSpeed() const;
+    virtual Type::Enum	getType() const;
 
-    void	setPositon(const glm::vec2 &);
+    void	setPosition(const glm::vec2 &);
     void	setState(const State::Enum &);
     void	setSpeed(const float &);
     void	setType(const Type::Enum &);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 16:41:06 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/24 17:30:33 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	RenderEngine::renderPlayer(IGameEntity const *player) const {
     std::vector<glm::mat4> data;
 	
 	glm::mat4 transform = glm::mat4();
-	transform = glm::translate(transform, glm::vec3(player->getPositon(), 0.f));
+	transform = glm::translate(transform, glm::vec3(player->getPosition(), 0.f));
 	// transform = glm::rotate(transform, glm::radians(findHeadOrientation()), glm::vec3(0.f, 1.f, 0.f));
 	data.push_back(transform);
 

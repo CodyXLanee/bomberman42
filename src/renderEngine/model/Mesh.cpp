@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 09:44:09 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 15:33:07 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,25 @@
 
 int	Mesh::i = 0;
 
-void Mesh::printJointMatrices(Joint *joint) {
-	glm::mat4 at = joint->getAnimatedTransform();
-	glm::mat4 inv = joint->getInverseBindTransform();
-	std::cout << "Bones: " << joint->index << std::endl;
-	std::cout << "Animated Transform" << std::endl;
-	std::cout << at[0][0] <<  "\t\t" << at[0][1]  <<  "\t\t" << at[0][2]  <<  "\t\t" << at[0][3] << std::endl;
-	std::cout << at[1][0] <<  "\t\t" << at[1][1]  <<  "\t\t" << at[1][2]  <<  "\t\t" << at[1][3] << std::endl;
-	std::cout << at[2][0] <<  "\t\t" << at[2][1]  <<  "\t\t" << at[2][2]  <<  "\t\t" << at[2][3] << std::endl;
-	std::cout << at[3][0] <<  "\t\t" << at[3][1]  <<  "\t\t" << at[3][2]  <<  "\t\t" << at[3][3] << std::endl;
-	std::cout << "Inverse Transform" << std::endl;
-	std::cout << inv[0][0] <<  "\t\t" << inv[0][1]  <<  "\t\t" << inv[0][2]  <<  "\t\t" << inv[0][3] << std::endl;
-	std::cout << inv[1][0] <<  "\t\t" << inv[1][1]  <<  "\t\t" << inv[1][2]  <<  "\t\t" << inv[1][3] << std::endl;
-	std::cout << inv[2][0] <<  "\t\t" << inv[2][1]  <<  "\t\t" << inv[2][2]  <<  "\t\t" << inv[2][3] << std::endl;
-	std::cout << inv[3][0] <<  "\t\t" << inv[3][1]  <<  "\t\t" << inv[3][2]  <<  "\t\t" << inv[3][3] << std::endl;
-	std::cout << " -------------------------------------------" << std::endl;
-	for (unsigned int i = 0; i < joint->children.size(); i++) {
-		printJointMatrices(joint->children[i]);
-	}
-}
+// void Mesh::printJointMatrices(Joint *joint) {
+// 	glm::mat4 at = joint->getAnimatedTransform();
+// 	glm::mat4 inv = joint->getInverseBindTransform();
+// 	std::cout << "Bones: " << joint->index << std::endl;
+// 	std::cout << "Animated Transform" << std::endl;
+// 	std::cout << at[0][0] <<  "\t\t" << at[0][1]  <<  "\t\t" << at[0][2]  <<  "\t\t" << at[0][3] << std::endl;
+// 	std::cout << at[1][0] <<  "\t\t" << at[1][1]  <<  "\t\t" << at[1][2]  <<  "\t\t" << at[1][3] << std::endl;
+// 	std::cout << at[2][0] <<  "\t\t" << at[2][1]  <<  "\t\t" << at[2][2]  <<  "\t\t" << at[2][3] << std::endl;
+// 	std::cout << at[3][0] <<  "\t\t" << at[3][1]  <<  "\t\t" << at[3][2]  <<  "\t\t" << at[3][3] << std::endl;
+// 	std::cout << "Inverse Transform" << std::endl;
+// 	std::cout << inv[0][0] <<  "\t\t" << inv[0][1]  <<  "\t\t" << inv[0][2]  <<  "\t\t" << inv[0][3] << std::endl;
+// 	std::cout << inv[1][0] <<  "\t\t" << inv[1][1]  <<  "\t\t" << inv[1][2]  <<  "\t\t" << inv[1][3] << std::endl;
+// 	std::cout << inv[2][0] <<  "\t\t" << inv[2][1]  <<  "\t\t" << inv[2][2]  <<  "\t\t" << inv[2][3] << std::endl;
+// 	std::cout << inv[3][0] <<  "\t\t" << inv[3][1]  <<  "\t\t" << inv[3][2]  <<  "\t\t" << inv[3][3] << std::endl;
+// 	std::cout << " -------------------------------------------" << std::endl;
+// 	for (unsigned int i = 0; i < joint->children.size(); i++) {
+// 		printJointMatrices(joint->children[i]);
+// 	}
+// }
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 			std::vector<Texture> textures, aiColor3D color, Joint* rootJoint, unsigned int jointNbr)
@@ -45,13 +45,10 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 		// std::cout << "bonesID: " << vertices[i].bonesID[0] << " : " << vertices[i].bonesID[1] << " : " << vertices[i].bonesID[2] << std::endl;
 		// std::cout << "bonesWeigths: " << vertices[i].weigths[0] << " : " << vertices[i].weigths[1] << " : " << vertices[i].weigths[2] << std::endl;
 	// }
-	// std::cout << "MESH CONSTRUCT: " << ++Mesh::i << std::endl;
 	return;
 }
 
 Mesh::Mesh(Mesh const & src) {
-	
-	// std::cout << "MESH CONSTRUCT: " << ++Mesh::i << std::endl;
 	*this = src;
 }
 
@@ -65,7 +62,6 @@ Mesh::~Mesh() {
 	}
 	delete this->rootJoint;
 	Mesh::i--;
-	// std::cout << "MESH DESTRUCT: " << Mesh::i << std::endl;
 	return;
 }
 
@@ -167,24 +163,9 @@ void	Mesh::draw(Shader *shader, bool animated, unsigned int instanceCount) {
 		glm::mat4 *jointTransforms = getJointTransforms();
 		glUniformMatrix4fv(glGetUniformLocation(shader->getProgramID(), "jointTransforms"), 16, GL_FALSE, glm::value_ptr(*jointTransforms));
 	}
-	// for (unsigned int i = 0; i < 16; i++) {
-	// std::cout << "Animated Transform: " << i <<  std::endl;
-	// std::cout << jointTransforms[i][0][0] <<  "\t\t" << jointTransforms[i][0][1]  <<  "\t\t" << jointTransforms[i][0][2]  <<  "\t\t" << jointTransforms[i][0][3] << std::endl;
-	// std::cout << jointTransforms[i][1][0] <<  "\t\t" << jointTransforms[i][1][1]  <<  "\t\t" << jointTransforms[i][1][2]  <<  "\t\t" << jointTransforms[i][1][3] << std::endl;
-	// std::cout << jointTransforms[i][2][0] <<  "\t\t" << jointTransforms[i][2][1]  <<  "\t\t" << jointTransforms[i][2][2]  <<  "\t\t" << jointTransforms[i][2][3] << std::endl;
-	// std::cout << jointTransforms[i][3][0] <<  "\t\t" << jointTransforms[i][3][1]  <<  "\t\t" << jointTransforms[i][3][2]  <<  "\t\t" << jointTransforms[i][3][3] << std::endl;	
-
-	// }
-
 
 	glBindVertexArray(this->vao);
-
-	if (instanceCount == 0 || instanceCount == 1)
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	else {
-		glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, instanceCount);
-	}
-
+	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, instanceCount);
 	glBindVertexArray(0);
 	
 	return;

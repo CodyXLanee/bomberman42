@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 10:06:22 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 15:34:08 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ Model::Model(std::string path, bool animated) {
 	this->animated = animated;
 	loadModel(path);
 	Model::i++;
-	// std::cout << "MODEL CONSTRUCT: " << Model::i << std::endl;
 	return;
 }
 
@@ -29,7 +28,6 @@ Model::~Model() {
 		delete this->meshes[i];
 	}
 	Model::i--;
-	// std::cout << "MODEL DESTRUCT: " << Model::i << std::endl;
 	return;
 }
 

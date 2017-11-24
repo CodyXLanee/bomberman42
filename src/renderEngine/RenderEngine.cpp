@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 11:55:54 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 14:58:48 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ RenderEngine::RenderEngine(SDL_Window *win) : win(win) {
 						"src/renderEngine/shaders/simple_diffuse.glfs");
 	groundModel = new Model("assets/models/obj/groundTile1.obj", false);
 	wallModel = new Model("assets/models/obj/wall.obj", false);
+	playerModel = new Model("assets/models/obj/player.obj", false);
 }
 
 RenderEngine::~RenderEngine() {}
@@ -28,6 +29,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity const *> cons
 	
 	setCamera();
 	renderMap();
+	renderPlayer();
 
 	SDL_GL_SwapWindow(win);
 }
@@ -35,6 +37,19 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity const *> cons
 void	RenderEngine::renderMap() const {
 	renderGround();
 	renderWall();
+}
+
+void	RenderEngine::renderPlayer() const {
+    std::vector<glm::mat4> data;
+	
+	glm::mat4 transform = glm::mat4();
+	transform = glm::translate(transform, glm::vec3(5.f, 5.f, 0.f));
+	// transform = glm::rotate(transform, glm::radians(findHeadOrientation()), glm::vec3(0.f, 1.f, 0.f));
+	data.push_back(transform);
+
+    shader->use();
+    playerModel->setInstanceBuffer(data);  
+    playerModel->draw(shader, 2);
 }
 
 void	RenderEngine::renderGround() const {
@@ -51,7 +66,7 @@ void	RenderEngine::renderGround() const {
 
     shader->use();
     groundModel->setInstanceBuffer(data);  
-    groundModel->draw(shader, 100);
+    groundModel->draw(shader, data.size());
 }
 
 void	RenderEngine::renderWall() const {
@@ -74,7 +89,7 @@ void	RenderEngine::renderWall() const {
 
     shader->use();
     wallModel->setInstanceBuffer(data);  
-    wallModel->draw(shader, 100);
+    wallModel->draw(shader, data.size());
 }
 
 void	RenderEngine::setCamera() {

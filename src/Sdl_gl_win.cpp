@@ -3,10 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+<<<<<<< HEAD
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
 /*   Updated: 2017/11/24 16:01:45 by egaborea         ###   ########.fr       */
+=======
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
+/*   Updated: 2017/11/24 16:17:45 by lfourque         ###   ########.fr       */
+>>>>>>> df1b59808c3bb91ad2e8e58f6c4d42c1ba192f8b
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,26 +76,30 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
         if (events.type == SDL_KEYDOWN) {
             Action::Enum a;
             switch(events.key.keysym.sym) {
-                case SDLK_a: a = Action::LEFT; break;
-                case SDLK_d: a = Action::RIGHT; break;
-                case SDLK_s: a = Action::DOWN; break;
-                case SDLK_w: a = Action::UP; break;
-                // case SDLK_TAB: a = Action::DEBUG; break;
-                // case SDLK_LSHIFT: a = Action::TOGGLESPEED; break;
-                // case SDLK_f: a = Action::ERASE; break;
+
+                case SDLK_a:        a = Action::LEFT; break;
+                case SDLK_d:        a = Action::RIGHT; break;
+                case SDLK_w:        a = Action::UP; break;
+                case SDLK_s:        a = Action::DOWN; break;
+                case SDLK_LEFT:     a = Action::CAMERA_LEFT; break;
+                case SDLK_RIGHT:    a = Action::CAMERA_RIGHT; break;
+                case SDLK_UP:       a = Action::CAMERA_UP; break;
+                case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
             }
 			if (find(actions.begin(), actions.end(), a) == actions.end())
                 actions.push_back(a);
-			else if (a == Action::DEBUG || a == Action::TOGGLESPEED)
-				actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         } 
         if (events.type == SDL_KEYUP) {
             Action::Enum a;
             switch(events.key.keysym.sym) {
-                case SDLK_a: a = Action::LEFT; break;
-                case SDLK_d: a = Action::RIGHT; break;
-                case SDLK_s: a = Action::DOWN; break;
-                case SDLK_w: a = Action::UP; break;
+                case SDLK_a:        a = Action::LEFT; break;
+                case SDLK_d:        a = Action::RIGHT; break;
+                case SDLK_w:        a = Action::UP; break;
+                case SDLK_s:        a = Action::DOWN; break;
+                case SDLK_LEFT:     a = Action::CAMERA_LEFT; break;
+                case SDLK_RIGHT:    a = Action::CAMERA_RIGHT; break;
+                case SDLK_UP:       a = Action::CAMERA_UP; break;
+                case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
             }
 			actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         }

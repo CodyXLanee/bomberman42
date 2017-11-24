@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Joint.class.hpp                                    :+:      :+:    :+:   */
+/*   Joint.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/27 09:15:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/08/06 22:05:27 by thibautpier      ###   ########.fr       */
+/*   Created: 2017/11/24 09:43:16 by tpierron          #+#    #+#             */
+/*   Updated: 2017/11/24 09:45:42 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef JOINT_CLASS_HPP
-# define JOINT_CLASS_HPP
+
+#ifndef JOINT_HPP
+# define JOINT_HPP
 
 # include <vector>
 # include <iostream>
-# include "../../libs/glm/gtc/matrix_inverse.hpp"
-// # include "../math3d.hpp"
+# include <glm/gtc/matrix_inverse.hpp>
 
 class Joint {
 	public:

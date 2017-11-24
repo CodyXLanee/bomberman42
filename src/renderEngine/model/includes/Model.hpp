@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Model.class.hpp                                    :+:      :+:    :+:   */
+/*   Model.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/24 09:40:41 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/16 14:24:59 by tpierron         ###   ########.fr       */
+/*   Created: 2017/11/24 09:43:44 by tpierron          #+#    #+#             */
+/*   Updated: 2017/11/24 09:53:12 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MODEL_CLASS_HPP
-# define MODEL_CLASS_HPP
+#ifndef MODEL_HPP
+# define MODEL_HPP
 
 # include <vector>
 # include <map>
@@ -20,7 +20,7 @@
 # include <assimp/scene.h>
 # include <assimp/postprocess.h>
 
-# include "Mesh.class.hpp"
+# include "Mesh.hpp"
 
 class Model {
 	public:

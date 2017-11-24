@@ -10,6 +10,10 @@ SRC_NAME =	\
 			Sdl_gl_win.cpp \
 			gameEngine/GameEngine.cpp \
 			renderEngine/RenderEngine.cpp \
+			renderEngine/model/Model.cpp \
+			renderEngine/model/Mesh.cpp \
+			renderEngine/model/Joint.cpp \
+			renderEngine/Shader.cpp \
 			Map.cpp \
 			main.cpp \
 
@@ -18,11 +22,16 @@ OBJ_NAME = $(SRC:.cpp=.o)
 
 INC_PATH = src/includes/ \
 			src/gameEngine/includes \
-			src/renderEngine/includes
+			src/renderEngine/includes \
+			src/renderEngine/model/includes \
+			libs
 
 PACKAGES = sdl2 freetype2 glm
+ASSIMP_PATH =$(subst include/assimp,include/, $(shell pkg-config --cflags assimp))
+ASSIMP_LIB =$(shell pkg-config --libs assimp)
 
-PATHS = $(shell pkg-config --cflags $(PACKAGES))
+PATHS = $(shell pkg-config --cflags $(PACKAGES)) \
+
 LIBS = $(shell pkg-config --libs $(PACKAGES))
 
 OPENGL = -framework OpenGl -framework AppKit
@@ -38,11 +47,12 @@ $(OBJ_PATH)%.o: %.cpp
 	@mkdir $(OBJ_PATH)/src 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src/gameEngine 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src/renderEngine 2> /dev/null || echo "" > /dev/null
+	@mkdir $(OBJ_PATH)/src/renderEngine/model 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/libs 2> /dev/null || echo "" > /dev/null
-	$(CC) $(CFLAGS) -o $@ -c $(INC) -Isrc $(PATHS) $< -std=c++11
+	$(CC) $(CFLAGS) -o $@ -c $(INC) -Isrc $(PATHS) $(ASSIMP_PATH) $< -std=c++11
 
 $(NAME): $(OBJ)
-	$(CC) $(SDL) $(LIBS) $(OPENGL) $(CFLAGS) -o $@ $^
+	$(CC) $(SDL) $(LIBS) $(ASSIMP_LIB) $(OPENGL) $(CFLAGS) -o $@ $^
 
 clean:
 	rm -rf $(OBJ_PATH)

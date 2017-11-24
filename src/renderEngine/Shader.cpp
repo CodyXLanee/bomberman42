@@ -6,11 +6,11 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:44:33 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 11:44:35 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 10:13:56 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Shader.class.hpp"
+#include "Shader.hpp"
 
 Shader::Shader() {
     return;

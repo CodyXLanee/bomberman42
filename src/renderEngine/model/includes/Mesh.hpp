@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Mesh.class.hpp                                     :+:      :+:    :+:   */
+/*   Mesh.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/21 11:54:43 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/16 14:25:36 by tpierron         ###   ########.fr       */
+/*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
+/*   Updated: 2017/11/24 09:45:32 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MESH_CLASS_HPP
-# define MESH_CLASS_HPP
+#ifndef MESH_HPP
+# define MESH_HPP
 
 # include <vector>
-# include "../../libs/glm/vec3.hpp"
-# include "../../libs/glm/vec2.hpp"
+# include <glm/vec3.hpp>
+# include <glm/vec2.hpp>
 // # include <iostream>
 // # include <fstream>
 # include <assimp/Importer.hpp>
 # include <OpenGL/gl3.h>
 
-# include "Shader.class.hpp" 
-# include "Joint.class.hpp"
+# include "Shader.hpp" 
+# include "Joint.hpp"
 
 struct Vertex {
     glm::vec3 position;

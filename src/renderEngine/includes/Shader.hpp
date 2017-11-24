@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:44:27 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 11:44:28 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 10:13:34 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <OpenGL/gl3.h>
 # include <glm/gtc/matrix_transform.hpp>
 # include <glm/gtc/type_ptr.hpp>
-# include "constants.hpp"
+# include "bomberman.hpp"
 
 class Shader {
 
@@ -44,7 +44,7 @@ class Shader {
         
     private:
         Shader();
-        GLuint      load(GLenum , std::string);
+        GLuint      load(GLenum, std::string);
         void        compile();
 
         bool        checkShaderCompilation(GLuint, GLenum);

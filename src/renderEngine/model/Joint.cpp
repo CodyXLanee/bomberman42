@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Joint.class.cpp                                    :+:      :+:    :+:   */
+/*   Joint.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/27 09:16:40 by tpierron          #+#    #+#             */
-/*   Updated: 2017/09/05 17:11:13 by thibautpier      ###   ########.fr       */
+/*   Created: 2017/11/24 09:43:54 by tpierron          #+#    #+#             */
+/*   Updated: 2017/11/24 09:43:55 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Joint.class.hpp"
+#include "Joint.hpp"
 
 Joint::Joint(unsigned int index, std::string name, glm::mat4 bindLocalTransform) :
 	index(index), name(name), localBindTransform(bindLocalTransform) {

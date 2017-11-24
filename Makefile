@@ -28,7 +28,7 @@ INC_PATH = src/includes/ \
 			src/renderEngine/model/includes \
 			libs
 
-PACKAGES = sdl2 freetype2 glm
+PACKAGES = sdl2 freetype2 glm rapidjson
 ASSIMP_PATH =$(subst include/assimp,include/, $(shell ~/.brew/bin/pkg-config --cflags assimp))
 ASSIMP_LIB =$(shell ~/.brew/bin/pkg-config --libs assimp)
 

@@ -29,7 +29,7 @@ class GameEngine {
 		std::vector<IGameEntity const *>		getEntityList() const;
 
 	private:
-		Map map;
+		Map * map;
 		std::vector<IGameEntity const *> entityList;
 };
 

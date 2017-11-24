@@ -13,8 +13,10 @@
 #include "GameEntity.hpp"
 #include "GameEngine.hpp"
 
-GameEngine::GameEngine() {
+GameEngine::GameEngine() : map(new Map("maps/map.json")) {
 	entityList.push_back(new GameEntity(Type::PLAYER));
+
+	map->load();
 }
 
 GameEngine::~GameEngine() {}
@@ -24,7 +26,7 @@ void	GameEngine::compute(std::vector<Action::Enum> actions) {
 }
 
 Map const &		GameEngine::getMap() const {
-	return map;
+	return *map;
 }
 
 std::vector<IGameEntity const * >	GameEngine::getEntityList() const {

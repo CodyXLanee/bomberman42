@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:25:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 14:42:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 15:47:50 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class RenderEngine {
 		// Camera  camera;
 
 		void	renderMap() const;
-		void	renderPlayer() const;
+		void	renderPlayer(IGameEntity const *) const;
 		void	renderGround() const;
 		void	renderWall() const;
 		void	setCamera();

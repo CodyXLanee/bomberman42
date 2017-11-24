@@ -9,6 +9,7 @@ SRC_PATH = ./src/
 SRC_NAME =	\
 			Sdl_gl_win.cpp \
 			gameEngine/GameEngine.cpp \
+			gameEngine/GameEntity.cpp \
 			renderEngine/RenderEngine.cpp \
 			renderEngine/model/Model.cpp \
 			renderEngine/model/Mesh.cpp \
@@ -27,12 +28,12 @@ INC_PATH = src/includes/ \
 			libs
 
 PACKAGES = sdl2 freetype2 glm
-ASSIMP_PATH =$(subst include/assimp,include/, $(shell pkg-config --cflags assimp))
-ASSIMP_LIB =$(shell pkg-config --libs assimp)
+ASSIMP_PATH =$(subst include/assimp,include/, $(shell ~/.brew/bin/pkg-config --cflags assimp))
+ASSIMP_LIB =$(shell ~/.brew/bin/pkg-config --libs assimp)
 
-PATHS = $(shell pkg-config --cflags $(PACKAGES)) \
+PATHS = $(shell ~/.brew/bin/pkg-config --cflags $(PACKAGES)) \
 
-LIBS = $(shell pkg-config --libs $(PACKAGES))
+LIBS = $(shell ~/.brew/bin/pkg-config --libs $(PACKAGES))
 
 OPENGL = -framework OpenGl -framework AppKit
 

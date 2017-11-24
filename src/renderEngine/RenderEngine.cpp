@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 14:58:48 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 15:59:52 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity const *> cons
 	
 	setCamera();
 	renderMap();
-	renderPlayer();
-
+	for (std::vector<IGameEntity const *>::const_iterator i = entities.begin(); i != entities.end(); i++ ){
+		if ((*i)->getType() == Type::PLAYER)
+			renderPlayer(*i);
+	}
 	SDL_GL_SwapWindow(win);
 }
 
@@ -39,11 +41,11 @@ void	RenderEngine::renderMap() const {
 	renderWall();
 }
 
-void	RenderEngine::renderPlayer() const {
+void	RenderEngine::renderPlayer(IGameEntity const *player) const {
     std::vector<glm::mat4> data;
 	
 	glm::mat4 transform = glm::mat4();
-	transform = glm::translate(transform, glm::vec3(5.f, 5.f, 0.f));
+	transform = glm::translate(transform, glm::vec3(player->getPositon(), 0.f));
 	// transform = glm::rotate(transform, glm::radians(findHeadOrientation()), glm::vec3(0.f, 1.f, 0.f));
 	data.push_back(transform);
 

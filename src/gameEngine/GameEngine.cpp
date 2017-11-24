@@ -3,16 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   GameEngine.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 17:16:57 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 15:51:29 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "GameEntity.hpp"
 #include "GameEngine.hpp"
 
-GameEngine::GameEngine() {}
+GameEngine::GameEngine() {
+	entityList.push_back(new GameEntity(Type::PLAYER));
+}
 
 GameEngine::~GameEngine() {}
 

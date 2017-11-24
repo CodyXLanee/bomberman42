@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:25:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 14:42:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 15:56:23 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class RenderEngine {
 		RenderEngine(SDL_Window	*win);
 		~RenderEngine();
 		
-		void	render(Map const & map, std::vector<IGameEntity const *> const & entities);
+		void	render(Map const & map, std::vector<IGameEntity const *> const & entities, glm::mat4 const & cameraMatrix);
 		
 	private:
 		
@@ -46,7 +46,7 @@ class RenderEngine {
 		void	renderPlayer() const;
 		void	renderGround() const;
 		void	renderWall() const;
-		void	setCamera();
+		void	setCamera(glm::mat4 const &);
 };
 
 #endif

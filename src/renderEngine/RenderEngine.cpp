@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 14:58:48 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 15:56:42 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ RenderEngine::RenderEngine(SDL_Window *win) : win(win) {
 
 RenderEngine::~RenderEngine() {}
 
-void	RenderEngine::render(Map const & map, std::vector<IGameEntity const *> const & entities) {
+void	RenderEngine::render(Map const & map, std::vector<IGameEntity const *> const & entities, glm::mat4 const & cameraMatrix) {
 	(void)map; //////////
 	(void)entities; ////////////
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	setCamera();
+	setCamera(cameraMatrix);
 	renderMap();
 	renderPlayer();
 
@@ -92,12 +92,8 @@ void	RenderEngine::renderWall() const {
     wallModel->draw(shader, data.size());
 }
 
-void	RenderEngine::setCamera() {
-    glm::mat4 camera = glm::lookAt(
-        glm::vec3(5.f, 15.f, 10.f),
-        glm::vec3(5.f, 5.f, 0.f),
-        glm::vec3(0.f, 0.f, 1.f)
-    );
-    shader->setCamera(camera);
+void	RenderEngine::setCamera(glm::mat4 const & cameraMatrix) {
+	shader->use();
+    shader->setCamera(cameraMatrix);
     shader->setView();
 }

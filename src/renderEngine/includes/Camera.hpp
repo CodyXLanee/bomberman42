@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:26:08 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 10:26:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 15:58:38 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,33 +18,26 @@
 # include <glm/gtx/rotate_vector.hpp>
 # include <glm/gtx/matrix_interpolation.hpp>
 # include <iostream>
+# include <vector>
 
 class Camera {
 	public:
-		Camera();
+		Camera(glm::vec3, glm::vec3);
 
 		glm::mat4	getMatrix() const;
-		// void		setOrientation(Orientation::Enum);
-		void		setCamera(float, float);
-		// void		startRotationAnimation(float distance, float gameSpeed, Orientation::Enum way);
-		// void		startGetCloserAnimation();
-		// bool		getAnimationState() const;
+
+		void		update(std::vector<Action::Enum> const &);
 
 	private:
-		// void				computeRotationAnimation(float, float, float, float);
-		// void				computeGetCloserAnimation(glm::mat4);
+		Camera();
 
+		void				setup();
+		
 		glm::mat4			matrix;
-		float				lookingDistance;
-		float				positionDistance;
-		float				height;
-		// Orientation::Enum	orientation;
+		glm::vec3			position;
+		glm::vec3			lookAt;
+		glm::vec3			const up;
 
-		// bool				animationRotationStarted;
-		// bool				animationGetCloserStarted;
-		// bool				completeAnimationDone;
-		// Orientation::Enum	animationWay;
-		// float				animationStep;
 };
 
 #endif

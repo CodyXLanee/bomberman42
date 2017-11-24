@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:25:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 11:06:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 11:40:31 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ class RenderEngine {
 		RenderEngine();
 		SDL_Window	*win;
 		Shader		*shader;
-		Model		*model;
+		Model		*groundModel;
+		Model		*wallModel;
 		// Camera  camera;
 
 		void	renderMap() const;
 		void	renderGround() const;
+		void	renderWall() const;
 		void	setCamera();
 };
 

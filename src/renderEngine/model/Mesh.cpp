@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 09:44:09 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 14:57:51 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,11 +179,11 @@ void	Mesh::draw(Shader *shader, bool animated, unsigned int instanceCount) {
 
 	glBindVertexArray(this->vao);
 
-	if (instanceCount == 0 || instanceCount == 1)
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	else {
+	// if (instanceCount == 0 || instanceCount == 1)
+	// 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	// else {
 		glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, instanceCount);
-	}
+	// }
 
 	glBindVertexArray(0);
 	

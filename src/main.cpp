@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 17:18:16 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/24 11:11:30 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 int main() {
 	Sdl_gl_win		window;
 	GameEngine		game;
-	RenderEngine	renderer;
+	RenderEngine	renderer(window.getWin());
 
 	std::vector<Action::Enum> actions;
 

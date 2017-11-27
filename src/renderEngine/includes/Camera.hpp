@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:26:08 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 12:30:44 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/27 14:31:11 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,9 @@ class Camera {
 		glm::vec3			front;
 		glm::vec3			const up;
 
-		glm::vec3			resetPosition;
-		glm::vec3			resetFront;
+		glm::vec3			initialPosition;
+		float				initialYaw;
+		float				initialPitch;
 
 		float				speed;
 		float				sensitivity;

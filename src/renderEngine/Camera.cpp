@@ -6,23 +6,35 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:27:21 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 12:30:18 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/27 14:35:46 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Camera.hpp"
 
 Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
-    position(position), front(glm::normalize(lookAt - position)), up(0.f, 0.f, 1.f),
-    resetPosition(position), resetFront(glm::normalize(lookAt - position)),
-    speed(0.5f),
-    sensitivity(0.5f), yaw(0.f), pitch(0.f) {       
+    position(position), front(glm::normalize(position - lookAt)), up(0.f, 0.f, 1.f),
+    initialPosition(position),
+    speed(0.5f), sensitivity(0.5f) {
+
+        float rotx = atan2( front.y, front.z );
+        float roty = atan2( front.x * cos(rotx), front.z );
+        float rotz = atan2( cos(rotx), sin(rotx) * sin(roty) );
+
+        yaw = glm::degrees(rotz);
+        pitch = glm::degrees(rotx);
+        initialYaw = yaw;
+        initialPitch = pitch;
+        
+        updateRotation(0, 0);
         setup();
 }
 
 void    Camera::reset() {
-    position = resetPosition;
-    front = resetFront;
+    position = initialPosition;
+    yaw = initialYaw;
+    pitch = initialPitch;
+    updateRotation(0, 0);
 }
 
 void    Camera::update(std::vector<Action::Enum> const & actions, int const mouseOffsetX, int const mouseOffsetY) {
@@ -64,8 +76,6 @@ void    Camera::updateRotation(int const mouseOffsetX, int const mouseOffsetY) {
 }
 
 void    Camera::setup() {
-//    std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-//   std::cout << front.x << " " << front.y << " " << front.z << std::endl;
     matrix = glm::lookAt(position, position + front, up);
 }
 

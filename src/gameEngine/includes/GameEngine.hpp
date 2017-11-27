@@ -16,6 +16,7 @@
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"
 # include "Map.hpp"
+# include "Loader.hpp"
 # include <glm/glm.hpp>
 # include <vector>
 
@@ -33,8 +34,9 @@ class GameEngine {
 		void		compute_player(IGameEntity*p, std::vector<Action::Enum> actions);
 
 	private:
-		Map * map;
-		std::vector<IGameEntity *> entityList;
+		Map * 						_map;
+		Loader						_loader;
+		std::vector<IGameEntity *>	_entityList;
 };
 
 #endif

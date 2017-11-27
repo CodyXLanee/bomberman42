@@ -6,13 +6,13 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 11:47:43 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 14:47:17 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RenderEngine.hpp"
 
-RenderEngine::RenderEngine(SDL_Window *win) : win(win) {
+RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera) {
 	shader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
 						"src/renderEngine/shaders/simple_diffuse.glfs");
 	textureShader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
@@ -27,12 +27,12 @@ RenderEngine::RenderEngine(SDL_Window *win) : win(win) {
 
 RenderEngine::~RenderEngine() {}
 
-void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & entities, glm::mat4 const & cameraMatrix) {
+void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & entities) {
 	(void)map; //////////
 	(void)entities; ////////////
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	setCamera(cameraMatrix);
+	setCamera(camera.getMatrix());
 	renderMap();
 	for (std::vector<IGameEntity const *>::const_iterator i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::PLAYER)

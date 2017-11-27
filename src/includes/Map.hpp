@@ -21,29 +21,34 @@
 # include <iostream>
 # include <fstream>
 # include <vector>
+# include <map>
 # include <glm/gtc/matrix_transform.hpp>
 
 class Map {
 	public:
 		Map();
-		Map(std::string mapFile);
+		Map(glm::vec2 size);
 		Map(Map const & src);
 
 		~Map();
 
-		Map &		operator=(Map const & rhs);
+		Map &						operator=(Map const & rhs);
 
-		void						setFile(std::string mapFile);
-		std::string					getFile() const;
-		GameEntity ***				getMap() const;
-		std::vector<GameEntity*>	getVEntity() const;
+		glm::vec2					getSize() const;
+		void						setSize(glm::vec2 size);
+		std::vector<glm::vec2>		getDestroyableBlocs() const;
+		void						addDestroyableBlocs(glm::vec2 pos);
+		void						removeDestroyableBlocs(glm::vec2 pos);
+		std::vector<glm::vec2>		getUndestroyableBlocs() const;
+		void						addUndestroyableBlocs(glm::vec2 pos);
+		std::map<Type::Enum, std::string>	getModels() const;
 
-		int			load();
 
 	private:
-		std::string					_mapFile;
-		GameEntity					***_map;
-		std::vector<GameEntity*>	_VEntity;
+		glm::vec2					_size;
+		std::vector<glm::vec2>		_destroyableBlocs;
+		std::vector<glm::vec2>		_undestroyableBlocs;
+		std::map<Type::Enum, std::string>	_models;
 };
 
 #endif

@@ -3,19 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-<<<<<<< HEAD
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/23 16:25:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 17:24:31 by tpierron         ###   ########.fr       */
-=======
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/23 16:25:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 03:49:39 by egaborea         ###   ########.fr       */
->>>>>>> fffde24e9b5535fafcf71f792d910811bf85d6ba
+/*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
+/*   Updated: 2017/11/27 14:47:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef RENDERENGINE_HPP
 # define RENDERENGINE_HPP
@@ -24,7 +18,7 @@
 # include "IGameEntity.hpp"
 # include "Shader.hpp"
 # include "Model.hpp"
-// # include "Camera.hpp"
+# include "Camera.hpp"
 # include "Map.hpp"
 # include <vector>
 
@@ -34,10 +28,10 @@
 class RenderEngine {
 	
 	public:
-		RenderEngine(SDL_Window	*win);
+		RenderEngine(SDL_Window	*win, Camera &);
 		~RenderEngine();
 		
-		void	render(Map const & map, std::vector<IGameEntity *> const & entities, glm::mat4 const & cameraMatrix);
+		void	render(Map const & map, std::vector<IGameEntity *> const & entities);
 		
 	private:
 		
@@ -49,8 +43,7 @@ class RenderEngine {
 		Model		*playerModel;
 		Model		*groundModel;
 		Model		*wallModel;
-		Model		*brickModel;
-		// Camera  camera;
+		Camera  	&camera;
 
 		void	renderMap() const;
 		void	renderWall() const;

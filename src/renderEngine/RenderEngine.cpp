@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 17:30:33 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/27 03:49:29 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ RenderEngine::RenderEngine(SDL_Window *win) : win(win) {
 
 RenderEngine::~RenderEngine() {}
 
-void	RenderEngine::render(Map const & map, std::vector<IGameEntity const *> const & entities, glm::mat4 const & cameraMatrix) {
+void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & entities, glm::mat4 const & cameraMatrix) {
 	(void)map; //////////
 	(void)entities; ////////////
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

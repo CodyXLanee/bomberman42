@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GameEngine.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 17:16:37 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 03:47:40 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"
 # include "Map.hpp"
+# include <glm/glm.hpp>
 # include <vector>
 
 class GameEngine {
@@ -26,11 +27,14 @@ class GameEngine {
 		
 		void								compute(std::vector<Action::Enum> actions);
 		Map const &							getMap() const;
-		std::vector<IGameEntity const *>		getEntityList() const;
+		const std::vector<IGameEntity *>		getEntityList() const; // No need to mark IGameEntities as const
+
+		glm::vec2	compute_direction(std::vector<Action::Enum> actions);
+		void		compute_player(IGameEntity*p, std::vector<Action::Enum> actions);
 
 	private:
 		Map * map;
-		std::vector<IGameEntity const *> entityList;
+		std::vector<IGameEntity *> entityList;
 };
 
 #endif

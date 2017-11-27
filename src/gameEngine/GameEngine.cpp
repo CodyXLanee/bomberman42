@@ -111,22 +111,26 @@ void			GameEngine::collisionsManage(std::vector<Action::Enum> actions)
 				if ((*i)->getState() == State::MOVING){
 					glm::vec2 posToCheck = (*i)->getPosition() + ((*i)->getDirection() * (*i)->getSpeed());
 					glm::vec2 newPos = (*i)->getPosition() + ((*i)->getDirection() * (*i)->getSpeed());
-					if (posToCheck.x < 0 || posToCheck.x > (_map->getSize().x - 1))
-						newPos.x = (*i)->getPosition().x;
-					if (posToCheck.y < 0 || posToCheck.y > (_map->getSize().y - 1))
-						newPos.y = (*i)->getPosition().y;
-					if (ceil(posToCheck.x) - posToCheck.x < 0.5)
-						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x), ceil(posToCheck.y))) || _map->haveBloc(glm::vec2(ceil(posToCheck.x), floor(posToCheck.y))))
-							newPos.y = (*i)->getPosition().y;
-					if (posToCheck.x - floor(posToCheck.x) < 0.5)
-						if (_map->haveBloc(glm::vec2(floor(posToCheck.x), ceil(posToCheck.y))) || _map->haveBloc(glm::vec2(floor(posToCheck.x), floor(posToCheck.y))))
-							newPos.y = (*i)->getPosition().y;
-					if (ceil(posToCheck.y) - posToCheck.y < 0.5)
-						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x), ceil(posToCheck.y))) || _map->haveBloc(glm::vec2(floor(posToCheck.x), ceil(posToCheck.y))))
+					if (posToCheck.x < 0)
+						newPos.x = 0;
+					if (posToCheck.x > (_map->getSize().x - 1))
+						newPos.x = _map->getSize().x - 1;
+					if (posToCheck.y < 0)
+						newPos.y = 0;
+					if (posToCheck.y > (_map->getSize().y - 1))
+						newPos.y = _map->getSize().y - 1;
+					if ((*i)->getDirection().x > 0)
+						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x), ceil(posToCheck.y - 0.1))) || _map->haveBloc(glm::vec2(ceil(posToCheck.x), floor(posToCheck.y + 0.1))))
 							newPos.x = (*i)->getPosition().x;
-					if (posToCheck.y - floor(posToCheck.y) < 0.5)
-						if (_map->haveBloc(glm::vec2(floor(posToCheck.x), floor(posToCheck.y))) || _map->haveBloc(glm::vec2(ceil(posToCheck.x), floor(posToCheck.y))))
+					if ((*i)->getDirection().x < 0)
+						if (_map->haveBloc(glm::vec2(floor(posToCheck.x), ceil(posToCheck.y - 0.1))) || _map->haveBloc(glm::vec2(floor(posToCheck.x), floor(posToCheck.y + 0.1))))
 							newPos.x = (*i)->getPosition().x;
+					if ((*i)->getDirection().y > 0)
+						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x - 0.1), ceil(posToCheck.y))) || _map->haveBloc(glm::vec2(floor(posToCheck.x + 0.1), ceil(posToCheck.y))))
+							newPos.y = (*i)->getPosition().y;
+					if ((*i)->getDirection().y < 0)
+						if (_map->haveBloc(glm::vec2(floor(posToCheck.x + 0.1), floor(posToCheck.y))) || _map->haveBloc(glm::vec2(ceil(posToCheck.x - 0.1), floor(posToCheck.y))))
+							newPos.y = (*i)->getPosition().y;
 					(*i)->setPosition(newPos);
 				}
 				break;

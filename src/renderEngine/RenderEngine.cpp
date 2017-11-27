@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 15:56:42 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/27 09:50:11 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,14 @@
 RenderEngine::RenderEngine(SDL_Window *win) : win(win) {
 	shader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
 						"src/renderEngine/shaders/simple_diffuse.glfs");
+	textureShader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
+						"src/renderEngine/shaders/diffuse_texture.glfs");
+						
 	groundModel = new Model("assets/models/obj/groundTile1.obj", false);
 	wallModel = new Model("assets/models/obj/wall.obj", false);
 	playerModel = new Model("assets/models/obj/player.obj", false);
+	brickModel = new Model("assets/models/obj/brick.obj", false);
+
 }
 
 RenderEngine::~RenderEngine() {}
@@ -37,6 +42,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity const *> cons
 void	RenderEngine::renderMap() const {
 	renderGround();
 	renderWall();
+	renderBrick();
 }
 
 void	RenderEngine::renderPlayer() const {
@@ -90,6 +96,19 @@ void	RenderEngine::renderWall() const {
     shader->use();
     wallModel->setInstanceBuffer(data);  
     wallModel->draw(shader, data.size());
+}
+
+void	RenderEngine::renderBrick() const {
+    std::vector<glm::mat4> data;
+	
+	glm::mat4 transform = glm::mat4();
+	transform = glm::translate(transform, glm::vec3(0.f, 0.f, 0.f));
+	data.push_back(transform);
+
+    textureShader->use();
+    textureShader->setView();
+    brickModel->setInstanceBuffer(data);  
+    brickModel->draw(textureShader, data.size());
 }
 
 void	RenderEngine::setCamera(glm::mat4 const & cameraMatrix) {

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 15:34:08 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 09:21:20 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -382,7 +382,7 @@ unsigned int		Model::textureFromFile(const char* path, const std::string &direct
 		stbi_image_free(data);
 	}
 	else {
-		std::cout << "Loading texture failed: " << path << std::endl;
+		std::cout << "Loading texture failed: " << filename << std::endl;
 		stbi_image_free(data);
 	}
 	return textureID;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:25:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 15:56:23 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/24 17:24:31 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,19 @@ class RenderEngine {
 		RenderEngine();
 		SDL_Window	*win;
 		Shader		*shader;
+		Shader		*textureShader;
+		
 		Model		*playerModel;
 		Model		*groundModel;
 		Model		*wallModel;
+		Model		*brickModel;
 		// Camera  camera;
 
 		void	renderMap() const;
+		void	renderWall() const;
+		void	renderBrick() const;
 		void	renderPlayer() const;
 		void	renderGround() const;
-		void	renderWall() const;
 		void	setCamera(glm::mat4 const &);
 };
 

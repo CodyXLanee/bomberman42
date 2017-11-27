@@ -19,6 +19,7 @@
 # include "Loader.hpp"
 # include <glm/glm.hpp>
 # include <vector>
+# include <math.h>
 
 class GameEngine {
 	
@@ -37,6 +38,8 @@ class GameEngine {
 		Map * 						_map;
 		Loader						_loader;
 		std::vector<IGameEntity *>	_entityList;
+
+		void		collisionsManage(std::vector<Action::Enum> actions);
 };
 
 #endif

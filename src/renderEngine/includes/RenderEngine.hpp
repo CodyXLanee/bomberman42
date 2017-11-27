@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 18:10:34 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/27 19:44:06 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class RenderEngine {
 		Camera  	&camera;
 
 		void	renderMap(Map const & map) const;
-		void	renderWall() const;
+		void	renderWall(const std::vector<IndestructibleBloc>	&) const;
 		void	renderBrick(const std::vector<DestructibleBloc>	&) const;
 		void	renderPlayer(IGameEntity const *) const;
 		void	renderGround() const;

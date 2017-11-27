@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Map.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 17:05:57 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 17:17:56 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 19:46:00 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ void		Map::setSize(glm::vec2 size)
 	this->_size = size;
 }
 
-std::vector<DestructibleBloc>		Map::getDestructibleBlocs() const
+const std::vector<DestructibleBloc>		Map::getDestructibleBlocs() const
 {
 	return this->_destructibleBlocs;
 }
 
-std::vector<IndestructibleBloc>		Map::getIndestructibleBlocs() const
+const std::vector<IndestructibleBloc>		Map::getIndestructibleBlocs() const
 {
 	return this->_indestructibleBlocs;
 }

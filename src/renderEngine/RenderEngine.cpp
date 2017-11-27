@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 18:44:43 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/27 19:43:40 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & en
 
 void	RenderEngine::renderMap(Map const & map) const {
 	renderGround();
-	renderWall();
+	renderWall(map.getIndestructibleBlocs());
 	renderBrick(map.getDestructibleBlocs());
 }
 
@@ -81,9 +81,15 @@ void	RenderEngine::renderGround() const {
     groundModel->draw(textureShader, data.size());
 }
 
-void	RenderEngine::renderWall() const {
+void	RenderEngine::renderWall(const std::vector<IndestructibleBloc> &b) const {
     std::vector<glm::mat4> data;
 	
+	for (auto i = b.begin(); i != b.end(); i++){
+		glm::mat4 transform = glm::mat4();
+		transform = glm::mat4(glm::translate(transform, glm::vec3(i->getPosition(), 0.f)));
+		data.push_back(transform);
+	}
+
 	for(float i = -2; i < 11 ; i++) {
 			glm::mat4 transform = glm::mat4();
 			transform = glm::translate(transform, glm::vec3(-1, i, 0.f));

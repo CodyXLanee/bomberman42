@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 12:27:59 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/27 14:41:01 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,18 @@
 int main() {
 	Sdl_gl_win		window;
 	GameEngine		game;
-	RenderEngine	renderer(window.getWin());
 	Camera			camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f));
+	RenderEngine	renderer(window.getWin(), camera);
 
 	std::vector<Action::Enum> actions;
 
 	while(actions.size() == 0 || actions[0] != Action::ESCAPE) {
 		window.eventManager(actions);
-		camera.update(actions, window.getMouseX(), window.getMouseY());
+
 		game.compute(actions);
-		renderer.render(game.getMap(), game.getEntityList(), camera.getMatrix());
+		
+		camera.update(actions, window.getMouseX(), window.getMouseY());
+		renderer.render(game.getMap(), game.getEntityList());
 	}
 	
 	return 0;

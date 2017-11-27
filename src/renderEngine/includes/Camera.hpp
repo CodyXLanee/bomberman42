@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:26:08 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 15:58:38 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/27 12:30:44 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,30 @@ class Camera {
 		Camera(glm::vec3, glm::vec3);
 
 		glm::mat4	getMatrix() const;
+		glm::vec3	getPosition() const;
 
-		void		update(std::vector<Action::Enum> const &);
+		void		update(std::vector<Action::Enum> const &, int const, int const);
+		void		updatePosition(std::vector<Action::Enum> const &);
+		void		updateRotation(int const, int const);
 
 	private:
 		Camera();
 
 		void				setup();
+		void				reset();
 		
 		glm::mat4			matrix;
 		glm::vec3			position;
-		glm::vec3			lookAt;
+		glm::vec3			front;
 		glm::vec3			const up;
 
+		glm::vec3			resetPosition;
+		glm::vec3			resetFront;
+
+		float				speed;
+		float				sensitivity;
+		float				yaw;
+		float				pitch;
 };
 
 #endif

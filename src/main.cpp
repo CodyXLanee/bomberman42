@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 04:29:21 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/27 12:27:59 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int main() {
 
 	while(actions.size() == 0 || actions[0] != Action::ESCAPE) {
 		window.eventManager(actions);
-		camera.update(actions);
+		camera.update(actions, window.getMouseX(), window.getMouseY());
 		game.compute(actions);
 		renderer.render(game.getMap(), game.getEntityList(), camera.getMatrix());
 	}

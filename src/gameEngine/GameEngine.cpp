@@ -120,17 +120,17 @@ void			GameEngine::collisionsManage(std::vector<Action::Enum> actions)
 					if (posToCheck.y > (_map->getSize().y - 1))
 						newPos.y = _map->getSize().y - 1;
 					if ((*i)->getDirection().x > 0)
-						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x), ceil(posToCheck.y - 0.1))) || _map->haveBloc(glm::vec2(ceil(posToCheck.x), floor(posToCheck.y + 0.1))))
-							newPos.x = (*i)->getPosition().x;
+						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x - 0.1), ceil(posToCheck.y - 0.2))) || _map->haveBloc(glm::vec2(ceil(posToCheck.x - 0.1), floor(posToCheck.y + 0.2))))
+							newPos.x = ceil(posToCheck.x - 0.1) - 0.9;
 					if ((*i)->getDirection().x < 0)
-						if (_map->haveBloc(glm::vec2(floor(posToCheck.x), ceil(posToCheck.y - 0.1))) || _map->haveBloc(glm::vec2(floor(posToCheck.x), floor(posToCheck.y + 0.1))))
-							newPos.x = (*i)->getPosition().x;
+						if (_map->haveBloc(glm::vec2(floor(posToCheck.x + 0.1), ceil(posToCheck.y - 0.2))) || _map->haveBloc(glm::vec2(floor(posToCheck.x + 0.1), floor(posToCheck.y + 0.2))))
+							newPos.x = floor(posToCheck.x + 0.1) + 0.9;
 					if ((*i)->getDirection().y > 0)
-						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x - 0.1), ceil(posToCheck.y))) || _map->haveBloc(glm::vec2(floor(posToCheck.x + 0.1), ceil(posToCheck.y))))
-							newPos.y = (*i)->getPosition().y;
+						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x - 0.2), ceil(posToCheck.y - 0.1))) || _map->haveBloc(glm::vec2(floor(posToCheck.x + 0.2), ceil(posToCheck.y - 0.1))))
+							newPos.y = ceil(posToCheck.y - 0.1) - 0.9;
 					if ((*i)->getDirection().y < 0)
-						if (_map->haveBloc(glm::vec2(floor(posToCheck.x + 0.1), floor(posToCheck.y))) || _map->haveBloc(glm::vec2(ceil(posToCheck.x - 0.1), floor(posToCheck.y))))
-							newPos.y = (*i)->getPosition().y;
+						if (_map->haveBloc(glm::vec2(floor(posToCheck.x + 0.2), floor(posToCheck.y + 0.1))) || _map->haveBloc(glm::vec2(ceil(posToCheck.x - 0.2), floor(posToCheck.y + 0.1))))
+							newPos.y = floor(posToCheck.y + 0.1) + 0.9;
 					(*i)->setPosition(newPos);
 				}
 				break;

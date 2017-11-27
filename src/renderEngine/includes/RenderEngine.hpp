@@ -3,10 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+<<<<<<< HEAD
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:25:16 by tpierron          #+#    #+#             */
 /*   Updated: 2017/11/24 17:24:31 by tpierron         ###   ########.fr       */
+=======
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/11/23 16:25:16 by tpierron          #+#    #+#             */
+/*   Updated: 2017/11/27 03:49:39 by egaborea         ###   ########.fr       */
+>>>>>>> fffde24e9b5535fafcf71f792d910811bf85d6ba
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +37,7 @@ class RenderEngine {
 		RenderEngine(SDL_Window	*win);
 		~RenderEngine();
 		
-		void	render(Map const & map, std::vector<IGameEntity const *> const & entities, glm::mat4 const & cameraMatrix);
+		void	render(Map const & map, std::vector<IGameEntity *> const & entities, glm::mat4 const & cameraMatrix);
 		
 	private:
 		
@@ -48,7 +55,7 @@ class RenderEngine {
 		void	renderMap() const;
 		void	renderWall() const;
 		void	renderBrick() const;
-		void	renderPlayer() const;
+		void	renderPlayer(IGameEntity const *) const;
 		void	renderGround() const;
 		void	setCamera(glm::mat4 const &);
 };

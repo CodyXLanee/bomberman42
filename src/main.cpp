@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 15:57:17 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/27 04:29:21 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int main() {
 	Sdl_gl_win		window;
 	GameEngine		game;
 	RenderEngine	renderer(window.getWin());
-	Camera			camera(glm::vec3(5.f, 15.f, 10.f), glm::vec3(5.f, 5.f, 0.f));
+	Camera			camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f));
 
 	std::vector<Action::Enum> actions;
 

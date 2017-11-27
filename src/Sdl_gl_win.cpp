@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 16:17:45 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/24 16:42:43 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
         if (events.type == SDL_KEYDOWN) {
             Action::Enum a;
             switch(events.key.keysym.sym) {
+
                 case SDLK_a:        a = Action::LEFT; break;
                 case SDLK_d:        a = Action::RIGHT; break;
                 case SDLK_w:        a = Action::UP; break;

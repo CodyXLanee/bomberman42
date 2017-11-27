@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 14:47:05 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 14:48:45 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class RenderEngine {
 		Model		*playerModel;
 		Model		*groundModel;
 		Model		*wallModel;
+		Model		*brickModel;
 		Camera  	&camera;
 
 		void	renderMap() const;

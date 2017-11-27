@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 14:47:17 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 14:48:07 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,12 @@ void	RenderEngine::renderWall() const {
 			data.push_back(transform);
 	}
 
-    shader->use();
+	textureShader->use();
+	glm::vec3 camPos = camera.getPosition();
+	textureShader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+    textureShader->setView();
     wallModel->setInstanceBuffer(data);  
-    wallModel->draw(shader, data.size());
+    wallModel->draw(textureShader, data.size());
 }
 
 void	RenderEngine::renderBrick() const {
@@ -107,7 +110,9 @@ void	RenderEngine::renderBrick() const {
 	transform = glm::translate(transform, glm::vec3(0.f, 0.f, 0.f));
 	data.push_back(transform);
 
-    textureShader->use();
+	textureShader->use();
+	glm::vec3 camPos = camera.getPosition();
+	textureShader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
     textureShader->setView();
     brickModel->setInstanceBuffer(data);  
     brickModel->draw(textureShader, data.size());

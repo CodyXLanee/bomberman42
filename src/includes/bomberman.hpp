@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 16:15:44 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/27 10:44:10 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 
 namespace Action {
-	enum Enum	{ NONE, LEFT, RIGHT, UP, DOWN, DEBUG, ESCAPE, CAMERA_LEFT, CAMERA_RIGHT, CAMERA_UP, CAMERA_DOWN };
+	enum Enum	{ NONE, LEFT, RIGHT, UP, DOWN, DEBUG, ESCAPE, CAMERA_LEFT, CAMERA_RIGHT, CAMERA_UP, CAMERA_DOWN, DEBUG_MODE, RESET_CAMERA };
 }
 
 #endif

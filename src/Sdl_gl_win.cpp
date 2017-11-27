@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 16:42:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/27 12:29:15 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,13 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 case SDLK_RIGHT:    a = Action::CAMERA_RIGHT; break;
                 case SDLK_UP:       a = Action::CAMERA_UP; break;
                 case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
+                case SDLK_TAB:      a = Action::DEBUG_MODE; break;
+                case SDLK_RETURN:   a = Action::RESET_CAMERA; break;
             }
 			if (find(actions.begin(), actions.end(), a) == actions.end())
                 actions.push_back(a);
+            else if (a == Action::DEBUG_MODE)
+		    	actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());            
         } 
         if (events.type == SDL_KEYUP) {
             Action::Enum a;
@@ -93,6 +97,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 case SDLK_RIGHT:    a = Action::CAMERA_RIGHT; break;
                 case SDLK_UP:       a = Action::CAMERA_UP; break;
                 case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
+                case SDLK_RETURN:   a = Action::RESET_CAMERA; break;      
             }
 			actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         }

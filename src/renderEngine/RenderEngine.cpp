@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 14:48:07 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 15:33:56 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,12 @@ void	RenderEngine::renderGround() const {
 		}
 	}
 
-    shader->use();
+	textureShader->use();
+	glm::vec3 camPos = camera.getPosition();
+	textureShader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+    textureShader->setView();
     groundModel->setInstanceBuffer(data);  
-    groundModel->draw(shader, data.size());
+    groundModel->draw(textureShader, data.size());
 }
 
 void	RenderEngine::renderWall() const {

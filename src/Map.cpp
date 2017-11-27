@@ -80,6 +80,17 @@ void						Map::addUndestroyableBlocs(glm::vec2 pos)
 	this->_undestroyableBlocs.push_back(pos);
 }
 
+int							Map::haveBloc(glm::vec2 pos) const
+{
+	for (unsigned long i = 0 ; i < this->_destroyableBlocs.size() ; i++)
+		if (this->_destroyableBlocs[i].x == pos.x && this->_destroyableBlocs[i].y == pos.y)
+			return 1;
+	for (unsigned long i = 0 ; i < this->_undestroyableBlocs.size() ; i++)
+		if (this->_undestroyableBlocs[i].x == pos.x && this->_undestroyableBlocs[i].y == pos.y)
+			return 1;
+	return 0;
+}
+
 std::map<Type::Enum, std::string>	Map::getModels() const
 {
 	return this->_models;

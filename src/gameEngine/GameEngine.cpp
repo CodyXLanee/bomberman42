@@ -6,11 +6,11 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 04:27:17 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/27 16:18:09 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "GameEntity.hpp"
+#include "Player.hpp"
 #include "GameEngine.hpp"
 #include "glm/ext.hpp"
 
@@ -49,8 +49,7 @@ GameEngine::GameEngine() : _map(new Map()) {
     			break;
     		case 1: // player set
     			glm::vec2		vec(static_cast<float>(j), static_cast<float>(i));
-    			GameEntity *	player = new GameEntity(Type::PLAYER);
-    			player->setPosition(vec);
+    			Player *	player = new Player(vec);
     			this->_entityList.push_back(player);
     			break;
     		}

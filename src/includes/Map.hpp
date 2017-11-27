@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 17:06:23 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 17:07:33 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 16:17:15 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "rapidjson/document.h"
 # include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
-# include "gameEngine/includes/GameEntity.hpp"
+# include "Player.hpp"
 # include "includes/IGameEntity.hpp"
 # include <iostream>
 # include <fstream>

@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   GameEntity.hpp                                     :+:      :+:    :+:   */
+/*   AGameEntity.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/24 15:01:33 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/27 03:40:22 by egaborea         ###   ########.fr       */
+/*   Created: 2017/11/27 15:28:44 by egaborea          #+#    #+#             */
+/*   Updated: 2017/11/27 16:33:28 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GAMEENTITY_HPP
-# define GAMEENTITY_HPP
+#ifndef AGAMEENTITY_HPP
+# define AGAMEENTITY_HPP
 
 # include "IGameEntity.hpp"
 
-class GameEntity : public IGameEntity {
+class AGameEntity : public IGameEntity {
 public:
-    GameEntity(const Type::Enum & type);
-    GameEntity(const Type::Enum & type, const glm::vec2 & pos);
-    virtual ~GameEntity();
-    
+    virtual ~AGameEntity();
     virtual glm::vec2	getPosition() const;
     virtual glm::vec2	getDirection() const;
     virtual State::Enum	getState() const;
@@ -31,9 +28,8 @@ public:
     virtual void    	setDirection(const glm::vec2 &);
     virtual void    	setState(const State::Enum &);
     virtual void    	setSpeed(const float &);
-    virtual void    	setType(const Type::Enum &);
-private:
-    GameEntity();
+protected:
+    AGameEntity(const glm::vec2 &, const glm::vec2 &, const State::Enum &, const float &, const Type::Enum &);
     glm::vec2           _position;
     glm::vec2           _direction;
     State::Enum         _state;

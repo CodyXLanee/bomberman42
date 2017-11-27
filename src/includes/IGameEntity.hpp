@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:47:02 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 03:40:47 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/27 16:07:14 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ namespace State{
 }
 
 namespace Type{
-	enum Enum { PLAYER, BOMB};
+	enum Enum { PLAYER, BOMB, DESTRUCTIBLE_BLOC, INDESTRUCTIBLE_BLOC};
 }
 
 class IGameEntity {
@@ -36,7 +36,6 @@ class IGameEntity {
 		virtual void    	setDirection(const glm::vec2 &) = 0;
 		virtual void    	setState(const State::Enum &) = 0;
 		virtual void    	setSpeed(const float &) = 0;
-		virtual void    	setType(const Type::Enum &) = 0;
 };
 
 #endif

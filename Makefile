@@ -9,8 +9,11 @@ SRC_PATH = ./src/
 SRC_NAME =	\
 			Sdl_gl_win.cpp \
 			gameEngine/GameEngine.cpp \
-			gameEngine/GameEntity.cpp \
+			gameEngine/AGameEntity.cpp \
 			gameEngine/Loader.cpp \
+			gameEngine/entities/DestructibleBloc.cpp\
+			gameEngine/entities/IndestructibleBloc.cpp\
+			gameEngine/entities/Player.cpp\
 			renderEngine/RenderEngine.cpp \
 			renderEngine/model/Model.cpp \
 			renderEngine/model/Mesh.cpp \
@@ -25,6 +28,7 @@ OBJ_NAME = $(SRC:.cpp=.o)
 
 INC_PATH = src/includes/ \
 			src/gameEngine/includes \
+			src/gameEngine/entities/includes\
 			src/renderEngine/includes \
 			src/renderEngine/model/includes \
 			libs
@@ -49,6 +53,7 @@ $(OBJ_PATH)%.o: %.cpp
 	@mkdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src/gameEngine 2> /dev/null || echo "" > /dev/null
+	@mkdir $(OBJ_PATH)/src/gameEngine/entities 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src/renderEngine 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src/renderEngine/model 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/libs 2> /dev/null || echo "" > /dev/null

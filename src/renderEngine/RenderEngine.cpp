@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 18:25:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/27 18:44:43 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,11 +112,9 @@ void	RenderEngine::renderBrick(const std::vector<DestructibleBloc> &blocs) const
 
 	glm::mat4 transform;
 	for (auto i = blocs.begin(); i != blocs.end(); i++){
-		std::cout << glm::to_string(i->getPosition()) << std::endl;
 		glm::mat4 transform = glm::mat4();
 		transform = glm::mat4(glm::translate(transform, glm::vec3(i->getPosition(), 0.f)));
 		data.push_back(transform);
-		std::cout << "=="<< glm::to_string(transform) << std::endl;
 	}
 
 	textureShader->use();

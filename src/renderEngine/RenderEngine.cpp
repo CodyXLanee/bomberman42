@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 15:33:56 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 18:25:02 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RenderEngine.hpp"
+#include <glm/ext.hpp>
 
 RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera) {
 	shader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
@@ -33,7 +34,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & en
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	setCamera(camera.getMatrix());
-	renderMap();
+	renderMap(map);
 	for (std::vector<IGameEntity const *>::const_iterator i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::PLAYER)
 			renderPlayer(*i);
@@ -41,10 +42,10 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & en
 	SDL_GL_SwapWindow(win);
 }
 
-void	RenderEngine::renderMap() const {
+void	RenderEngine::renderMap(Map const & map) const {
 	renderGround();
 	renderWall();
-	renderBrick();
+	renderBrick(map.getDestructibleBlocs());
 }
 
 void	RenderEngine::renderPlayer(IGameEntity const *player) const {
@@ -106,12 +107,17 @@ void	RenderEngine::renderWall() const {
     wallModel->draw(textureShader, data.size());
 }
 
-void	RenderEngine::renderBrick() const {
+void	RenderEngine::renderBrick(const std::vector<DestructibleBloc> &blocs) const {
     std::vector<glm::mat4> data;
-	
-	glm::mat4 transform = glm::mat4();
-	transform = glm::translate(transform, glm::vec3(0.f, 0.f, 0.f));
-	data.push_back(transform);
+
+	glm::mat4 transform;
+	for (auto i = blocs.begin(); i != blocs.end(); i++){
+		std::cout << glm::to_string(i->getPosition()) << std::endl;
+		glm::mat4 transform = glm::mat4();
+		transform = glm::mat4(glm::translate(transform, glm::vec3(i->getPosition(), 0.f)));
+		data.push_back(transform);
+		std::cout << "=="<< glm::to_string(transform) << std::endl;
+	}
 
 	textureShader->use();
 	glm::vec3 camPos = camera.getPosition();

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 17:06:23 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 16:17:15 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/27 18:10:02 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,15 @@ class Map {
 
 		Map &						operator=(Map const & rhs);
 
-		glm::vec2						getSize() const;
-		void							setSize(glm::vec2 size);
-		std::vector<DestructibleBloc>	getDestructibleBlocs() const;
-		void							addDestructibleBlocs(DestructibleBloc bloc);
-		void							removeDestructibleBlocs(glm::vec2 pos);
-		std::vector<IndestructibleBloc>	getIndestructibleBlocs() const;
-		void							addIndestructibleBlocs(IndestructibleBloc bloc);
-		int								haveBloc(glm::vec2 pos) const;
-		std::map<Type::Enum, std::string>	getModels() const;
+		glm::vec2								getSize() const;
+		void									setSize(glm::vec2 size);
+		const std::vector<DestructibleBloc>		getDestructibleBlocs() const;
+		void									addDestructibleBlocs(DestructibleBloc bloc);
+		void									removeDestructibleBlocs(glm::vec2 pos);
+		const std::vector<IndestructibleBloc>	getIndestructibleBlocs() const;
+		void									addIndestructibleBlocs(IndestructibleBloc bloc);
+		int										haveBloc(glm::vec2 pos) const;
+		std::map<Type::Enum, std::string>		getModels() const;
 
 
 	private:

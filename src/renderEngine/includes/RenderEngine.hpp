@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 14:48:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/27 18:10:34 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ class RenderEngine {
 		Model		*brickModel;
 		Camera  	&camera;
 
-		void	renderMap() const;
+		void	renderMap(Map const & map) const;
 		void	renderWall() const;
-		void	renderBrick() const;
+		void	renderBrick(const std::vector<DestructibleBloc>	&) const;
 		void	renderPlayer(IGameEntity const *) const;
 		void	renderGround() const;
 		void	setCamera(glm::mat4 const &);

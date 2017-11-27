@@ -10,6 +10,7 @@ SRC_NAME =	\
 			Sdl_gl_win.cpp \
 			gameEngine/GameEngine.cpp \
 			gameEngine/GameEntity.cpp \
+			gameEngine/Loader.cpp \
 			renderEngine/RenderEngine.cpp \
 			renderEngine/model/Model.cpp \
 			renderEngine/model/Mesh.cpp \

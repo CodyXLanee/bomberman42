@@ -12,9 +12,9 @@
 
 #include "Map.hpp"
 
-Map::Map() : _mapFile(""), _map(NULL) {}
+Map::Map() {}
 
-Map::Map(std::string mapFile) : _mapFile(mapFile), _map(NULL)
+Map::Map(glm::vec2 size) : _size(size)
 {
 }
 
@@ -29,84 +29,58 @@ Map &		Map::operator=(Map const & rhs)
 {
 	if (this != &rhs)
 	{
-		this->_mapFile = rhs.getFile();
+		this->_size = rhs.getSize();
+		this->_destroyableBlocs = rhs.getDestroyableBlocs();
+		this->_undestroyableBlocs = rhs.getUndestroyableBlocs();
+		this->_models = rhs.getModels();
 	}
 
 	return *this;
 }
 
-void		Map::setFile(std::string mapFile)
+glm::vec2	Map::getSize() const
 {
-	this->_mapFile = mapFile;
+	return this->_size;
 }
 
-std::string	Map::getFile() const
+void		Map::setSize(glm::vec2 size)
 {
-	return this->_mapFile;
+	this->_size = size;
 }
 
-GameEntity ***	Map::getMap() const
+std::vector<glm::vec2>		Map::getDestroyableBlocs() const
 {
-	return this->_map;
+	return this->_destroyableBlocs;
 }
 
-std::vector<GameEntity*>	Map::getVEntity() const
+std::vector<glm::vec2>		Map::getUndestroyableBlocs() const
 {
-	return this->_VEntity;
+	return this->_undestroyableBlocs;
 }
 
-int			Map::load()
+void						Map::addDestroyableBlocs(glm::vec2 pos)
 {
-    std::string json;
-    rapidjson::Document d;
-	std::ifstream infile;
-	char * writable;
+	this->_destroyableBlocs.push_back(pos);
+}
 
-	// leave if no mapFile
-	if (!this->_mapFile.compare(""))
-		return -1;
+void						Map::removeDestroyableBlocs(glm::vec2 pos)
+{
+	for (unsigned long i = 0 ; i < this->_destroyableBlocs.size() ; i++)
+	{
+		if (this->_destroyableBlocs[i].x == pos.x && this->_destroyableBlocs[i].y == pos.y)
+		{
+			this->_destroyableBlocs.erase(this->_destroyableBlocs.begin()+i);
+			return ;
+		}
+	}
+}
 
-    // read the file
-	infile.open(this->_mapFile);
-	if (!infile.is_open())
-		return -1;
-	getline(infile, json);
-	infile.close();
+void						Map::addUndestroyableBlocs(glm::vec2 pos)
+{
+	this->_undestroyableBlocs.push_back(pos);
+}
 
-	// parse the json
-	writable = new char[json.size() + 1];
-	std::copy(json.begin(), json.end(), writable);
-	writable[json.size()] = '\0';
-    d.Parse(writable);
-    if (!d.IsObject() || !d.HasMember("grid"))
-    	return -1;
-    const rapidjson::Value& grid = d["grid"];
-    if (!grid.IsArray())
-    	return -1;
-
-    // build the map and the gameEntity vector
-    this->_map = new GameEntity**[grid.Size()];
-    for (unsigned int i = 0 ; i < grid.Size() ; i++)
-    {
-    	if (!grid[i].IsArray())
-    		return -1;
-    	this->_map[i] = new GameEntity*[grid[i].Size()];
-    	for (unsigned int j = 0 ; j < grid[i].Size() ; j ++)
-    	{
-    		switch (grid[i][j].GetInt())
-    		{
-    		case 0: // case vide
-    			this->_map[i][j] = NULL;
-    			break;
-    		case 1: // player set
-    			glm::vec2	vec(static_cast<float>(j), static_cast<float>(i));
-    			this->_map[i][j] = NULL;
-    			this->_VEntity.push_back(new GameEntity(Type::PLAYER));
-    			this->_VEntity.back()->setPosition(vec);
-    			break;
-    		}
-    	}
-    }
-
-    return 1;
+std::map<Type::Enum, std::string>	Map::getModels() const
+{
+	return this->_models;
 }

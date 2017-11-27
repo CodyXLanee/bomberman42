@@ -41,6 +41,7 @@ class Map {
 		void						removeDestroyableBlocs(glm::vec2 pos);
 		std::vector<glm::vec2>		getUndestroyableBlocs() const;
 		void						addUndestroyableBlocs(glm::vec2 pos);
+		int							haveBloc(glm::vec2 pos) const;
 		std::map<Type::Enum, std::string>	getModels() const;
 
 

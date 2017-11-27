@@ -13,6 +13,8 @@
 #include "Player.hpp"
 #include "GameEngine.hpp"
 #include "glm/ext.hpp"
+#include "IndestructibleBloc.hpp"
+#include "DestructibleBloc.hpp"
 
 GameEngine::GameEngine() : _map(new Map()) {
 	rapidjson::Value * grid;
@@ -40,10 +42,10 @@ GameEngine::GameEngine() : _map(new Map()) {
     		switch (grid[0][i][j].GetInt())
     		{
     		case -2: // undestroyable bloc
-    			this->_map->addUndestroyableBlocs(glm::vec2(j,i));
+    			this->_map->addIndestructibleBlocs(IndestructibleBloc(glm::vec2(j,i)));
     			break;
     		case -1: // destroyable bloc
-    			this->_map->addDestroyableBlocs(glm::vec2(j,i));
+    			this->_map->addDestructibleBlocs(DestructibleBloc(glm::vec2(j,i)));
     			break;
     		case 0: // case vide
     			break;
@@ -112,16 +114,16 @@ void			GameEngine::collisionsManage(std::vector<Action::Enum> actions)
 						break;
 					if (ceil(newPos.x) - newPos.x <= 0.5)
 						if (_map->haveBloc(glm::vec2(ceil(newPos.x), ceil(newPos.y))) || _map->haveBloc(glm::vec2(ceil(newPos.x), floor(newPos.y))))
-							break;
+							newPos.x = (*i)->getPosition().x;
 					if (newPos.x - floor(newPos.x) <= 0.5)
 						if (_map->haveBloc(glm::vec2(floor(newPos.x), ceil(newPos.y))) || _map->haveBloc(glm::vec2(floor(newPos.x), floor(newPos.y))))
-							break;
+							newPos.x = (*i)->getPosition().x;
 					if (ceil(newPos.y) - newPos.y <= 0.5)
 						if (_map->haveBloc(glm::vec2(ceil(newPos.x), ceil(newPos.y))) || _map->haveBloc(glm::vec2(floor(newPos.x), ceil(newPos.y))))
-							break;
+							newPos.y = (*i)->getPosition().y;
 					if (newPos.y - floor(newPos.y) <= 0.5)
 						if (_map->haveBloc(glm::vec2(floor(newPos.x), floor(newPos.y))) || _map->haveBloc(glm::vec2(ceil(newPos.x), floor(newPos.y))))
-							break;
+							newPos.y = (*i)->getPosition().y;
 					(*i)->setPosition(newPos);
 				}
 				break;

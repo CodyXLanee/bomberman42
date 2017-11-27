@@ -16,8 +16,8 @@
 # include "rapidjson/document.h"
 # include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
-# include "Player.hpp"
-# include "includes/IGameEntity.hpp"
+# include "DestructibleBloc.hpp"
+# include "IndestructibleBloc.hpp"
 # include <iostream>
 # include <fstream>
 # include <vector>
@@ -34,21 +34,21 @@ class Map {
 
 		Map &						operator=(Map const & rhs);
 
-		glm::vec2					getSize() const;
-		void						setSize(glm::vec2 size);
-		std::vector<glm::vec2>		getDestroyableBlocs() const;
-		void						addDestroyableBlocs(glm::vec2 pos);
-		void						removeDestroyableBlocs(glm::vec2 pos);
-		std::vector<glm::vec2>		getUndestroyableBlocs() const;
-		void						addUndestroyableBlocs(glm::vec2 pos);
-		int							haveBloc(glm::vec2 pos) const;
+		glm::vec2						getSize() const;
+		void							setSize(glm::vec2 size);
+		std::vector<DestructibleBloc>	getDestructibleBlocs() const;
+		void							addDestructibleBlocs(DestructibleBloc bloc);
+		void							removeDestructibleBlocs(glm::vec2 pos);
+		std::vector<IndestructibleBloc>	getIndestructibleBlocs() const;
+		void							addIndestructibleBlocs(IndestructibleBloc bloc);
+		int								haveBloc(glm::vec2 pos) const;
 		std::map<Type::Enum, std::string>	getModels() const;
 
 
 	private:
-		glm::vec2					_size;
-		std::vector<glm::vec2>		_destroyableBlocs;
-		std::vector<glm::vec2>		_undestroyableBlocs;
+		glm::vec2							_size;
+		std::vector<DestructibleBloc>		_destructibleBlocs;
+		std::vector<IndestructibleBloc>		_indestructibleBlocs;
 		std::map<Type::Enum, std::string>	_models;
 };
 

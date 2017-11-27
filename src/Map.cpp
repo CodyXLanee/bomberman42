@@ -30,8 +30,8 @@ Map &		Map::operator=(Map const & rhs)
 	if (this != &rhs)
 	{
 		this->_size = rhs.getSize();
-		this->_destroyableBlocs = rhs.getDestroyableBlocs();
-		this->_undestroyableBlocs = rhs.getUndestroyableBlocs();
+		this->_destructibleBlocs = rhs.getDestructibleBlocs();
+		this->_indestructibleBlocs = rhs.getIndestructibleBlocs();
 		this->_models = rhs.getModels();
 	}
 
@@ -48,45 +48,45 @@ void		Map::setSize(glm::vec2 size)
 	this->_size = size;
 }
 
-std::vector<glm::vec2>		Map::getDestroyableBlocs() const
+std::vector<DestructibleBloc>		Map::getDestructibleBlocs() const
 {
-	return this->_destroyableBlocs;
+	return this->_destructibleBlocs;
 }
 
-std::vector<glm::vec2>		Map::getUndestroyableBlocs() const
+std::vector<IndestructibleBloc>		Map::getIndestructibleBlocs() const
 {
-	return this->_undestroyableBlocs;
+	return this->_indestructibleBlocs;
 }
 
-void						Map::addDestroyableBlocs(glm::vec2 pos)
+void						Map::addDestructibleBlocs(DestructibleBloc bloc)
 {
-	this->_destroyableBlocs.push_back(pos);
+	this->_destructibleBlocs.push_back(bloc);
 }
 
-void						Map::removeDestroyableBlocs(glm::vec2 pos)
+void						Map::removeDestructibleBlocs(glm::vec2 pos)
 {
-	for (unsigned long i = 0 ; i < this->_destroyableBlocs.size() ; i++)
+	for (unsigned long i = 0 ; i < this->_destructibleBlocs.size() ; i++)
 	{
-		if (this->_destroyableBlocs[i].x == pos.x && this->_destroyableBlocs[i].y == pos.y)
+		if (this->_destructibleBlocs[i].getPosition() == pos)
 		{
-			this->_destroyableBlocs.erase(this->_destroyableBlocs.begin()+i);
+			this->_destructibleBlocs.erase(this->_destructibleBlocs.begin()+i);
 			return ;
 		}
 	}
 }
 
-void						Map::addUndestroyableBlocs(glm::vec2 pos)
+void						Map::addIndestructibleBlocs(IndestructibleBloc bloc)
 {
-	this->_undestroyableBlocs.push_back(pos);
+	this->_indestructibleBlocs.push_back(bloc);
 }
 
 int							Map::haveBloc(glm::vec2 pos) const
 {
-	for (unsigned long i = 0 ; i < this->_destroyableBlocs.size() ; i++)
-		if (this->_destroyableBlocs[i].x == pos.x && this->_destroyableBlocs[i].y == pos.y)
+	for (unsigned long i = 0 ; i < this->_destructibleBlocs.size() ; i++)
+		if (this->_destructibleBlocs[i].getPosition() == pos)
 			return 1;
-	for (unsigned long i = 0 ; i < this->_undestroyableBlocs.size() ; i++)
-		if (this->_undestroyableBlocs[i].x == pos.x && this->_undestroyableBlocs[i].y == pos.y)
+	for (unsigned long i = 0 ; i < this->_indestructibleBlocs.size() ; i++)
+		if (this->_indestructibleBlocs[i].getPosition() == pos)
 			return 1;
 	return 0;
 }

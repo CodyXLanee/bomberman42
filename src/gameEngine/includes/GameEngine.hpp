@@ -30,7 +30,7 @@ class GameEngine {
 		
 		void								compute(std::vector<Action::Enum> actions);
 		Map const &							getMap() const;
-		const std::vector<IGameEntity *>		getEntityList() const; // No need to mark IGameEntities as const
+		std::vector<IGameEntity *> &		getEntityList(); // No need to mark IGameEntities as const
 
 	private:
 		Map * 						_map;

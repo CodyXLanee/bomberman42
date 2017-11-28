@@ -18,6 +18,12 @@
 class Player : public AGameEntity {
 public:
     Player(const glm::vec2 & pos);
+
+    glm::vec2	getGraphicalDirection() const;
+    void		setGraphicalDirection(glm::vec2 dir);
+
+private:
+	glm::vec2	_graphicalDirection;
 };
 
 #endif

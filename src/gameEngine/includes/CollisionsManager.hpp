@@ -25,6 +25,8 @@ class CollisionsManager {
 		void		gestionBorderMap(glm::vec2 & pos, Map const & map);
 		int			gestionNoSlipMove(glm::vec2 & pos, IGameEntity const * entity, Map const & map);
 		void		gestionSlipOneDirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map);
+		void		gestionSlipBidirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map);
+		
 };
 
 #endif

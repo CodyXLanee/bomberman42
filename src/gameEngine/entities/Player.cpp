@@ -13,5 +13,15 @@
 #include "Player.hpp"
 
 Player::Player(const glm::vec2 & pos) : 
-AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::PLAYER){
+AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::PLAYER), _graphicalDirection(glm::vec2(0,0)){
+}
+
+glm::vec2	Player::getGraphicalDirection() const
+{
+	return _graphicalDirection;
+}
+
+void		Player::setGraphicalDirection(glm::vec2 dir)
+{
+	_graphicalDirection = dir;
 }

@@ -69,6 +69,6 @@ Map const &		GameEngine::getMap() const {
 	return *(this->_map);
 }
 
-const std::vector<IGameEntity * >	GameEngine::getEntityList() const {
+std::vector<IGameEntity * > &	GameEngine::getEntityList() {
 	return this->_entityList;
 }

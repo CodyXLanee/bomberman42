@@ -21,11 +21,14 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> enti
 					{
 						if ((*i)->getDirection().x == 0 || (*i)->getDirection().y == 0)
 							gestionSlipOneDirection(newPos, *i, map);
+						else
+							gestionSlipBidirection(newPos, *i, map);
 					}
 
 					// gestion border
 
 					// set the new position
+					//(*i)->setDirection(normalize(newPos - (*i)->getPosition()));
 					(*i)->setPosition(newPos);
 				}
 				break;
@@ -219,4 +222,9 @@ void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity c
 			}
 		}
 	}
+}
+
+void			CollisionsManager::gestionSlipBidirection(glm::vec2 &, IGameEntity const *, Map const &)
+{
+
 }

@@ -31,7 +31,7 @@ class RenderEngine {
 		RenderEngine(SDL_Window	*win, Camera &);
 		~RenderEngine();
 		
-		void	render(Map const & map, std::vector<IGameEntity *> const & entities);
+		void	render(Map const & map, std::vector<IGameEntity *> & entities);
 		
 	private:
 		
@@ -49,7 +49,7 @@ class RenderEngine {
 		void	renderMap(Map const & map) const;
 		void	renderWall(const std::vector<IndestructibleBloc>	&) const;
 		void	renderBrick(const std::vector<DestructibleBloc>	&) const;
-		void	renderPlayer(IGameEntity const *) const;
+		void	renderPlayer(IGameEntity *) const;
 		void	renderGround() const;
 		void	setCamera(glm::mat4 const &);
 };

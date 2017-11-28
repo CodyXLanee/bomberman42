@@ -5,7 +5,7 @@ CollisionsManager::CollisionsManager() {}
 
 CollisionsManager::~CollisionsManager() {}
 
-void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> entityList, std::vector<Action::Enum> const actions)
+void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &entityList, std::vector<Action::Enum> const actions)
 {
 
 	for (std::vector<IGameEntity *>::iterator i = entityList.begin(); i != entityList.end(); i++) {
@@ -17,10 +17,10 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> enti
 					
 					gestionBorderMap(newPos, map);
 					
-					if (!gestionNoSlipMove(newPos, *i, map))
+					if (!gestionNoSlipMove(newPos, *i, map, entityList))
 					{
 						if ((*i)->getDirection().x == 0 || (*i)->getDirection().y == 0)
-							gestionSlipOneDirection(newPos, *i, map);
+							gestionSlipOneDirection(newPos, *i, map, entityList);
 						else
 							gestionSlipBidirection(newPos, *i, map);
 					}
@@ -80,13 +80,13 @@ void			CollisionsManager::gestionBorderMap(glm::vec2 & pos, Map const & map)
 		pos.y = map.getSize().y - 1;
 }
 
-int				CollisionsManager::gestionNoSlipMove(glm::vec2 & pos, IGameEntity const * entity, Map const & map)
+int				CollisionsManager::gestionNoSlipMove(glm::vec2 & pos, IGameEntity const * entity, Map const & map, std::vector<IGameEntity *> &entityList)
 {
 	int	isBlocked = 0;
 
 	if (entity->getDirection().x > 0)
 	{
-		if (map.haveBloc(glm::vec2(round(pos.x + RPLAYER), round(pos.y))))
+		if (hasObstacle(map, glm::vec2(round(pos.x + RPLAYER), round(pos.y)), entityList, entity))
 		{
 			isBlocked = 1;
 			pos.x = round(pos.x + RPLAYER) - RPLAYER - 0.5;
@@ -94,7 +94,7 @@ int				CollisionsManager::gestionNoSlipMove(glm::vec2 & pos, IGameEntity const *
 	}
 	if (entity->getDirection().x < 0)
 	{
-		if (map.haveBloc(glm::vec2(round(pos.x - RPLAYER), round(pos.y))))
+		if (hasObstacle(map, glm::vec2(round(pos.x - RPLAYER), round(pos.y)), entityList, entity))
 		{
 			isBlocked = 1;
 			pos.x = round(pos.x - RPLAYER) + RPLAYER + 0.5;
@@ -102,7 +102,7 @@ int				CollisionsManager::gestionNoSlipMove(glm::vec2 & pos, IGameEntity const *
 	}
 	if (entity->getDirection().y > 0)
 	{
-		if (map.haveBloc(glm::vec2(round(pos.x), round(pos.y + RPLAYER))))
+		if (hasObstacle(map, glm::vec2(round(pos.x), round(pos.y + RPLAYER)), entityList, entity))
 		{
 			isBlocked = 1;
 			pos.y = round(pos.y + RPLAYER) - RPLAYER - 0.5;
@@ -110,7 +110,7 @@ int				CollisionsManager::gestionNoSlipMove(glm::vec2 & pos, IGameEntity const *
 	}
 	if (entity->getDirection().y < 0)
 	{
-		if (map.haveBloc(glm::vec2(round(pos.x), round(pos.y - RPLAYER))))
+		if (hasObstacle(map, glm::vec2(round(pos.x), round(pos.y - RPLAYER)), entityList, entity))
 		{
 			isBlocked = 1;
 			pos.y = round(pos.y - RPLAYER) + RPLAYER + 0.5;
@@ -120,11 +120,32 @@ int				CollisionsManager::gestionNoSlipMove(glm::vec2 & pos, IGameEntity const *
 	return isBlocked;
 }
 
-void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map)
+bool			CollisionsManager::collidesWithEntity(glm::vec2 &v, IGameEntity const * entity, std::vector<IGameEntity *> const &entityList){
+	for (auto i = entityList.begin(); i != entityList.end(); i++){
+		if ((*i) != entity){
+			switch((*i)->getType()){
+				case Type::BOMB:
+															//	this is so a player already on the same spot as an bomb doesn't produce a collision
+					if (glm::round(v) == (*i)->getPosition() && glm::round(entity->getPosition()) != (*i)->getPosition() )
+						return true;
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	return false;
+}
+
+bool			CollisionsManager::hasObstacle(Map const & map, glm::vec2 v, std::vector<IGameEntity *> const &entityList,  IGameEntity const * entity){
+	return (map.hasBloc(v) || collidesWithEntity(v, entity, entityList));
+}
+
+void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map, std::vector<IGameEntity *> &entityList)
 {
 	if (entity->getDirection().x > 0)
 	{
-		if (map.haveBloc(glm::vec2(round(pos.x + RPLAYER), ceil(pos.y))))
+		if (hasObstacle(map, glm::vec2(round(pos.x + RPLAYER), ceil(pos.y)), entityList, entity))
 		{
 			glm::vec2	angle = glm::vec2(round(pos.x + RPLAYER), ceil(pos.y));
 			angle.x -= 0.5;
@@ -135,7 +156,7 @@ void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity c
 				pos.y -= 0.01;
 			}
 		}
-		if (map.haveBloc(glm::vec2(round(pos.x + RPLAYER), floor(pos.y))))
+		if (hasObstacle(map, glm::vec2(round(pos.x + RPLAYER), floor(pos.y)), entityList, entity))
 		{
 			glm::vec2	angle = glm::vec2(round(pos.x + RPLAYER), floor(pos.y));
 			angle.x -= 0.5;
@@ -149,7 +170,7 @@ void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity c
 	}
 	if (entity->getDirection().x < 0)
 	{
-		if (map.haveBloc(glm::vec2(round(pos.x - RPLAYER), ceil(pos.y))))
+		if (hasObstacle(map, glm::vec2(round(pos.x - RPLAYER), ceil(pos.y)), entityList, entity))
 		{
 			glm::vec2	angle = glm::vec2(round(pos.x - RPLAYER), ceil(pos.y));
 			angle.x += 0.5;
@@ -160,7 +181,7 @@ void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity c
 				pos.y -= 0.01;
 			}
 		}
-		if (map.haveBloc(glm::vec2(round(pos.x - RPLAYER), floor(pos.y))))
+		if (hasObstacle(map, glm::vec2(round(pos.x - RPLAYER), floor(pos.y)), entityList, entity))
 		{
 			glm::vec2	angle = glm::vec2(round(pos.x - RPLAYER), floor(pos.y));
 			angle.x += 0.5;
@@ -174,7 +195,7 @@ void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity c
 	}
 	if (entity->getDirection().y > 0)
 	{
-		if (map.haveBloc(glm::vec2(ceil(pos.x), round(pos.y + RPLAYER))))
+		if (hasObstacle(map, glm::vec2(ceil(pos.x), round(pos.y + RPLAYER)), entityList, entity))
 		{
 			glm::vec2	angle = glm::vec2(ceil(pos.x), round(pos.y + RPLAYER));
 			angle.x -= 0.5;
@@ -185,7 +206,7 @@ void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity c
 				pos.y -= 0.01;
 			}
 		}
-		if (map.haveBloc(glm::vec2(floor(pos.x), round(pos.y + RPLAYER))))
+		if (hasObstacle(map, glm::vec2(floor(pos.x), round(pos.y + RPLAYER)), entityList, entity))
 		{
 			glm::vec2	angle = glm::vec2(floor(pos.x), round(pos.y + RPLAYER));
 			angle.x += 0.5;
@@ -199,7 +220,7 @@ void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity c
 	}
 	if (entity->getDirection().y < 0)
 	{
-		if (map.haveBloc(glm::vec2(ceil(pos.x), round(pos.y - RPLAYER))))
+		if (hasObstacle(map, glm::vec2(ceil(pos.x), round(pos.y - RPLAYER)), entityList, entity))
 		{
 			glm::vec2	angle = glm::vec2(ceil(pos.x), round(pos.y - RPLAYER));
 			angle.x -= 0.5;
@@ -210,7 +231,7 @@ void			CollisionsManager::gestionSlipOneDirection(glm::vec2 & pos, IGameEntity c
 				pos.y += 0.01;
 			}
 		}
-		if (map.haveBloc(glm::vec2(floor(pos.x), round(pos.y - RPLAYER))))
+		if (hasObstacle(map, glm::vec2(floor(pos.x), round(pos.y - RPLAYER)), entityList, entity))
 		{
 			glm::vec2	angle = glm::vec2(floor(pos.x), round(pos.y - RPLAYER));
 			angle.x += 0.5;

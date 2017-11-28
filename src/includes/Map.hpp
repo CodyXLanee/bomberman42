@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 17:06:23 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 18:10:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 19:00:29 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class Map {
 		void									removeDestructibleBlocs(glm::vec2 pos);
 		const std::vector<IndestructibleBloc>	getIndestructibleBlocs() const;
 		void									addIndestructibleBlocs(IndestructibleBloc bloc);
-		int										haveBloc(glm::vec2 pos) const;
+		bool									hasBloc(glm::vec2 pos) const;
 		std::map<Type::Enum, std::string>		getModels() const;
 
 

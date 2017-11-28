@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/28 17:08:16 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 19:46:09 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void    BombManager::update(std::vector<IGameEntity *> & entityList, std::vector
         switch ((*i)->getType()) {
             case Type::PLAYER:
                 if (find(actions.begin(), actions.end(), Action::SPAWN_BOMB) != actions.end() && _spawned_bomb == false){
-                    //std::cout << glm::to_string((*i)->getPosition()) << " => " << glm::to_string(glm::floor((*i)->getPosition())) << std::endl;
                     new_bomb = new Bomb(glm::round((*i)->getPosition()));
                     _spawned_bomb = true;
                 }
@@ -39,7 +38,7 @@ void    BombManager::update(std::vector<IGameEntity *> & entityList, std::vector
         }
     }
     for (auto i = entityList.begin(); i != entityList.end(); i++){
-        if (new_bomb && (*i)->getPosition() == new_bomb->getPosition()){
+        if (new_bomb && (*i)->getType() && (*i)->getPosition() == new_bomb->getPosition()){
             delete new_bomb;
             new_bomb = NULL;
         }

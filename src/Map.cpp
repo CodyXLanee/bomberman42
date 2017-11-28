@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 17:05:57 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 19:46:00 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 19:00:14 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,15 +80,15 @@ void						Map::addIndestructibleBlocs(IndestructibleBloc bloc)
 	this->_indestructibleBlocs.push_back(bloc);
 }
 
-int							Map::haveBloc(glm::vec2 pos) const
+bool						Map::hasBloc(glm::vec2 pos) const
 {
 	for (unsigned long i = 0 ; i < this->_destructibleBlocs.size() ; i++)
 		if (this->_destructibleBlocs[i].getPosition() == pos)
-			return 1;
+			return true;
 	for (unsigned long i = 0 ; i < this->_indestructibleBlocs.size() ; i++)
 		if (this->_indestructibleBlocs[i].getPosition() == pos)
-			return 1;
-	return 0;
+			return true;
+	return false;
 }
 
 std::map<Type::Enum, std::string>	Map::getModels() const

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bomberman.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 12:01:33 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 18:57:39 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,12 @@
 
 
 namespace Action {
-	enum Enum	{ NONE, LEFT, RIGHT, UP, DOWN, SPAWN_BOMB,DEBUG, ESCAPE, CAMERA_LEFT, CAMERA_RIGHT, CAMERA_UP, CAMERA_DOWN, DEBUG_MODE, RESET_CAMERA };
+	enum Enum	{
+		NONE,
+		LEFT, RIGHT, UP, DOWN, SPAWN_BOMB,
+		CAMERA_LEFT, CAMERA_RIGHT, CAMERA_UP, CAMERA_DOWN,
+		ESCAPE, DEBUG_MODE, RESET_CAMERA, MENU, OPTIONS
+	};
 }
 
 #endif

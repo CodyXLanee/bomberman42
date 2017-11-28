@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 17:13:35 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 19:01:42 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class RenderEngine {
 		~RenderEngine();
 		
 		void	render(Map const & map, std::vector<IGameEntity *> & entities);
-		void	renderGUI(std::vector<Action::Enum> const &);
+		void	renderGUI(std::vector<Action::Enum> &);
 		struct nk_context *	getGUIContext() const;
 		
 	private:

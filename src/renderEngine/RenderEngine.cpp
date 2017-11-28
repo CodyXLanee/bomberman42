@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 17:22:30 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 18:57:38 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	renderBombs(entities);
 }
 
-void	RenderEngine::renderGUI(std::vector<Action::Enum> const & actions) {
+void	RenderEngine::renderGUI(std::vector<Action::Enum> & actions) {
 	gui.render(actions, camera);
 }
 

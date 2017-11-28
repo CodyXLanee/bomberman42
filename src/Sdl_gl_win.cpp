@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 17:15:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 19:01:15 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,12 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
                 case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
                 case SDLK_TAB:      a = Action::DEBUG_MODE; break;
                 case SDLK_RETURN:   a = Action::RESET_CAMERA; break;
+                case SDLK_LCTRL:    a = Action::MENU; break;
                 case SDLK_SPACE:    a = Action::SPAWN_BOMB; break;
             }
 			if (find(actions.begin(), actions.end(), a) == actions.end())
                 actions.push_back(a);
-            else if (a == Action::DEBUG_MODE)
+            else if (a == Action::DEBUG_MODE || a == Action::MENU)
 		    	actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());            
         } 
         if (events.type == SDL_KEYUP) {

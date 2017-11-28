@@ -13,10 +13,9 @@
 #ifndef GAMEENGINE_HPP
 # define GAMEENGINE_HPP
 
-# define RPLAYER 0.5	// 0.1 <= x <= 0.5
-
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"
+# include "CollisionsManager.hpp"
 # include "Map.hpp"
 # include "Loader.hpp"
 # include <glm/glm.hpp>
@@ -33,16 +32,12 @@ class GameEngine {
 		Map const &							getMap() const;
 		const std::vector<IGameEntity *>		getEntityList() const; // No need to mark IGameEntities as const
 
-		glm::vec2	compute_direction(std::vector<Action::Enum> actions);
-		void		compute_player(IGameEntity*p, std::vector<Action::Enum> actions);
-
 	private:
 		Map * 						_map;
 		Loader						_loader;
 		std::vector<IGameEntity *>	_entityList;
+		CollisionsManager			_collisionsManager;
 
-		void		collisionsManageV1(std::vector<Action::Enum> actions);
-		void		collisionsManageV2(std::vector<Action::Enum> actions);
 };
 
 #endif

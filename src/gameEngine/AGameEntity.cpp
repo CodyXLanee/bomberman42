@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:28:54 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/27 16:35:08 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 14:04:20 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,7 @@ void	AGameEntity::setState(const State::Enum & state){
 
 void	AGameEntity::setSpeed(const float & speed){
     _speed = speed;
+}
+
+void        AGameEntity::update(void){
 }

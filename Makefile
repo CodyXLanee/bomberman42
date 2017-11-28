@@ -3,7 +3,7 @@
 NAME = bomberman
 
 CC = clang++
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 SRC_PATH = ./src/
 SRC_NAME =	\
@@ -12,10 +12,13 @@ SRC_NAME =	\
 			gameEngine/AGameEntity.cpp \
 			gameEngine/Loader.cpp \
 			gameEngine/CollisionsManager.cpp \
+			gameEngine/BombManager.cpp \
+			gameEngine/entities/Bomb.cpp\
 			gameEngine/entities/DestructibleBloc.cpp\
 			gameEngine/entities/IndestructibleBloc.cpp\
 			gameEngine/entities/Player.cpp\
 			renderEngine/RenderEngine.cpp \
+			renderEngine/NuklearGUI.cpp \
 			renderEngine/model/Model.cpp \
 			renderEngine/model/Mesh.cpp \
 			renderEngine/model/Joint.cpp \

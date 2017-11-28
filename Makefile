@@ -16,6 +16,7 @@ SRC_NAME =	\
 			gameEngine/entities/IndestructibleBloc.cpp\
 			gameEngine/entities/Player.cpp\
 			renderEngine/RenderEngine.cpp \
+			renderEngine/NuklearGUI.cpp \
 			renderEngine/model/Model.cpp \
 			renderEngine/model/Mesh.cpp \
 			renderEngine/model/Joint.cpp \

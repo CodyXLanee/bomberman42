@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 19:43:40 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 14:51:15 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RenderEngine.hpp"
 #include <glm/ext.hpp>
 
-RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera) {
+RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera), gui(win) {
 	shader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
 						"src/renderEngine/shaders/simple_diffuse.glfs");
 	textureShader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
@@ -38,8 +38,11 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & en
 	for (std::vector<IGameEntity const *>::const_iterator i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::PLAYER)
 			renderPlayer(*i);
-	}
-	SDL_GL_SwapWindow(win);
+	}	
+}
+
+void	RenderEngine::renderGUI(std::vector<Action::Enum> const & actions) {
+	gui.render(actions, camera);
 }
 
 void	RenderEngine::renderMap(Map const & map) const {
@@ -136,3 +139,5 @@ void	RenderEngine::setCamera(glm::mat4 const & cameraMatrix) {
     shader->setCamera(cameraMatrix);
     shader->setView();
 }
+
+struct nk_context *	RenderEngine::getGUIContext() const { return gui.getContext(); }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 19:44:06 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 14:50:15 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "Shader.hpp"
 # include "Model.hpp"
 # include "Camera.hpp"
+# include "NuklearGUI.hpp"
 # include "Map.hpp"
 # include <vector>
 
@@ -32,6 +33,8 @@ class RenderEngine {
 		~RenderEngine();
 		
 		void	render(Map const & map, std::vector<IGameEntity *> const & entities);
+		void	renderGUI(std::vector<Action::Enum> const &);
+		struct nk_context *	getGUIContext() const;
 		
 	private:
 		
@@ -45,6 +48,8 @@ class RenderEngine {
 		Model		*wallModel;
 		Model		*brickModel;
 		Camera  	&camera;
+		NuklearGUI	gui;
+		
 
 		void	renderMap(Map const & map) const;
 		void	renderWall(const std::vector<IndestructibleBloc>	&) const;

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 14:41:01 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/28 14:55:30 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,15 @@ int main() {
 	std::vector<Action::Enum> actions;
 
 	while(actions.size() == 0 || actions[0] != Action::ESCAPE) {
-		window.eventManager(actions);
+		window.eventManager(actions, renderer.getGUIContext());
 
 		game.compute(actions);
 		
 		camera.update(actions, window.getMouseX(), window.getMouseY());
 		renderer.render(game.getMap(), game.getEntityList());
+		renderer.renderGUI(actions);
+		window.initGL();
+		SDL_GL_SwapWindow(window.getWin());
 	}
 	
 	return 0;

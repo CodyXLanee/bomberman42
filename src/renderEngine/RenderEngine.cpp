@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 17:12:59 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 17:22:30 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & en
 			renderPlayer(*i);
 	}
 	renderBombs(entities);
-	SDL_GL_SwapWindow(win);	
 }
 
 void	RenderEngine::renderGUI(std::vector<Action::Enum> const & actions) {

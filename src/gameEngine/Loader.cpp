@@ -74,6 +74,7 @@ int					Loader::load()
 	std::copy(json.begin(), json.end(), writable);
 	writable[json.size()] = '\0';
     this->_document.Parse(writable);
+    delete writable;
     if (!this->_document.IsObject())
     	return -1;
 

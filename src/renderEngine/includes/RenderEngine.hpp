@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 15:48:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/28 19:01:42 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class RenderEngine {
 		RenderEngine(SDL_Window	*win, Camera &);
 		~RenderEngine();
 		
-		void	render(Map const & map, std::vector<IGameEntity *> const & entities);
+		void	render(Map const & map, std::vector<IGameEntity *> & entities);
 		void	renderGUI(std::vector<Action::Enum> &);
 		struct nk_context *	getGUIContext() const;
 		
@@ -47,6 +47,7 @@ class RenderEngine {
 		Model		*groundModel;
 		Model		*wallModel;
 		Model		*brickModel;
+		Model		*bombModel;
 		Camera  	&camera;
 		NuklearGUI	gui;
 		
@@ -54,7 +55,8 @@ class RenderEngine {
 		void	renderMap(Map const & map) const;
 		void	renderWall(const std::vector<IndestructibleBloc>	&) const;
 		void	renderBrick(const std::vector<DestructibleBloc>	&) const;
-		void	renderPlayer(IGameEntity const *) const;
+		void	renderPlayer(IGameEntity *) const;
+		void	renderBombs(std::vector<IGameEntity *> const &);
 		void	renderGround() const;
 		void	setCamera(glm::mat4 const &);
 };

@@ -1,27 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Player.cpp                                         :+:      :+:    :+:   */
+/*   BombManager.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/27 16:37:39 by egaborea         ###   ########.fr       */
+/*   Created: 2017/11/28 13:20:33 by egaborea          #+#    #+#             */
+/*   Updated: 2017/11/28 15:30:31 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Player.hpp"
+#ifndef BOMBMANAGER_HPP
+# define BOMBMANAGER_HPP
 
-Player::Player(const glm::vec2 & pos) : 
-AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::PLAYER), _graphicalDirection(glm::vec2(0,0)){
-}
+# include "IGameEntity.hpp"
+# include "bomberman.hpp"
+# include "Bomb.hpp"
+# include <vector>
+# include <iostream>
 
-glm::vec2	Player::getGraphicalDirection() const
-{
-	return _graphicalDirection;
-}
+class BombManager {
+	
+	public:
+		BombManager();
+		~BombManager();
 
-void		Player::setGraphicalDirection(glm::vec2 dir)
-{
-	_graphicalDirection = dir;
-}
+		void			update(std::vector<IGameEntity *> &entityList, std::vector<Action::Enum> const actions);
+	private:
+		bool	_spawned_bomb;
+};
+
+#endif

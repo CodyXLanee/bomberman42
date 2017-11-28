@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 03:47:40 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 13:56:07 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"
 # include "CollisionsManager.hpp"
+# include "BombManager.hpp"
 # include "Map.hpp"
 # include "Loader.hpp"
 # include <glm/glm.hpp>
@@ -30,13 +31,14 @@ class GameEngine {
 		
 		void								compute(std::vector<Action::Enum> actions);
 		Map const &							getMap() const;
-		const std::vector<IGameEntity *>		getEntityList() const; // No need to mark IGameEntities as const
+		std::vector<IGameEntity *> &		getEntityList(); // No need to mark IGameEntities as const
 
 	private:
 		Map * 						_map;
 		Loader						_loader;
 		std::vector<IGameEntity *>	_entityList;
 		CollisionsManager			_collisionsManager;
+		BombManager					_bombManager;
 
 };
 

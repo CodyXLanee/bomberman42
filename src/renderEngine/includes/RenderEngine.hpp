@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 14:50:15 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/28 15:48:26 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class RenderEngine {
 		~RenderEngine();
 		
 		void	render(Map const & map, std::vector<IGameEntity *> const & entities);
-		void	renderGUI(std::vector<Action::Enum> const &);
+		void	renderGUI(std::vector<Action::Enum> &);
 		struct nk_context *	getGUIContext() const;
 		
 	private:

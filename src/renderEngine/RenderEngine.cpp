@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 14:51:15 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/28 15:49:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & en
 	}	
 }
 
-void	RenderEngine::renderGUI(std::vector<Action::Enum> const & actions) {
+void	RenderEngine::renderGUI(std::vector<Action::Enum> & actions) {
 	gui.render(actions, camera);
 }
 

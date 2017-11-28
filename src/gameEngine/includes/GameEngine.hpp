@@ -13,7 +13,7 @@
 #ifndef GAMEENGINE_HPP
 # define GAMEENGINE_HPP
 
-# define RPLAYER 0.25	// 0.1 <= x <= 0.4
+# define RPLAYER 0.5	// 0.1 <= x <= 0.5
 
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"
@@ -42,6 +42,7 @@ class GameEngine {
 		std::vector<IGameEntity *>	_entityList;
 
 		void		collisionsManageV1(std::vector<Action::Enum> actions);
+		void		collisionsManageV2(std::vector<Action::Enum> actions);
 };
 
 #endif

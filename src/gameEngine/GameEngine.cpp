@@ -62,7 +62,7 @@ GameEngine::GameEngine() : _map(new Map()) {
 GameEngine::~GameEngine() {}
 
 void	GameEngine::compute(std::vector<Action::Enum> actions) {
-	collisionsManageV1(actions);
+	collisionsManageV2(actions);
 }
 
 glm::vec2	GameEngine::compute_direction(std::vector<Action::Enum> actions) {
@@ -100,6 +100,174 @@ Map const &		GameEngine::getMap() const {
 
 const std::vector<IGameEntity * >	GameEngine::getEntityList() const {
 	return this->_entityList;
+}
+
+void			GameEngine::collisionsManageV2(std::vector<Action::Enum> actions)
+{
+	for (std::vector<IGameEntity *>::iterator i = _entityList.begin(); i != _entityList.end(); i++) {
+		switch((*i)->getType()){
+			case Type::PLAYER:
+				compute_player(*i, actions);
+				if ((*i)->getState() == State::MOVING){
+					glm::vec2	posToCheck = (*i)->getPosition() + ((*i)->getDirection() * (*i)->getSpeed());
+					glm::vec2	newPos = (*i)->getPosition() + ((*i)->getDirection() * (*i)->getSpeed());
+					int			isBloced = false;
+					
+					// border map
+					if (posToCheck.x < 0)
+						newPos.x = 0;
+					if (posToCheck.x > (_map->getSize().x - 1))
+						newPos.x = _map->getSize().x - 1;
+					if (posToCheck.y < 0)
+						newPos.y = 0;
+					if (posToCheck.y > (_map->getSize().y - 1))
+						newPos.y = _map->getSize().y - 1;
+					
+					// bloc realy front of
+					if ((*i)->getDirection().x > 0)
+					{
+						if (_map->haveBloc(glm::vec2(round(posToCheck.x + RPLAYER), round(posToCheck.y))))
+						{
+							isBloced = true;
+							newPos.x = round(posToCheck.x + RPLAYER) - RPLAYER - 0.5;
+						}
+					}
+					if ((*i)->getDirection().x < 0)
+					{
+						if (_map->haveBloc(glm::vec2(round(posToCheck.x - RPLAYER), round(posToCheck.y))))
+						{
+							isBloced = true;
+							newPos.x = round(posToCheck.x - RPLAYER) + RPLAYER + 0.5;
+						}
+					}
+					if ((*i)->getDirection().y > 0)
+					{
+						if (_map->haveBloc(glm::vec2(round(posToCheck.x), round(posToCheck.y + RPLAYER))))
+						{
+							isBloced = true;
+							newPos.y = round(posToCheck.y + RPLAYER) - RPLAYER - 0.5;
+						}
+					}
+					if ((*i)->getDirection().y < 0)
+					{
+						if (_map->haveBloc(glm::vec2(round(posToCheck.x), round(posToCheck.y - RPLAYER))))
+						{
+							isBloced = true;
+							newPos.y = round(posToCheck.y - RPLAYER) + RPLAYER + 0.5;
+						}
+					}
+
+					// gestion border
+					if (!isBloced && (*i)->getDirection().x > 0)
+					{
+						if (_map->haveBloc(glm::vec2(round(posToCheck.x + RPLAYER), ceil(posToCheck.y))))
+						{
+							glm::vec2	angle = glm::vec2(round(posToCheck.x + RPLAYER), ceil(posToCheck.y));
+							angle.x -= 0.5;
+							angle.y -= 0.5;
+							while (distance(newPos, angle) < RPLAYER)
+							{
+								newPos.x -= 0.01;
+								newPos.y -= 0.01;
+							}
+						}
+						if (_map->haveBloc(glm::vec2(round(posToCheck.x + RPLAYER), floor(posToCheck.y))))
+						{
+							glm::vec2	angle = glm::vec2(round(posToCheck.x + RPLAYER), floor(posToCheck.y));
+							angle.x -= 0.5;
+							angle.y += 0.5;
+							while (distance(newPos, angle) < RPLAYER)
+							{
+								newPos.x -= 0.01;
+								newPos.y += 0.01;
+							}
+						}
+					}
+					if (!isBloced && (*i)->getDirection().x < 0)
+					{
+						if (_map->haveBloc(glm::vec2(round(posToCheck.x - RPLAYER), ceil(posToCheck.y))))
+						{
+							glm::vec2	angle = glm::vec2(round(posToCheck.x - RPLAYER), ceil(posToCheck.y));
+							angle.x += 0.5;
+							angle.y -= 0.5;
+							while (distance(newPos, angle) < RPLAYER)
+							{
+								newPos.x += 0.01;
+								newPos.y -= 0.01;
+							}
+						}
+						if (_map->haveBloc(glm::vec2(round(posToCheck.x - RPLAYER), floor(posToCheck.y))))
+						{
+							glm::vec2	angle = glm::vec2(round(posToCheck.x - RPLAYER), floor(posToCheck.y));
+							angle.x += 0.5;
+							angle.y += 0.5;
+							while (distance(newPos, angle) < RPLAYER)
+							{
+								newPos.x += 0.01;
+								newPos.y += 0.01;
+							}
+						}
+					}
+					if (!isBloced && (*i)->getDirection().y > 0)
+					{
+						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x), round(posToCheck.y + RPLAYER))))
+						{
+							glm::vec2	angle = glm::vec2(ceil(posToCheck.x), round(posToCheck.y + RPLAYER));
+							angle.x -= 0.5;
+							angle.y -= 0.5;
+							while (distance(newPos, angle) < RPLAYER)
+							{
+								newPos.x -= 0.01;
+								newPos.y -= 0.01;
+							}
+						}
+						if (_map->haveBloc(glm::vec2(floor(posToCheck.x), round(posToCheck.y + RPLAYER))))
+						{
+							glm::vec2	angle = glm::vec2(floor(posToCheck.x), round(posToCheck.y + RPLAYER));
+							angle.x += 0.5;
+							angle.y -= 0.5;
+							while (distance(newPos, angle) < RPLAYER)
+							{
+								newPos.x += 0.01;
+								newPos.y -= 0.01;
+							}
+						}
+					}
+					if (!isBloced && (*i)->getDirection().y < 0)
+					{
+						if (_map->haveBloc(glm::vec2(ceil(posToCheck.x), round(posToCheck.y - RPLAYER))))
+						{
+							glm::vec2	angle = glm::vec2(ceil(posToCheck.x), round(posToCheck.y - RPLAYER));
+							angle.x -= 0.5;
+							angle.y += 0.5;
+							while (distance(newPos, angle) < RPLAYER)
+							{
+								newPos.x -= 0.01;
+								newPos.y += 0.01;
+							}
+						}
+						if (_map->haveBloc(glm::vec2(floor(posToCheck.x), round(posToCheck.y - RPLAYER))))
+						{
+							glm::vec2	angle = glm::vec2(floor(posToCheck.x), round(posToCheck.y - RPLAYER));
+							angle.x += 0.5;
+							angle.y += 0.5;
+							while (distance(newPos, angle) < RPLAYER)
+							{
+								newPos.x += 0.01;
+								newPos.y += 0.01;
+							}
+						}
+					}
+
+					// set the new position
+					(*i)->setPosition(newPos);
+				}
+				break;
+			default:
+				(void)actions;
+				break;
+		}
+	}
 }
 
 void			GameEngine::collisionsManageV1(std::vector<Action::Enum> actions)

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 19:43:40 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 15:12:54 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	wallModel = new Model("assets/models/obj/wall.obj", false);
 	playerModel = new Model("assets/models/obj/player.obj", false);
 	brickModel = new Model("assets/models/obj/brick.obj", false);
+	bombModel = new Model("assets/models/obj/bomb.obj", false);
 
 }
 
@@ -39,6 +40,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> const & en
 		if ((*i)->getType() == Type::PLAYER)
 			renderPlayer(*i);
 	}
+	renderBombs(entities);
 	SDL_GL_SwapWindow(win);
 }
 
@@ -129,6 +131,23 @@ void	RenderEngine::renderBrick(const std::vector<DestructibleBloc> &blocs) const
     textureShader->setView();
     brickModel->setInstanceBuffer(data);  
     brickModel->draw(textureShader, data.size());
+}
+
+void	RenderEngine::renderBombs(std::vector<IGameEntity *> const & entities){
+	std::vector<glm::mat4> data;
+	for (std::vector<IGameEntity *>::const_iterator i = entities.begin(); i != entities.end(); i++ ){
+		if ((*i)->getType() == Type::BOMB){
+			glm::mat4 transform = glm::mat4();
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition(), 0.f)));
+			data.push_back(transform);
+		}
+	}
+	textureShader->use();
+	// glm::vec3 camPos = camera.getPosition();
+	// textureShader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+    // textureShader->setView();
+    bombModel->setInstanceBuffer(data);  
+    bombModel->draw(textureShader, data.size());
 }
 
 void	RenderEngine::setCamera(glm::mat4 const & cameraMatrix) {

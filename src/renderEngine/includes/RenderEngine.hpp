@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 19:44:06 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 11:51:49 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,14 @@ class RenderEngine {
 		Model		*groundModel;
 		Model		*wallModel;
 		Model		*brickModel;
+		Model		*bombModel;
 		Camera  	&camera;
 
 		void	renderMap(Map const & map) const;
 		void	renderWall(const std::vector<IndestructibleBloc>	&) const;
 		void	renderBrick(const std::vector<DestructibleBloc>	&) const;
 		void	renderPlayer(IGameEntity const *) const;
+		void	renderBombs(std::vector<IGameEntity *> const &);
 		void	renderGround() const;
 		void	setCamera(glm::mat4 const &);
 };

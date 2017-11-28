@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bomberman.hpp                                      :+:      :+:    :+:   */
+/*   Bomb.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 12:01:33 by egaborea         ###   ########.fr       */
+/*   Created: 2017/11/28 10:27:23 by egaborea          #+#    #+#             */
+/*   Updated: 2017/11/28 15:02:19 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BOMBERMAN_HPP
-# define BOMBERMAN_HPP
+#ifndef BOMB_HPP
+# define BOMB_HPP
 
-# define WINDOW_WIDTH 1920.f
-# define WINDOW_HEIGHT 1080.f
-# define FOV 60.f
-# define Z_NEAR 0.1f
-# define Z_FAR 4000.f
+#include "AGameEntity.hpp"
+#include <chrono>
 
-
-namespace Action {
-	enum Enum	{ NONE, LEFT, RIGHT, UP, DOWN, SPAWN_BOMB,DEBUG, ESCAPE, CAMERA_LEFT, CAMERA_RIGHT, CAMERA_UP, CAMERA_DOWN, DEBUG_MODE, RESET_CAMERA };
-}
+class Bomb : public AGameEntity {
+public:
+    Bomb(const glm::vec2 & pos);
+    ~Bomb();
+    virtual void    update(void);
+private:
+    std::chrono::milliseconds                               ms_before_explode;
+    std::chrono::time_point<std::chrono::steady_clock>      creation_time;
+};
 
 #endif

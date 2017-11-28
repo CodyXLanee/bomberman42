@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 12:29:15 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/28 15:29:33 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 actions.clear();
             return actions.push_back(Action::ESCAPE);
         }
-    
+        
         if (events.type == SDL_KEYDOWN) {
             Action::Enum a;
             switch(events.key.keysym.sym) {
@@ -80,6 +80,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
                 case SDLK_TAB:      a = Action::DEBUG_MODE; break;
                 case SDLK_RETURN:   a = Action::RESET_CAMERA; break;
+                case SDLK_SPACE:    a = Action::SPAWN_BOMB; break;
             }
 			if (find(actions.begin(), actions.end(), a) == actions.end())
                 actions.push_back(a);
@@ -97,7 +98,8 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 case SDLK_RIGHT:    a = Action::CAMERA_RIGHT; break;
                 case SDLK_UP:       a = Action::CAMERA_UP; break;
                 case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
-                case SDLK_RETURN:   a = Action::RESET_CAMERA; break;      
+                case SDLK_RETURN:   a = Action::RESET_CAMERA; break;
+                case SDLK_SPACE:    a = Action::SPAWN_BOMB; break;
             }
 			actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         }

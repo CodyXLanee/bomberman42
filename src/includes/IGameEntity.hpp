@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:47:02 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 16:07:14 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/28 14:11:06 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ class IGameEntity {
 		virtual void    	setDirection(const glm::vec2 &) = 0;
 		virtual void    	setState(const State::Enum &) = 0;
 		virtual void    	setSpeed(const float &) = 0;
+
+		virtual void		update(void) = 0;
 };
 
 #endif

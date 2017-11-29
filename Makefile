@@ -14,6 +14,7 @@ SRC_NAME =	\
 			gameEngine/CollisionsManager.cpp \
 			gameEngine/BombManager.cpp \
 			gameEngine/entities/Bomb.cpp\
+			gameEngine/entities/Flame.cpp\
 			gameEngine/entities/DestructibleBloc.cpp\
 			gameEngine/entities/IndestructibleBloc.cpp\
 			gameEngine/entities/Player.cpp\

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:47:02 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 14:11:06 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/29 12:42:31 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ namespace State{
 }
 
 namespace Type{
-	enum Enum { PLAYER, BOMB, DESTRUCTIBLE_BLOC, INDESTRUCTIBLE_BLOC};
+	enum Enum { PLAYER, BOMB, FLAME, DESTRUCTIBLE_BLOC, INDESTRUCTIBLE_BLOC};
 }
 
 class IGameEntity {

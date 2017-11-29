@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 14:48:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/29 11:44:44 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,30 @@ class RenderEngine {
 		SDL_Window	*win;
 		Shader		*shader;
 		Shader		*textureShader;
+		Shader		*shadowShader;
+		Shader		*debugDepthQuad;
 		
 		Model		*playerModel;
 		Model		*groundModel;
 		Model		*wallModel;
 		Model		*brickModel;
 		Camera  	&camera;
+		unsigned int depthMapFBO;
+		unsigned int depthMap;
+		unsigned int quadVAO;
+		unsigned int quadVBO;
 
-		void	renderMap() const;
-		void	renderWall() const;
-		void	renderBrick() const;
+		void	getShadowMap();
+		void	renderScene(Shader *shader) const;
+		void	renderWall(Shader *shader) const;
+		void	renderBrick(Shader *shader) const;
+		void	renderGround(Shader *shader) const;
 		void	renderPlayer(IGameEntity const *) const;
-		void	renderGround() const;
 		void	setCamera(glm::mat4 const &);
+
+		void	createShadowBuffer();
+
+		void	renderShadowMap();
 };
 
 #endif

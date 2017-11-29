@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:35 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/29 14:39:09 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/29 15:09:55 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <iostream>
 
 Bomb::Bomb(const glm::vec2 & pos) : 
-AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), flameNb(1){
+AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), flameNb(4){
     creation_time = std::chrono::steady_clock::now();
     ms_before_explode = std::chrono::milliseconds(2000);
 }

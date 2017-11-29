@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/29 14:41:32 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/29 15:04:25 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,9 @@ void    BombManager::update(Map &map, std::vector<IGameEntity *> & entityList, s
                 break;
         }
     }
+    if (new_flames->size() > 0)
+        entityList.insert(entityList.end(), new_flames->begin(), new_flames->end());
+    delete new_flames;
     // Cancels Bomb spawning if a bomb is already here
     for (auto i = entityList.begin(); i != entityList.end(); i++){
         if (new_bomb && (*i)->getType() && (*i)->getPosition() == new_bomb->getPosition()){

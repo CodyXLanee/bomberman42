@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 16:16:37 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/29 16:36:00 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,9 @@ void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const
 		if ((*i)->getType() != Type::PLAYER)
 			continue;
 		glm::mat4 transform = glm::mat4();
-		transform = glm::translate(transform, glm::vec3((*i)->getPosition(), 0.f));
-		transform = glm::scale(transform, glm::vec3(.4f, .4f, .4f));
-		transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
+		transform = glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
+		// transform = glm::scale(transform, glm::vec3(.4f, .4f, .4f));
+		// transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
 
 		glm::vec2	graphicalDir = dynamic_cast<Player*>(*i)->getGraphicalDirection();
 		if (graphicalDir.x < (*i)->getDirection().x)
@@ -106,7 +106,7 @@ void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const
 		dynamic_cast<Player*>(*i)->setGraphicalDirection(graphicalDir);
 
 		int sign = (graphicalDir.x < 0) ? -1 : 1;
-		transform = glm::rotate(transform, sign * angle(glm::vec2(0.f, -1.f), graphicalDir), glm::vec3(0.f, 1.f, 0.f));
+		transform = glm::rotate(transform, sign * angle(glm::vec2(0.f, -1.f), graphicalDir), glm::vec3(0.f, 0.f, 1.f));
 
 		data.push_back(transform);
 	}
@@ -193,7 +193,7 @@ void	RenderEngine::renderBombs(Shader *shader, std::vector<IGameEntity *> const 
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::BOMB){
 			glm::mat4 transform = glm::mat4();
-			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() - glm::vec2(0,1), 0.5f)));
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition(), 0.f)));
 			data.push_back(transform);
 		}
 	}
@@ -210,7 +210,7 @@ void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
-			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition(), 0.5f)));
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition(), 0.f)));
 			data.push_back(transform);
 		}
 	}

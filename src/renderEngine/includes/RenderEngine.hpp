@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 14:16:30 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/29 15:18:04 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class RenderEngine {
 		Model		*wallModel;
 		Model		*brickModel;
 		Model		*bombModel;
+		Model		*flameModel;
 		Camera  	&camera;
 		NuklearGUI	gui;
 
@@ -65,6 +66,7 @@ class RenderEngine {
 		void	renderGround(Shader *shader) const;
 		void	renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const;
+		void	renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	setCamera(glm::mat4 const &);
 
 		void	createShadowBuffer();

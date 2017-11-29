@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 14:53:28 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/29 15:42:37 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	renderScene(textureShader, map, entities);
-	renderFlames(textureShader, entities)
+	renderFlames(textureShader, entities);
 	// renderShadowMap();
 
 	// renderScene(map);
@@ -125,7 +125,7 @@ void	RenderEngine::renderGround(Shader *shader) const {
 	for(float j = 0; j < 10 ; j++) {
 		for(float i = 0; i < 10 ; i++) {
 			glm::mat4 transform = glm::mat4();
-			transform = glm::translate(transform, glm::vec3(i, j, -1.f));
+			transform = glm::translate(transform, glm::vec3(i, j, -.1f));
 			// transform = glm::rotate(transform, glm::radians(180.f), glm::vec3(0.f, 1.f, 0.f));
 			data.push_back(transform);
 		}
@@ -191,7 +191,7 @@ void	RenderEngine::renderBombs(Shader *shader, std::vector<IGameEntity *> const 
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::BOMB){
 			glm::mat4 transform = glm::mat4();
-			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() - glm::vec2(0,1), 1.f)));
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() - glm::vec2(0,1), 0.5f)));
 			data.push_back(transform);
 		}
 	}
@@ -208,7 +208,7 @@ void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
-			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition(), 1.f)));
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition(), 0.5f)));
 			data.push_back(transform);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 15:18:04 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/29 16:13:28 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ class RenderEngine {
 
 		void	getShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
 		void	renderScene(Shader *shader, Map const & map, std::vector<IGameEntity *> &entities) const;
-		void	renderWall(Shader *shader, const std::vector<IndestructibleBloc> &b) const;
-		void	renderBrick(Shader *shader, const std::vector<DestructibleBloc> &blocs) const;
-		void	renderGround(Shader *shader) const;
+		void	renderWall(Shader *shader, const std::vector<IndestructibleBloc> &b, Map const & map) const;
+		void	renderBrick(Shader *shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const;
+		void	renderGround(Shader *shader, Map const & map) const;
 		void	renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const;

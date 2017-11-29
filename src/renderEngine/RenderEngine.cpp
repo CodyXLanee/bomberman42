@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 15:42:37 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/29 16:16:37 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,9 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 
 void	RenderEngine::renderScene(Shader *shader, Map const & map, std::vector<IGameEntity *> &entities) const {
 	shader->use();
-	renderGround(shader);
-	renderWall(shader, map.getIndestructibleBlocs());
-	renderBrick(shader, map.getDestructibleBlocs());
+	renderGround(shader, map);
+	renderWall(shader, map.getIndestructibleBlocs(), map);
+	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
 }
@@ -119,11 +119,11 @@ void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const
     playerModel->draw(shader, 2);
 }
 
-void	RenderEngine::renderGround(Shader *shader) const {
+void	RenderEngine::renderGround(Shader *shader, Map const & map) const {
     std::vector<glm::mat4> data;
 	
-	for(float j = 0; j < 10 ; j++) {
-		for(float i = 0; i < 10 ; i++) {
+	for(float j = 0; j < map.getSize().y ; j++) {
+		for(float i = 0; i < map.getSize().x ; i++) {
 			glm::mat4 transform = glm::mat4();
 			transform = glm::translate(transform, glm::vec3(i, j, -.1f));
 			// transform = glm::rotate(transform, glm::radians(180.f), glm::vec3(0.f, 1.f, 0.f));
@@ -138,7 +138,7 @@ void	RenderEngine::renderGround(Shader *shader) const {
     groundModel->draw(shader, data.size());
 }
 
-void	RenderEngine::renderWall(Shader *shader, const std::vector<IndestructibleBloc> &b) const {
+void	RenderEngine::renderWall(Shader *shader, const std::vector<IndestructibleBloc> &b, Map const & map) const {
     std::vector<glm::mat4> data;
 	
 	for (auto i = b.begin(); i != b.end(); i++){
@@ -147,18 +147,19 @@ void	RenderEngine::renderWall(Shader *shader, const std::vector<IndestructibleBl
 		data.push_back(transform);
 	}
 
-	for(float i = -2; i < 11 ; i++) {
+	for(float i = -1; i < map.getSize().y + 1 ; i++) {
 			glm::mat4 transform = glm::mat4();
 			transform = glm::translate(transform, glm::vec3(-1, i, 0.f));
 			data.push_back(transform);
-			transform = glm::translate(transform, glm::vec3(11, 0.f, 0.f));
+			transform = glm::translate(transform, glm::vec3(map.getSize().y + 1, 0.f, 0.f));
 			data.push_back(transform);
 	}
-	for(float i = 0; i < 10 ; i++) {
+	
+	for(float i = 0; i < map.getSize().y ; i++) {
 			glm::mat4 transform = glm::mat4();
-			transform = glm::translate(transform, glm::vec3(i, -2, 0.f));
+			transform = glm::translate(transform, glm::vec3(i, -1.f, 0.f));
 			data.push_back(transform);
-			transform = glm::translate(transform, glm::vec3(0.f, 12.f, 0.f));
+			transform = glm::translate(transform, glm::vec3(0.f, map.getSize().x + 1, 0.f));
 			data.push_back(transform);
 	}
 
@@ -169,7 +170,8 @@ void	RenderEngine::renderWall(Shader *shader, const std::vector<IndestructibleBl
     wallModel->draw(shader, data.size());
 }
 
-void	RenderEngine::renderBrick(Shader *shader, const std::vector<DestructibleBloc> &blocs) const {
+void	RenderEngine::renderBrick(Shader *shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const {
+	(void)map;
     std::vector<glm::mat4> data;
 
 	glm::mat4 transform;

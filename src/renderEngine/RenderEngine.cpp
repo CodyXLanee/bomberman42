@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 14:17:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/29 14:53:28 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	playerModel = new Model("assets/models/obj/player.obj", false);
 	brickModel = new Model("assets/models/obj/brick.obj", false);
 	bombModel = new Model("assets/models/obj/bomb.obj", false);
+	flameModel = new Model("assets/models/obj/fire.obj", false);
 
 	textureShader->use();
 	textureShader->setInt("texture_diffuse", 0);
@@ -56,6 +57,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	renderScene(textureShader, map, entities);
+	renderFlames(textureShader, entities)
 	// renderShadowMap();
 
 	// renderScene(map);
@@ -199,6 +201,23 @@ void	RenderEngine::renderBombs(Shader *shader, std::vector<IGameEntity *> const 
     shader->setView();
     bombModel->setInstanceBuffer(data);  
     bombModel->draw(shader, data.size());
+}
+
+void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const {
+	std::vector<glm::mat4> data;
+	for (auto i = entities.begin(); i != entities.end(); i++ ){
+		if ((*i)->getType() == Type::FLAME){
+			glm::mat4 transform = glm::mat4();
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition(), 1.f)));
+			data.push_back(transform);
+		}
+	}
+	shader->use();
+	glm::vec3 camPos = camera.getPosition();
+	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+    shader->setView();
+    flameModel->setInstanceBuffer(data);  
+    flameModel->draw(shader, data.size());
 }
 
 void	RenderEngine::setCamera(glm::mat4 const & cameraMatrix) {

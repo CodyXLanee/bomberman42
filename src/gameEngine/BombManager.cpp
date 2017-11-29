@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/29 17:44:21 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/29 21:29:12 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void    BombManager::update(Map &map, std::vector<IGameEntity *> & entityList, s
 
 
     // Bomb explosion make bomb explode
+    
     size_t  flame_count = 0;
     std::vector<IGameEntity *>  *sec_new_flames;
     

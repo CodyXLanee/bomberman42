@@ -6,11 +6,12 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 17:05:57 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 13:47:14 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/29 21:42:50 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Map.hpp"
+#include "glm/ext.hpp"
 
 Map::Map() {}
 
@@ -81,7 +82,11 @@ void						Map::addIndestructibleBlocs(IndestructibleBloc bloc)
 	this->_indestructibleBlocs.push_back(bloc);
 }
 
-bool						Map::hasBloc(glm::vec2 pos) const
+bool						Map::isInMap(glm::vec2 const &pos) const {
+	return (pos.x >= 0. && pos.y >= 0. && pos.x < _size.x && pos.y < _size.y);
+}
+
+bool						Map::hasBloc(glm::vec2 const &pos) const
 {
 	for (unsigned long i = 0 ; i < this->_destructibleBlocs.size() ; i++)
 		if (this->_destructibleBlocs[i].getPosition() == pos)
@@ -89,7 +94,7 @@ bool						Map::hasBloc(glm::vec2 pos) const
 	for (unsigned long i = 0 ; i < this->_indestructibleBlocs.size() ; i++)
 		if (this->_indestructibleBlocs[i].getPosition() == pos)
 			return true;
-	return false;
+	return !isInMap(pos);
 }
 
 std::map<Type::Enum, std::string>	Map::getModels() const

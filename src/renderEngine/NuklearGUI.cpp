@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/28 18:52:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/29 22:36:08 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,10 @@ void    NuklearGUI::renderMenu(std::vector<Action::Enum> & actions) {
 
 void    NuklearGUI::renderDebug(Camera & camera) {
     glm::vec3   camPos = camera.getPosition();
+    glm::vec3   camFront = camera.getFront();
     std::string camPosString = "Camera position: " + std::to_string(camPos.x) + " : " + std::to_string(camPos.y) + " : " + std::to_string(camPos.z);
+    std::string camFrontString = "Camera front: " + std::to_string(camFront.x) + " : " + std::to_string(camFront.y) + " : " + std::to_string(camFront.z);
+
 
      if (nk_begin(ctx, "DEBUG MODE", nk_rect(50, 50, 400, 100),
         NK_WINDOW_BORDER|NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
@@ -154,6 +157,12 @@ void    NuklearGUI::renderDebug(Camera & camera) {
         {
             nk_layout_row_push(ctx, 350);
             nk_label(ctx, camPosString.c_str(), NK_TEXT_LEFT);
+        }
+        nk_layout_row_end(ctx);
+        nk_layout_row_begin(ctx, NK_STATIC, 30, 1);
+        {
+            nk_layout_row_push(ctx, 350);
+            nk_label(ctx, camFrontString.c_str(), NK_TEXT_LEFT);
         }
         nk_layout_row_end(ctx);
     }

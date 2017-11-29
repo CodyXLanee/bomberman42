@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 14:37:31 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/29 22:05:42 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,14 @@ Map const &		GameEngine::getMap() const {
 
 std::vector<IGameEntity * > &	GameEngine::getEntityList() {
 	return this->_entityList;
+}
+
+
+glm::vec2 const 				* GameEngine::getPlayerPos(void) const{
+	for (auto i = _entityList.begin(); i != _entityList.end(); i++){
+		if ((*i)->getType() == Type::PLAYER){
+			return new glm::vec2((*i)->getPosition());
+		}
+	}
+	return new glm::vec2(0., 0.);
 }

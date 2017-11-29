@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:27:21 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 14:35:46 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/29 22:42:37 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Camera.hpp"
+
+#define RELATIVE_CAM_POS glm::vec3(-3.f, -10.f, 12.f))
+#define FRONT_FOLLOW_PLAYER glm::vec3(0.30f, 0.50f, -0.80f)
 
 Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
     position(position), front(glm::normalize(position - lookAt)), up(0.f, 0.f, 1.f),
@@ -37,10 +40,19 @@ void    Camera::reset() {
     updateRotation(0, 0);
 }
 
-void    Camera::update(std::vector<Action::Enum> const & actions, int const mouseOffsetX, int const mouseOffsetY) {
+void    Camera::followPlayer(glm::vec2 const * playerPos){
+    position += ((glm::vec3(*playerPos, 0.) + RELATIVE_CAM_POS - position) / 10.f;
+    front = glm::normalize(FRONT_FOLLOW_PLAYER);
+}
+
+void    Camera::update(std::vector<Action::Enum> const & actions, int const mouseOffsetX, int const mouseOffsetY, glm::vec2 const *playerPos) {
     if (find(actions.begin(), actions.end(), Action::DEBUG_MODE) != actions.end()) {
         updatePosition(actions);
         updateRotation(mouseOffsetX, mouseOffsetY);
+        setup();
+    }
+    else if (find(actions.begin(), actions.end(), Action::FOLLOW_PLAYER) != actions.end()) {
+        followPlayer(playerPos);
         setup();
     }
 }
@@ -85,4 +97,8 @@ glm::mat4   Camera::getMatrix() const {
 
 glm::vec3   Camera::getPosition() const {
 	return position;
+}
+
+glm::vec3   Camera::getFront() const {
+	return front;
 }

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 15:33:07 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/29 11:23:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ void	Mesh::draw(Shader *shader, bool animated, unsigned int instanceCount) {
 	unsigned int diffuseNbr = 1;
 	unsigned int specularNbr = 1;
 	for(unsigned int i = 0; i < textures.size(); i++) {
-		glActiveTexture(GL_TEXTURE0 + i);
+		glActiveTexture(GL_TEXTURE0);
 		std::string name = this->textures[i].type;
 		std::string nbr = (name == "texture_diffuse") ? std::to_string(diffuseNbr++) : std::to_string(specularNbr++);
 		glUniform1i(glGetUniformLocation(shader->getProgramID(), ("material." + name + nbr).c_str()), i);

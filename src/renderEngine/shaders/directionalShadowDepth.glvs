@@ -1,0 +1,11 @@
+#version 400
+layout (location = 0) in vec3 position;
+layout (location = 5) in mat4 offsets;
+
+uniform mat4 lightSpaceMatrix;
+// uniform mat4 model;
+
+void main()
+{
+    gl_Position = lightSpaceMatrix * offsets * vec4(position, 1.0);
+}

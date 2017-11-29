@@ -1,43 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Bomb.cpp                                           :+:      :+:    :+:   */
+/*   Flame.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/28 10:27:35 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/29 14:39:09 by egaborea         ###   ########.fr       */
+/*   Created: 2017/11/29 12:24:42 by egaborea          #+#    #+#             */
+/*   Updated: 2017/11/29 12:39:15 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Bomb.hpp"
-#include <iostream>
+#include "Flame.hpp"
 
-Bomb::Bomb(const glm::vec2 & pos) : 
-AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), flameNb(1){
+Flame::Flame(const glm::vec2 & pos) : 
+AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::FLAME){
     creation_time = std::chrono::steady_clock::now();
-    ms_before_explode = std::chrono::milliseconds(2000);
+    ms_before_explode = std::chrono::milliseconds(1000);
 }
 
-Bomb::~Bomb(){
+Flame::~Flame(){
 }
 
-int     Bomb::getFlameNb(void) const {
-    return flameNb;
-}
-
-void    Bomb::update(void){
+void    Flame::update(void){
     std::chrono::milliseconds   time_since_creation = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - creation_time);
     if (time_since_creation > ms_before_explode) {
         setState(State::DYING);
     }
 }
-
-
-
-// gameEngine/entities/Bomb.cpp\
-
-
-// if (find(actions.begin(), actions.end(), Action::SPAWN_BOMB) != actions.end()){
-//     _entityList.push_back(new Bomb(p->getPosition()));
-// }

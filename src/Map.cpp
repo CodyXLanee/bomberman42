@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 17:05:57 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 19:00:14 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/29 13:47:14 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,17 @@ void						Map::addDestructibleBlocs(DestructibleBloc bloc)
 	this->_destructibleBlocs.push_back(bloc);
 }
 
-void						Map::removeDestructibleBlocs(glm::vec2 pos)
+bool						Map::removeDestructibleBlocs(glm::vec2 pos)
 {
 	for (unsigned long i = 0 ; i < this->_destructibleBlocs.size() ; i++)
 	{
 		if (this->_destructibleBlocs[i].getPosition() == pos)
 		{
 			this->_destructibleBlocs.erase(this->_destructibleBlocs.begin()+i);
-			return ;
+			return true;
 		}
 	}
+	return false;
 }
 
 void						Map::addIndestructibleBlocs(IndestructibleBloc bloc)

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 16:36:00 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/29 17:06:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void	RenderEngine::renderGround(Shader *shader, Map const & map) const {
 	for(float j = 0; j < map.getSize().y ; j++) {
 		for(float i = 0; i < map.getSize().x ; i++) {
 			glm::mat4 transform = glm::mat4();
-			transform = glm::translate(transform, glm::vec3(i, j, -.1f));
+			transform = glm::translate(transform, glm::vec3(i, j, 0.f));
 			// transform = glm::rotate(transform, glm::radians(180.f), glm::vec3(0.f, 1.f, 0.f));
 			data.push_back(transform);
 		}

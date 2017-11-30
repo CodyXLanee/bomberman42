@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 10:27:47 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/30 17:19:55 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 RenderEngine::~RenderEngine() {}
 
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
-	(void)entities;
-	// (void)map;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	setCamera(camera.getMatrix());
@@ -60,20 +58,16 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	renderScene(textureShader, map, entities);
 	renderFlames(textureShader, entities);
+	
+	// light->render(textureShader, camera);
 	// renderShadowMap();
-
-	// renderScene(map);
-	// for (std::vector<IGameEntity *>::const_iterator i = entities.begin(); i != entities.end(); i++ ){
-	// 	if ((*i)->getType() == Type::PLAYER)
-	// 		renderPlayer(*i);
-	// }
-	// renderBombs(entities);
 
 	// SDL_GL_SwapWindow(win);
 }
 
 void	RenderEngine::renderScene(Shader *shader, Map const & map, std::vector<IGameEntity *> &entities) const {
 	shader->use();
+	light->setShaderVariables(shader);
 	renderGround(shader, map);
 	renderWall(shader, map.getIndestructibleBlocs(), map);
 	renderBrick(shader, map.getDestructibleBlocs(), map);
@@ -116,6 +110,7 @@ void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const
 	shader->use();
 	glm::vec3 camPos = camera.getPosition();
 	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	// light->setShaderVariables(shader);
     shader->setView();
     playerModel->setInstanceBuffer(data);  
     playerModel->draw(shader, 2);
@@ -135,6 +130,7 @@ void	RenderEngine::renderGround(Shader *shader, Map const & map) const {
 
 	glm::vec3 camPos = camera.getPosition();
 	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	// light->setShaderVariables(shader);
     shader->setView();
 	groundModel->setInstanceBuffer(data);
     groundModel->draw(shader, data.size());
@@ -167,6 +163,7 @@ void	RenderEngine::renderWall(Shader *shader, const std::vector<IndestructibleBl
 
 	glm::vec3 camPos = camera.getPosition();
 	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	// light->setShaderVariables(shader);
     shader->setView();
 	wallModel->setInstanceBuffer(data);
     wallModel->draw(shader, data.size());
@@ -185,6 +182,7 @@ void	RenderEngine::renderBrick(Shader *shader, const std::vector<DestructibleBlo
 
 	glm::vec3 camPos = camera.getPosition();
 	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	// light->setShaderVariables(shader);
     shader->setView();
 	brickModel->setInstanceBuffer(data);  
     brickModel->draw(shader, data.size());
@@ -202,6 +200,7 @@ void	RenderEngine::renderBombs(Shader *shader, std::vector<IGameEntity *> const 
 	shader->use();
 	glm::vec3 camPos = camera.getPosition();
 	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	// light->setShaderVariables(shader);
     shader->setView();
     bombModel->setInstanceBuffer(data);  
     bombModel->draw(shader, data.size());
@@ -219,6 +218,7 @@ void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const
 	shader->use();
 	glm::vec3 camPos = camera.getPosition();
 	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	// light->setShaderVariables(shader);
     shader->setView();
     flameModel->setInstanceBuffer(data);  
     flameModel->draw(shader, data.size());
@@ -254,13 +254,7 @@ void	RenderEngine::createShadowBuffer() {
 
 void		RenderEngine::getShadowMap(Map const & map, std::vector<IGameEntity *> &entities) {
 
-	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.f, 100.f);
-	
-	glm::mat4 lightView = glm::lookAt(glm::vec3(20.0f, 20.0f, 20.0f), 
-							glm::vec3( 5.0f, 5.0f,  0.0f), 
-							glm::vec3( 0.0f, 0.0f,  1.0f));
-	
-	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+	glm::mat4 lightSpaceMatrix = light->getLightSpaceMatrix();
 	
 	shadowShader->use();
 	glUniformMatrix4fv(glGetUniformLocation(shadowShader->getProgramID(), "lightSpaceMatrix"),

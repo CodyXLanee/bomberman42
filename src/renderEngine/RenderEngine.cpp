@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 16:47:55 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/30 18:03:38 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 RenderEngine::~RenderEngine() {}
 
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
-	(void)entities;
-	// (void)map;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	setCamera(camera.getMatrix());
@@ -62,20 +60,16 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	renderScene(textureShader, map, entities);
 	renderFlames(textureShader, entities);
+	
+	// light->render(textureShader, camera);
 	// renderShadowMap();
-
-	// renderScene(map);
-	// for (std::vector<IGameEntity *>::const_iterator i = entities.begin(); i != entities.end(); i++ ){
-	// 	if ((*i)->getType() == Type::PLAYER)
-	// 		renderPlayer(*i);
-	// }
-	// renderBombs(entities);
 
 	// SDL_GL_SwapWindow(win);
 }
 
 void	RenderEngine::renderScene(Shader *shader, Map const & map, std::vector<IGameEntity *> &entities) const {
 	shader->use();
+	light->setShaderVariables(shader);
 	renderGround(shader, map);
 	renderWall(shader, map.getIndestructibleBlocs(), map);
 	renderBrick(shader, map.getDestructibleBlocs(), map);
@@ -262,13 +256,7 @@ void	RenderEngine::createShadowBuffer() {
 
 void		RenderEngine::getShadowMap(Map const & map, std::vector<IGameEntity *> &entities) {
 
-	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.f, 100.f);
-	
-	glm::mat4 lightView = glm::lookAt(glm::vec3(20.0f, 20.0f, 20.0f), 
-							glm::vec3( 5.0f, 5.0f,  0.0f), 
-							glm::vec3( 0.0f, 0.0f,  1.0f));
-	
-	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+	glm::mat4 lightSpaceMatrix = light->getLightSpaceMatrix();
 	
 	shadowShader->use();
 	glUniformMatrix4fv(glGetUniformLocation(shadowShader->getProgramID(), "lightSpaceMatrix"),

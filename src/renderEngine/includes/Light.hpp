@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 09:38:27 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 10:35:04 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/30 17:07:46 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,21 @@ class Light {
 	public:
 		enum type { DIRECTIONAL, POINT };
 
-		Light(glm::vec3 position, glm::vec3 color, enum type t);
+		Light(glm::vec3 position, glm::vec3 color, type t);
 		~Light();
 
 		glm::vec3	getPosition() const;
+		void		setPosition(glm::vec3);
 		glm::vec3	getColor() const;
 		glm::mat4	getLightSpaceMatrix() const;
 		void		render(Shader *shader, Camera const &camera) const;
+		void		setShaderVariables(Shader *shader) const;
 
 	private:
 		Light();
 
 		glm::vec3	position;
+		glm::vec3	lookAt;
 		glm::vec3	color;
 		type		type;
 

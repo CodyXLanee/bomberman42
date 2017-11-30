@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:26:08 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 14:31:11 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/29 22:36:16 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,15 @@ class Camera {
 
 		glm::mat4	getMatrix() const;
 		glm::vec3	getPosition() const;
+		glm::vec3   getFront() const;
 
-		void		update(std::vector<Action::Enum> const &, int const, int const);
+		void		update(std::vector<Action::Enum> const &, int const, int const, glm::vec2 const *);
 		void		updatePosition(std::vector<Action::Enum> const &);
 		void		updateRotation(int const, int const);
 
 	private:
 		Camera();
-
+		void    			followPlayer(glm::vec2 const * playerPos);
 		void				setup();
 		void				reset();
 		

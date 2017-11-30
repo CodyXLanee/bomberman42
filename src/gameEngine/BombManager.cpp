@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/29 15:04:25 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/29 21:29:12 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ std::vector<IGameEntity *>	*BombManager::explodeOneDir(Map &map, int flames, glm
 std::vector<IGameEntity *>	*BombManager::explode(Map &map, Bomb const *bomb){
     std::vector<IGameEntity *>	*ret = new std::vector<IGameEntity *>();
     std::vector<IGameEntity *>	*tmp = NULL;
-    
+
     ret->push_back(new Flame(bomb->getPosition()));
     // Four directions : Right, Up, Left, Down
     std::array<glm::vec2, 4> dir = {{ glm::vec2(1, 0), glm::vec2(0, 1), glm::vec2(-1, 0), glm::vec2(0, -1) }};
-    
+
     // Looping over directions
     for (auto i = dir.begin(); i != dir.end(); i++){
         tmp = explodeOneDir(map, bomb->getFlameNb() - 1, bomb->getPosition() + *i, *i);
@@ -63,8 +63,7 @@ void    BombManager::update(Map &map, std::vector<IGameEntity *> & entityList, s
         _spawned_bomb = false;
     }
     for (auto i = entityList.begin(); i != entityList.end(); i++){
-        switch ((*i)->getType()) {
-            // Spawn New Bomb
+        switch ((*i)->getType()) {            // Spawn New Bomb
             case Type::PLAYER:
                 if (find(actions.begin(), actions.end(), Action::SPAWN_BOMB) != actions.end() && _spawned_bomb == false){
                     new_bomb = new Bomb(glm::round((*i)->getPosition()));
@@ -88,6 +87,44 @@ void    BombManager::update(Map &map, std::vector<IGameEntity *> & entityList, s
                 break;
         }
     }
+
+
+
+    // Bomb explosion make bomb explode
+    
+    size_t  flame_count = 0;
+    std::vector<IGameEntity *>  *sec_new_flames;
+    
+    while (flame_count != new_flames->size()) {
+        flame_count = new_flames->size();
+        sec_new_flames = new std::vector<IGameEntity *>();
+
+        for (auto i = new_flames->begin(); i != new_flames->end(); i++) {
+            for (auto j = entityList.begin(); j != entityList.end(); j++){
+                switch((*j)->getType()){
+                    case Type::PLAYER:
+                        // WE CHECK IF HE DIES HERE
+                            // HE DIES HERE
+                        break;
+                    case Type::BOMB:
+                        if ((*j)->getPosition() == (*i)->getPosition() && (*j)->getState() != State::DYING){
+                            (*j)->setState(State::DYING);
+                            std::vector<IGameEntity *>  *tmp = explode(map, static_cast<Bomb *>(*j));
+                            if (tmp->size() > 0)
+                                sec_new_flames->insert(sec_new_flames->end(), tmp->begin(), tmp->end());
+                            delete tmp;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        if (sec_new_flames->size() != 0)
+            new_flames->insert(new_flames->end(), sec_new_flames->begin(), sec_new_flames->end());
+        delete sec_new_flames;
+    }
+
     if (new_flames->size() > 0)
         entityList.insert(entityList.end(), new_flames->begin(), new_flames->end());
     delete new_flames;
@@ -103,7 +140,7 @@ void    BombManager::update(Map &map, std::vector<IGameEntity *> & entityList, s
     }
     // Erase Bomb/Flames that needs to disapear
     entityList.erase(
-        std::remove_if(entityList.begin(), entityList.end(), 
+        std::remove_if(entityList.begin(), entityList.end(),
             [](const IGameEntity * e) {
                 return e->getState() == State::DYING;
             }),

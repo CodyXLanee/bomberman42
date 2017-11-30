@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/28 14:55:30 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/29 21:49:53 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int main() {
 
 		game.compute(actions);
 		
-		camera.update(actions, window.getMouseX(), window.getMouseY());
+		camera.update(actions, window.getMouseX(), window.getMouseY(), game.getPlayerPos());
 		renderer.render(game.getMap(), game.getEntityList());
 		renderer.renderGUI(actions);
 		window.initGL();

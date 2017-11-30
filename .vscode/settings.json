@@ -16,6 +16,7 @@
         "new": "cpp",
         "stdexcept": "cpp",
         "typeinfo": "cpp",
-        "__string": "cpp"
+        "__string": "cpp",
+        "array": "cpp"
     }
 }

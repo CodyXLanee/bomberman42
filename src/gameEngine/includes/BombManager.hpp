@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:20:33 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/29 14:30:11 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/30 11:13:46 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ class BombManager {
 		BombManager();
 		~BombManager();
 
-		void			update(Map & map, std::vector<IGameEntity *> &entityList, std::vector<Action::Enum> const actions);
+		void			update(Map & map, std::vector<IGameEntity *> &entityList, std::vector<Action::Enum> & actions);
 	private:
-		std::vector<IGameEntity *>	*explode(Map &map, Bomb const *bomb);
+		std::vector<IGameEntity *>	*explode(Map &map, Bomb const *bomb, std::vector<Action::Enum> &actions);
 		std::vector<IGameEntity *>	*explodeOneDir(Map &map, int flames, glm::vec2 pos, glm::vec2 &dir);
 		bool	_spawned_bomb;
 };

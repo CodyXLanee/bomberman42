@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 22:04:33 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/30 11:12:49 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class GameEngine {
 		GameEngine();
 		~GameEngine();
 		
-		void								compute(std::vector<Action::Enum> actions);
+		void								compute(std::vector<Action::Enum> &actions);
 		Map const &							getMap() const;
 		std::vector<IGameEntity *> &		getEntityList();
 		glm::vec2 const 					*getPlayerPos(void) const;

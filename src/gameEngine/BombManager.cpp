@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/29 21:29:12 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/30 11:14:15 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,12 @@ std::vector<IGameEntity *>	*BombManager::explodeOneDir(Map &map, int flames, glm
     return ret;
 }
 
-std::vector<IGameEntity *>	*BombManager::explode(Map &map, Bomb const *bomb){
+std::vector<IGameEntity *>	*BombManager::explode(Map &map, Bomb const *bomb, std::vector<Action::Enum> &actions){
     std::vector<IGameEntity *>	*ret = new std::vector<IGameEntity *>();
     std::vector<IGameEntity *>	*tmp = NULL;
+
+    if (find(actions.begin(), actions.end(), Action::BOMB_EXPLODES) == actions.end())
+        actions.push_back(Action::BOMB_EXPLODES);
 
     ret->push_back(new Flame(bomb->getPosition()));
     // Four directions : Right, Up, Left, Down
@@ -56,7 +59,7 @@ std::vector<IGameEntity *>	*BombManager::explode(Map &map, Bomb const *bomb){
 }
 
 
-void    BombManager::update(Map &map, std::vector<IGameEntity *> & entityList, std::vector<Action::Enum> const actions){
+void    BombManager::update(Map &map, std::vector<IGameEntity *> & entityList, std::vector<Action::Enum> &actions){
     Bomb                        *new_bomb = NULL;
     std::vector<IGameEntity *>  *new_flames = new std::vector<IGameEntity *>();
     if (_spawned_bomb && find(actions.begin(), actions.end(), Action::SPAWN_BOMB) == actions.end()){
@@ -74,7 +77,7 @@ void    BombManager::update(Map &map, std::vector<IGameEntity *> & entityList, s
             case Type::BOMB:
                 (*i)->update();
                 if ((*i)->getState() == State::DYING){
-                    std::vector<IGameEntity *>  *tmp = explode(map, static_cast<Bomb *>(*i));
+                    std::vector<IGameEntity *>  *tmp = explode(map, static_cast<Bomb *>(*i), actions);
                     if (tmp->size() > 0)
                         new_flames->insert(new_flames->end(), tmp->begin(), tmp->end());
                     delete tmp;
@@ -109,7 +112,7 @@ void    BombManager::update(Map &map, std::vector<IGameEntity *> & entityList, s
                     case Type::BOMB:
                         if ((*j)->getPosition() == (*i)->getPosition() && (*j)->getState() != State::DYING){
                             (*j)->setState(State::DYING);
-                            std::vector<IGameEntity *>  *tmp = explode(map, static_cast<Bomb *>(*j));
+                            std::vector<IGameEntity *>  *tmp = explode(map, static_cast<Bomb *>(*j), actions);
                             if (tmp->size() > 0)
                                 sec_new_flames->insert(sec_new_flames->end(), tmp->begin(), tmp->end());
                             delete tmp;

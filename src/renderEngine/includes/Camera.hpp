@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:26:08 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 22:36:16 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/30 11:14:54 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,18 @@ class Camera {
 		glm::vec3	getPosition() const;
 		glm::vec3   getFront() const;
 
-		void		update(std::vector<Action::Enum> const &, int const, int const, glm::vec2 const *);
+		void		update(std::vector<Action::Enum> &, int const, int const, glm::vec2 const *);
 		void		updatePosition(std::vector<Action::Enum> const &);
 		void		updateRotation(int const, int const);
 
 	private:
 		Camera();
-		void    			followPlayer(glm::vec2 const * playerPos);
+		void    			updateFront(void);
+		void    			followPlayer(glm::vec2 const *, std::vector<Action::Enum> &);
 		void				setup();
 		void				reset();
+		void				wiggle(void);
+		void				initWiggle(void);
 		
 		glm::mat4			matrix;
 		glm::vec3			position;
@@ -51,6 +54,13 @@ class Camera {
 		float				sensitivity;
 		float				yaw;
 		float				pitch;
+
+		bool						is_wiggling;
+		float						wiggle_yaw;
+		float						wiggle_pitch;
+
+		std::chrono::milliseconds								wiggle_duration;
+		std::chrono::time_point<std::chrono::steady_clock>		wiggle_start;
 };
 
 #endif

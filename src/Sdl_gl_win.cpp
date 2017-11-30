@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 22:09:01 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/30 11:00:27 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
                 case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
                 case SDLK_TAB:      a = Action::DEBUG_MODE; break;
                 case SDLK_1:        a = Action::FOLLOW_PLAYER; break;
+                case SDLK_2:        a = Action::BOMB_EXPLODES; break;
                 case SDLK_RETURN:   a = Action::RESET_CAMERA; break;
                 case SDLK_LCTRL:    a = Action::MENU; break;
                 case SDLK_SPACE:    a = Action::SPAWN_BOMB; break;
@@ -104,6 +105,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
                 case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
                 case SDLK_RETURN:   a = Action::RESET_CAMERA; break;
                 case SDLK_SPACE:    a = Action::SPAWN_BOMB; break;
+                case SDLK_2:        a = Action::BOMB_EXPLODES; break;
             }
 			actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         }

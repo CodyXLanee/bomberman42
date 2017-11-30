@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 22:05:42 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/30 11:05:52 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ GameEngine::GameEngine() : _map(new Map()) {
 
 GameEngine::~GameEngine() {}
 
-void	GameEngine::compute(std::vector<Action::Enum> actions) {
+void	GameEngine::compute(std::vector<Action::Enum> &actions) {
 	_collisionsManager.moves(*_map, _entityList, actions);
 	_bombManager.update(*_map, _entityList, actions);
 }

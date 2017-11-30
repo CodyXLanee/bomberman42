@@ -25,6 +25,7 @@ SRC_NAME =	\
 			renderEngine/model/Joint.cpp \
 			renderEngine/Shader.cpp \
 			renderEngine/Camera.cpp \
+			renderEngine/Light.cpp \
 			Map.cpp \
 			main.cpp \
 

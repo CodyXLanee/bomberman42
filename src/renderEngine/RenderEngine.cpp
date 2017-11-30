@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 17:45:24 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/30 10:27:47 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	brickModel = new Model("assets/models/obj/brick.obj", false);
 	bombModel = new Model("assets/models/obj/bomb.obj", false);
 	flameModel = new Model("assets/models/obj/fire.obj", false);
+
+	light = new Light(glm::vec3(20.f, 20.f, 20.f), glm::vec3(1.f, 1.f, 1.f), Light::DIRECTIONAL);
 
 	textureShader->use();
 	textureShader->setInt("texture_diffuse", 0);

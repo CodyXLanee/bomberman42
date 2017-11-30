@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 16:13:28 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/30 10:26:42 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "Shader.hpp"
 # include "Model.hpp"
 # include "Camera.hpp"
+# include "Light.hpp"
 # include "NuklearGUI.hpp"
 # include "Map.hpp"
 # include <vector>
@@ -52,6 +53,7 @@ class RenderEngine {
 		Model		*bombModel;
 		Model		*flameModel;
 		Camera  	&camera;
+		Light		*light;
 		NuklearGUI	gui;
 
 		unsigned int depthMapFBO;

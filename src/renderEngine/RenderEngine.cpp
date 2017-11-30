@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 10:27:47 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/30 16:47:55 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RenderEngine.hpp"
 #include "Player.hpp"
+#include "Flame.hpp"
+#include <cmath>
 #include <glm/ext.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
@@ -31,7 +33,7 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	playerModel = new Model("assets/models/obj/player.obj", false);
 	brickModel = new Model("assets/models/obj/brick.obj", false);
 	bombModel = new Model("assets/models/obj/bomb.obj", false);
-	flameModel = new Model("assets/models/obj/fire.obj", false);
+	flameModel = new Model("assets/models/obj/flame.obj", false);
 
 	light = new Light(glm::vec3(20.f, 20.f, 20.f), glm::vec3(1.f, 1.f, 1.f), Light::DIRECTIONAL);
 
@@ -207,12 +209,18 @@ void	RenderEngine::renderBombs(Shader *shader, std::vector<IGameEntity *> const 
     bombModel->draw(shader, data.size());
 }
 
+static	float		flames_animation_scale(Flame const *f){
+	std::chrono::milliseconds time_since_creation(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - f->get_creation_time()));
+	float ratio = static_cast<float>(time_since_creation.count()) / static_cast<float>(f->get_ms_before_explode().count());
+	return ((std::pow(ratio, 0.10f) - std::pow(ratio, 10.f)) + cos(ratio * 6.f) * 0.15f) * 1.10f ;
+}
+
 void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const {
 	std::vector<glm::mat4> data;
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
-			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition(), 0.f)));
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(flames_animation_scale(static_cast<Flame const *>(*i))));
 			data.push_back(transform);
 		}
 	}

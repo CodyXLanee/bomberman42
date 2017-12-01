@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/01 13:29:18 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/01 15:11:43 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,56 @@ void    NuklearGUI::render(std::vector<Action::Enum> & actions, Camera & camera)
         renderDebug(camera);
     }
     if (find(actions.begin(), actions.end(), Action::MENU) != actions.end()) {
-        renderMenu(actions);
-    }
-    if (find(actions.begin(), actions.end(), Action::OPTIONS) != actions.end()) {
-        renderOptions(actions);
+        if (find(actions.begin(), actions.end(), Action::OPTIONS) != actions.end()) {
+            if (find(actions.begin(), actions.end(), Action::KEY_BINDINGS) != actions.end()) {
+                renderKeyBindings(actions);
+            }
+            renderOptions(actions);
+        }
+        else {
+            renderMenu(actions);
+        }
     }
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
+}
+
+void    NuklearGUI::renderKeyBindings(std::vector<Action::Enum> & actions) {
+    int  w, h;
+    SDL_GetWindowSize(win, &w, &h);
+
+    if (nk_begin(ctx, "KEY BINDINGS", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
+    NK_WINDOW_BORDER|NK_WINDOW_TITLE)) {
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Move up", NK_TEXT_LEFT);
+        nk_button_label(ctx, "");
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Move down", NK_TEXT_LEFT);
+        nk_button_label(ctx, "");
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Move left", NK_TEXT_LEFT);
+        nk_button_label(ctx, "");
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Move right", NK_TEXT_LEFT);
+        nk_button_label(ctx, "");
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Drop bomb", NK_TEXT_LEFT);
+        nk_button_label(ctx, "");
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        if (nk_button_label(ctx, "Apply"))
+        {
+            actions.erase(std::remove(actions.begin(), actions.end(), Action::KEY_BINDINGS), actions.end());            
+        }
+        if (nk_button_label(ctx, "Back"))
+        {
+            actions.erase(std::remove(actions.begin(), actions.end(), Action::KEY_BINDINGS), actions.end());            
+        }
+    }
+    nk_end(ctx);
 }
 
 void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
@@ -122,6 +166,7 @@ void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
         if (nk_button_label(ctx, "Configure"))
         {
             /* Key bindings */
+            actions.push_back(Action::KEY_BINDINGS);
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  

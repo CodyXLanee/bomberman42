@@ -36,6 +36,10 @@ class Map {
 
 		glm::vec2								getSize() const;
 		void									setSize(glm::vec2 size);
+		glm::vec3								getSunPos() const;
+		void									setSunPos(glm::vec3 pos);
+		glm::vec3								getSunColor() const;
+		void									setSunColor(glm::vec3 color);
 		const std::vector<DestructibleBloc>		getDestructibleBlocs() const;
 		void									addDestructibleBlocs(DestructibleBloc bloc);
 		bool									removeDestructibleBlocs(glm::vec2 pos);
@@ -48,6 +52,8 @@ class Map {
 
 	private:
 		glm::vec2							_size;
+		glm::vec3							_sunPos;
+		glm::vec3							_sunColor;
 		std::vector<DestructibleBloc>		_destructibleBlocs;
 		std::vector<IndestructibleBloc>		_indestructibleBlocs;
 		std::map<Type::Enum, std::string>	_models;

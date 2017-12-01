@@ -49,6 +49,26 @@ void		Map::setSize(glm::vec2 size)
 	this->_size = size;
 }
 
+glm::vec3	Map::getSunPos() const
+{
+	return this->_sunPos;
+}
+
+void		Map::setSunPos(glm::vec3 pos)
+{
+	this->_sunPos = pos;
+}
+
+glm::vec3	Map::getSunColor() const
+{
+	return this->_sunColor;
+}
+
+void		Map::setSunColor(glm::vec3 color)
+{
+	this->_sunColor = color;
+}
+
 const std::vector<DestructibleBloc>		Map::getDestructibleBlocs() const
 {
 	return this->_destructibleBlocs;

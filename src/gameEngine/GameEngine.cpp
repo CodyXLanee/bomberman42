@@ -17,7 +17,8 @@
 #include "DestructibleBloc.hpp"
 
 GameEngine::GameEngine() : _map(new Map()) {
-	rapidjson::Value * grid;
+    rapidjson::Value * grid;
+    rapidjson::Value * sun;
 
 	this->_loader.setPath("maps/map.json");
 	if (this->_loader.load() != 1)
@@ -26,7 +27,7 @@ GameEngine::GameEngine() : _map(new Map()) {
 	}
 
 	grid = this->_loader.getValue("grid");
-	if (!grid[0].IsArray())
+	if (grid && !grid[0].IsArray())
     	return ;
 
     for (unsigned int i = 0 ; i < grid[0].Size() ; i++)
@@ -57,11 +58,26 @@ GameEngine::GameEngine() : _map(new Map()) {
     		}
     	}
     }
+
+    sun = this->_loader.getValue("sun");
+    if (!sun || !sun->HasMember("pos") || !sun[0]["pos"].IsArray() || sun[0]["pos"].Size() != 3)
+        return ;
+    if (!sun[0]["pos"][0].IsFloat() || !sun[0]["pos"][1].IsFloat() || !sun[0]["pos"][2].IsFloat())
+        return ;
+    this->_map->setSunPos(glm::vec3(sun[0]["pos"][0].GetFloat(), sun[0]["pos"][1].GetFloat(), sun[0]["pos"][2].GetFloat()));
+
+    if (!sun || !sun->HasMember("color") || !sun[0]["color"].IsArray() || sun[0]["color"].Size() != 3)
+        return ;
+    if (!sun[0]["color"][0].IsFloat() || !sun[0]["color"][1].IsFloat() || !sun[0]["color"][2].IsFloat())
+        return ;
+    this->_map->setSunColor(glm::vec3(sun[0]["color"][0].GetFloat(), sun[0]["color"][1].GetFloat(), sun[0]["color"][2].GetFloat()));
 }
 
 GameEngine::~GameEngine() {}
 
 void	GameEngine::compute(std::vector<Action::Enum> &actions) {
+    if (this->_loader.getState() == -1)
+        return ;
 	_collisionsManager.moves(*_map, _entityList, actions);
 	_bombManager.update(*_map, _entityList, actions);
 }

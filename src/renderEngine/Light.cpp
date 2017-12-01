@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 09:38:15 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 17:21:27 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/01 09:06:45 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ void	Light::render(Shader *shader, Camera const &camera) const {
 }
 
 void	Light::setShaderVariables(Shader *shader) const {
-	shader->setVec3("lightPos", position.x, position.y, position.z); 
+	shader->setVec3("lightPos", position.x, position.y, position.z);
+	shader->setVec3("lightColor", color.x, color.y, color.z);
 }
 
 void		Light::setPosition(glm::vec3 pos) {

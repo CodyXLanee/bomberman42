@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:44:27 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 10:13:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/01 10:43:28 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Shader {
         void            setFloat(const std::string &name, float value) const;
         void            setInt(const std::string &name, float value) const;
 		void			setVec3(const std::string &name, float x, float y, float z) const;
+        void            setMat4(const std::string &name, glm::mat4 mat) const;
         GLuint          getProgramID() const;
         static void     setCamera(glm::mat4);
         void            setView();

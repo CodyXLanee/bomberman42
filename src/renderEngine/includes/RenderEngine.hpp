@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 11:44:44 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/01 16:31:51 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ class RenderEngine {
 		SDL_Window	*win;
 		Shader		*shader;
 		Shader		*textureShader;
-		Shader		*shadowShader;
+		Shader		*directionalShadowShader;
+		Shader		*pointShadowShader;
 		Shader		*debugDepthQuad;
 		
 		Model		*playerModel;
@@ -49,18 +50,25 @@ class RenderEngine {
 		Camera  	&camera;
 		unsigned int depthMapFBO;
 		unsigned int depthMap;
+		unsigned int depthCubemap;
 		unsigned int quadVAO;
 		unsigned int quadVBO;
 
-		void	getShadowMap();
-		void	renderScene(Shader *shader) const;
-		void	renderWall(Shader *shader) const;
-		void	renderBrick(Shader *shader) const;
-		void	renderGround(Shader *shader) const;
-		void	renderPlayer(IGameEntity const *) const;
-		void	setCamera(glm::mat4 const &);
+		void	renderScene(Shader *shader, Map const & map, std::vector<IGameEntity *> &entities) const;
+		void	renderWall(Shader *shader, const std::vector<IndestructibleBloc> &b, Map const & map) const;
+		void	renderBrick(Shader *shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const;
+		void	renderGround(Shader *shader, Map const & map) const;
+		void	renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const;
+		void	renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const;
+		void	renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const;
+		
+		void	getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
+		void	getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
+		// void	setCamera(glm::mat4 const &);
+		void	setCamera(glm::mat4 const &, Shader *shader) const;
 
 		void	createShadowBuffer();
+		void	createDepthCubemap();
 
 		void	renderShadowMap();
 };

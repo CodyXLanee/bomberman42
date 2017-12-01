@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Bomb.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:35 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/29 15:42:23 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/01 12:27:52 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@ void    Bomb::update(void){
     }
 }
 
+std::chrono::milliseconds const                                &Bomb::get_ms_before_explode(void) const {
+    return ms_before_explode;
+}
+std::chrono::time_point<std::chrono::steady_clock> const       &Bomb::get_creation_time(void) const {
+    return creation_time;
+}
 
 
 // gameEngine/entities/Bomb.cpp\

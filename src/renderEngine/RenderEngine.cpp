@@ -6,13 +6,14 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 18:03:38 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/01 12:31:52 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RenderEngine.hpp"
 #include "Player.hpp"
 #include "Flame.hpp"
+#include "Bomb.hpp"
 #include <cmath>
 #include <glm/ext.hpp>
 #include <glm/gtx/vector_angle.hpp>
@@ -186,12 +187,18 @@ void	RenderEngine::renderBrick(Shader *shader, const std::vector<DestructibleBlo
     brickModel->draw(shader, data.size());
 }
 
+static	float		bombs_animation_scale(Bomb const *b){
+	std::chrono::milliseconds time_since_creation(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - b->get_creation_time()));
+	float ratio = static_cast<float>(time_since_creation.count()) / static_cast<float>(b->get_ms_before_explode().count());
+	return 1.f + cos(ratio * 17.f) * 0.05f;
+}
+
 void	RenderEngine::renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const {
 	std::vector<glm::mat4> data;
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::BOMB){
 			glm::mat4 transform = glm::mat4();
-			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition(), 0.f)));
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(bombs_animation_scale(static_cast<Bomb const *>(*i))));
 			data.push_back(transform);
 		}
 	}

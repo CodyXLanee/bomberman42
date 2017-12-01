@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/01 13:00:59 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/01 13:49:38 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 #include <glm/gtx/vector_angle.hpp>
 
 RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera), gui(win) {
+
+	int w, h;
+	SDL_GetWindowSize(win, &w, &h);
+	Shader::perspective = glm::perspective(glm::radians(FOV), static_cast<float>(w) / static_cast<float>(h), Z_NEAR, Z_FAR);
 
 	createShadowBuffer();
 
@@ -48,11 +52,14 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 RenderEngine::~RenderEngine() {}
 
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
+	int	w, h;
+	SDL_GetWindowSize(win, &w, &h);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	getShadowMap(map, entities);
 
-	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+	glViewport(0, 0, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
@@ -217,7 +224,7 @@ void	RenderEngine::setCamera(glm::mat4 const & cameraMatrix, Shader *shader) con
     shader->setView();
 }
 
-struct nk_context *	RenderEngine::getGUIContext() const { return gui.getContext(); }
+NuklearGUI &	RenderEngine::getGUI() { return gui; }
 
 void	RenderEngine::createShadowBuffer() {
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/28 18:49:22 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/01 13:30:32 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,25 @@ class NuklearGUI
         NuklearGUI(SDL_Window *);
         ~NuklearGUI();
 
-        struct nk_context * getContext() const;
-        void                render(std::vector<Action::Enum> &, Camera &);
+        struct nk_context *     getContext() const;
+        Screen::Resolution      getScreenResolution() const;
+        Screen::Mode            getScreenMode() const;
+        void                    render(std::vector<Action::Enum> &, Camera &);
+
+        std::string             toString(Screen::Resolution) const;
+        std::string             toString(Screen::Mode) const;
         
     private:
+        SDL_Window              *win;
         struct nk_context       *ctx;
         struct nk_font_atlas    *atlas;
         int                     const menuWidth;
         int                     const menuHeight;
         int                     const optionHeight;
-        
+
+        Screen::Resolution      screenResolution;
+        Screen::Mode            screenMode;
+
         void        renderDebug(Camera &);
         void        renderMenu(std::vector<Action::Enum> &);
         void        renderOptions(std::vector<Action::Enum> &);

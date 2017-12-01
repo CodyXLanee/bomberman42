@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   bomberman.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 10:49:19 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/01 13:28:21 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BOMBERMAN_HPP
 # define BOMBERMAN_HPP
 
-# define WINDOW_WIDTH 1920.f
-# define WINDOW_HEIGHT 1080.f
 # define FOV 60.f
 # define Z_NEAR 0.1f
 # define Z_FAR 4000.f
@@ -26,7 +24,19 @@ namespace Action {
 		LEFT, RIGHT, UP, DOWN, SPAWN_BOMB,
 		CAMERA_LEFT, CAMERA_RIGHT, CAMERA_UP, CAMERA_DOWN,
 		ESCAPE, DEBUG_MODE, FOLLOW_PLAYER, RESET_CAMERA, MENU, OPTIONS,
-		BOMB_EXPLODES
+		BOMB_EXPLODES, SCREEN_CHANGED
+	};
+}
+
+namespace Screen {
+	enum Resolution {
+		RES_2560_1440 = 0,
+		RES_1920_1080,
+		RES_1024_768
+	};
+	enum Mode {
+		WINDOWED = 0,
+		FULLSCREEN
 	};
 }
 

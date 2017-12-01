@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 11:00:27 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/01 13:27:27 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Sdl_gl_win.hpp"
 
-Sdl_gl_win::Sdl_gl_win() {
+Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(height) {
 	initSDL();
     initGL();
 }
@@ -37,7 +37,7 @@ void	Sdl_gl_win::initSDL() {
     win = SDL_CreateWindow("Bomberman",
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED,
-                                        WINDOW_WIDTH, WINDOW_HEIGHT,
+                                        width, height,
                                         SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     ctx = SDL_GL_CreateContext(win);
     //SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -58,8 +58,10 @@ void	Sdl_gl_win::initGL() const {
     glFrontFace(GL_CCW);
 }
 
-void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_context *nk_ctx) {
+void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, NuklearGUI & nk) {
+    struct nk_context * nk_ctx = nk.getContext();
     SDL_GetRelativeMouseState(&mouseX,&mouseY);
+    handleWindowActions(actions, nk);
     nk_input_begin(nk_ctx);
     while (SDL_PollEvent(&events)) {
         if (events.window.event == SDL_WINDOWEVENT_CLOSE ||
@@ -111,6 +113,33 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
         }
     }
     nk_input_end(nk_ctx);
+}
+
+void            Sdl_gl_win::handleWindowActions(std::vector<Action::Enum> & actions, NuklearGUI & nk) {
+    if (find(actions.begin(), actions.end(), Action::SCREEN_CHANGED) != actions.end()) {
+        Screen::Resolution res = nk.getScreenResolution();
+        Screen::Mode mode = nk.getScreenMode();
+        int w, h;
+        switch (res) {
+            case Screen::Resolution::RES_2560_1440: w = 2560; h = 1440; break;
+            case Screen::Resolution::RES_1920_1080: w = 1920; h = 1080; break;
+            case Screen::Resolution::RES_1024_768:  w = 1024; h = 768; break;
+        }
+        if (mode == Screen::Mode::FULLSCREEN) {
+            SDL_DisplayMode fsmode;
+            fsmode.w = w;
+            fsmode.h = h;
+            fsmode.format = SDL_PIXELFORMAT_ARGB8888;
+            SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
+            SDL_SetWindowDisplayMode(win, &fsmode);
+        }
+        else {
+            SDL_SetWindowFullscreen(win, 0);                
+        }
+        SDL_SetWindowSize(win, w, h);
+        Shader::perspective = glm::perspective(glm::radians(FOV), static_cast<float>(w) / static_cast<float>(h), Z_NEAR, Z_FAR);
+        actions.erase(std::remove(actions.begin(), actions.end(), Action::SCREEN_CHANGED), actions.end());            
+    }
 }
 
 SDL_Window      *Sdl_gl_win::getWin() const {

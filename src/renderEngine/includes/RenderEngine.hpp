@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 10:26:42 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/01 09:23:14 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ class RenderEngine {
 		void	renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const;
-		void	setCamera(glm::mat4 const &);
+		// void	setCamera(glm::mat4 const &);
+		void	setCamera(glm::mat4 const &, Shader *shader) const;
 
 		void	createShadowBuffer();
 

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:24:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/29 12:39:15 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/11/30 16:01:52 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,11 @@ void    Flame::update(void){
     if (time_since_creation > ms_before_explode) {
         setState(State::DYING);
     }
+}
+
+std::chrono::milliseconds const                                &Flame::get_ms_before_explode(void) const {
+    return ms_before_explode;
+}
+std::chrono::time_point<std::chrono::steady_clock> const       &Flame::get_creation_time(void) const {
+    return creation_time;
 }

@@ -2,7 +2,7 @@
 #ifndef COLLISIONSMANAGER_HPP
 # define COLLISIONSMANAGER_HPP
 
-# define RPLAYER 0.5	// 0.1 <= x <= 0.5
+# define RPLAYER 0.3	// 0.1 <= x <= 0.5
 
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"

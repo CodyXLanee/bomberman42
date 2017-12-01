@@ -28,6 +28,7 @@ SRC_NAME =	\
 			renderEngine/Light.cpp \
 			Map.cpp \
 			main.cpp \
+			SEventManager.cpp \
 
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)

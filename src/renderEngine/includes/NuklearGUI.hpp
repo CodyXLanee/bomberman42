@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/01 13:30:32 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/01 14:36:32 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class NuklearGUI
         void        renderDebug(Camera &);
         void        renderMenu(std::vector<Action::Enum> &);
         void        renderOptions(std::vector<Action::Enum> &);
+        void        renderKeyBindings(std::vector<Action::Enum> &);
 
         NuklearGUI();
         NuklearGUI(NuklearGUI const &);

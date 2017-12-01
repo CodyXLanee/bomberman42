@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 17:21:57 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/01 09:09:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	bombModel = new Model("assets/models/obj/bomb.obj", false);
 	flameModel = new Model("assets/models/obj/fire.obj", false);
 
-	light = new Light(glm::vec3(20.f, 20.f, 20.f), glm::vec3(1.f, 1.f, 1.f), Light::DIRECTIONAL);
+	light = new Light(glm::vec3(20.f, 20.f, 20.f), glm::vec3(0.682f, 0.356f, 0.803f), Light::DIRECTIONAL);
 
 	textureShader->use();
 	textureShader->setInt("texture_diffuse", 0);

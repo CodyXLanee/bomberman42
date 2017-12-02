@@ -2,9 +2,7 @@
 layout (location = 0) in vec3 position;
 layout (location = 5) in mat4 modelsMatrix;
 
-uniform mat4 lightSpaceMatrix;
-
 void main()
 {
-    gl_Position = lightSpaceMatrix * modelsMatrix * vec4(position, 1.0);
+    gl_Position =  modelsMatrix * vec4(position, 1.0);
 }

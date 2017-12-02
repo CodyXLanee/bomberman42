@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Shader.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:44:27 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 10:13:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/02 22:12:49 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Shader {
         
         void            use() const;
         void            setModel(glm::mat4 model) const;
+        void            setMat4(const std::string &name, glm::mat4 mat) const;
         void            setFloat(const std::string &name, float value) const;
         void            setInt(const std::string &name, float value) const;
 		void			setVec3(const std::string &name, float x, float y, float z) const;

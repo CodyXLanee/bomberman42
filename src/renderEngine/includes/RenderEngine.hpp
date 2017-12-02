@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/01 12:24:48 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/02 22:10:41 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,9 @@ class RenderEngine {
 		RenderEngine();
 		SDL_Window	*win;
 		Shader		*shader;
-		Shader		*textureShader;
-		Shader		*shadowShader;
+		Shader		*mainShader;
+		Shader		*directionalShadowShader;
+		Shader		*pointShadowShader;
 		Shader		*debugDepthQuad;
 		
 		Model		*playerModel;
@@ -58,10 +59,12 @@ class RenderEngine {
 
 		unsigned int depthMapFBO;
 		unsigned int depthMap;
+		unsigned int depthCubemap;
 		unsigned int quadVAO;
 		unsigned int quadVBO;
 
-		void	getShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
+		void	getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
+		void	getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
 		void	renderScene(Shader *shader, Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	renderWall(Shader *shader, const std::vector<IndestructibleBloc> &b, Map const & map) const;
 		void	renderBrick(Shader *shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const;
@@ -73,6 +76,7 @@ class RenderEngine {
 		void	setCamera(glm::mat4 const &, Shader *shader) const;
 
 		void	createShadowBuffer();
+		void	createDepthCubemap();
 
 		void	renderShadowMap();
 };

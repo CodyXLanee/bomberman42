@@ -3,11 +3,11 @@
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 normalIn;
 layout(location = 2) in vec2 textCoords;
-layout(location = 5) in mat4 offsets;
+layout(location = 5) in mat4 modelsMatrix;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform mat4 modelMatrix;
+// uniform mat4 modelMatrix;
 uniform mat4 lightSpaceMatrix;
 
 uniform vec3 materialColor;
@@ -21,10 +21,10 @@ out vec4 fragPosLightSpace;
 
 void main()
 {
-    fragPos = vec3(offsets * vec4(position, 1.0));
+    fragPos = vec3(modelsMatrix * vec4(position, 1.0));
     fragColor = materialColor;
-    normal = mat3(viewMatrix * offsets) * normalIn;
+    normal = mat3(viewMatrix * modelsMatrix) * normalIn;
     UV = textCoords;
     fragPosLightSpace = lightSpaceMatrix * vec4(fragPos, 1.0);
-    gl_Position = (projectionMatrix * viewMatrix * offsets) * vec4(position, 1.0);
+    gl_Position = (projectionMatrix * viewMatrix * modelsMatrix) * vec4(position, 1.0);
 }

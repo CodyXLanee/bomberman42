@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Light.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 09:38:15 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/01 09:06:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/02 22:02:11 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ glm::vec3	Light::getColor() const {
 	return this->color;
 }
 
-glm::mat4	Light::getLightSpaceMatrix() const {
+glm::mat4	Light::getDirectionalLightSpaceMatrix() const {
 	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.f, 100.f);
 	
 	glm::mat4 lightView = glm::lookAt(position, 
@@ -39,6 +39,30 @@ glm::mat4	Light::getLightSpaceMatrix() const {
 
 	return	lightSpaceMatrix;
 }
+
+std::vector<glm::mat4>	Light::getOmnidirectionalLightSpaceMatrix() const {
+	float aspect = 1024.f/1024.f;
+	float near = 0.1f;
+	float far = 25.0f;
+	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
+
+	std::vector<glm::mat4> shadowTransforms;
+	shadowTransforms.push_back(shadowProj * 
+				glm::lookAt(position, position + glm::vec3( 1.0, 0.0, 0.0), glm::vec3(0.0,-1.0, 0.0)));
+	shadowTransforms.push_back(shadowProj * 
+				glm::lookAt(position, position + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0,-1.0, 0.0)));
+	shadowTransforms.push_back(shadowProj * 
+				glm::lookAt(position, position + glm::vec3( 0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+	shadowTransforms.push_back(shadowProj * 
+				glm::lookAt(position, position + glm::vec3( 0.0,-1.0, 0.0), glm::vec3(0.0, 0.0,-1.0)));
+	shadowTransforms.push_back(shadowProj * 
+				glm::lookAt(position, position + glm::vec3( 0.0, 0.0, 1.0), glm::vec3(0.0,-1.0, 0.0)));
+	shadowTransforms.push_back(shadowProj * 
+				glm::lookAt(position, position + glm::vec3( 0.0, 0.0,-1.0), glm::vec3(0.0,-1.0, 0.0)));
+
+	return shadowTransforms;
+}
+
 
 void	Light::render(Shader *shader, Camera const &camera) const {
     std::vector<glm::mat4> data;

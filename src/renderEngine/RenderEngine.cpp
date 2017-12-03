@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/02 22:34:38 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/12/03 16:15:05 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,10 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	mainShader->use();
+	mainShader->setFloat("alpha", 1.0);
+	mainShader->setInt("flames", 0);
+	glDisable(GL_BLEND);
 	getDirectionalShadowMap(map, entities);
 	// getOmnidirectionalShadowMap(map, entities);
 
@@ -216,10 +220,31 @@ static	float		flames_animation_scale(Flame const *f){
 
 void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const {
 	std::vector<glm::mat4> data;
+
+	shader->use();
+	shader->setFloat("alpha", 0.7);
+	shader->setInt("flames", 1);
+	glEnable(GL_BLEND);
+	for (auto i = entities.begin(); i != entities.end(); i++ ){
+		if ((*i)->getType() == Type::FLAME){
+			glm::mat4 transform = glm::mat4();
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(flames_animation_scale(static_cast<Flame const *>(*i)) / 2));
+			transform = glm::rotate(transform,glm::radians(static_cast<float>(rand() % 360)), glm::vec3(0.f, 0.f, 1.f));
+			data.push_back(transform);
+		}
+	}
+    flameModel->setInstanceBuffer(data);  
+	flameModel->draw(shader, data.size());
+	data.clear();
+	shader->use();
+	shader->setInt("alpha", 0.4);
+	shader->setInt("flames", 0);
+	glEnable(GL_BLEND);
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
 			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(flames_animation_scale(static_cast<Flame const *>(*i))));
+			transform = glm::rotate(transform,glm::radians(static_cast<float>(rand() % 360)), glm::vec3(0.f, 0.f, 1.f));
 			data.push_back(transform);
 		}
 	}

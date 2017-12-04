@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/04 14:46:08 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/04 15:08:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ public:
     void            loadGame(Save::Enum);
     void            saveGame(Save::Enum);
 
+    void            quit_game(void *);
     // GameMode::Enum  getGameMode(void);
 
     // Load / Save Config params
@@ -46,6 +47,8 @@ private:
     Camera              _camera;
     NuklearGUI          _gui;
     RenderEngine        _renderer;
+
+    bool                _quit_game;
 
 };
 

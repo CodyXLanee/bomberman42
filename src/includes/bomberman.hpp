@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 14:42:10 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/04 15:00:52 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ namespace Screen {
 	enum Mode {
 		WINDOWED = 0,
 		FULLSCREEN
+	};
+	struct Format {
+		Screen::Resolution	resolution;
+		Screen::Mode		mode;
 	};
 }
 

@@ -8,7 +8,7 @@
 
 namespace Event {
 	enum Enum	{
-		KEYPRESS
+		KEYDOWN, KEYUP
 	};
 }
 

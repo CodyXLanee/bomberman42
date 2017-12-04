@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/01 13:27:27 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 12:09:33 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	Sdl_gl_win::initGL() const {
 
 void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, NuklearGUI & nk) {
     struct nk_context * nk_ctx = nk.getContext();
+    SEventManager & event = SEventManager::getInstance();
     SDL_GetRelativeMouseState(&mouseX,&mouseY);
     handleWindowActions(actions, nk);
     nk_input_begin(nk_ctx);
@@ -71,6 +72,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, NuklearGUI
         }
         nk_sdl_handle_event(&events);
         if (events.type == SDL_KEYDOWN) {
+            event.raise(KEYDOWN, &events.key.keysym.sym);
             Action::Enum a;
             switch(events.key.keysym.sym) {
 
@@ -95,6 +97,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, NuklearGUI
 		    	actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());            
         } 
         if (events.type == SDL_KEYUP) {
+            event.raise(KEYUP, &events.key.keysym.sym);            
             Action::Enum a;
             switch(events.key.keysym.sym) {
                 case SDLK_a:        a = Action::LEFT; break;

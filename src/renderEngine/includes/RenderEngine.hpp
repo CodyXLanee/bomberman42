@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 09:23:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/04 12:23:54 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include "Model.hpp"
 # include "Camera.hpp"
 # include "Light.hpp"
-# include "NuklearGUI.hpp"
 # include "Map.hpp"
 # include <vector>
 
@@ -34,8 +33,6 @@ class RenderEngine {
 		~RenderEngine();
 		
 		void	render(Map const & map, std::vector<IGameEntity *> & entities);
-		void	renderGUI(std::vector<Action::Enum> &);
-		NuklearGUI &	getGUI();
 		
 	private:
 		
@@ -55,7 +52,6 @@ class RenderEngine {
 		Model		*flameModel;
 		Camera  	&camera;
 		Light		*light;
-		NuklearGUI	gui;
 
 		unsigned int depthMapFBO;
 		unsigned int depthMap;

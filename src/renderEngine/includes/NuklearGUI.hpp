@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/01 14:36:32 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 12:28:39 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,12 @@
 # include <vector>
 # include "bomberman.hpp"
 # include "Camera.hpp"
+# include "SEventManager.hpp"
 
 class NuklearGUI
 {
     public:
-        NuklearGUI(SDL_Window *);
+        NuklearGUI(SDL_Window *, Camera &);
         ~NuklearGUI();
 
         struct nk_context *     getContext() const;
@@ -34,6 +35,7 @@ class NuklearGUI
         
     private:
         SDL_Window              *win;
+        Camera                  &camera;
         struct nk_context       *ctx;
         struct nk_font_atlas    *atlas;
         int                     const menuWidth;
@@ -42,6 +44,8 @@ class NuklearGUI
 
         Screen::Resolution      screenResolution;
         Screen::Mode            screenMode;
+
+        void        handleKeydown(void *);
 
         void        renderDebug(Camera &);
         void        renderMenu(std::vector<Action::Enum> &);

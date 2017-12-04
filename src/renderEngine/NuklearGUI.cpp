@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/01 15:11:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 13:46:58 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,16 @@
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
 
-NuklearGUI::NuklearGUI(SDL_Window *sdlWindow) :
-    win(sdlWindow), menuWidth(500), menuHeight(500), optionHeight(30) {
+NuklearGUI::NuklearGUI(SDL_Window *sdlWindow, Camera & camera) :
+    win(sdlWindow), camera(camera), menuWidth(500), menuHeight(500), optionHeight(30) {
     ctx = nk_sdl_init(win);
     nk_sdl_font_stash_begin(&atlas);
     nk_sdl_font_stash_end();
     screenResolution = Screen::Resolution::RES_1920_1080;
     screenMode = Screen::Mode::WINDOWED;
+    
+    SEventManager & event = SEventManager::getInstance();
+    event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKeydown));
 }
 
 NuklearGUI::~NuklearGUI() {
@@ -41,6 +44,13 @@ NuklearGUI::~NuklearGUI() {
 }
 
 struct nk_context * NuklearGUI::getContext () const { return ctx; }
+
+void    NuklearGUI::handleKeydown(void * p) {
+    int key = *static_cast<int*>(p);
+    switch (key) {
+        case SDLK_TAB: renderDebug(camera);
+    }
+}
 
 void    NuklearGUI::render(std::vector<Action::Enum> & actions, Camera & camera) {    
     if (find(actions.begin(), actions.end(), Action::DEBUG_MODE) != actions.end()) {
@@ -196,19 +206,19 @@ void    NuklearGUI::renderMenu(std::vector<Action::Enum> & actions) {
     if (nk_begin(ctx, "MENU", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_TITLE))
     {
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Resume"))
         {		    	
             actions.erase(std::remove(actions.begin(), actions.end(), Action::MENU), actions.end());            
         }
 
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Options"))
         {
             actions.push_back(Action::OPTIONS);
         }
    
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Quit"))
         {
             actions.clear();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 10:43:54 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/04 12:24:15 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera), gui(win) {
+RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera) {
 
 	int w, h;
 	SDL_GetWindowSize(win, &w, &h);
@@ -101,10 +101,6 @@ void	RenderEngine::renderScene(Shader *shader, Map const & map, std::vector<IGam
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
-}
-
-void	RenderEngine::renderGUI(std::vector<Action::Enum> & actions) {
-	gui.render(actions, camera);
 }
 
 void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const {
@@ -257,8 +253,6 @@ void	RenderEngine::setCamera(glm::mat4 const & cameraMatrix, Shader *shader) con
     shader->setCamera(cameraMatrix);
     shader->setView();
 }
-
-NuklearGUI &	RenderEngine::getGUI() { return gui; }
 
 void	RenderEngine::createShadowBuffer() {
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;

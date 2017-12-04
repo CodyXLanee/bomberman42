@@ -6,6 +6,14 @@
 # include <map>
 # include <vector>
 
+#define MEMBER_CALLBACK(funPtr) \
+std::bind(&funPtr, this, std::placeholders::_1)
+
+#define MEMBER_CALLBACK_WITH_INSTANCE(funPtr, instancePtr) \
+std::bind(&funPtr, instancePtr, std::placeholders::_1)
+
+typedef std::function<void(void*)> CallbackType;
+
 namespace Event {
 	enum Enum	{
 		KEYDOWN, KEYUP
@@ -15,12 +23,14 @@ namespace Event {
 class SEventManager {
     public:
     	~SEventManager();
-        static SEventManager& getInstance();
-		void	registerEvent(Event::Enum event, void (*f)(void*));
+		static SEventManager& getInstance();
+
+		void	registerEvent(Event::Enum event, CallbackType);
 		void	raise(Event::Enum event, void*);
 
-    private:
-		std::map<Event::Enum, std::vector<void(*)(void*)>> _map;
+	private:
+		std::map<Event::Enum, std::vector<CallbackType>> _map;
+
         SEventManager();
         SEventManager(SEventManager const&);              // Don't Implement.
         void operator=(SEventManager const&); // Don't implement

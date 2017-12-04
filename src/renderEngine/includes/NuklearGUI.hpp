@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/04 14:45:11 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 16:29:49 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <SDL.h>
 # include <vector>
+# include <stack>
 # include "bomberman.hpp"
 # include "Camera.hpp"
 # include "SEventManager.hpp"
@@ -44,7 +45,7 @@ class NuklearGUI
 
         Screen::Format          screenFormat;
 
-        bool        debug, menu, options, keyBindings;
+        std::stack<Menu::Enum>              _active_menu;
 
         void        handleKey(void *);
         void        toggle(void *);
@@ -53,6 +54,7 @@ class NuklearGUI
         void        renderMenu();
         void        renderOptions();
         void        renderKeyBindings();
+        void        renderStartMenu();
 
         NuklearGUI();
         NuklearGUI(NuklearGUI const &);

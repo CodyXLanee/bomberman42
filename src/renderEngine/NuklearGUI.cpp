@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/04 14:55:47 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 16:46:06 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 NuklearGUI::NuklearGUI(SDL_Window *sdlWindow, Camera & camera) :
     win(sdlWindow), camera(camera),
     menuWidth(500), menuHeight(500), optionHeight(30),
-    debug(false), menu(false), options(false), keyBindings(false) {
+    _active_menu(){
     ctx = nk_sdl_init(win);
     nk_sdl_font_stash_begin(&atlas);
     nk_sdl_font_stash_end();
@@ -41,9 +41,7 @@ NuklearGUI::NuklearGUI(SDL_Window *sdlWindow, Camera & camera) :
 
     SEventManager & event = SEventManager::getInstance();
     event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKey));
-    event.registerEvent(Event::TOGGLE_MENU, MEMBER_CALLBACK(NuklearGUI::toggle));
-    event.registerEvent(Event::TOGGLE_OPTIONS, MEMBER_CALLBACK(NuklearGUI::toggle));
-    event.registerEvent(Event::TOGGLE_KEYBINDINGS, MEMBER_CALLBACK(NuklearGUI::toggle));
+    event.registerEvent(Event::TOGGLE, MEMBER_CALLBACK(NuklearGUI::toggle));
 }
 
 NuklearGUI::~NuklearGUI() {
@@ -53,32 +51,42 @@ NuklearGUI::~NuklearGUI() {
 struct nk_context * NuklearGUI::getContext () const { return ctx; }
 
 void    NuklearGUI::toggle(void *p) {
-    bool    *b = static_cast<bool*>(p);
-    *b = !(*b); 
+    Menu::Enum *m = static_cast<Menu::Enum *>(p);
+    if (*m == Menu::NONE){
+        while (!_active_menu.empty()){
+            _active_menu.pop();
+        }
+    }
+    else if (!_active_menu.empty() && *m == _active_menu.top()){
+        _active_menu.pop();
+    }
+    else {
+        _active_menu.push(*m);
+    }
+    delete m;
+
 }
 
 void    NuklearGUI::handleKey(void * p) {
     int key = *static_cast<int*>(p);
     switch (key) {
-        case SDLK_TAB:      toggle(&debug); break;
-        case SDLK_LCTRL:    toggle(&menu); break;
+        case SDLK_TAB:      toggle(new Menu::Enum(Menu::DEBUG)); break;
+        case SDLK_LCTRL:    toggle(new Menu::Enum(Menu::BASE)); break;
         default: break;
     }
 }
 
-void    NuklearGUI::render() {    
-    if (debug) {
-        renderDebug();
+void    NuklearGUI::render() {
+    if (_active_menu.empty())
+        return;
+    switch (_active_menu.top()){
+        case Menu::NONE:                break;
+        case Menu::DEBUG:               renderDebug(); break;
+        case Menu::KEY_BINDINGS:        renderKeyBindings(); break;
+        case Menu::BASE:                renderMenu(); break;
+        case Menu::OPTIONS:             renderOptions(); break;
+        case Menu::START:               renderStartMenu(); break;
     }  
-    if (keyBindings) {
-        renderKeyBindings();
-    }
-    else if (options) {
-        renderOptions();
-    }
-    else if (menu) {
-        renderMenu();
-    }
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
 }
 
@@ -112,11 +120,11 @@ void    NuklearGUI::renderKeyBindings() {
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         if (nk_button_label(ctx, "Apply"))
         {
-            event.raise(Event::TOGGLE_KEYBINDINGS, &keyBindings);
+            event.raise(Event::TOGGLE, new Menu::Enum(Menu::KEY_BINDINGS));
         }
         if (nk_button_label(ctx, "Back"))
         {
-            event.raise(Event::TOGGLE_KEYBINDINGS, &keyBindings);
+            event.raise(Event::TOGGLE, new Menu::Enum(Menu::KEY_BINDINGS));
         }
     }
     nk_end(ctx);
@@ -191,7 +199,7 @@ void    NuklearGUI::renderOptions() {
         nk_label(ctx, "Key bindings", NK_TEXT_LEFT);     
         if (nk_button_label(ctx, "Configure"))
         {
-            event.raise(Event::TOGGLE_KEYBINDINGS, &keyBindings);                        
+            event.raise(Event::TOGGLE, new Menu::Enum(Menu::KEY_BINDINGS));  
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
@@ -202,16 +210,16 @@ void    NuklearGUI::renderOptions() {
                 screenFormat.mode = displayedFormat.mode;
                 displayedFormat.resolution = screenFormat.resolution;
                 displayedFormat.mode = screenFormat.mode;
-                event.raise(Event::SCREEN_FORMAT_UPDATE, &displayedFormat);                        
+                event.raise(Event::SCREEN_FORMAT_UPDATE, &displayedFormat);  
             }
-            event.raise(Event::TOGGLE_OPTIONS, &options);                        
+            event.raise(Event::TOGGLE, new Menu::Enum(Menu::OPTIONS));  
         }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Back"))
         {
             displayedFormat.resolution = screenFormat.resolution;
             displayedFormat.mode = screenFormat.mode;
-            event.raise(Event::TOGGLE_OPTIONS, &options);                        
+            event.raise(Event::TOGGLE, new Menu::Enum(Menu::OPTIONS));  
         }
         
     }
@@ -228,19 +236,53 @@ void    NuklearGUI::renderMenu() {
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Resume"))
         {
-            event.raise(Event::TOGGLE_MENU, &menu);
+            event.raise(Event::TOGGLE, new Menu::Enum(Menu::NONE));
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Options"))
         {
-            event.raise(Event::TOGGLE_OPTIONS, &options);            
+            event.raise(Event::TOGGLE, new Menu::Enum(Menu::OPTIONS));
         }
    
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Quit"))
         {
-            event.raise(Event::QUIT_GAME, nullptr);            
+            event.raise(Event::QUIT_GAME, nullptr);
+        }
+    }
+    nk_end(ctx);
+}
+
+void    NuklearGUI::renderStartMenu() {
+    int  w, h;
+    SDL_GetWindowSize(win, &w, &h);
+    SEventManager & event = SEventManager::getInstance();
+    if (nk_begin(ctx, "", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
+        NK_WINDOW_BORDER|NK_WINDOW_TITLE))
+    {
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "New Game"))
+        {
+            event.raise(Event::NEW_GAME, nullptr);
+            event.raise(Event::TOGGLE, new Menu::Enum(Menu::NONE));
+        }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Load Game"))
+        {
+            // event.raise(Event::LOAD_GAME, new Menu::Enum(, &menu));
+        }
+
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Options"))
+        {
+            event.raise(Event::TOGGLE, new Menu::Enum(Menu::OPTIONS));  
+        }
+   
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Quit"))
+        {
+            event.raise(Event::QUIT_GAME, nullptr);  
         }
     }
     nk_end(ctx);

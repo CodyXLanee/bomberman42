@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bomberman.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/01 14:22:08 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 15:00:52 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,23 @@ namespace Screen {
 		WINDOWED = 0,
 		FULLSCREEN
 	};
+	struct Format {
+		Screen::Resolution	resolution;
+		Screen::Mode		mode;
+	};
 }
+
+namespace GameMode {
+    enum Enum {BRAWL, CAMPAIGN};
+};
+
+namespace Save {
+    enum Enum {SLOT1, SLOT2, SLOT3};
+};
+
+namespace VolumeType {
+    enum Enum {MASTER, MUSIC, SOUND};
+};
+
 
 #endif

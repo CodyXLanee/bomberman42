@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/01 15:11:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 14:55:47 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,23 @@
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
 
-NuklearGUI::NuklearGUI(SDL_Window *sdlWindow) :
-    win(sdlWindow), menuWidth(500), menuHeight(500), optionHeight(30) {
+NuklearGUI::NuklearGUI(SDL_Window *sdlWindow, Camera & camera) :
+    win(sdlWindow), camera(camera),
+    menuWidth(500), menuHeight(500), optionHeight(30),
+    debug(false), menu(false), options(false), keyBindings(false) {
     ctx = nk_sdl_init(win);
     nk_sdl_font_stash_begin(&atlas);
     nk_sdl_font_stash_end();
-    screenResolution = Screen::Resolution::RES_1920_1080;
-    screenMode = Screen::Mode::WINDOWED;
+    screenFormat = {
+        Screen::Resolution::RES_1920_1080,
+        Screen::Mode::WINDOWED
+    };
+
+    SEventManager & event = SEventManager::getInstance();
+    event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKey));
+    event.registerEvent(Event::TOGGLE_MENU, MEMBER_CALLBACK(NuklearGUI::toggle));
+    event.registerEvent(Event::TOGGLE_OPTIONS, MEMBER_CALLBACK(NuklearGUI::toggle));
+    event.registerEvent(Event::TOGGLE_KEYBINDINGS, MEMBER_CALLBACK(NuklearGUI::toggle));
 }
 
 NuklearGUI::~NuklearGUI() {
@@ -42,27 +52,40 @@ NuklearGUI::~NuklearGUI() {
 
 struct nk_context * NuklearGUI::getContext () const { return ctx; }
 
-void    NuklearGUI::render(std::vector<Action::Enum> & actions, Camera & camera) {    
-    if (find(actions.begin(), actions.end(), Action::DEBUG_MODE) != actions.end()) {
-        renderDebug(camera);
+void    NuklearGUI::toggle(void *p) {
+    bool    *b = static_cast<bool*>(p);
+    *b = !(*b); 
+}
+
+void    NuklearGUI::handleKey(void * p) {
+    int key = *static_cast<int*>(p);
+    switch (key) {
+        case SDLK_TAB:      toggle(&debug); break;
+        case SDLK_LCTRL:    toggle(&menu); break;
+        default: break;
     }
-    if (find(actions.begin(), actions.end(), Action::MENU) != actions.end()) {
-        if (find(actions.begin(), actions.end(), Action::OPTIONS) != actions.end()) {
-            if (find(actions.begin(), actions.end(), Action::KEY_BINDINGS) != actions.end()) {
-                renderKeyBindings(actions);
-            }
-            renderOptions(actions);
-        }
-        else {
-            renderMenu(actions);
-        }
+}
+
+void    NuklearGUI::render() {    
+    if (debug) {
+        renderDebug();
+    }  
+    if (keyBindings) {
+        renderKeyBindings();
+    }
+    else if (options) {
+        renderOptions();
+    }
+    else if (menu) {
+        renderMenu();
     }
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
 }
 
-void    NuklearGUI::renderKeyBindings(std::vector<Action::Enum> & actions) {
+void    NuklearGUI::renderKeyBindings() {
     int  w, h;
     SDL_GetWindowSize(win, &w, &h);
+    SEventManager & event = SEventManager::getInstance();    
 
     if (nk_begin(ctx, "KEY BINDINGS", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_TITLE)) {
@@ -89,29 +112,32 @@ void    NuklearGUI::renderKeyBindings(std::vector<Action::Enum> & actions) {
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         if (nk_button_label(ctx, "Apply"))
         {
-            actions.erase(std::remove(actions.begin(), actions.end(), Action::KEY_BINDINGS), actions.end());            
+            event.raise(Event::TOGGLE_KEYBINDINGS, &keyBindings);
         }
         if (nk_button_label(ctx, "Back"))
         {
-            actions.erase(std::remove(actions.begin(), actions.end(), Action::KEY_BINDINGS), actions.end());            
+            event.raise(Event::TOGGLE_KEYBINDINGS, &keyBindings);
         }
     }
     nk_end(ctx);
 }
 
-void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
+void    NuklearGUI::renderOptions() {
 
     int  w, h;
     SDL_GetWindowSize(win, &w, &h);
+    SEventManager & event = SEventManager::getInstance();
 
     static float        masterVolume = 0.8f;
     static float        musicVolume = 0.5f;
     static float        effectsVolume = 0.6f;
+
+    static Screen::Format   displayedFormat = screenFormat;    
+   // displayedFormat.resolution = screenResolution;
+    //displayedFormat.mode = screenMode;
     
-    static Screen::Resolution  displayedRes = screenResolution;
-    static Screen::Mode        displayedMode = screenMode;
-    std::string screenResString = toString(displayedRes);
-    std::string screenModeString = toString(displayedMode);
+    std::string screenResString = toString(displayedFormat.resolution);
+    std::string screenModeString = toString(displayedFormat.mode);
 
     if (nk_begin(ctx, "OPTIONS", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_TITLE))
@@ -123,13 +149,13 @@ void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
             nk_layout_row_dynamic(ctx, optionHeight, 1);
             
             if (nk_menu_item_label(ctx, "2560 x 1440", NK_TEXT_CENTERED)) {
-                displayedRes = Screen::Resolution::RES_2560_1440;
+                displayedFormat.resolution = Screen::Resolution::RES_2560_1440;
             }
             if (nk_menu_item_label(ctx, "1920 x 1080", NK_TEXT_CENTERED)) {
-                displayedRes = Screen::Resolution::RES_1920_1080;
+                displayedFormat.resolution = Screen::Resolution::RES_1920_1080;
             }
             if (nk_menu_item_label(ctx, "1024 x 768", NK_TEXT_CENTERED)) {
-                displayedRes = Screen::Resolution::RES_1024_768;
+                displayedFormat.resolution = Screen::Resolution::RES_1024_768;
             }
             nk_menu_end(ctx);
         }
@@ -140,10 +166,10 @@ void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
 
             nk_layout_row_dynamic(ctx, optionHeight, 1);
             if (nk_menu_item_label(ctx, "WINDOWED", NK_TEXT_CENTERED)) {
-                displayedMode = Screen::Mode::WINDOWED;
+                displayedFormat.mode = Screen::Mode::WINDOWED;
             }
             if (nk_menu_item_label(ctx, "FULLSCREEN", NK_TEXT_CENTERED)) {
-                displayedMode = Screen::Mode::FULLSCREEN;
+                displayedFormat.mode = Screen::Mode::FULLSCREEN;
             }
             nk_menu_end(ctx);
         }
@@ -165,60 +191,62 @@ void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
         nk_label(ctx, "Key bindings", NK_TEXT_LEFT);     
         if (nk_button_label(ctx, "Configure"))
         {
-            /* Key bindings */
-            actions.push_back(Action::KEY_BINDINGS);
+            event.raise(Event::TOGGLE_KEYBINDINGS, &keyBindings);                        
         }
 
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Apply"))
         {
-            if (screenResolution != displayedRes || screenMode != displayedMode) {
-                screenResolution = displayedRes;
-                screenMode = displayedMode;
-                actions.push_back(Action::SCREEN_CHANGED);
+            if (screenFormat.resolution != displayedFormat.resolution || screenFormat.mode != displayedFormat.mode) {
+                screenFormat.resolution = displayedFormat.resolution;
+                screenFormat.mode = displayedFormat.mode;
+                displayedFormat.resolution = screenFormat.resolution;
+                displayedFormat.mode = screenFormat.mode;
+                event.raise(Event::SCREEN_FORMAT_UPDATE, &displayedFormat);                        
             }
-            actions.erase(std::remove(actions.begin(), actions.end(), Action::OPTIONS), actions.end());            
+            event.raise(Event::TOGGLE_OPTIONS, &options);                        
         }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Back"))
         {
-            displayedRes = screenResolution;
-            displayedMode = screenMode;
-            actions.erase(std::remove(actions.begin(), actions.end(), Action::OPTIONS), actions.end());            
+            displayedFormat.resolution = screenFormat.resolution;
+            displayedFormat.mode = screenFormat.mode;
+            event.raise(Event::TOGGLE_OPTIONS, &options);                        
         }
         
     }
     nk_end(ctx);
 }
 
-void    NuklearGUI::renderMenu(std::vector<Action::Enum> & actions) {
+void    NuklearGUI::renderMenu() {
     int  w, h;
     SDL_GetWindowSize(win, &w, &h);
+    SEventManager & event = SEventManager::getInstance();
     if (nk_begin(ctx, "MENU", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_TITLE))
     {
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Resume"))
-        {		    	
-            actions.erase(std::remove(actions.begin(), actions.end(), Action::MENU), actions.end());            
+        {
+            event.raise(Event::TOGGLE_MENU, &menu);
         }
 
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Options"))
         {
-            actions.push_back(Action::OPTIONS);
+            event.raise(Event::TOGGLE_OPTIONS, &options);            
         }
    
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Quit"))
         {
-            actions.clear();
-            actions.push_back(Action::ESCAPE);
+            event.raise(Event::QUIT_GAME, nullptr);            
         }
     }
     nk_end(ctx);
 }
 
-void    NuklearGUI::renderDebug(Camera & camera) {
+void    NuklearGUI::renderDebug() {
     glm::vec3   camPos = camera.getPosition();
     glm::vec3   camFront = camera.getFront();
     std::string camPosString = "Camera position: " + std::to_string(camPos.x) + " : " + std::to_string(camPos.y) + " : " + std::to_string(camPos.z);
@@ -262,6 +290,3 @@ std::string     NuklearGUI::toString(Screen::Mode m) const {
     }
     return mode;
 }
-
-Screen::Resolution  NuklearGUI::getScreenResolution() const { return screenResolution; }
-Screen::Mode        NuklearGUI::getScreenMode() const { return screenMode; }

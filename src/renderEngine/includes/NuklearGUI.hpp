@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/01 14:36:32 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 14:45:11 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,36 +17,42 @@
 # include <vector>
 # include "bomberman.hpp"
 # include "Camera.hpp"
+# include "SEventManager.hpp"
 
 class NuklearGUI
 {
     public:
-        NuklearGUI(SDL_Window *);
+        NuklearGUI(SDL_Window *, Camera &);
         ~NuklearGUI();
 
         struct nk_context *     getContext() const;
         Screen::Resolution      getScreenResolution() const;
         Screen::Mode            getScreenMode() const;
-        void                    render(std::vector<Action::Enum> &, Camera &);
+        void                    render();
 
         std::string             toString(Screen::Resolution) const;
         std::string             toString(Screen::Mode) const;
         
     private:
         SDL_Window              *win;
+        Camera                  &camera;
         struct nk_context       *ctx;
         struct nk_font_atlas    *atlas;
         int                     const menuWidth;
         int                     const menuHeight;
         int                     const optionHeight;
 
-        Screen::Resolution      screenResolution;
-        Screen::Mode            screenMode;
+        Screen::Format          screenFormat;
 
-        void        renderDebug(Camera &);
-        void        renderMenu(std::vector<Action::Enum> &);
-        void        renderOptions(std::vector<Action::Enum> &);
-        void        renderKeyBindings(std::vector<Action::Enum> &);
+        bool        debug, menu, options, keyBindings;
+
+        void        handleKey(void *);
+        void        toggle(void *);
+
+        void        renderDebug();
+        void        renderMenu();
+        void        renderOptions();
+        void        renderKeyBindings();
 
         NuklearGUI();
         NuklearGUI(NuklearGUI const &);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/01 13:27:27 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 15:12:27 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(height) {
 	initSDL();
     initGL();
+    SEventManager & event = SEventManager::getInstance();
+    event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(Sdl_gl_win::updateScreenFormat));
 }
 
 Sdl_gl_win::~Sdl_gl_win() {
@@ -60,8 +62,8 @@ void	Sdl_gl_win::initGL() const {
 
 void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, NuklearGUI & nk) {
     struct nk_context * nk_ctx = nk.getContext();
+    SEventManager & event = SEventManager::getInstance();
     SDL_GetRelativeMouseState(&mouseX,&mouseY);
-    handleWindowActions(actions, nk);
     nk_input_begin(nk_ctx);
     while (SDL_PollEvent(&events)) {
         if (events.window.event == SDL_WINDOWEVENT_CLOSE ||
@@ -71,6 +73,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, NuklearGUI
         }
         nk_sdl_handle_event(&events);
         if (events.type == SDL_KEYDOWN) {
+            event.raise(Event::KEYDOWN, &events.key.keysym.sym);
             Action::Enum a;
             switch(events.key.keysym.sym) {
 
@@ -95,6 +98,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, NuklearGUI
 		    	actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());            
         } 
         if (events.type == SDL_KEYUP) {
+            event.raise(Event::KEYUP, &events.key.keysym.sym);            
             Action::Enum a;
             switch(events.key.keysym.sym) {
                 case SDLK_a:        a = Action::LEFT; break;
@@ -115,31 +119,27 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, NuklearGUI
     nk_input_end(nk_ctx);
 }
 
-void            Sdl_gl_win::handleWindowActions(std::vector<Action::Enum> & actions, NuklearGUI & nk) {
-    if (find(actions.begin(), actions.end(), Action::SCREEN_CHANGED) != actions.end()) {
-        Screen::Resolution res = nk.getScreenResolution();
-        Screen::Mode mode = nk.getScreenMode();
-        int w, h;
-        switch (res) {
-            case Screen::Resolution::RES_2560_1440: w = 2560; h = 1440; break;
-            case Screen::Resolution::RES_1920_1080: w = 1920; h = 1080; break;
-            case Screen::Resolution::RES_1024_768:  w = 1024; h = 768; break;
-        }
-        if (mode == Screen::Mode::FULLSCREEN) {
-            SDL_DisplayMode fsmode;
-            fsmode.w = w;
-            fsmode.h = h;
-            fsmode.format = SDL_PIXELFORMAT_ARGB8888;
-            SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
-            SDL_SetWindowDisplayMode(win, &fsmode);
-        }
-        else {
-            SDL_SetWindowFullscreen(win, 0);                
-        }
-        SDL_SetWindowSize(win, w, h);
-        Shader::perspective = glm::perspective(glm::radians(FOV), static_cast<float>(w) / static_cast<float>(h), Z_NEAR, Z_FAR);
-        actions.erase(std::remove(actions.begin(), actions.end(), Action::SCREEN_CHANGED), actions.end());            
+void            Sdl_gl_win::updateScreenFormat(void *f) {
+    Screen::Format  format = *static_cast<Screen::Format*>(f);
+    int             w, h;
+    switch (format.resolution) {
+        case Screen::Resolution::RES_2560_1440: w = 2560; h = 1440; break;
+        case Screen::Resolution::RES_1920_1080: w = 1920; h = 1080; break;
+        case Screen::Resolution::RES_1024_768:  w = 1024; h = 768; break;
     }
+    if (format.mode == Screen::Mode::FULLSCREEN) {
+        SDL_DisplayMode fsmode;
+        fsmode.w = w;
+        fsmode.h = h;
+        fsmode.format = SDL_PIXELFORMAT_ARGB8888;
+        SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
+        SDL_SetWindowDisplayMode(win, &fsmode);
+    }
+    else {
+        SDL_SetWindowFullscreen(win, 0);                
+    }
+    SDL_SetWindowSize(win, w, h);
+    Shader::perspective = glm::perspective(glm::radians(FOV), static_cast<float>(w) / static_cast<float>(h), Z_NEAR, Z_FAR);
 }
 
 SDL_Window      *Sdl_gl_win::getWin() const {

@@ -30,6 +30,7 @@ SRC_NAME =	\
 			Map.cpp \
 			main.cpp \
 			SEventManager.cpp \
+			SGameManager.cpp\
 
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)

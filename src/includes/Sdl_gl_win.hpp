@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/01 13:00:52 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 14:53:54 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "bomberman.hpp"
 # include "NuklearGUI.hpp"
 # include "Shader.hpp"
+# include "SEventManager.hpp"
 # include "nuklear.h"
 # include "nuklear_sdl_gl3.h"
 
@@ -38,7 +39,7 @@ class Sdl_gl_win {
 	private:
 		Sdl_gl_win();
 		void			initSDL();
-		void			handleWindowActions(std::vector<Action::Enum> &, NuklearGUI &);
+		void			updateScreenFormat(void *);
 
 		SDL_Event		events;
 		SDL_GLContext	ctx;

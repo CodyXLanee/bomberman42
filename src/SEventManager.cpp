@@ -12,25 +12,25 @@ SEventManager &	SEventManager::getInstance()
 }
 
 
-void		SEventManager::registerEvent(Event::Enum event, void (*f)(void*))
+void		SEventManager::registerEvent(Event::Enum event, CallbackType f)
 {
-	std::map<Event::Enum, std::vector<void(*)(void*)>>::iterator	it;
+	std::map<Event::Enum, std::vector<CallbackType>>::iterator	it;
 	it = _map.find(event);
 
 	if (it != _map.end())
 		it->second.push_back(f);
 	else
 	{
-		std::vector<void(*)(void*)>	vec;
+		std::vector<CallbackType>	vec;
 		vec.push_back(f);
-		_map.insert(std::pair<Event::Enum, std::vector<void(*)(void*)>>(event, vec));
+		_map.insert(std::pair<Event::Enum, std::vector<CallbackType>>(event, vec));
 	}
 }
 
 
 void		SEventManager::raise(Event::Enum event, void* param)
 {
-	std::map<Event::Enum, std::vector<void(*)(void*)>>::iterator	it;
+	std::map<Event::Enum, std::vector<CallbackType>>::iterator	it;
 	it = _map.find(event);
 
 	if (it != _map.end())

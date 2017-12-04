@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 14:20:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/04 16:24:12 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ class RenderEngine {
 		~RenderEngine();
 		
 		void	render(Map const & map, std::vector<IGameEntity *> & entities);
-		void	renderGUI(std::vector<Action::Enum> &);
-		NuklearGUI &	getGUI();
 		
 	private:
 		
@@ -57,7 +55,6 @@ class RenderEngine {
 		Model		*flameModel;
 		Camera  	&camera;
 		Light		*light;
-		NuklearGUI	gui;
 
 		ParticleSystem *particles;
 

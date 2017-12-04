@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 11:59:25 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 14:53:54 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Sdl_gl_win {
 	private:
 		Sdl_gl_win();
 		void			initSDL();
-		void			handleWindowActions(std::vector<Action::Enum> &, NuklearGUI &);
+		void			updateScreenFormat(void *);
 
 		SDL_Event		events;
 		SDL_GLContext	ctx;

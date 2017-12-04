@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/04 12:28:39 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 14:45:11 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class NuklearGUI
         struct nk_context *     getContext() const;
         Screen::Resolution      getScreenResolution() const;
         Screen::Mode            getScreenMode() const;
-        void                    render(std::vector<Action::Enum> &, Camera &);
+        void                    render();
 
         std::string             toString(Screen::Resolution) const;
         std::string             toString(Screen::Mode) const;
@@ -42,15 +42,17 @@ class NuklearGUI
         int                     const menuHeight;
         int                     const optionHeight;
 
-        Screen::Resolution      screenResolution;
-        Screen::Mode            screenMode;
+        Screen::Format          screenFormat;
 
-        void        handleKeydown(void *);
+        bool        debug, menu, options, keyBindings;
 
-        void        renderDebug(Camera &);
-        void        renderMenu(std::vector<Action::Enum> &);
-        void        renderOptions(std::vector<Action::Enum> &);
-        void        renderKeyBindings(std::vector<Action::Enum> &);
+        void        handleKey(void *);
+        void        toggle(void *);
+
+        void        renderDebug();
+        void        renderMenu();
+        void        renderOptions();
+        void        renderKeyBindings();
 
         NuklearGUI();
         NuklearGUI(NuklearGUI const &);

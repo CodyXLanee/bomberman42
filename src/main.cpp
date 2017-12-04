@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 13:46:35 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 14:00:30 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int main() {
 		
 		camera.update(actions, window.getMouseX(), window.getMouseY(), game.getPlayerPos());
 		renderer.render(game.getMap(), game.getEntityList());
+		gui.render();
 		window.initGL();
 		SDL_GL_SwapWindow(window.getWin());
 	}

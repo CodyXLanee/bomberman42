@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/01 14:22:08 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 14:31:26 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ namespace Screen {
 	enum Mode {
 		WINDOWED = 0,
 		FULLSCREEN
+	};
+	struct Format {
+		Screen::Resolution	resolution;
+		Screen::Mode		mode;
 	};
 }
 

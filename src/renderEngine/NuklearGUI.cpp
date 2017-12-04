@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/04 13:46:58 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 13:51:41 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
             actions.push_back(Action::KEY_BINDINGS);
         }
 
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Apply"))
         {
             if (screenResolution != displayedRes || screenMode != displayedMode) {
@@ -189,6 +189,7 @@ void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
             }
             actions.erase(std::remove(actions.begin(), actions.end(), Action::OPTIONS), actions.end());            
         }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Back"))
         {
             displayedRes = screenResolution;

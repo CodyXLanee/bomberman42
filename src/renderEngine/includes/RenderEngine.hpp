@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 12:23:54 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 16:24:12 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include "Model.hpp"
 # include "Camera.hpp"
 # include "Light.hpp"
+# include "ParticleSystem.hpp"
+# include "NuklearGUI.hpp"
 # include "Map.hpp"
 # include <vector>
 
@@ -42,6 +44,7 @@ class RenderEngine {
 		Shader		*flamesShader;
 		Shader		*directionalShadowShader;
 		Shader		*pointShadowShader;
+		Shader		*particlesShader;
 		Shader		*debugDepthQuad;
 		
 		Model		*playerModel;
@@ -52,6 +55,8 @@ class RenderEngine {
 		Model		*flameModel;
 		Camera  	&camera;
 		Light		*light;
+
+		ParticleSystem *particles;
 
 		unsigned int depthMapFBO;
 		unsigned int depthMap;
@@ -68,7 +73,7 @@ class RenderEngine {
 		void	renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const;
-		// void	setCamera(glm::mat4 const &);
+		void	renderParticles();
 		void	setCamera(glm::mat4 const &, Shader *shader) const;
 
 		void	createShadowBuffer();

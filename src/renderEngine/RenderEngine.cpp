@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 10:43:54 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/04 16:20:10 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 								"src/renderEngine/shaders/pointShadowDepth.glfs");
 	// debugDepthQuad = new Shader("src/renderEngine/shaders/debugShadow.glvs",
 	// 							"src/renderEngine/shaders/debugShadow.glfs");
+
+	particlesShader = new Shader("src/renderEngine/shaders/particles.glvs",
+								"src/renderEngine/shaders/particles.glfs");
 	
 	groundModel = new Model("assets/models/obj/groundTile1.obj", false);
 	wallModel = new Model("assets/models/obj/wall.obj", false);
@@ -67,8 +70,6 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	mainShader->use();
-	mainShader->setFloat("alpha", 1.0);
-	mainShader->setInt("flames", 0);
 	glDisable(GL_BLEND);
 	getDirectionalShadowMap(map, entities);
 	// getOmnidirectionalShadowMap(map, entities);
@@ -81,6 +82,8 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	renderScene(mainShader, map, entities);
 
 	renderFlames(flamesShader, entities);
+
+	// renderParticles();
 	
 	// light->render(mainShader, camera);
 	// renderShadowMap();
@@ -222,7 +225,7 @@ static	float		flames_animation_scale(Flame const *f){
 
 void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const {
 	std::vector<glm::mat4> data;
-setCamera(camera.getMatrix(), shader);
+	setCamera(camera.getMatrix(), shader);
 	shader->use();
 	shader->setInt("core", 1);
 	glEnable(GL_BLEND);
@@ -379,4 +382,13 @@ void RenderEngine::renderShadowMap()
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
+}
+
+void RenderEngine::renderParticles() {
+	if (particles == nullptr) {
+		particles = new ParticleSystem(glm::vec3(2.f, 2.f, 2.f), ParticleSystem::FIRE);
+	}
+
+	setCamera(camera.getMatrix(), particlesShader);
+	particles->draw(particlesShader);
 }

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 09:23:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/04 14:20:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "Model.hpp"
 # include "Camera.hpp"
 # include "Light.hpp"
+# include "ParticleSystem.hpp"
 # include "NuklearGUI.hpp"
 # include "Map.hpp"
 # include <vector>
@@ -45,6 +46,7 @@ class RenderEngine {
 		Shader		*flamesShader;
 		Shader		*directionalShadowShader;
 		Shader		*pointShadowShader;
+		Shader		*particlesShader;
 		Shader		*debugDepthQuad;
 		
 		Model		*playerModel;
@@ -56,6 +58,8 @@ class RenderEngine {
 		Camera  	&camera;
 		Light		*light;
 		NuklearGUI	gui;
+
+		ParticleSystem *particles;
 
 		unsigned int depthMapFBO;
 		unsigned int depthMap;
@@ -72,7 +76,7 @@ class RenderEngine {
 		void	renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const;
-		// void	setCamera(glm::mat4 const &);
+		void	renderParticles();
 		void	setCamera(glm::mat4 const &, Shader *shader) const;
 
 		void	createShadowBuffer();

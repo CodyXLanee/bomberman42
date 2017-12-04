@@ -1,0 +1,14 @@
+#version 400
+layout(location = 0) in vec3 position;
+layout(location = 5) in mat4 modelsMatrix;
+
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+
+void main()
+{
+    float scale = 1.0f;
+    // gl_Position = projectionMatrix * vec4((vertex.xz * scale), 0.0, 1.0);
+	gl_Position = (projectionMatrix * viewMatrix * modelsMatrix) * vec4(position, 1.0);
+
+}

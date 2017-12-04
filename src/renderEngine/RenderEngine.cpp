@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/03 16:15:05 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/12/04 10:43:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 
 	mainShader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
 								"src/renderEngine/shaders/directionalLighting.glfs");
+	flamesShader = new Shader("src/renderEngine/shaders/flames.glvs",
+								"src/renderEngine/shaders/flames.glfs");
 	// mainShader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
 	// 							"src/renderEngine/shaders/omnidirectionalLighting.glfs");
 	directionalShadowShader = new Shader("src/renderEngine/shaders/directionalShadowDepth.glvs",
@@ -78,7 +80,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	// glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 	renderScene(mainShader, map, entities);
 
-	renderFlames(mainShader, entities);
+	renderFlames(flamesShader, entities);
 	
 	// light->render(mainShader, camera);
 	// renderShadowMap();
@@ -220,32 +222,30 @@ static	float		flames_animation_scale(Flame const *f){
 
 void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const {
 	std::vector<glm::mat4> data;
-
+setCamera(camera.getMatrix(), shader);
 	shader->use();
-	shader->setFloat("alpha", 0.7);
-	shader->setInt("flames", 1);
+	shader->setInt("core", 1);
 	glEnable(GL_BLEND);
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
 			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(flames_animation_scale(static_cast<Flame const *>(*i)) / 2));
 			transform = glm::rotate(transform,glm::radians(static_cast<float>(rand() % 360)), glm::vec3(0.f, 0.f, 1.f));
-			data.push_back(transform);
+			data.insert(data.begin(), transform);
 		}
 	}
     flameModel->setInstanceBuffer(data);  
 	flameModel->draw(shader, data.size());
 	data.clear();
 	shader->use();
-	shader->setInt("alpha", 0.4);
-	shader->setInt("flames", 0);
+	shader->setInt("core", 0);
 	glEnable(GL_BLEND);
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
 			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(flames_animation_scale(static_cast<Flame const *>(*i))));
-			transform = glm::rotate(transform,glm::radians(static_cast<float>(rand() % 360)), glm::vec3(0.f, 0.f, 1.f));
-			data.push_back(transform);
+			transform = glm::rotate(transform,glm::radians((rand() % 4) * 90.f), glm::vec3(0.f, 0.f, 1.f));
+			data.insert(data.begin(), transform);
 		}
 	}
     flameModel->setInstanceBuffer(data);  

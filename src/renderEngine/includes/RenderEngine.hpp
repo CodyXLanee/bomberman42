@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/02 22:10:41 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/12/04 09:23:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ class RenderEngine {
 		
 		RenderEngine();
 		SDL_Window	*win;
-		Shader		*shader;
 		Shader		*mainShader;
+		Shader		*flamesShader;
 		Shader		*directionalShadowShader;
 		Shader		*pointShadowShader;
 		Shader		*debugDepthQuad;

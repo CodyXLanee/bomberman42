@@ -1,0 +1,24 @@
+#version 400
+
+in vec2 UV;
+in vec3 fragPos;
+in vec3 normal;
+in vec4 fragPosLightSpace;
+
+out vec4 outputColor;
+
+uniform vec3 viewPos;
+uniform vec3 lightPos;
+uniform vec3 lightColor;
+uniform int core;
+
+uniform sampler2D texture_diffuse;
+
+uniform float alpha;
+
+void main(){
+	if (core == 0)
+    	outputColor = vec4(1, 1 - fragPos.z, 0.0, 1.2 - fragPos.z + 0.2);
+	else
+    	outputColor = vec4(1.2 - fragPos.z + 0.2, 1.0, 1.0, 0.8);
+}

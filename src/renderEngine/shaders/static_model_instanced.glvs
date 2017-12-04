@@ -7,7 +7,6 @@ layout(location = 5) in mat4 modelsMatrix;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-// uniform mat4 modelMatrix;
 uniform mat4 lightSpaceMatrix;
 
 uniform vec3 materialColor;

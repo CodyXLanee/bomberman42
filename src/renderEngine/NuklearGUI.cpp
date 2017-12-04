@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/01 15:11:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/04 13:12:17 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
             actions.push_back(Action::KEY_BINDINGS);
         }
 
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Apply"))
         {
             if (screenResolution != displayedRes || screenMode != displayedMode) {
@@ -179,6 +179,7 @@ void    NuklearGUI::renderOptions(std::vector<Action::Enum> & actions) {
             }
             actions.erase(std::remove(actions.begin(), actions.end(), Action::OPTIONS), actions.end());            
         }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Back"))
         {
             displayedRes = screenResolution;
@@ -196,19 +197,19 @@ void    NuklearGUI::renderMenu(std::vector<Action::Enum> & actions) {
     if (nk_begin(ctx, "MENU", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_TITLE))
     {
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Resume"))
         {		    	
             actions.erase(std::remove(actions.begin(), actions.end(), Action::MENU), actions.end());            
         }
 
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Options"))
         {
             actions.push_back(Action::OPTIONS);
         }
    
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Quit"))
         {
             actions.clear();

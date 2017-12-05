@@ -6,17 +6,11 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 16:24:23 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/05 11:10:27 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RenderEngine.hpp"
-#include "Player.hpp"
-#include "Flame.hpp"
-#include "Bomb.hpp"
-#include <cmath>
-#include <glm/ext.hpp>
-#include <glm/gtx/vector_angle.hpp>
 
 RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera) {
 
@@ -66,6 +60,7 @@ RenderEngine::~RenderEngine() {}
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
 	int	w, h;
 	SDL_GetWindowSize(win, &w, &h);
+	// recordNewEntities(entities);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -83,7 +78,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 
 	renderFlames(flamesShader, entities);
 
-	// renderParticles();
+	renderParticles();
 	
 	// light->render(mainShader, camera);
 	// renderShadowMap();
@@ -379,10 +374,16 @@ void RenderEngine::renderShadowMap()
 }
 
 void RenderEngine::renderParticles() {
-	if (particles == nullptr) {
-		particles = new ParticleSystem(glm::vec3(2.f, 2.f, 2.f), ParticleSystem::FIRE);
+	if (particles.size() == 0) {
+		particles.push_back(new ParticleSystem(glm::vec3(-5.f, -5.f, 10.f), ParticleSystem::RAIN));
 	}
 
 	setCamera(camera.getMatrix(), particlesShader);
-	particles->draw(particlesShader);
+	particles[0]->draw(particlesShader);
+}
+
+void	RenderEngine::recordNewEntities(std::vector<IGameEntity *> & entities) {
+	for(unsigned int it = 0; it < entities.size(); it++) {
+		std::cout << &entities[it] << std::endl;
+	}
 }

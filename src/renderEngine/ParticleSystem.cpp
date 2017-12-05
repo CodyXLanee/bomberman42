@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 11:26:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 16:17:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/05 11:07:15 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,31 @@ ParticleSystem::ParticleSystem(glm::vec3 position, enum type t) : type(t), oriPo
 
 	glBindVertexArray(0);
 
-    particleNbr = 1000;
-    for(unsigned int i = 0; i < particleNbr; i++) {
-        float r1 = static_cast<float>((rand() % 10)) - 10.f;
-        float r2 = static_cast<float>((rand() % 10)) - 10.f;
-        positions.push_back(position + glm::vec3(r1 / 10.f, r2 / 10.f, 0.f));
-    }
+		switch(type) {
+			case FIRE:
+				particleNbr = 10;
+				for(unsigned int i = 0; i < particleNbr; i++) {
+					float r1 = static_cast<float>((rand() % 10)) - 10.f;
+					float r2 = static_cast<float>((rand() % 10)) - 10.f;
+					positions.push_back(position + glm::vec3(r1 / 10.f, r2 / 10.f, 0.f));
+				}
+				break;
+			case BOMB:
+				particleNbr = 3;
+				for(unsigned int i = 0; i < particleNbr; i++) {
+					positions.push_back(position + glm::vec3(0.08f, 0.f, 0.59f));
+				}
+				break;
+			case RAIN:
+				particleNbr = 1000;
+				for(unsigned int i = 0; i < particleNbr; i++) {
+					float r1 = static_cast<float>((rand() % 300)) / 10.f;
+					float r2 = static_cast<float>((rand() % 300)) / 10.f;
+					float r3 = static_cast<float>((rand() % 300)) / 10.f;
+					positions.push_back(position + glm::vec3(r1, r2, r3));
+				}
+				break;
+		}
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -87,8 +106,11 @@ void	ParticleSystem::draw(Shader *shader) {
         return;
         
     shader->use();
-
-    update(shader);
+	switch(type) {
+		case FIRE: updateFire(shader); break;
+		case BOMB: updateBomb(shader); break;
+		case RAIN: updateRain(shader); break;
+	}
 
 	glBindVertexArray(this->vao);
 	glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, particleNbr);
@@ -96,7 +118,7 @@ void	ParticleSystem::draw(Shader *shader) {
 	return;
 }
 
-void	ParticleSystem::update(Shader *shader) {
+void	ParticleSystem::updateFire(Shader *shader) {
     std::vector<glm::mat4> data;
 	for (auto i = positions.begin(); i != positions.end(); i++){
         float r = static_cast<float>((rand() % 5)) - 2.5f;
@@ -109,13 +131,62 @@ void	ParticleSystem::update(Shader *shader) {
             positions.erase(i);
             i--;
             break;
-        } else
-            shader->setFloat("dist", glm::distance(oriPos, *i));
+		}
+        shader->setFloat("dist", glm::distance(oriPos, *i));
+        shader->setInt("type", type);
 
         glm::mat4 transform = glm::mat4();
         transform = glm::translate(transform, *i);
         transform = glm::rotate(transform,glm::radians(-90.0f), glm::vec3(1.f, 0.f, 0.f));
         transform = glm::scale(transform, glm::vec3(0.02f, 0.02f, 0.02f));
+        data.push_back(transform);
+    }
+    if (data.size() != 0)
+        setInstanceBuffer(data);
+}
+
+void	ParticleSystem::updateBomb(Shader *shader) {
+    std::vector<glm::mat4> data;
+	shader->setInt("type", type);
+	
+	for (auto i = positions.begin(); i != positions.end(); i++){
+        float r = static_cast<float>((rand() % 90)) - 45.f;
+
+        glm::mat4 transform = glm::mat4();
+        transform = glm::translate(transform, *i);
+        transform = glm::rotate(transform,glm::radians(-90.0f), glm::vec3(1.f, 0.f, 0.f));
+        transform = glm::rotate(transform,glm::radians(r), glm::vec3(0.f, 0.f, 1.f));
+        transform = glm::scale(transform, glm::vec3(0.01f, 0.1f, 1.f));
+        data.push_back(transform);
+    }
+    if (data.size() != 0)
+        setInstanceBuffer(data);
+}
+
+void	ParticleSystem::updateRain(Shader *shader) {
+    std::vector<glm::mat4> data;
+	shader->setInt("type", type);
+	
+	for (auto i = positions.begin(); i != positions.end(); i++){
+        // float r = static_cast<float>((rand() % 20)) / 10.f;
+
+        glm::vec3 dir = glm::vec3(0.f, 0.f, - 0.2f);
+        *i += dir;
+
+        // float dist = glm::distance(oriPos, *i);
+        if (i->z < -5) {
+			float r1 = static_cast<float>((rand() % 300)) / 10.f;
+			float r2 = static_cast<float>((rand() % 300)) / 10.f;
+			float r3 = static_cast<float>((rand() % 300)) / 10.f;
+			*i = oriPos + glm::vec3(r1, r2, r3);
+            i--;
+            // break;
+		}
+
+        glm::mat4 transform = glm::mat4();
+        transform = glm::translate(transform, *i);
+        transform = glm::rotate(transform,glm::radians(-90.0f), glm::vec3(1.f, 0.f, 0.f));
+        transform = glm::scale(transform, glm::vec3(0.01f, 0.5f, 1.f));
         data.push_back(transform);
     }
     if (data.size() != 0)

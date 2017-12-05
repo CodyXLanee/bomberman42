@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 13:37:11 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 15:45:47 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/05 10:37:39 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 class ParticleSystem {
 	public:
-		enum type { FIRE, BOMB };
+		enum type { FIRE, BOMB, RAIN };
 		
 		ParticleSystem(glm::vec3 position, type t);
 		~ParticleSystem();
@@ -29,7 +29,9 @@ class ParticleSystem {
 	private:
 		ParticleSystem();
 
-		void	update(Shader *shader);
+		void	updateFire(Shader *shader);
+		void	updateBomb(Shader *shader);
+		void	updateRain(Shader *shader);
 		void	setInstanceBuffer(std::vector<glm::mat4> const & data);
 
 		unsigned int particleNbr;

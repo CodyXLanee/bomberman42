@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 15:00:52 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/04 16:05:12 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,10 @@ namespace Screen {
 		Screen::Resolution	resolution;
 		Screen::Mode		mode;
 	};
+}
+
+namespace Menu {
+	enum Enum {NONE, DEBUG, BASE, OPTIONS, KEY_BINDINGS, START};
 }
 
 namespace GameMode {

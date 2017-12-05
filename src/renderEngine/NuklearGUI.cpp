@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/04 16:46:06 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 16:38:24 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,14 @@ NuklearGUI::NuklearGUI(SDL_Window *sdlWindow, Camera & camera) :
     SEventManager & event = SEventManager::getInstance();
     event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKey));
     event.registerEvent(Event::TOGGLE, MEMBER_CALLBACK(NuklearGUI::toggle));
+
+    _keysMap[Event::PLAYER_LEFT] = SDLK_a;
+    _keysMap[Event::PLAYER_RIGHT] = SDLK_d;
+    _keysMap[Event::PLAYER_UP] = SDLK_w;
+    _keysMap[Event::PLAYER_DOWN] = SDLK_s;
+    _keysMap[Event::DROP_BOMB] = SDLK_SPACE;
+
+    _keyToChange = nullptr;
 }
 
 NuklearGUI::~NuklearGUI() {
@@ -68,11 +76,15 @@ void    NuklearGUI::toggle(void *p) {
 }
 
 void    NuklearGUI::handleKey(void * p) {
-    int key = *static_cast<int*>(p);
+    SDL_Keycode key = *static_cast<int*>(p);
     switch (key) {
         case SDLK_TAB:      toggle(new Menu::Enum(Menu::DEBUG)); break;
         case SDLK_LCTRL:    toggle(new Menu::Enum(Menu::BASE)); break;
         default: break;
+    }
+    if (_keyToChange != nullptr) {
+        *_keyToChange = key;
+        _keyToChange = nullptr;
     }
 }
 
@@ -93,37 +105,67 @@ void    NuklearGUI::render() {
 void    NuklearGUI::renderKeyBindings() {
     int  w, h;
     SDL_GetWindowSize(win, &w, &h);
-    SEventManager & event = SEventManager::getInstance();    
+    SEventManager & event = SEventManager::getInstance();
+    
+    static std::map<Event::Enum, SDL_Keycode>  displayedKeysMap(_keysMap);
+
+    std::string left =  SDL_GetKeyName(displayedKeysMap.at(Event::PLAYER_LEFT));
+    std::string right = SDL_GetKeyName(displayedKeysMap.at(Event::PLAYER_RIGHT));
+    std::string up =    SDL_GetKeyName(displayedKeysMap.at(Event::PLAYER_UP));
+    std::string down =  SDL_GetKeyName(displayedKeysMap.at(Event::PLAYER_DOWN));
+    std::string drop =  SDL_GetKeyName(displayedKeysMap.at(Event::DROP_BOMB));
 
     if (nk_begin(ctx, "KEY BINDINGS", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_TITLE)) {
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move up", NK_TEXT_LEFT);
-        nk_button_label(ctx, "");
+        if (nk_button_label(ctx, up.c_str()))
+        {
+            _keyToChange = &displayedKeysMap[Event::PLAYER_UP];
+            displayedKeysMap[Event::PLAYER_UP] = 0;
+        }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move down", NK_TEXT_LEFT);
-        nk_button_label(ctx, "");
+        if (nk_button_label(ctx, down.c_str()))
+        {
+            _keyToChange = &displayedKeysMap[Event::PLAYER_DOWN];
+            displayedKeysMap[Event::PLAYER_DOWN] = 0;
+        }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move left", NK_TEXT_LEFT);
-        nk_button_label(ctx, "");
+        if (nk_button_label(ctx, left.c_str()))
+        {
+            _keyToChange = &displayedKeysMap[Event::PLAYER_LEFT];
+            displayedKeysMap[Event::PLAYER_LEFT] = 0;
+        }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move right", NK_TEXT_LEFT);
-        nk_button_label(ctx, "");
+        if (nk_button_label(ctx, right.c_str()))
+        {
+            _keyToChange = &displayedKeysMap[Event::PLAYER_RIGHT];
+            displayedKeysMap[Event::PLAYER_RIGHT] = 0;
+        }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Drop bomb", NK_TEXT_LEFT);
-        nk_button_label(ctx, "");
+        if (nk_button_label(ctx, drop.c_str()))
+        {
+            _keyToChange = &displayedKeysMap[Event::DROP_BOMB];
+            displayedKeysMap[Event::DROP_BOMB] = 0;
+        }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         if (nk_button_label(ctx, "Apply"))
         {
+            _keysMap = displayedKeysMap;
             event.raise(Event::TOGGLE, new Menu::Enum(Menu::KEY_BINDINGS));
         }
         if (nk_button_label(ctx, "Back"))
         {
+            displayedKeysMap = _keysMap;
             event.raise(Event::TOGGLE, new Menu::Enum(Menu::KEY_BINDINGS));
         }
     }
@@ -141,8 +183,6 @@ void    NuklearGUI::renderOptions() {
     static float        effectsVolume = 0.6f;
 
     static Screen::Format   displayedFormat = screenFormat;    
-   // displayedFormat.resolution = screenResolution;
-    //displayedFormat.mode = screenMode;
     
     std::string screenResString = toString(displayedFormat.resolution);
     std::string screenModeString = toString(displayedFormat.mode);
@@ -206,10 +246,7 @@ void    NuklearGUI::renderOptions() {
         if (nk_button_label(ctx, "Apply"))
         {
             if (screenFormat.resolution != displayedFormat.resolution || screenFormat.mode != displayedFormat.mode) {
-                screenFormat.resolution = displayedFormat.resolution;
-                screenFormat.mode = displayedFormat.mode;
-                displayedFormat.resolution = screenFormat.resolution;
-                displayedFormat.mode = screenFormat.mode;
+                screenFormat = displayedFormat;
                 event.raise(Event::SCREEN_FORMAT_UPDATE, &displayedFormat);  
             }
             event.raise(Event::TOGGLE, new Menu::Enum(Menu::OPTIONS));  
@@ -217,8 +254,7 @@ void    NuklearGUI::renderOptions() {
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Back"))
         {
-            displayedFormat.resolution = screenFormat.resolution;
-            displayedFormat.mode = screenFormat.mode;
+            displayedFormat = screenFormat;
             event.raise(Event::TOGGLE, new Menu::Enum(Menu::OPTIONS));  
         }
         

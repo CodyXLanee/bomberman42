@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/04 16:29:49 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 16:39:02 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ class NuklearGUI
         Screen::Format          screenFormat;
 
         std::stack<Menu::Enum>              _active_menu;
+        std::map<Event::Enum, SDL_Keycode>  _keysMap;
+        SDL_Keycode                       * _keyToChange;
 
         void        handleKey(void *);
         void        toggle(void *);

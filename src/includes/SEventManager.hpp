@@ -17,6 +17,8 @@ typedef std::function<void(void*)> CallbackType;
 namespace Event {
 	enum Enum	{
 		KEYDOWN, KEYUP,
+		PLAYER_LEFT, PLAYER_RIGHT, PLAYER_UP, PLAYER_DOWN,
+		DROP_BOMB,
 		TOGGLE,
 		SCREEN_FORMAT_UPDATE,
 		NEW_GAME, LOAD_GAME, QUIT_GAME,

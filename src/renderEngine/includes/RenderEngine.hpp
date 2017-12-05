@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/05 10:18:28 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/05 13:16:24 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ class RenderEngine {
 		Model		*brickModel;
 		Model		*bombModel;
 		Model		*flameModel;
+		Model		*cloudModel;
 		Camera  	&camera;
 		Light		*light;
 
@@ -79,7 +80,8 @@ class RenderEngine {
 		void	renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const;
-		void	renderParticles();
+		void	renderCloud(Shader *shader) const;
+		void	renderParticles() const;
 
 		void	recordNewEntities(std::vector<IGameEntity *> & entities);
 

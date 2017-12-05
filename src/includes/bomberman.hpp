@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 16:05:12 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 17:41:07 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,8 @@ namespace VolumeType {
     enum Enum {MASTER, MUSIC, SOUND};
 };
 
+namespace WinCondition {
+	enum Enum {NO_MORE_BLOCKS, NO_MORE_ENEMIES};
+};
 
 #endif

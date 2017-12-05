@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/05 15:42:43 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 19:16:14 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,9 @@ private:
     SGameManager();
     SGameManager(SGameManager const&);   // Don't Implement.
     void operator=(SGameManager const&); // Don't implement
+    
+    
+    void            game_finish(void *p);
 
     Sdl_gl_win          _window;
     GameEngine          *_game;

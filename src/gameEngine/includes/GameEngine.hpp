@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/05 15:53:30 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 17:44:49 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "IGameEntity.hpp"
 # include "CollisionsManager.hpp"
 # include "BombManager.hpp"
+# include "WinManager.hpp"
 # include "Map.hpp"
 # include "Loader.hpp"
 # include <glm/glm.hpp>
@@ -42,6 +43,7 @@ class GameEngine {
 		CollisionsManager			_collisionsManager;
 		BombManager					_bombManager;
 		GameMode::Enum				_gameMode;
+		WinManager					*_winManager;
 
 };
 

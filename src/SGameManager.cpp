@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/05 19:55:01 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/05 20:30:56 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ SGameManager::SGameManager() :
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::QUIT_GAME, MEMBER_CALLBACK(SGameManager::quit_game));
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
+    em.registerEvent(Event::GAME_FINISH, MEMBER_CALLBACK(SGameManager::game_finish));
 }
 
 
@@ -65,6 +66,11 @@ void            SGameManager::new_game(void *p){
     _game = new GameEngine(*gm);
     _game_is_active = true;
     delete gm;
+}
+
+void            SGameManager::game_finish(void *p){
+    (void)p;
+    new_game(new GameMode::Enum(GameMode::CAMPAIGN));
 }
 
 void            SGameManager::newGame(GameMode::Enum gm){

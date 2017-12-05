@@ -11,6 +11,7 @@ SRC_NAME =	\
 			gameEngine/GameEngine.cpp \
 			gameEngine/AGameEntity.cpp \
 			gameEngine/Loader.cpp \
+			gameEngine/WinManager.cpp \
 			gameEngine/CollisionsManager.cpp \
 			gameEngine/BombManager.cpp \
 			gameEngine/entities/Bomb.cpp\
@@ -18,6 +19,7 @@ SRC_NAME =	\
 			gameEngine/entities/DestructibleBloc.cpp\
 			gameEngine/entities/IndestructibleBloc.cpp\
 			gameEngine/entities/Player.cpp\
+			gameEngine/entities/WinSpot.cpp\
 			renderEngine/RenderEngine.cpp \
 			renderEngine/NuklearGUI.cpp \
 			renderEngine/model/Model.cpp \

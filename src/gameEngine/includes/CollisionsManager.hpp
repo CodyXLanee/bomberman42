@@ -7,6 +7,7 @@
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"
 # include "Map.hpp"
+# include "SEventManager.hpp"
 # include <glm/glm.hpp>
 # include <vector>
 # include <math.h>

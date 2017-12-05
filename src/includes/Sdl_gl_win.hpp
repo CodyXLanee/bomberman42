@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 14:53:54 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/05 20:26:05 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,22 @@
 # include <vector>
 
 # include "bomberman.hpp"
-# include "NuklearGUI.hpp"
 # include "Shader.hpp"
 # include "SEventManager.hpp"
-# include "nuklear.h"
-# include "nuklear_sdl_gl3.h"
 
 class Sdl_gl_win {
 	public:
 		Sdl_gl_win(size_t width, size_t height);
 		~Sdl_gl_win();
 		
-		void			eventManager(std::vector<Action::Enum> &, NuklearGUI &);
+		void			eventManager(std::vector<Action::Enum> &, struct nk_context *);
 		int				getMouseX() const;
 		int				getMouseY() const;
 		SDL_Window		*getWin() const;
 		void			initGL() const;
+		
+		std::map<Event::Enum, SDL_Keycode>	getKeyMap() const;
+		void									setKeyMap(std::map<Event::Enum, SDL_Keycode>);
 		
 	private:
 		Sdl_gl_win();
@@ -48,6 +48,7 @@ class Sdl_gl_win {
 		int				mouseY;
 		size_t			width;
 		size_t			height;
+		std::map<Event::Enum, SDL_Keycode>	keyMap;
 };
 
 #endif

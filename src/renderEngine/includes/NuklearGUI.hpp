@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/05 16:39:02 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/05 20:12:09 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,14 @@
 # include "bomberman.hpp"
 # include "Camera.hpp"
 # include "SEventManager.hpp"
+# include "Sdl_gl_win.hpp"
+# include "nuklear.h"
+# include "nuklear_sdl_gl3.h"
 
 class NuklearGUI
 {
     public:
-        NuklearGUI(SDL_Window *, Camera &);
+        NuklearGUI(Sdl_gl_win &, Camera &);
         ~NuklearGUI();
 
         struct nk_context *     getContext() const;
@@ -35,7 +38,7 @@ class NuklearGUI
         std::string             toString(Screen::Mode) const;
         
     private:
-        SDL_Window              *win;
+        Sdl_gl_win              &win;
         Camera                  &camera;
         struct nk_context       *ctx;
         struct nk_font_atlas    *atlas;

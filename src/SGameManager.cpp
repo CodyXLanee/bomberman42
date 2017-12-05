@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/05 15:48:23 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 19:55:01 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 SGameManager::SGameManager() : 
     _window(1920, 1080), 
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
-    _gui(_window.getWin(), _camera), 
+    _gui(_window, _camera), 
     _renderer(_window.getWin(), _camera),
     _game_is_active(true), _quit_game(false) {
     SEventManager &em = SEventManager::getInstance();
@@ -35,7 +35,7 @@ void        SGameManager::manage(void) {
     // em.raise(Event::TOGGLE, new Menu::Enum(Menu::START));
     em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));    
 	while(!_quit_game && (actions.size() == 0 || actions[0] != Action::ESCAPE)) {
-		_window.eventManager(actions, _gui);
+		_window.eventManager(actions, _gui.getContext());
 
         if (_game_is_active){
             _game->compute(actions);

@@ -31,7 +31,7 @@ Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(heigh
     keyMap[Event::PLAYER_RIGHT] =   SDLK_d;
     keyMap[Event::PLAYER_UP] =      SDLK_w;
     keyMap[Event::PLAYER_DOWN] =    SDLK_s;
-    keyMap[Event::SPAWN_BOMB] =      SDLK_SPACE;
+    keyMap[Event::SPAWN_BOMB] =     SDLK_SPACE;
     
     keyMap[Event::CAMERA_LEFT] =    SDLK_LEFT;
     keyMap[Event::CAMERA_RIGHT] =   SDLK_RIGHT;
@@ -41,7 +41,7 @@ Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(heigh
     
     keyMap[Event::DEBUG_MODE] =     SDLK_TAB;
     keyMap[Event::FOLLOW_PLAYER] =  SDLK_1;
-    keyMap[Event::GUI_BASE_MENU] =           SDLK_LCTRL;
+    keyMap[Event::GUI_BASE_MENU] =  SDLK_LCTRL;
 
     SEventManager & event = SEventManager::getInstance();
     event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(Sdl_gl_win::updateScreenFormat));
@@ -116,9 +116,9 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
                 else if (sym == keyMap[Event::CAMERA_UP]) {       a = Action::CAMERA_UP;      event.raise(Event::CAMERA_UP, nullptr); }
                 else if (sym == keyMap[Event::CAMERA_DOWN]) {     a = Action::CAMERA_DOWN;    event.raise(Event::CAMERA_DOWN, nullptr); }
                 else if (sym == keyMap[Event::RESET_CAMERA]) {    a = Action::RESET_CAMERA;   event.raise(Event::RESET_CAMERA, nullptr); }
-                else if (sym == keyMap[Event::DEBUG_MODE]) {      a = Action::DEBUG_MODE;     event.raise(Event::DEBUG_MODE, nullptr); }
+                else if (sym == keyMap[Event::DEBUG_MODE]) {      event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::DEBUG)); }
                 else if (sym == keyMap[Event::FOLLOW_PLAYER]) {   a = Action::FOLLOW_PLAYER;  event.raise(Event::FOLLOW_PLAYER, nullptr); }
-                else if (sym == keyMap[Event::GUI_BASE_MENU]) {   event.raise(Event::GUI_BASE_MENU, nullptr); }
+                else if (sym == keyMap[Event::GUI_BASE_MENU]) {   event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::BASE)); }
                 
 			if (find(actions.begin(), actions.end(), a) == actions.end())
                 actions.push_back(a);

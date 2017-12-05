@@ -29,6 +29,8 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &ent
 
 					// set the new position
 					//(*i)->setDirection(normalize(newPos - (*i)->getPosition()));
+
+					SEventManager::getInstance().raise(Event::PLAYER_MOVE, &newPos);
 					(*i)->setPosition(newPos);
 				}
 				break;

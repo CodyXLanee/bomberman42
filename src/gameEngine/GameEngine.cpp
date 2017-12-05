@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/05 15:59:38 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 18:31:42 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "IndestructibleBloc.hpp"
 #include "DestructibleBloc.hpp"
 
-GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), _gameMode(gm) {
+GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), _gameMode(gm), _winManager(nullptr) {
     rapidjson::Value * grid;
     rapidjson::Value * sun;
 
@@ -59,6 +59,12 @@ GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), _gameMode(gm) {
     	}
     }
 
+	rapidjson::Value *win;
+	win = this->_loader.getValue("win");
+	if (!win || !win->HasMember("condition") || !win->HasMember("spot") || !win[0]["spot"].IsArray() || win[0]["spot"].Size() != 2)
+		return;
+	_winManager = new WinManager(static_cast<WinCondition::Enum>(win[0]["condition"].GetInt()), glm::ivec2(win[0]["spot"][0].GetFloat(), win[0]["spot"][1].GetFloat()));
+
     sun = this->_loader.getValue("sun");
     if (!sun || !sun->HasMember("pos") || !sun[0]["pos"].IsArray() || sun[0]["pos"].Size() != 3)
         return ;
@@ -71,6 +77,7 @@ GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), _gameMode(gm) {
     if (!sun[0]["color"][0].IsFloat() || !sun[0]["color"][1].IsFloat() || !sun[0]["color"][2].IsFloat())
         return ;
     this->_map->setSunColor(glm::vec3(sun[0]["color"][0].GetFloat(), sun[0]["color"][1].GetFloat(), sun[0]["color"][2].GetFloat()));
+
 }
 
 GameEngine::~GameEngine() {}
@@ -80,6 +87,7 @@ void	GameEngine::compute(std::vector<Action::Enum> &actions) {
         return ;
 	_collisionsManager.moves(*_map, _entityList, actions);
 	_bombManager.update(*_map, _entityList, actions);
+	_winManager->update(*_map, _entityList);
 }
 
 Map const &		GameEngine::getMap() const {

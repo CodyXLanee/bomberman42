@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 11:05:52 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 15:59:38 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "IndestructibleBloc.hpp"
 #include "DestructibleBloc.hpp"
 
-GameEngine::GameEngine() : _map(new Map()) {
+GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), _gameMode(gm) {
     rapidjson::Value * grid;
     rapidjson::Value * sun;
 

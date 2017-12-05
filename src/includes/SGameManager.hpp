@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/04 16:44:11 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 15:42:43 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ private:
     void operator=(SGameManager const&); // Don't implement
 
     Sdl_gl_win          _window;
-    GameEngine          _game;
+    GameEngine          *_game;
     Camera              _camera;
     NuklearGUI          _gui;
     RenderEngine        _renderer;

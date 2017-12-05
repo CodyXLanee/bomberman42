@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/05 15:02:01 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 15:48:23 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 SGameManager::SGameManager() : 
     _window(1920, 1080), 
-    _game(), 
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
     _gui(_window.getWin(), _camera), 
     _renderer(_window.getWin(), _camera),
@@ -32,16 +31,17 @@ SGameManager::~SGameManager() {
 void        SGameManager::manage(void) {
 	std::vector<Action::Enum> actions;
 
-    // SEventManager &em = SEventManager::getInstance();
+    SEventManager &em = SEventManager::getInstance();
     // em.raise(Event::TOGGLE, new Menu::Enum(Menu::START));
+    em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));    
 	while(!_quit_game && (actions.size() == 0 || actions[0] != Action::ESCAPE)) {
 		_window.eventManager(actions, _gui);
 
         if (_game_is_active){
-            _game.compute(actions);
+            _game->compute(actions);
             
-            _camera.update(actions, _window.getMouseX(), _window.getMouseY(), _game.getPlayerPos());
-            _renderer.render(_game.getMap(), _game.getEntityList());
+            _camera.update(actions, _window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
+            _renderer.render(_game->getMap(), _game->getEntityList());
         }
 		_gui.render();
 		_window.initGL();
@@ -61,9 +61,10 @@ void            SGameManager::quit_game(void *p){
 }
 
 void            SGameManager::new_game(void *p){
-    (void)p;
-    _game = GameEngine();
+    GameMode::Enum *gm = static_cast<GameMode::Enum *>(p);
+    _game = new GameEngine(*gm);
     _game_is_active = true;
+    delete gm;
 }
 
 void            SGameManager::newGame(GameMode::Enum gm){

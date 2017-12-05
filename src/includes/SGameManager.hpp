@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/05 19:16:14 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 19:30:26 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ private:
 
     bool                _game_is_active;
     bool                _quit_game;
+    bool                _new_game;
 
 };
 

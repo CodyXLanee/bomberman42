@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/04 16:44:34 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/05 15:02:01 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ SGameManager::SGameManager() :
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
     _gui(_window.getWin(), _camera), 
     _renderer(_window.getWin(), _camera),
-    _quit_game(false) {
+    _game_is_active(true), _quit_game(false) {
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::QUIT_GAME, MEMBER_CALLBACK(SGameManager::quit_game));
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
@@ -32,8 +32,8 @@ SGameManager::~SGameManager() {
 void        SGameManager::manage(void) {
 	std::vector<Action::Enum> actions;
 
-    SEventManager &em = SEventManager::getInstance();
-    em.raise(Event::TOGGLE, new Menu::Enum(Menu::START));
+    // SEventManager &em = SEventManager::getInstance();
+    // em.raise(Event::TOGGLE, new Menu::Enum(Menu::START));
 	while(!_quit_game && (actions.size() == 0 || actions[0] != Action::ESCAPE)) {
 		_window.eventManager(actions, _gui);
 

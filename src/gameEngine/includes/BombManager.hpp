@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:20:33 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 19:40:40 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 22:30:02 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "IGameEntity.hpp"
 # include "bomberman.hpp"
 # include "Bomb.hpp"
+# include "Player.hpp"
 # include "Flame.hpp"  
 # include "Map.hpp"
 # include <vector>

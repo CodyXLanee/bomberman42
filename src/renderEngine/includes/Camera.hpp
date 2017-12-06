@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:26:08 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 11:14:54 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 23:04:56 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define CAMERA_HPP
 
 # include "bomberman.hpp"
+# include "SEventManager.hpp"
 # include <glm/gtc/matrix_transform.hpp>
 # include <glm/gtx/rotate_vector.hpp>
 # include <glm/gtx/matrix_interpolation.hpp>
@@ -39,7 +40,7 @@ class Camera {
 		void				setup();
 		void				reset();
 		void				wiggle(void);
-		void				initWiggle(void);
+		void				initWiggle(void*);
 		
 		glm::mat4			matrix;
 		glm::vec3			position;

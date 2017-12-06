@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:27:21 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/30 11:16:05 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 23:05:25 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
         
         updateRotation(0, 0);
         setup();
+        SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Camera::initWiggle));
 }
 
 void    Camera::reset() {
@@ -46,7 +47,7 @@ void    Camera::reset() {
     updateRotation(0, 0);
 }
 
-void    Camera::initWiggle(void){
+void    Camera::initWiggle(void *){
     is_wiggling = true;
     wiggle_start = std::chrono::steady_clock::now();
 }
@@ -68,7 +69,6 @@ void    Camera::followPlayer(glm::vec2 const * playerPos, std::vector<Action::En
     std::for_each(actions.begin(), actions.end(),
         [this](Action::Enum action) {
             switch (action) {
-                case Action::BOMB_EXPLODES: initWiggle(); break;
                 case Action::CAMERA_UP:     pitch += CAM_SPEED; break;
                 case Action::CAMERA_DOWN:   pitch -= CAM_SPEED; break;
                 case Action::CAMERA_LEFT:   yaw -= CAM_SPEED; break;

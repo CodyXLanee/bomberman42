@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 20:13:19 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 22:40:47 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,17 @@ _map(map), _entityList(entityList), _flames_to_add(new std::vector<IGameEntity *
 BombManager::~BombManager() {}
 
 void              BombManager::spawn_bomb(void *p){
-    IGameEntity *player = static_cast<IGameEntity *>(p);
+    Player *player = static_cast<Player *>(p);
     for (auto it = _entityList->begin(); it != _entityList->end(); it++){
         if (glm::round((*it)->getPosition()) == glm::round(player->getPosition()) && (*it)->getType() != Type::PLAYER)
             return ;
 
     }
+    if (player->getBombCount() >= player->getMaxBombNb())
+        return;
+    player->addBombToCount();
     _entityList->push_back(new Bomb(
-        glm::round(player->getPosition())
+        glm::round(player->getPosition()), static_cast<Player *>(p)
         ));
 }
 
@@ -106,7 +109,6 @@ void    BombManager::update(void){
             }),
         _entityList->end());
     if (_flames_to_add->size() > 0){
-        std::cout << _flames_to_add->size() << std::endl;
         _entityList->insert(_entityList->end(), _flames_to_add->begin(), _flames_to_add->end());
         _flames_to_add->clear();
     }

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 15:10:31 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 22:41:48 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 Player::Player(const glm::vec2 & pos, int nb) : 
 AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::PLAYER),
 _player_number(nb),
+_max_bomb(2),
+_bomb_count(0),
 left(false), right(false), up(false), down(false),
 _graphicalDirection(glm::vec2(0,0)){
-
+	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Player::bomb_explodes_callback));
 }
 
 glm::vec2	Player::getGraphicalDirection() const
@@ -72,4 +74,21 @@ void		Player::endNewDirUp(void){
 }
 void		Player::endNewDirDown(void){
 	down = false;
+}
+
+void		Player::bomb_explodes_callback(void *bomb){
+	if (static_cast<Bomb *>(bomb)->getPlayer() == this)
+		_bomb_count--;
+}
+
+int			Player::getBombCount(void) const {
+	return _bomb_count;
+}
+
+int			Player::getMaxBombNb(void) const {
+	return _max_bomb;
+}
+
+void		Player::addBombToCount(void) {
+	_bomb_count++;
 }

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 15:00:37 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:14:00 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,6 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 
 	createShadowBuffer();
 	// createDepthCubemap();
-
-	light = new Light(glm::vec3(8.f, 15.f, 20.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
-	// light = new Light(glm::vec3(20.f, 15.f, 11.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
-	// light = new Light(glm::vec3(3.5f, 6.5f, 1.f), glm::vec3(1.f, 1.f, 1.f), Light::DIRECTIONAL);
 
 	meteo = new WeatherSystem();
 }
@@ -75,7 +71,7 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	shader.use();
 	glm::vec3 camPos = camera.getPosition();
 	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
-	light->setShaderVariables(shader);
+	meteo->getSun().setShaderVariables(shader);
 	
 	renderGround(shader, map);
 	renderWall(shader, map.getIndestructibleBlocs(), map);
@@ -280,7 +276,7 @@ void	RenderEngine::createDepthCubemap() {
 
 
 void		RenderEngine::getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const {
-	glm::mat4 lightSpaceMatrix = light->getDirectionalLightSpaceMatrix();
+	glm::mat4 lightSpaceMatrix = meteo->getSun().getDirectionalLightSpaceMatrix();
 	
 	shaderManager.getDirectionalShadowShader().use();
 	glUniformMatrix4fv(glGetUniformLocation(shaderManager.getDirectionalShadowShader().getProgramID(), "lightSpaceMatrix"),
@@ -315,38 +311,6 @@ void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGam
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
-
-// void RenderEngine::renderShadowMap()
-// {
-//     if (quadVAO == 0)
-//     {
-//         float quadVertices[] = {
-//             -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-//             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-//              1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-//              1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-//         };
-//         glGenVertexArrays(1, &quadVAO);
-//         glGenBuffers(1, &quadVBO);
-//         glBindVertexArray(quadVAO);
-//         glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-//         glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-//         glEnableVertexAttribArray(0);
-//         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-//         glEnableVertexAttribArray(1);
-//         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-// 	}
-	
-// 	debugDepthQuad->use();
-// 	debugDepthQuad->setFloat("near_plane", 1.f);
-// 	debugDepthQuad->setFloat("far_plane", 7.5f);
-// 	glActiveTexture(GL_TEXTURE0);
-// 	glBindTexture(GL_TEXTURE_2D, depthMap);
-
-//     glBindVertexArray(quadVAO);
-//     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-//     glBindVertexArray(0);
-// }
 
 void RenderEngine::renderParticles() const {
 	// if (particles.size() == 0) {

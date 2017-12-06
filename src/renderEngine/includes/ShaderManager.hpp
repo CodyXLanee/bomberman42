@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:17:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 13:47:46 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:14:11 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ class ShaderManager {
 		Shader		*directionalShadowShader;
 		Shader		*pointShadowShader;
 		Shader		*particlesShader;
-		Shader		*debugDepthQuad;
 };
 
 #endif

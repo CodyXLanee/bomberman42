@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:16:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 14:52:15 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:14:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,10 @@ ShaderManager::ShaderManager() {
 								 directory + "pointShadowDepth.glfs");
 	particlesShader = new Shader( directory + "particles.glvs",
 								 directory + "particles.glfs");	
-	debugDepthQuad = new Shader( directory + "debugShadow.glvs",
-								 directory + "debugShadow.glfs");
 
 	mainShader->use();
 	mainShader->setInt("texture_diffuse", 0);
 	mainShader->setInt("depthMap", 1);
-	// debugDepthQuad->use();
-	// debugDepthQuad->setInt("depthMap", 0);
 }
 
 ShaderManager::~ShaderManager() {
@@ -44,7 +40,6 @@ ShaderManager::~ShaderManager() {
 	delete directionalShadowShader;
 	delete pointShadowShader;
 	delete particlesShader;
-	delete debugDepthQuad;
 }
 
 Shader	&ShaderManager::getMainShader() const {

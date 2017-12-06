@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 14:35:48 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:14:04 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ class RenderEngine {
 		unsigned int depthMapFBO;
 		unsigned int depthMap;
 		unsigned int depthCubemap;
-		unsigned int quadVAO;
-		unsigned int quadVBO;
 
 		void	renderScene(Shader &shader, Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	renderWall(Shader &shader, const std::vector<IndestructibleBloc> &b, Map const & map) const;
@@ -86,8 +84,6 @@ class RenderEngine {
 		void	createDepthCubemap();
 		void	getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const;
-
-		// void	renderShadowMap();
 };
 
 #endif

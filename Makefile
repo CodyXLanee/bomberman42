@@ -31,6 +31,7 @@ SRC_NAME =	\
 			renderEngine/ParticleSystem.cpp \
 			renderEngine/WeatherSystem.cpp \
 			renderEngine/ModelManager.cpp \
+			renderEngine/ShaderManager.cpp \
 			Map.cpp \
 			main.cpp \
 			SEventManager.cpp \

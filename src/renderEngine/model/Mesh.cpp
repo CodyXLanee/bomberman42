@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 11:23:54 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 13:29:13 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	Mesh::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 	glDeleteBuffers(1, &this->ibo);
 }
 
-void	Mesh::draw(Shader *shader, bool animated, unsigned int instanceCount) {
+void	Mesh::draw(Shader &shader, bool animated, unsigned int instanceCount) {
 
 	unsigned int diffuseNbr = 1;
 	unsigned int specularNbr = 1;
@@ -151,17 +151,17 @@ void	Mesh::draw(Shader *shader, bool animated, unsigned int instanceCount) {
 		glActiveTexture(GL_TEXTURE0);
 		std::string name = this->textures[i].type;
 		std::string nbr = (name == "texture_diffuse") ? std::to_string(diffuseNbr++) : std::to_string(specularNbr++);
-		glUniform1i(glGetUniformLocation(shader->getProgramID(), ("material." + name + nbr).c_str()), i);
+		glUniform1i(glGetUniformLocation(shader.getProgramID(), ("material." + name + nbr).c_str()), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 	glActiveTexture(GL_TEXTURE0);
 
 	if (textures.size() == 0)
-		glUniform3f(glGetUniformLocation(shader->getProgramID(), "materialColor"), this->color.r, this->color.g, this->color.b);
+		glUniform3f(glGetUniformLocation(shader.getProgramID(), "materialColor"), this->color.r, this->color.g, this->color.b);
 
 	if (animated) {
 		glm::mat4 *jointTransforms = getJointTransforms();
-		glUniformMatrix4fv(glGetUniformLocation(shader->getProgramID(), "jointTransforms"), 16, GL_FALSE, glm::value_ptr(*jointTransforms));
+		glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "jointTransforms"), 16, GL_FALSE, glm::value_ptr(*jointTransforms));
 	}
 
 	glBindVertexArray(this->vao);

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 11:26:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/05 13:56:06 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 13:32:15 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,11 @@ void	ParticleSystem::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 	glDeleteBuffers(1, &this->ibo);
 }
 
-void	ParticleSystem::draw(Shader *shader) {
+void	ParticleSystem::draw(Shader &shader) {
     if (positions.size() == 0)
         return;
         
-    shader->use();
+    shader.use();
 	switch(type) {
 		case FIRE: updateFire(shader); break;
 		case BOMB: updateBomb(shader); break;
@@ -118,7 +118,7 @@ void	ParticleSystem::draw(Shader *shader) {
 	return;
 }
 
-void	ParticleSystem::updateFire(Shader *shader) {
+void	ParticleSystem::updateFire(Shader &shader) {
     std::vector<glm::mat4> data;
 	for (auto i = positions.begin(); i != positions.end(); i++){
         float r = static_cast<float>((rand() % 5)) - 2.5f;
@@ -132,8 +132,8 @@ void	ParticleSystem::updateFire(Shader *shader) {
             i--;
             break;
 		}
-        shader->setFloat("dist", glm::distance(oriPos, *i));
-        shader->setInt("type", type);
+        shader.setFloat("dist", glm::distance(oriPos, *i));
+        shader.setInt("type", type);
 
         glm::mat4 transform = glm::mat4();
         transform = glm::translate(transform, *i);
@@ -145,9 +145,9 @@ void	ParticleSystem::updateFire(Shader *shader) {
         setInstanceBuffer(data);
 }
 
-void	ParticleSystem::updateBomb(Shader *shader) {
+void	ParticleSystem::updateBomb(Shader &shader) {
     std::vector<glm::mat4> data;
-	shader->setInt("type", type);
+	shader.setInt("type", type);
 	
 	for (auto i = positions.begin(); i != positions.end(); i++){
         float r = static_cast<float>((rand() % 90)) - 45.f;
@@ -163,9 +163,9 @@ void	ParticleSystem::updateBomb(Shader *shader) {
         setInstanceBuffer(data);
 }
 
-void	ParticleSystem::updateRain(Shader *shader) {
+void	ParticleSystem::updateRain(Shader &shader) {
     std::vector<glm::mat4> data;
-	shader->setInt("type", type);
+	shader.setInt("type", type);
 	
 	for (auto i = positions.begin(); i != positions.end(); i++){
         // float r = static_cast<float>((rand() % 20)) / 10.f;

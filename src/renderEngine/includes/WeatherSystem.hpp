@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:24 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 10:57:10 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 13:20:21 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ class WeatherSystem {
 		void	startRain();
 		void	stopRain();
 
-		void	renderRain(Shader *shader) const;
-		void	renderCloud(Shader *shader) const;
+		void	renderRain(Shader &shader) const;
+		void	renderCloud(Shader &shader) const;
 		
 		glm::vec3 getLightingValues() const;
 		glm::vec3 getLightingColor() const;

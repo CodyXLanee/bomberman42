@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 11:03:01 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 13:30:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ glm::vec3 WeatherSystem::getLightingColor() const {
 	return lightingColor;
 }
 
-void	WeatherSystem::renderCloud(Shader *shader) const {
+void	WeatherSystem::renderCloud(Shader &shader) const {
 	static float offset = 0.f;
 	std::vector<glm::mat4> data;
 
@@ -88,6 +88,6 @@ void	WeatherSystem::renderCloud(Shader *shader) const {
 	offset += 0.005f;
 }
 
-void	WeatherSystem::renderRain(Shader *shader) const {
+void	WeatherSystem::renderRain(Shader &shader) const {
 	rain->draw(shader);
 }

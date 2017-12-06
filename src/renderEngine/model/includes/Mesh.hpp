@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/24 09:45:32 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 13:21:11 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ class Mesh {
         ~Mesh();
     
 
-		void	draw(Shader *shader, bool animated, unsigned int instanceCount);
+		void	draw(Shader &shader, bool animated, unsigned int instanceCount);
         void    setInstanceBuffer(std::vector<glm::mat4> const &);
 		glm::mat4* getJointTransforms() const;
         Joint *getRootJoint();

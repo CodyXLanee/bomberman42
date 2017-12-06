@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 12:41:08 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 13:26:29 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "Shader.hpp"
 # include "Model.hpp"
 # include "ModelManager.hpp"
+# include "ShaderManager.hpp"
 # include "Camera.hpp"
 # include "Light.hpp"
 # include "ParticleSystem.hpp"
@@ -48,14 +49,15 @@ class RenderEngine {
 		
 		RenderEngine();
 		SDL_Window	*win;
-		Shader		*mainShader;
-		Shader		*flamesShader;
-		Shader		*directionalShadowShader;
-		Shader		*pointShadowShader;
-		Shader		*particlesShader;
-		Shader		*debugDepthQuad;
+		// Shader		*mainShader;
+		// Shader		*flamesShader;
+		// Shader		*directionalShadowShader;
+		// Shader		*pointShadowShader;
+		// Shader		*particlesShader;
+		// Shader		*debugDepthQuad;
 		
 		ModelManager	modelManager;
+		ShaderManager	shaderManager;
 		Camera  	&camera;
 		Light		*light;
 
@@ -71,25 +73,25 @@ class RenderEngine {
 		unsigned int quadVBO;
 
 		
-		void	renderScene(Shader *shader, Map const & map, std::vector<IGameEntity *> &entities) const;
-		void	renderWall(Shader *shader, const std::vector<IndestructibleBloc> &b, Map const & map) const;
-		void	renderBrick(Shader *shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const;
-		void	renderGround(Shader *shader, Map const & map) const;
-		void	renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const;
-		void	renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const;
-		void	renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const;
+		void	renderScene(Shader &shader, Map const & map, std::vector<IGameEntity *> &entities) const;
+		void	renderWall(Shader &shader, const std::vector<IndestructibleBloc> &b, Map const & map) const;
+		void	renderBrick(Shader &shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const;
+		void	renderGround(Shader &shader, Map const & map) const;
+		void	renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const;
+		void	renderBombs(Shader &shader, std::vector<IGameEntity *> const & entities) const;
+		void	renderFlames(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderParticles() const;
 
 		// void	recordNewEntities(std::vector<IGameEntity *> & entities);
 
-		void	setCamera(glm::mat4 const &, Shader *shader) const;
+		void	setCamera(glm::mat4 const &, Shader &shader) const;
 
 		void	createShadowBuffer();
 		void	createDepthCubemap();
 		void	getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
 		void	getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
 
-		void	renderShadowMap();
+		// void	renderShadowMap();
 };
 
 #endif

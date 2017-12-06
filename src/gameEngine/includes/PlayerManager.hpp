@@ -15,15 +15,16 @@ class PlayerManager {
 		PlayerManager();
 		~PlayerManager();
 
-        void    compute(Map const & map, std::vector<IGameEntity *> &entityList);
-        void                    setHumanPlayer(Player *);
-        void                    addPlayer(Player *);
+        void                compute(Map const & map, std::vector<IGameEntity *> &entityList);
+        void                setHumanPlayer(Player *);
+        void                addPlayer(Player *);
 
 private:
 
     Player                  *_human_player;
     std::vector<Player *>   _players;
 
+    void                    ai(Player *p, Map const & map, std::vector<IGameEntity *> &entityList);
     void                    newDirLeft(void *p);
     void                    newDirRight(void *p);
     void                    newDirUp(void *p);

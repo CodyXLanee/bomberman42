@@ -23,9 +23,18 @@ PlayerManager::PlayerManager() : _human_player(nullptr), _players(){
 PlayerManager::~PlayerManager(){
 }
 
-void    PlayerManager::compute(Map const & map, std::vector<IGameEntity *> &entityList){
+void        PlayerManager::ai(Player *p, Map const & map, std::vector<IGameEntity *> &entityList){
     (void)map;
     (void)entityList;
+    SEventManager::getInstance().raise(Event::PLAYER_LEFT, p);
+}
+
+void    PlayerManager::compute(Map const & map, std::vector<IGameEntity *> &entityList){
+    for (auto it = _players.begin(); it != _players.end(); it++){
+        if (*it != _human_player){
+            ai(*it, map, entityList);
+        }
+    }
 }
 
 

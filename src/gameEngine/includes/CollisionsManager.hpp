@@ -8,6 +8,7 @@
 # include "IGameEntity.hpp"
 # include "Map.hpp"
 # include "SEventManager.hpp"
+# include "Player.hpp"
 # include <glm/glm.hpp>
 # include <vector>
 # include <math.h>
@@ -18,11 +19,10 @@ class CollisionsManager {
 		CollisionsManager();
 		~CollisionsManager();
 
-		void			moves(Map const & map, std::vector<IGameEntity *> &entityList, std::vector<Action::Enum> const actions);
+		void			moves(Map const & map, std::vector<IGameEntity *> &entityList);
 
 	private:
-		glm::vec2	compute_direction(std::vector<Action::Enum> actions);
-		void		compute_player(IGameEntity*p, std::vector<Action::Enum> actions);
+		void		compute_player(Player *p);
 		void		gestionBorderMap(glm::vec2 & pos, Map const & map);
 		int			gestionNoSlipMove(glm::vec2 & pos, IGameEntity const * entity, Map const & map, std::vector<IGameEntity *> &entityList);
 		void		gestionSlipOneDirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map, std::vector<IGameEntity *> &entityList);

@@ -18,6 +18,7 @@
         "typeinfo": "cpp",
         "__string": "cpp",
         "array": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "ios": "cpp"
     }
 }

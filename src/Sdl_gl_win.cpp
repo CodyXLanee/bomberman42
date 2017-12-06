@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/05 20:25:28 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:55 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,21 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
             event.raise(Event::KEYDOWN, &events.key.keysym.sym);
             Action::Enum a;
             SDL_Keycode sym = events.key.keysym.sym;
-
+            // switch (sym) {
+            //     case keyMap[Event::PLAYER_LEFT]:        a = Action::LEFT;           event.raise(Event::PLAYER_LEFT, nullptr); 
+            //     case keyMap[Event::PLAYER_RIGHT]:       a = Action::RIGHT;          event.raise(Event::PLAYER_RIGHT, nullptr); 
+            //     case keyMap[Event::PLAYER_UP]:          a = Action::UP;             event.raise(Event::PLAYER_UP, nullptr); 
+            //     case keyMap[Event::PLAYER_DOWN]:        a = Action::DOWN;           event.raise(Event::PLAYER_DOWN, nullptr); 
+            //     case keyMap[Event::SPAWN_BOMB]:         a = Action::SPAWN_BOMB;     event.raise(Event::SPAWN_BOMB, nullptr); 
+            //     case keyMap[Event::CAMERA_LEFT]:        a = Action::CAMERA_LEFT;    event.raise(Event::CAMERA_LEFT, nullptr); 
+            //     case keyMap[Event::CAMERA_RIGHT]:       a = Action::CAMERA_RIGHT;   event.raise(Event::CAMERA_RIGHT, nullptr); 
+            //     case keyMap[Event::CAMERA_UP]:          a = Action::CAMERA_UP;      event.raise(Event::CAMERA_UP, nullptr); 
+            //     case keyMap[Event::CAMERA_DOWN]:        a = Action::CAMERA_DOWN;    event.raise(Event::CAMERA_DOWN, nullptr); 
+            //     case keyMap[Event::RESET_CAMERA]:       a = Action::RESET_CAMERA;   event.raise(Event::RESET_CAMERA, nullptr); 
+            //     case keyMap[Event::DEBUG_MODE]:         event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::DEBUG)); 
+            //     case keyMap[Event::FOLLOW_PLAYER]:      a = Action::FOLLOW_PLAYER;  event.raise(Event::FOLLOW_PLAYER, nullptr); 
+            //     case keyMap[Event::GUI_BASE_MENU]:      event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::BASE)); 
+            // }
                      if (sym == keyMap[Event::PLAYER_LEFT]) {     a = Action::LEFT;           event.raise(Event::PLAYER_LEFT, nullptr); }
                 else if (sym == keyMap[Event::PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::PLAYER_RIGHT, nullptr); }
                 else if (sym == keyMap[Event::PLAYER_UP]) {       a = Action::UP;             event.raise(Event::PLAYER_UP, nullptr); }
@@ -128,6 +142,10 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
         if (events.type == SDL_KEYUP) {
             event.raise(Event::KEYUP, &events.key.keysym.sym);            
             Action::Enum a;
+                     if (events.key.keysym.sym == keyMap[Event::PLAYER_LEFT]) {     a = Action::LEFT;           event.raise(Event::END_PLAYER_LEFT, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::END_PLAYER_RIGHT, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::PLAYER_UP]) {       a = Action::UP;             event.raise(Event::END_PLAYER_UP, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::PLAYER_DOWN]) {     a = Action::DOWN;           event.raise(Event::END_PLAYER_DOWN, nullptr); }
             switch(events.key.keysym.sym) {
                 case SDLK_a:        a = Action::LEFT; break;
                 case SDLK_d:        a = Action::RIGHT; break;

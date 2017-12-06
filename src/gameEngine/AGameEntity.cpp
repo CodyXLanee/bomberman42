@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:28:54 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/28 14:04:20 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 11:17:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ glm::vec2	    AGameEntity::getPosition() const {
 }
 
 glm::vec2	AGameEntity::getDirection() const {
-    return _direction;
+    return glm::normalize(_direction);
 }
 
 State::Enum	    AGameEntity::getState() const {

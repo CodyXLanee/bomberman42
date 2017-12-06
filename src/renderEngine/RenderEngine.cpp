@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 14:39:25 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:00:37 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,6 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	// light = new Light(glm::vec3(3.5f, 6.5f, 1.f), glm::vec3(1.f, 1.f, 1.f), Light::DIRECTIONAL);
 
 	meteo = new WeatherSystem();
-
-	shaderManager.getMainShader().use();
-	shaderManager.getMainShader().setInt("texture_diffuse", 0);
-	shaderManager.getMainShader().setInt("depthMap", 1);
-	// debugDepthQuad->use();
-	// debugDepthQuad->setInt("depthMap", 0);
 }
 
 RenderEngine::~RenderEngine() {}
@@ -93,6 +87,7 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
     std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::PLAYER);
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
@@ -118,13 +113,14 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 
 		data.push_back(transform);
 	}
-    modelManager.getModel(ModelManager::PLAYER).setInstanceBuffer(data);  
-    modelManager.getModel(ModelManager::PLAYER).draw(shader, 2);
+    model.setInstanceBuffer(data);  
+    model.draw(shader, 2);
 }
 
 void	RenderEngine::renderGround(Shader &shader, Map const & map) const {
     std::vector<glm::mat4> data;
-	
+	Model &model = modelManager.getModel(ModelManager::GROUND);
+
 	for(float j = 0; j < map.getSize().y ; j++) {
 		for(float i = 0; i < map.getSize().x ; i++) {
 			glm::mat4 transform = glm::mat4();
@@ -133,12 +129,13 @@ void	RenderEngine::renderGround(Shader &shader, Map const & map) const {
 			data.push_back(transform);
 		}
 	}
-	modelManager.getModel(ModelManager::GROUND).setInstanceBuffer(data);
-    modelManager.getModel(ModelManager::GROUND).draw(shader, data.size());
+	model.setInstanceBuffer(data);
+    model.draw(shader, data.size());
 }
 
 void	RenderEngine::renderWall(Shader &shader, const std::vector<IndestructibleBloc> &b, Map const & map) const {
     std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::WALL);
 	
 	for (auto i = b.begin(); i != b.end(); i++){
 		glm::mat4 transform = glm::mat4();
@@ -161,13 +158,14 @@ void	RenderEngine::renderWall(Shader &shader, const std::vector<IndestructibleBl
 			transform = glm::translate(transform, glm::vec3(0.f, map.getSize().x + 1, 0.f));
 			data.push_back(transform);
 	}
-	modelManager.getModel(ModelManager::WALL).setInstanceBuffer(data);
-    modelManager.getModel(ModelManager::WALL).draw(shader, data.size());
+	model.setInstanceBuffer(data);
+    model.draw(shader, data.size());
 }
 
 void	RenderEngine::renderBrick(Shader &shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const {
-	(void)map;
+	(void)map; /////////////////////
     std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::BRICK);
 
 	glm::mat4 transform;
 	for (auto i = blocs.begin(); i != blocs.end(); i++){
@@ -175,8 +173,8 @@ void	RenderEngine::renderBrick(Shader &shader, const std::vector<DestructibleBlo
 		transform = glm::mat4(glm::translate(transform, glm::vec3(i->getPosition(), 0.f)));
 		data.push_back(transform);
 	}
-	modelManager.getModel(ModelManager::BRICK).setInstanceBuffer(data);  
-    modelManager.getModel(ModelManager::BRICK).draw(shader, data.size());
+	model.setInstanceBuffer(data);  
+    model.draw(shader, data.size());
 }
 
 static	float		bombs_animation_scale(Bomb const *b){
@@ -187,6 +185,7 @@ static	float		bombs_animation_scale(Bomb const *b){
 
 void	RenderEngine::renderBombs(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::BOMB);
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::BOMB){
 			glm::mat4 transform = glm::mat4();
@@ -194,8 +193,8 @@ void	RenderEngine::renderBombs(Shader &shader, std::vector<IGameEntity *> const 
 			data.push_back(transform);
 		}
 	}
-    modelManager.getModel(ModelManager::BOMB).setInstanceBuffer(data);  
-    modelManager.getModel(ModelManager::BOMB).draw(shader, data.size());
+    model.setInstanceBuffer(data);  
+    model.draw(shader, data.size());
 }
 
 static	float		flames_animation_scale(Flame const *f){
@@ -206,6 +205,8 @@ static	float		flames_animation_scale(Flame const *f){
 
 void	RenderEngine::renderFlames(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::FLAME);
+	
 	shader.use();
 	shader.setInt("core", 1);
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
@@ -216,9 +217,11 @@ void	RenderEngine::renderFlames(Shader &shader, std::vector<IGameEntity *> const
 			data.insert(data.begin(), transform);
 		}
 	}
-    modelManager.getModel(ModelManager::FLAME).setInstanceBuffer(data);  
-	modelManager.getModel(ModelManager::FLAME).draw(shader, data.size());
+    model.setInstanceBuffer(data);  
+	model.draw(shader, data.size());
+
 	data.clear();
+	
 	shader.use();
 	shader.setInt("core", 0);
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
@@ -229,8 +232,8 @@ void	RenderEngine::renderFlames(Shader &shader, std::vector<IGameEntity *> const
 			data.insert(data.begin(), transform);
 		}
 	}
-    modelManager.getModel(ModelManager::FLAME).setInstanceBuffer(data);  
-    modelManager.getModel(ModelManager::FLAME).draw(shader, data.size());
+    model.setInstanceBuffer(data);  
+    model.draw(shader, data.size());
 }
 
 void	RenderEngine::createShadowBuffer() {

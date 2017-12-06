@@ -6,58 +6,20 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 16:13:27 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 16:25:57 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RenderEngine.hpp"
 
 RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera) {
-
-	int w, h;
 	SDL_GetWindowSize(win, &w, &h);
 	Shader::perspective = glm::perspective(glm::radians(FOV), static_cast<float>(w) / static_cast<float>(h), Z_NEAR, Z_FAR);
 
 	createShadowBuffer();
 	// createDepthCubemap();
 
-	mainShader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
-								"src/renderEngine/shaders/directionalLighting.glfs");
-	flamesShader = new Shader("src/renderEngine/shaders/flames.glvs",
-								"src/renderEngine/shaders/flames.glfs");
-	// mainShader = new Shader("src/renderEngine/shaders/static_model_instanced.glvs",
-	// 							"src/renderEngine/shaders/omnidirectionalLighting.glfs");
-	directionalShadowShader = new Shader("src/renderEngine/shaders/directionalShadowDepth.glvs",
-								"src/renderEngine/shaders/empty.glfs");
-	pointShadowShader = new Shader("src/renderEngine/shaders/pointShadowDepth.glvs",
-								"src/renderEngine/shaders/pointShadowDepth.glgs",
-								"src/renderEngine/shaders/pointShadowDepth.glfs");
-	// debugDepthQuad = new Shader("src/renderEngine/shaders/debugShadow.glvs",
-	// 							"src/renderEngine/shaders/debugShadow.glfs");
-
-	particlesShader = new Shader("src/renderEngine/shaders/particles.glvs",
-								"src/renderEngine/shaders/particles.glfs");
-	
-	groundModel = new Model("assets/models/obj/groundTile1.obj", false);
-	wallModel = new Model("assets/models/obj/wall.obj", false);
-	playerModel = new Model("assets/models/obj/player.obj", false);
-	brickModel = new Model("assets/models/obj/brick.obj", false);
-	bombModel = new Model("assets/models/obj/bomb.obj", false);
-	flameModel = new Model("assets/models/obj/flame.obj", false);
-
-	light = new Light(glm::vec3(8.f, 15.f, 20.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
-	// light = new Light(glm::vec3(20.f, 15.f, 11.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
-	// light = new Light(glm::vec3(3.5f, 6.5f, 1.f), glm::vec3(1.f, 1.f, 1.f), Light::DIRECTIONAL);
-
 	meteo = new WeatherSystem();
-
-	mainShader->use();
-	mainShader->setInt("texture_diffuse", 0);
-	mainShader->setInt("depthMap", 1);
-	// debugDepthQuad->use();
-	// debugDepthQuad->setInt("depthMap", 0);
-
-	// particles.push_back(new ParticleSystem(glm::vec3(-2.f, -2.f, 10.f), ParticleSystem::RAIN));
 }
 
 RenderEngine::~RenderEngine() {}
@@ -68,50 +30,60 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	// recordNewEntities(entities);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	shaderManager.setCamera(camera.getMatrix());
 
-	mainShader->use();
+	shadowPass(map, entities);
+	normalPass(map, entities);
+	blendedPass(entities);
+
+	// SDL_GL_SwapWindow(win);
+}
+
+void	RenderEngine::shadowPass(Map const & map, std::vector<IGameEntity *> &entities) const {
 	glDisable(GL_BLEND);
+
+	glViewport(0, 0, 1024, 1024);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
 	getDirectionalShadowMap(map, entities);
 	// getOmnidirectionalShadowMap(map, entities);
+}
 
+void	RenderEngine::normalPass(Map const & map, std::vector<IGameEntity *> &entities) const {
 	glViewport(0, 0, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	// glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-	renderScene(mainShader, map, entities);
-
-	renderFlames(flamesShader, entities);
-
-	// renderParticles();
-	setCamera(camera.getMatrix(), particlesShader);
-	meteo->renderRain(particlesShader);
-	
-	// light->render(mainShader, camera);
-	// renderShadowMap();
-
-	// SDL_GL_SwapWindow(win);
+	renderScene(shaderManager.getMainShader(), map, entities);
 }
 
-void	RenderEngine::renderScene(Shader *shader, Map const & map, std::vector<IGameEntity *> &entities) const {
-	shader->use();
+void	RenderEngine::blendedPass(std::vector<IGameEntity *> &entities) const {
+	glEnable(GL_BLEND);
+	renderFlames(shaderManager.getFlamesShader(), entities);
+	meteo->renderRain(shaderManager.getParticlesShader());
+	// renderParticles();
+}
 
-	setCamera(camera.getMatrix(), shader);
+
+void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGameEntity *> &entities) const {
+	shader.use();
 	glm::vec3 camPos = camera.getPosition();
-	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
-	light->setShaderVariables(shader);
+	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	meteo->getSun().setShaderVariables(shader);
 	
 	renderGround(shader, map);
 	renderWall(shader, map.getIndestructibleBlocs(), map);
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
-	// renderCloud(shader);
 	meteo->renderCloud(shader);
 }
 
-void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const {
+void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
     std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::PLAYER);
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
@@ -137,13 +109,14 @@ void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const
 
 		data.push_back(transform);
 	}
-    playerModel->setInstanceBuffer(data);  
-    playerModel->draw(shader, data.size());
+    model.setInstanceBuffer(data);  
+    model.draw(shader, data.size());
 }
 
-void	RenderEngine::renderGround(Shader *shader, Map const & map) const {
+void	RenderEngine::renderGround(Shader &shader, Map const & map) const {
     std::vector<glm::mat4> data;
-	
+	Model &model = modelManager.getModel(ModelManager::GROUND);
+
 	for(float j = 0; j < map.getSize().y ; j++) {
 		for(float i = 0; i < map.getSize().x ; i++) {
 			glm::mat4 transform = glm::mat4();
@@ -152,12 +125,13 @@ void	RenderEngine::renderGround(Shader *shader, Map const & map) const {
 			data.push_back(transform);
 		}
 	}
-	groundModel->setInstanceBuffer(data);
-    groundModel->draw(shader, data.size());
+	model.setInstanceBuffer(data);
+    model.draw(shader, data.size());
 }
 
-void	RenderEngine::renderWall(Shader *shader, const std::vector<IndestructibleBloc> &b, Map const & map) const {
+void	RenderEngine::renderWall(Shader &shader, const std::vector<IndestructibleBloc> &b, Map const & map) const {
     std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::WALL);
 	
 	for (auto i = b.begin(); i != b.end(); i++){
 		glm::mat4 transform = glm::mat4();
@@ -180,13 +154,14 @@ void	RenderEngine::renderWall(Shader *shader, const std::vector<IndestructibleBl
 			transform = glm::translate(transform, glm::vec3(0.f, map.getSize().x + 1, 0.f));
 			data.push_back(transform);
 	}
-	wallModel->setInstanceBuffer(data);
-    wallModel->draw(shader, data.size());
+	model.setInstanceBuffer(data);
+    model.draw(shader, data.size());
 }
 
-void	RenderEngine::renderBrick(Shader *shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const {
-	(void)map;
+void	RenderEngine::renderBrick(Shader &shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const {
+	(void)map; /////////////////////
     std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::BRICK);
 
 	glm::mat4 transform;
 	for (auto i = blocs.begin(); i != blocs.end(); i++){
@@ -194,8 +169,8 @@ void	RenderEngine::renderBrick(Shader *shader, const std::vector<DestructibleBlo
 		transform = glm::mat4(glm::translate(transform, glm::vec3(i->getPosition(), 0.f)));
 		data.push_back(transform);
 	}
-	brickModel->setInstanceBuffer(data);  
-    brickModel->draw(shader, data.size());
+	model.setInstanceBuffer(data);  
+    model.draw(shader, data.size());
 }
 
 static	float		bombs_animation_scale(Bomb const *b){
@@ -204,8 +179,9 @@ static	float		bombs_animation_scale(Bomb const *b){
 	return 1.f + cos(ratio * 17.f) * 0.05f;
 }
 
-void	RenderEngine::renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const {
+void	RenderEngine::renderBombs(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::BOMB);
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::BOMB){
 			glm::mat4 transform = glm::mat4();
@@ -213,8 +189,8 @@ void	RenderEngine::renderBombs(Shader *shader, std::vector<IGameEntity *> const 
 			data.push_back(transform);
 		}
 	}
-    bombModel->setInstanceBuffer(data);  
-    bombModel->draw(shader, data.size());
+    model.setInstanceBuffer(data);  
+    model.draw(shader, data.size());
 }
 
 static	float		flames_animation_scale(Flame const *f){
@@ -223,12 +199,12 @@ static	float		flames_animation_scale(Flame const *f){
 	return ((std::pow(ratio, 0.10f) - std::pow(ratio, 10.f)) + cos(ratio * 6.f) * 0.15f) * 1.10f ;
 }
 
-void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const {
+void	RenderEngine::renderFlames(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	std::vector<glm::mat4> data;
-	setCamera(camera.getMatrix(), shader);
-	shader->use();
-	shader->setInt("core", 1);
-	glEnable(GL_BLEND);
+	Model &model = modelManager.getModel(ModelManager::FLAME);
+	
+	shader.use();
+	shader.setInt("core", 1);
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
@@ -237,12 +213,13 @@ void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const
 			data.insert(data.begin(), transform);
 		}
 	}
-    flameModel->setInstanceBuffer(data);  
-	flameModel->draw(shader, data.size());
+    model.setInstanceBuffer(data);  
+	model.draw(shader, data.size());
+
 	data.clear();
-	shader->use();
-	shader->setInt("core", 0);
-	glEnable(GL_BLEND);
+	
+	shader.use();
+	shader.setInt("core", 0);
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
@@ -251,14 +228,8 @@ void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const
 			data.insert(data.begin(), transform);
 		}
 	}
-    flameModel->setInstanceBuffer(data);  
-    flameModel->draw(shader, data.size());
-}
-
-void	RenderEngine::setCamera(glm::mat4 const & cameraMatrix, Shader *shader) const {
-	shader->use();
-    shader->setCamera(cameraMatrix);
-    shader->setView();
+    model.setInstanceBuffer(data);  
+    model.draw(shader, data.size());
 }
 
 void	RenderEngine::createShadowBuffer() {
@@ -304,82 +275,41 @@ void	RenderEngine::createDepthCubemap() {
 }
 
 
-void		RenderEngine::getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) {
-
-	glm::mat4 lightSpaceMatrix = light->getDirectionalLightSpaceMatrix();
+void		RenderEngine::getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const {
+	glm::mat4 lightSpaceMatrix = meteo->getSun().getDirectionalLightSpaceMatrix();
 	
-	directionalShadowShader->use();
-	glUniformMatrix4fv(glGetUniformLocation(directionalShadowShader->getProgramID(), "lightSpaceMatrix"),
+	shaderManager.getDirectionalShadowShader().use();
+	glUniformMatrix4fv(glGetUniformLocation(shaderManager.getDirectionalShadowShader().getProgramID(), "lightSpaceMatrix"),
 						1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-	mainShader->use();	
-	glUniformMatrix4fv(glGetUniformLocation(mainShader->getProgramID(), "lightSpaceMatrix"),
+	shaderManager.getMainShader().use();	
+	glUniformMatrix4fv(glGetUniformLocation(shaderManager.getMainShader().getProgramID(), "lightSpaceMatrix"),
 						1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 	
-	directionalShadowShader->use();
-	glViewport(0, 0, 1024, 1024);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glClear(GL_DEPTH_BUFFER_BIT);
-	renderScene(directionalShadowShader, map, entities);
+	shaderManager.getDirectionalShadowShader().use();
+	renderScene(shaderManager.getDirectionalShadowShader(), map, entities);
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) {
-
+void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const {
 	std::vector<glm::mat4> shadowTransforms = light->getOmnidirectionalLightSpaceMatrix();
 
-	glViewport(0, 0, 1024, 1024);
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-	pointShadowShader->use();
+	shaderManager.getPointShadowShader().use();
 	for (unsigned int i = 0; i < 6; ++i)
-		pointShadowShader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-	pointShadowShader->setFloat("far_plane", 25.f);
+		shaderManager.getPointShadowShader().setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+	shaderManager.getPointShadowShader().setFloat("far_plane", 25.f);
 	glm::vec3 lightPos = light->getPosition();
-	pointShadowShader->setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+	shaderManager.getPointShadowShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
 	
-	mainShader->use();
-	mainShader->setFloat("far_plane", 25.f);
-	mainShader->setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+	shaderManager.getMainShader().use();
+	shaderManager.getMainShader().setFloat("far_plane", 25.f);
+	shaderManager.getMainShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
 
-    pointShadowShader->use();
+    shaderManager.getPointShadowShader().use();
 			
-	renderScene(pointShadowShader, map, entities);
+	renderScene(shaderManager.getPointShadowShader(), map, entities);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void RenderEngine::renderShadowMap()
-{
-    if (quadVAO == 0)
-    {
-        float quadVertices[] = {
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-        };
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	}
-	
-	debugDepthQuad->use();
-	debugDepthQuad->setFloat("near_plane", 1.f);
-	debugDepthQuad->setFloat("far_plane", 7.5f);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
-
-    glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glBindVertexArray(0);
 }
 
 void RenderEngine::renderParticles() const {

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:24 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 10:57:10 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:09:47 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "ParticleSystem.hpp"
 # include "Model.hpp"
 # include "Shader.hpp"
+# include "Light.hpp"
 
 class WeatherSystem {
 	public:
@@ -32,12 +33,11 @@ class WeatherSystem {
 		void	startRain();
 		void	stopRain();
 
-		void	renderRain(Shader *shader) const;
-		void	renderCloud(Shader *shader) const;
+		void	renderRain(Shader &shader) const;
+		void	renderCloud(Shader &shader) const;
 		
-		glm::vec3 getLightingValues() const;
-		glm::vec3 getLightingColor() const;
-		glm::vec3 getSunPosition() const;
+		glm::vec3	getLightingValues() const;
+		Light		&getSun() const;
 		
 	private:
 
@@ -48,11 +48,10 @@ class WeatherSystem {
 		bool rainy;
 
 		glm::vec3		lightingValues; //ambiant, diffuse, specular
-		glm::vec3		lightingColor;
+		Light			*sun;
 		Model			*cloudModel;
 		ParticleSystem	*rain;
 		glm::vec3		wind;
-		glm::vec3		sunPosition;
 };
 
 #endif

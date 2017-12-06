@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/27 09:21:20 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 13:19:19 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -348,7 +348,7 @@ std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type, st
 	return textures;
 }
 
-void	Model::draw(Shader *shader, unsigned int instanceCount) {
+void	Model::draw(Shader &shader, unsigned int instanceCount) {
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {
 		meshes[i]->draw(shader, this->animated, instanceCount);
 	}

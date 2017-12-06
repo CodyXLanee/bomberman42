@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Light.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 09:38:15 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/02 22:02:11 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/12/06 13:30:03 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ std::vector<glm::mat4>	Light::getOmnidirectionalLightSpaceMatrix() const {
 }
 
 
-void	Light::render(Shader *shader, Camera const &camera) const {
+void	Light::render(Shader &shader, Camera const &camera) const {
     std::vector<glm::mat4> data;
 
 	glm::mat4 transform = glm::mat4();
@@ -72,15 +72,15 @@ void	Light::render(Shader *shader, Camera const &camera) const {
 	data.push_back(transform);
 
 	glm::vec3 camPos = camera.getPosition();
-	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
-    shader->setView();
+	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+    shader.setView();
 	model->setInstanceBuffer(data);  
     model->draw(shader, data.size());
 }
 
-void	Light::setShaderVariables(Shader *shader) const {
-	shader->setVec3("lightPos", position.x, position.y, position.z);
-	shader->setVec3("lightColor", color.x, color.y, color.z);
+void	Light::setShaderVariables(Shader &shader) const {
+	shader.setVec3("lightPos", position.x, position.y, position.z);
+	shader.setVec3("lightColor", color.x, color.y, color.z);
 }
 
 void		Light::setPosition(glm::vec3 pos) {

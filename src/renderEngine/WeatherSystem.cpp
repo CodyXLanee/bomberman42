@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 11:03:01 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:10:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,16 @@ WeatherSystem::WeatherSystem(enum time t, bool cloudy, bool rainy)
 WeatherSystem::~WeatherSystem() {
 	delete cloudModel;
 	delete rain;
+	delete sun;
 }
 
 void	WeatherSystem::init() {
 	cloudModel = new Model("assets/models/obj/cloud.obj", false);
 	rain = new ParticleSystem(glm::vec3(-2.f, -2.f, 10.f), ParticleSystem::type::RAIN);
+	sun = new Light(glm::vec3(8.f, 15.f, 20.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
 	lightingValues = glm::vec3(1.f);
-	lightingColor = glm::vec3(1.f);
-	sunPosition = glm::vec3(8.f, 15.f, 20.f);
+	// lightingColor = glm::vec3(1.f);
+	// sunPosition = glm::vec3(8.f, 15.f, 20.f);
 }
 
 void	WeatherSystem::setTime(enum time t) {
@@ -62,15 +64,11 @@ glm::vec3 WeatherSystem::getLightingValues() const {
 	return lightingValues;
 }
 
-glm::vec3 WeatherSystem::getSunPosition() const {
-	return sunPosition;
+Light	&WeatherSystem::getSun() const {
+	return *sun;
 }
 
-glm::vec3 WeatherSystem::getLightingColor() const {
-	return lightingColor;
-}
-
-void	WeatherSystem::renderCloud(Shader *shader) const {
+void	WeatherSystem::renderCloud(Shader &shader) const {
 	static float offset = 0.f;
 	std::vector<glm::mat4> data;
 
@@ -88,6 +86,6 @@ void	WeatherSystem::renderCloud(Shader *shader) const {
 	offset += 0.005f;
 }
 
-void	WeatherSystem::renderRain(Shader *shader) const {
+void	WeatherSystem::renderRain(Shader &shader) const {
 	rain->draw(shader);
 }

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/05 17:44:49 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:49:09 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "IGameEntity.hpp"
 # include "CollisionsManager.hpp"
 # include "BombManager.hpp"
+# include "PlayerManager.hpp"
 # include "WinManager.hpp"
 # include "Map.hpp"
 # include "Loader.hpp"
@@ -37,11 +38,13 @@ class GameEngine {
 
 	private:
 		GameEngine();		// not implemented;
+		void								loadMap(const char *path);
 		Map * 						_map;
 		Loader						_loader;
 		std::vector<IGameEntity *>	_entityList;
 		CollisionsManager			_collisionsManager;
 		BombManager					_bombManager;
+		PlayerManager				*_playerManager;
 		GameMode::Enum				_gameMode;
 		WinManager					*_winManager;
 

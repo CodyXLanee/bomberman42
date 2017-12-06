@@ -1,4 +1,3 @@
-
 #ifndef COLLISIONSMANAGER_HPP
 # define COLLISIONSMANAGER_HPP
 
@@ -14,7 +13,6 @@
 # include <math.h>
 
 class CollisionsManager {
-	
 	public:
 		CollisionsManager();
 		~CollisionsManager();

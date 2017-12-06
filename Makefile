@@ -11,6 +11,7 @@ SRC_NAME =	\
 			gameEngine/GameEngine.cpp \
 			gameEngine/AGameEntity.cpp \
 			gameEngine/Loader.cpp \
+			gameEngine/PlayerManager.cpp \
 			gameEngine/WinManager.cpp \
 			gameEngine/CollisionsManager.cpp \
 			gameEngine/BombManager.cpp \

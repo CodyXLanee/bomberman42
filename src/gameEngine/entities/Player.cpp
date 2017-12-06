@@ -6,25 +6,18 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 12:03:22 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:10:31 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Player.hpp"
 
-Player::Player(const glm::vec2 & pos) : 
+Player::Player(const glm::vec2 & pos, int nb) : 
 AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::PLAYER),
+_player_number(nb),
 left(false), right(false), up(false), down(false),
 _graphicalDirection(glm::vec2(0,0)){
-	SEventManager & em = SEventManager::getInstance();
-	em.registerEvent(Event::PLAYER_LEFT, MEMBER_CALLBACK(Player::newDirLeft));
-	em.registerEvent(Event::PLAYER_RIGHT, MEMBER_CALLBACK(Player::newDirRight));
-	em.registerEvent(Event::PLAYER_UP, MEMBER_CALLBACK(Player::newDirUp));
-	em.registerEvent(Event::PLAYER_DOWN, MEMBER_CALLBACK(Player::newDirDown));
-	em.registerEvent(Event::END_PLAYER_LEFT, MEMBER_CALLBACK(Player::endNewDirLeft));
-	em.registerEvent(Event::END_PLAYER_RIGHT, MEMBER_CALLBACK(Player::endNewDirRight));
-	em.registerEvent(Event::END_PLAYER_UP, MEMBER_CALLBACK(Player::endNewDirUp));
-	em.registerEvent(Event::END_PLAYER_DOWN, MEMBER_CALLBACK(Player::endNewDirDown));
+
 }
 
 glm::vec2	Player::getGraphicalDirection() const
@@ -36,6 +29,11 @@ void		Player::setGraphicalDirection(glm::vec2 dir)
 {
 	_graphicalDirection = dir;
 }
+
+int         Player::getPlayerNb(void){
+	return _player_number;
+}
+
 
 glm::vec2	Player::getNewDirection(void){
 	glm::vec2	ret(0,0);
@@ -50,28 +48,28 @@ glm::vec2	Player::getNewDirection(void){
 	return glm::normalize(ret);
 }
 
-void		Player::newDirLeft(void *){
+void		Player::newDirLeft(void){
 	left = true;
 }
-void		Player::newDirRight(void *){
+void		Player::newDirRight(void){
 	right = true;
 }
-void		Player::newDirUp(void *){
+void		Player::newDirUp(void){
 	up = true;
 }
-void		Player::newDirDown(void *){
+void		Player::newDirDown(void){
 	down = true;
 }
 
-void		Player::endNewDirLeft(void *){
+void		Player::endNewDirLeft(void){
 	left = false;
 }
-void		Player::endNewDirRight(void *){
+void		Player::endNewDirRight(void){
 	right = false;
 }
-void		Player::endNewDirUp(void *){
+void		Player::endNewDirUp(void){
 	up = false;
 }
-void		Player::endNewDirDown(void *){
+void		Player::endNewDirDown(void){
 	down = false;
 }

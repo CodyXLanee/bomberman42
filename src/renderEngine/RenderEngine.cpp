@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 11:14:08 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 16:13:27 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const
 		data.push_back(transform);
 	}
     playerModel->setInstanceBuffer(data);  
-    playerModel->draw(shader, 2);
+    playerModel->draw(shader, data.size());
 }
 
 void	RenderEngine::renderGround(Shader *shader, Map const & map) const {

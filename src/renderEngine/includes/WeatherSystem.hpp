@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:24 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 15:09:47 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 16:52:10 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ class WeatherSystem {
 		~WeatherSystem();
 	
 		void	setTime(time t);
-		void	startCloud();
-		void	stopCloud();
-		void	startRain();
-		void	stopRain();
+		void	startCloud(void*);
+		void	stopCloud(void*);
+		void	startRain(void*);
+		void	stopRain(void*);
 
 		void	renderRain(Shader &shader) const;
 		void	renderCloud(Shader &shader) const;

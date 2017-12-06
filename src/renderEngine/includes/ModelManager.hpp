@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:17:58 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 11:35:59 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:22:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@ class ModelManager {
 		Model	&getModel(model m) const;
 		
 	private:
+
+		std::string	directory;
+		
 		Model		*playerModel;
 		Model		*groundModel;
 		Model		*wallModel;

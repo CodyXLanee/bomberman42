@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/05 13:16:24 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 11:05:26 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "Camera.hpp"
 # include "Light.hpp"
 # include "ParticleSystem.hpp"
+# include "WeatherSystem.hpp"
 # include "NuklearGUI.hpp"
 # include "Map.hpp"
 # include "Player.hpp"
@@ -59,9 +60,10 @@ class RenderEngine {
 		Model		*brickModel;
 		Model		*bombModel;
 		Model		*flameModel;
-		Model		*cloudModel;
 		Camera  	&camera;
 		Light		*light;
+
+		WeatherSystem	*meteo;
 
 		std::vector<ParticleSystem *> particles;
 		std::vector<IGameEntity *> entitiesRecorded;
@@ -80,10 +82,9 @@ class RenderEngine {
 		void	renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderBombs(Shader *shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderFlames(Shader *shader, std::vector<IGameEntity *> const & entities) const;
-		void	renderCloud(Shader *shader) const;
 		void	renderParticles() const;
 
-		void	recordNewEntities(std::vector<IGameEntity *> & entities);
+		// void	recordNewEntities(std::vector<IGameEntity *> & entities);
 
 		void	setCamera(glm::mat4 const &, Shader *shader) const;
 

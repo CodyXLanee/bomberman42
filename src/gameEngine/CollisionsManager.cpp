@@ -5,17 +5,16 @@ CollisionsManager::CollisionsManager() {}
 
 CollisionsManager::~CollisionsManager() {}
 
-void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &entityList, std::vector<Action::Enum> const actions)
+void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &entityList)
 {
 
 	for (std::vector<IGameEntity *>::iterator i = entityList.begin(); i != entityList.end(); i++) {
 		switch((*i)->getType()){
 			case Type::PLAYER:
-				compute_player(*i, actions);
+				compute_player(static_cast<Player *>(*i));
 				computePlayerMovement(map, entityList, (*i));
 				break;
 			default:
-				(void)actions;
 				break;
 		}
 	}
@@ -45,23 +44,8 @@ void		CollisionsManager::computePlayerMovement(Map const & map, std::vector<IGam
 	}
 }
 
-glm::vec2	CollisionsManager::compute_direction(std::vector<Action::Enum> actions) {
-	glm::vec2 v(0., 0.);
-	for (std::vector<Action::Enum>::iterator i = actions.begin(); i != actions.end(); i++) {
-		switch (*i) {
-			case Action::LEFT: 		v.x += -1.; break;
-			case Action::RIGHT: 	v.x += 1.; break;
-			case Action::UP: 		v.y += 1.; break;
-			case Action::DOWN: 		v.y += -1.; break;
-			default:				(void)v;
-		}
-	}
-	return (glm::normalize(v));
-}
-
-void	CollisionsManager::compute_player(IGameEntity *p, std::vector<Action::Enum> actions){
-	glm::vec2	v = compute_direction(actions);
-	(void)p;
+void	CollisionsManager::compute_player(Player *p){
+	glm::vec2	v = p->getNewDirection();
 	if (!std::isnan(v.x) && !std::isnan(v.y)){ // glm::isnan wouldn't compile for some reason...
 		p->setState(State::MOVING);
 		p->setDirection(v);

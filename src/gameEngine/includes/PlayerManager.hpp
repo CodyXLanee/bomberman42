@@ -23,6 +23,7 @@ private:
 
     Player                  *_human_player;
     std::vector<Player *>   _players;
+    bool					_spawned_bomb;
 
     void                    ai(Player *p, Map const & map, std::vector<IGameEntity *> &entityList);
     void                    newDirLeft(void *p);
@@ -41,6 +42,9 @@ private:
     void                    humanEndNewDirRight(void *);
     void                    humanEndNewDirUp(void *);
     void                    humanEndNewDirDown(void *);
+
+    void                    humanSpawnBomb(void *);
+    void                    humanEndSpawnBomb(void *);
 
 };
 

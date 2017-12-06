@@ -6,15 +6,16 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:18:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/30 16:02:00 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 19:08:35 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FLAME_HPP
 # define FLAME_HPP
 
-#include "AGameEntity.hpp"
-#include <chrono>
+# include "AGameEntity.hpp"
+# include "SEventManager.hpp"
+# include <chrono>
 
 class Flame : public AGameEntity {
 public:

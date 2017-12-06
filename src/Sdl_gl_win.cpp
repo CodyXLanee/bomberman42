@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 15:09:38 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 19:18:54 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(heigh
     keyMap[Event::HUMAN_PLAYER_RIGHT] =   SDLK_d;
     keyMap[Event::HUMAN_PLAYER_UP] =      SDLK_w;
     keyMap[Event::HUMAN_PLAYER_DOWN] =    SDLK_s;
-    keyMap[Event::SPAWN_BOMB] =     SDLK_SPACE;
+    keyMap[Event::HUMAN_SPAWN_BOMB] =     SDLK_SPACE;
     
     keyMap[Event::CAMERA_LEFT] =    SDLK_LEFT;
     keyMap[Event::CAMERA_RIGHT] =   SDLK_RIGHT;
@@ -124,15 +124,15 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
                 else if (sym == keyMap[Event::HUMAN_PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::HUMAN_PLAYER_RIGHT, nullptr); }
                 else if (sym == keyMap[Event::HUMAN_PLAYER_UP]) {       a = Action::UP;             event.raise(Event::HUMAN_PLAYER_UP, nullptr); }
                 else if (sym == keyMap[Event::HUMAN_PLAYER_DOWN]) {     a = Action::DOWN;           event.raise(Event::HUMAN_PLAYER_DOWN, nullptr); }
-                else if (sym == keyMap[Event::SPAWN_BOMB]) {      a = Action::SPAWN_BOMB;     event.raise(Event::SPAWN_BOMB, nullptr); }
-                else if (sym == keyMap[Event::CAMERA_LEFT]) {     a = Action::CAMERA_LEFT;    event.raise(Event::CAMERA_LEFT, nullptr); }
-                else if (sym == keyMap[Event::CAMERA_RIGHT]) {    a = Action::CAMERA_RIGHT;   event.raise(Event::CAMERA_RIGHT, nullptr); }
-                else if (sym == keyMap[Event::CAMERA_UP]) {       a = Action::CAMERA_UP;      event.raise(Event::CAMERA_UP, nullptr); }
-                else if (sym == keyMap[Event::CAMERA_DOWN]) {     a = Action::CAMERA_DOWN;    event.raise(Event::CAMERA_DOWN, nullptr); }
-                else if (sym == keyMap[Event::RESET_CAMERA]) {    a = Action::RESET_CAMERA;   event.raise(Event::RESET_CAMERA, nullptr); }
-                else if (sym == keyMap[Event::DEBUG_MODE]) {      event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::DEBUG)); }
-                else if (sym == keyMap[Event::FOLLOW_PLAYER]) {   a = Action::FOLLOW_PLAYER;  event.raise(Event::FOLLOW_PLAYER, nullptr); }
-                else if (sym == keyMap[Event::GUI_BASE_MENU]) {   event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::BASE)); }
+                else if (sym == keyMap[Event::HUMAN_SPAWN_BOMB]) {      a = Action::SPAWN_BOMB;     event.raise(Event::HUMAN_SPAWN_BOMB, nullptr); }
+                else if (sym == keyMap[Event::CAMERA_LEFT]) {           a = Action::CAMERA_LEFT;    event.raise(Event::CAMERA_LEFT, nullptr); }
+                else if (sym == keyMap[Event::CAMERA_RIGHT]) {          a = Action::CAMERA_RIGHT;   event.raise(Event::CAMERA_RIGHT, nullptr); }
+                else if (sym == keyMap[Event::CAMERA_UP]) {             a = Action::CAMERA_UP;      event.raise(Event::CAMERA_UP, nullptr); }
+                else if (sym == keyMap[Event::CAMERA_DOWN]) {           a = Action::CAMERA_DOWN;    event.raise(Event::CAMERA_DOWN, nullptr); }
+                else if (sym == keyMap[Event::RESET_CAMERA]) {          a = Action::RESET_CAMERA;   event.raise(Event::RESET_CAMERA, nullptr); }
+                else if (sym == keyMap[Event::DEBUG_MODE]) {            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::DEBUG)); }
+                else if (sym == keyMap[Event::FOLLOW_PLAYER]) {         a = Action::FOLLOW_PLAYER;  event.raise(Event::FOLLOW_PLAYER, nullptr); }
+                else if (sym == keyMap[Event::GUI_BASE_MENU]) {         event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::BASE)); }
                 
 			if (find(actions.begin(), actions.end(), a) == actions.end())
                 actions.push_back(a);
@@ -146,6 +146,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
                 else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::END_HUMAN_PLAYER_RIGHT, nullptr); }
                 else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_UP]) {       a = Action::UP;             event.raise(Event::END_HUMAN_PLAYER_UP, nullptr); }
                 else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_DOWN]) {     a = Action::DOWN;           event.raise(Event::END_HUMAN_PLAYER_DOWN, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::HUMAN_SPAWN_BOMB]) {     a = Action::DOWN;           event.raise(Event::END_HUMAN_SPAWN_BOMB, nullptr); }
             switch(events.key.keysym.sym) {
                 case SDLK_a:        a = Action::LEFT; break;
                 case SDLK_d:        a = Action::RIGHT; break;

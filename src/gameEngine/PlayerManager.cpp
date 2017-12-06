@@ -1,6 +1,6 @@
 # include "PlayerManager.hpp"
 
-PlayerManager::PlayerManager() : _human_player(nullptr), _players(){	
+PlayerManager::PlayerManager() : _human_player(nullptr), _players(), _spawned_bomb(false){	
     SEventManager & em = SEventManager::getInstance();
 	em.registerEvent(Event::PLAYER_LEFT, MEMBER_CALLBACK(PlayerManager::newDirLeft));
 	em.registerEvent(Event::PLAYER_RIGHT, MEMBER_CALLBACK(PlayerManager::newDirRight));
@@ -10,6 +10,7 @@ PlayerManager::PlayerManager() : _human_player(nullptr), _players(){
 	em.registerEvent(Event::END_PLAYER_RIGHT, MEMBER_CALLBACK(PlayerManager::endNewDirRight));
 	em.registerEvent(Event::END_PLAYER_UP, MEMBER_CALLBACK(PlayerManager::endNewDirUp));
 	em.registerEvent(Event::END_PLAYER_DOWN, MEMBER_CALLBACK(PlayerManager::endNewDirDown));
+	em.registerEvent(Event::HUMAN_SPAWN_BOMB, MEMBER_CALLBACK(PlayerManager::humanSpawnBomb));
 
     em.registerEvent(Event::HUMAN_PLAYER_LEFT, MEMBER_CALLBACK(PlayerManager::humanNewDirLeft));
 	em.registerEvent(Event::HUMAN_PLAYER_RIGHT, MEMBER_CALLBACK(PlayerManager::humanNewDirRight));
@@ -19,6 +20,7 @@ PlayerManager::PlayerManager() : _human_player(nullptr), _players(){
 	em.registerEvent(Event::END_HUMAN_PLAYER_RIGHT, MEMBER_CALLBACK(PlayerManager::humanEndNewDirRight));
 	em.registerEvent(Event::END_HUMAN_PLAYER_UP, MEMBER_CALLBACK(PlayerManager::humanEndNewDirUp));
 	em.registerEvent(Event::END_HUMAN_PLAYER_DOWN, MEMBER_CALLBACK(PlayerManager::humanEndNewDirDown));
+	em.registerEvent(Event::END_HUMAN_SPAWN_BOMB, MEMBER_CALLBACK(PlayerManager::humanEndSpawnBomb));
 }
 PlayerManager::~PlayerManager(){
 }
@@ -74,7 +76,6 @@ void            PlayerManager::endNewDirDown(void *p){
 
 
 
-
 void            PlayerManager::humanNewDirLeft(void *){
     if (_human_player)
         SEventManager::getInstance().raise(Event::PLAYER_LEFT, _human_player);
@@ -91,6 +92,9 @@ void            PlayerManager::humanNewDirDown(void *){
     if (_human_player)
         SEventManager::getInstance().raise(Event::PLAYER_DOWN, _human_player);
 }
+
+
+
 void            PlayerManager::humanEndNewDirLeft(void *){
     if (_human_player)
         SEventManager::getInstance().raise(Event::END_PLAYER_LEFT, _human_player);
@@ -107,6 +111,18 @@ void            PlayerManager::humanEndNewDirDown(void *){
     if (_human_player)
         SEventManager::getInstance().raise(Event::END_PLAYER_DOWN, _human_player);
 }
+
+
+
+void            PlayerManager::humanSpawnBomb(void *){
+    if (_human_player)
+        SEventManager::getInstance().raise(Event::SPAWN_BOMB, _human_player);
+    _spawned_bomb = true;
+}
+void            PlayerManager::humanEndSpawnBomb(void *){
+    _spawned_bomb = false;
+}
+
 
 
 void            PlayerManager::setHumanPlayer(Player *p){

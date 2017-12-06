@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 11:01:31 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 19:10:00 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void        SGameManager::manage(void) {
 		_window.eventManager(actions, _gui.getContext());
 
         if (_game_is_active){
-            _game->compute(actions);
+            _game->compute();
             
             _camera.update(actions, _window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
             _renderer.render(_game->getMap(), _game->getEntityList());

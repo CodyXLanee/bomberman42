@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:24:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/30 16:01:52 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 20:02:32 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void    Flame::update(void){
     std::chrono::milliseconds   time_since_creation = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - creation_time);
     if (time_since_creation > ms_before_explode) {
         setState(State::DYING);
+        SEventManager::getInstance().raise(Event::FLAME_DISAPEAR, this);
     }
 }
 

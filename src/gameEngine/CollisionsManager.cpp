@@ -12,32 +12,36 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &ent
 		switch((*i)->getType()){
 			case Type::PLAYER:
 				compute_player(*i, actions);
-				if ((*i)->getState() == State::MOVING){
-					glm::vec2	newPos = (*i)->getPosition() + ((*i)->getDirection() * (*i)->getSpeed());
-					
-					gestionBorderMap(newPos, map);
-					
-					if (!gestionNoSlipMove(newPos, *i, map, entityList))
-					{
-						if ((*i)->getDirection().x == 0 || (*i)->getDirection().y == 0)
-							gestionSlipOneDirection(newPos, *i, map, entityList);
-						else
-							gestionSlipBidirection(newPos, *i, map);
-					}
-
-					// gestion border
-
-					// set the new position
-					//(*i)->setDirection(normalize(newPos - (*i)->getPosition()));
-
-					SEventManager::getInstance().raise(Event::PLAYER_MOVE, &newPos);
-					(*i)->setPosition(newPos);
-				}
+				computePlayerMovement(map, entityList, (*i));
 				break;
 			default:
 				(void)actions;
 				break;
 		}
+	}
+}
+
+void		CollisionsManager::computePlayerMovement(Map const & map, std::vector<IGameEntity *> &entityList, IGameEntity *player){
+	if (player->getState() == State::MOVING){
+		glm::vec2	newPos = player->getPosition() + (player->getDirection() * player->getSpeed());
+		
+		gestionBorderMap(newPos, map);
+		
+		if (!gestionNoSlipMove(newPos, player, map, entityList))
+		{
+			if (player->getDirection().x == 0 || player->getDirection().y == 0)
+				gestionSlipOneDirection(newPos, player, map, entityList);
+			else
+				gestionSlipBidirection(newPos, player, map);
+		}
+
+		// gestion border
+
+		// set the new position
+		//player->setDirection(normalize(newPos - player->getPosition()));
+
+		SEventManager::getInstance().raise(Event::PLAYER_MOVE, &newPos);
+		player->setPosition(newPos);
 	}
 }
 
@@ -127,7 +131,7 @@ bool			CollisionsManager::collidesWithEntity(glm::vec2 &v, IGameEntity const * e
 		if ((*i) != entity){
 			switch((*i)->getType()){
 				case Type::BOMB:
-															//	this is so a player already on the same spot as an bomb doesn't produce a collision
+															//	this is so a player already on the same spot as a bomb doesn't produce a collision
 					if (glm::round(v) == (*i)->getPosition() && glm::round(entity->getPosition()) != (*i)->getPosition() )
 						return true;
 					break;

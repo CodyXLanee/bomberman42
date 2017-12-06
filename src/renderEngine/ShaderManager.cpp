@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:16:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 13:34:01 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 13:52:07 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,16 @@ Shader	&ShaderManager::getFlamesShader() const {
 
 Shader	&ShaderManager::getParticlesShader() const {
 	return *particlesShader;
+}
+
+void	ShaderManager::setCamera(glm::mat4 const & camMat) const {
+	mainShader->use();
+    mainShader->setCamera(camMat);
+    mainShader->setView();
+	flamesShader->use();
+    flamesShader->setCamera(camMat);
+    flamesShader->setView();
+    particlesShader->use();
+    particlesShader->setCamera(camMat);
+    particlesShader->setView();
 }

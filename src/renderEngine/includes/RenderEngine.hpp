@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 13:26:29 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 14:35:48 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,6 @@ class RenderEngine {
 		
 		RenderEngine();
 		SDL_Window	*win;
-		// Shader		*mainShader;
-		// Shader		*flamesShader;
-		// Shader		*directionalShadowShader;
-		// Shader		*pointShadowShader;
-		// Shader		*particlesShader;
-		// Shader		*debugDepthQuad;
 		
 		ModelManager	modelManager;
 		ShaderManager	shaderManager;
@@ -66,13 +60,14 @@ class RenderEngine {
 		std::vector<ParticleSystem *> particles;
 		std::vector<IGameEntity *> entitiesRecorded;
 
+		int w;
+		int h;
 		unsigned int depthMapFBO;
 		unsigned int depthMap;
 		unsigned int depthCubemap;
 		unsigned int quadVAO;
 		unsigned int quadVBO;
 
-		
 		void	renderScene(Shader &shader, Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	renderWall(Shader &shader, const std::vector<IndestructibleBloc> &b, Map const & map) const;
 		void	renderBrick(Shader &shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const;
@@ -83,13 +78,14 @@ class RenderEngine {
 		void	renderParticles() const;
 
 		// void	recordNewEntities(std::vector<IGameEntity *> & entities);
-
-		void	setCamera(glm::mat4 const &, Shader &shader) const;
+		void	shadowPass(Map const & map, std::vector<IGameEntity *> &entities) const;
+		void	normalPass(Map const & map, std::vector<IGameEntity *> &entities) const;
+		void	blendedPass(std::vector<IGameEntity *> &entities) const;
 
 		void	createShadowBuffer();
 		void	createDepthCubemap();
-		void	getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
-		void	getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities);
+		void	getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const;
+		void	getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const;
 
 		// void	renderShadowMap();
 };

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:55 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 15:09:38 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(heigh
     initSDL();
     initGL();
     
-    keyMap[Event::PLAYER_LEFT] =    SDLK_a;
-    keyMap[Event::PLAYER_RIGHT] =   SDLK_d;
-    keyMap[Event::PLAYER_UP] =      SDLK_w;
-    keyMap[Event::PLAYER_DOWN] =    SDLK_s;
+    keyMap[Event::HUMAN_PLAYER_LEFT] =    SDLK_a;
+    keyMap[Event::HUMAN_PLAYER_RIGHT] =   SDLK_d;
+    keyMap[Event::HUMAN_PLAYER_UP] =      SDLK_w;
+    keyMap[Event::HUMAN_PLAYER_DOWN] =    SDLK_s;
     keyMap[Event::SPAWN_BOMB] =     SDLK_SPACE;
     
     keyMap[Event::CAMERA_LEFT] =    SDLK_LEFT;
@@ -120,10 +120,10 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
             //     case keyMap[Event::FOLLOW_PLAYER]:      a = Action::FOLLOW_PLAYER;  event.raise(Event::FOLLOW_PLAYER, nullptr); 
             //     case keyMap[Event::GUI_BASE_MENU]:      event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::BASE)); 
             // }
-                     if (sym == keyMap[Event::PLAYER_LEFT]) {     a = Action::LEFT;           event.raise(Event::PLAYER_LEFT, nullptr); }
-                else if (sym == keyMap[Event::PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::PLAYER_RIGHT, nullptr); }
-                else if (sym == keyMap[Event::PLAYER_UP]) {       a = Action::UP;             event.raise(Event::PLAYER_UP, nullptr); }
-                else if (sym == keyMap[Event::PLAYER_DOWN]) {     a = Action::DOWN;           event.raise(Event::PLAYER_DOWN, nullptr); }
+                     if (sym == keyMap[Event::HUMAN_PLAYER_LEFT]) {     a = Action::LEFT;           event.raise(Event::HUMAN_PLAYER_LEFT, nullptr); }
+                else if (sym == keyMap[Event::HUMAN_PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::HUMAN_PLAYER_RIGHT, nullptr); }
+                else if (sym == keyMap[Event::HUMAN_PLAYER_UP]) {       a = Action::UP;             event.raise(Event::HUMAN_PLAYER_UP, nullptr); }
+                else if (sym == keyMap[Event::HUMAN_PLAYER_DOWN]) {     a = Action::DOWN;           event.raise(Event::HUMAN_PLAYER_DOWN, nullptr); }
                 else if (sym == keyMap[Event::SPAWN_BOMB]) {      a = Action::SPAWN_BOMB;     event.raise(Event::SPAWN_BOMB, nullptr); }
                 else if (sym == keyMap[Event::CAMERA_LEFT]) {     a = Action::CAMERA_LEFT;    event.raise(Event::CAMERA_LEFT, nullptr); }
                 else if (sym == keyMap[Event::CAMERA_RIGHT]) {    a = Action::CAMERA_RIGHT;   event.raise(Event::CAMERA_RIGHT, nullptr); }
@@ -142,10 +142,10 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_
         if (events.type == SDL_KEYUP) {
             event.raise(Event::KEYUP, &events.key.keysym.sym);            
             Action::Enum a;
-                     if (events.key.keysym.sym == keyMap[Event::PLAYER_LEFT]) {     a = Action::LEFT;           event.raise(Event::END_PLAYER_LEFT, nullptr); }
-                else if (events.key.keysym.sym == keyMap[Event::PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::END_PLAYER_RIGHT, nullptr); }
-                else if (events.key.keysym.sym == keyMap[Event::PLAYER_UP]) {       a = Action::UP;             event.raise(Event::END_PLAYER_UP, nullptr); }
-                else if (events.key.keysym.sym == keyMap[Event::PLAYER_DOWN]) {     a = Action::DOWN;           event.raise(Event::END_PLAYER_DOWN, nullptr); }
+                     if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_LEFT]) {     a = Action::LEFT;           event.raise(Event::END_HUMAN_PLAYER_LEFT, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::END_HUMAN_PLAYER_RIGHT, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_UP]) {       a = Action::UP;             event.raise(Event::END_HUMAN_PLAYER_UP, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_DOWN]) {     a = Action::DOWN;           event.raise(Event::END_HUMAN_PLAYER_DOWN, nullptr); }
             switch(events.key.keysym.sym) {
                 case SDLK_a:        a = Action::LEFT; break;
                 case SDLK_d:        a = Action::RIGHT; break;

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 16:51:48 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 16:53:22 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 		data.push_back(transform);
 	}
     model.setInstanceBuffer(data);  
-    model.draw(shader, 2);
+    model.draw(shader, data.size());
 }
 
 void	RenderEngine::renderGround(Shader &shader, Map const & map) const {

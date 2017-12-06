@@ -6,14 +6,34 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 11:26:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 13:32:15 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 16:47:24 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParticleSystem.hpp"
 
-ParticleSystem::ParticleSystem(glm::vec3 position, enum type t) : type(t), oriPos(position) {
+ParticleSystem::ParticleSystem(glm::vec3 position, enum type t)
+	: running(false), type(t), oriPos(position) {
+	createBuffers();
+	if(running)
+		init();
+}
 
+ParticleSystem::ParticleSystem(bool active, glm::vec3 position, enum type t)
+	: running(active), type(t), oriPos(position) {
+	createBuffers();
+	if(running)
+		init();
+}
+
+ParticleSystem::~ParticleSystem() {
+    glDeleteBuffers(1, &this->vbo);
+	glDeleteBuffers(1, &this->ebo);
+	glDeleteBuffers(1, &this->ibo);
+	glDeleteVertexArrays(1, &this->vao);
+}
+
+void	ParticleSystem::createBuffers() {
     GLfloat vertices[] = {-1, -1, 0,
                             -1,  1, 0,
                             1,  1, 0,
@@ -37,39 +57,6 @@ ParticleSystem::ParticleSystem(glm::vec3 position, enum type t) : type(t), oriPo
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindVertexArray(0);
-
-		switch(type) {
-			case FIRE:
-				particleNbr = 10;
-				for(unsigned int i = 0; i < particleNbr; i++) {
-					float r1 = static_cast<float>((rand() % 10)) - 10.f;
-					float r2 = static_cast<float>((rand() % 10)) - 10.f;
-					positions.push_back(position + glm::vec3(r1 / 10.f, r2 / 10.f, 0.f));
-				}
-				break;
-			case BOMB:
-				particleNbr = 3;
-				for(unsigned int i = 0; i < particleNbr; i++) {
-					positions.push_back(position + glm::vec3(0.08f, 0.f, 0.59f));
-				}
-				break;
-			case RAIN:
-				particleNbr = 1000;
-				for(unsigned int i = 0; i < particleNbr; i++) {
-					float r1 = static_cast<float>((rand() % 300)) / 10.f;
-					float r2 = static_cast<float>((rand() % 300)) / 10.f;
-					float r3 = static_cast<float>((rand() % 300)) / 10.f;
-					positions.push_back(position + glm::vec3(r1, r2, r3));
-				}
-				break;
-		}
-}
-
-ParticleSystem::~ParticleSystem() {
-    glDeleteBuffers(1, &this->vbo);
-	glDeleteBuffers(1, &this->ebo);
-	glDeleteBuffers(1, &this->ibo);
-	glDeleteVertexArrays(1, &this->vao);
 }
 
 void	ParticleSystem::setInstanceBuffer(std::vector<glm::mat4> const & data) {
@@ -99,6 +86,35 @@ void	ParticleSystem::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 	glBindVertexArray(0);
 	
 	glDeleteBuffers(1, &this->ibo);
+}
+
+void	ParticleSystem::init() {
+	positions.clear();
+	switch(type) {
+		case FIRE:
+			particleNbr = 10;
+			for(unsigned int i = 0; i < particleNbr; i++) {
+				float r1 = static_cast<float>((rand() % 10)) - 10.f;
+				float r2 = static_cast<float>((rand() % 10)) - 10.f;
+				positions.push_back(oriPos + glm::vec3(r1 / 10.f, r2 / 10.f, 0.f));
+			}
+			break;
+		case BOMB:
+			particleNbr = 3;
+			for(unsigned int i = 0; i < particleNbr; i++) {
+				positions.push_back(oriPos + glm::vec3(0.08f, 0.f, 0.59f));
+			}
+			break;
+		case RAIN:
+			particleNbr = 1000;
+			for(unsigned int i = 0; i < particleNbr; i++) {
+				float r1 = static_cast<float>((rand() % 300)) / 10.f;
+				float r2 = static_cast<float>((rand() % 300)) / 10.f;
+				float r3 = static_cast<float>((rand() % 300)) / 10.f;
+				positions.push_back(oriPos + glm::vec3(r1, r2, r3));
+			}
+			break;
+	}
 }
 
 void	ParticleSystem::draw(Shader &shader) {
@@ -175,11 +191,16 @@ void	ParticleSystem::updateRain(Shader &shader) {
 
         // float dist = glm::distance(oriPos, *i);
         if (i->z < -5) {
-			float r1 = static_cast<float>((rand() % 300)) / 10.f;
-			float r2 = static_cast<float>((rand() % 300)) / 10.f;
-			float r3 = static_cast<float>((rand() % 300)) / 10.f;
-			*i = oriPos + glm::vec3(r1, r2, r3);
-            i--;
+			if (running) {
+				float r1 = static_cast<float>((rand() % 300)) / 10.f;
+				float r2 = static_cast<float>((rand() % 300)) / 10.f;
+				float r3 = static_cast<float>((rand() % 300)) / 10.f;
+				*i = oriPos + glm::vec3(r1, r2, r3);
+				i--;
+			} else {
+				positions.erase(i);
+				i--;
+			}
             // break;
 		}
 
@@ -191,4 +212,13 @@ void	ParticleSystem::updateRain(Shader &shader) {
     }
     if (data.size() != 0)
         setInstanceBuffer(data);
+}
+
+void	ParticleSystem::start() {
+	init();
+	running = true;
+}
+
+void	ParticleSystem::stop() {
+	running = false;
 }

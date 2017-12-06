@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:24 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 15:09:47 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 17:13:52 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ class WeatherSystem {
 		~WeatherSystem();
 	
 		void	setTime(time t);
-		void	startCloud();
-		void	stopCloud();
-		void	startRain();
-		void	stopRain();
+		void	startCloud(void*);
+		void	stopCloud(void*);
+		void	startRain(void*);
+		void	stopRain(void*);
 
 		void	renderRain(Shader &shader) const;
-		void	renderCloud(Shader &shader) const;
+		void	renderCloud(Shader &shader);
 		
 		glm::vec3	getLightingValues() const;
 		Light		&getSun() const;
@@ -42,16 +42,19 @@ class WeatherSystem {
 	private:
 
 		void	init();
+		void	initClouds();
 
 		time			dayTime;
 		bool cloudy;
 		bool rainy;
 
-		glm::vec3		lightingValues; //ambiant, diffuse, specular
-		Light			*sun;
-		Model			*cloudModel;
-		ParticleSystem	*rain;
-		glm::vec3		wind;
+		glm::vec3				lightingValues; //ambiant, diffuse, specular
+		Light					*sun;
+		Model					*cloudModel;
+		ParticleSystem			*rain;
+		std::vector<glm::vec3>	cloudsPosition;
+		// std::vector<glm::vec3>	cloudsVelocity;
+		// glm::vec3		wind;
 };
 
 #endif

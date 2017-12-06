@@ -55,12 +55,12 @@ vec3	computeLight() {
 	vec3 lightDir = normalize(lightPos - fragPos);
 
 	float diff = max(dot(norm, lightDir), 0.0);
-	float diffuse = diff * 0.6;
+	float diffuse = diff * 0.3;
 
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, norm);  
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    float specular = spec * 0.3;
+    float specular = spec * 0.8;
 
 	// vec3 result = ambient + diffuse + specular;
 	// vec3 result = ambient + diffuse;

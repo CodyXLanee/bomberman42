@@ -6,7 +6,11 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2017/12/05 19:24:22 by egaborea         ###   ########.fr       */
+=======
+/*   Updated: 2017/12/06 11:05:41 by tpierron         ###   ########.fr       */
+>>>>>>> 503bb6bb893d4e81c984de56801b09adefeb1928
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +48,12 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	brickModel = new Model("assets/models/obj/brick.obj", false);
 	bombModel = new Model("assets/models/obj/bomb.obj", false);
 	flameModel = new Model("assets/models/obj/flame.obj", false);
-	cloudModel = new Model("assets/models/obj/cloud.obj", false);
 
 	light = new Light(glm::vec3(8.f, 15.f, 20.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
 	// light = new Light(glm::vec3(20.f, 15.f, 11.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
 	// light = new Light(glm::vec3(3.5f, 6.5f, 1.f), glm::vec3(1.f, 1.f, 1.f), Light::DIRECTIONAL);
+
+	meteo = new WeatherSystem();
 
 	mainShader->use();
 	mainShader->setInt("texture_diffuse", 0);
@@ -56,7 +61,7 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	// debugDepthQuad->use();
 	// debugDepthQuad->setInt("depthMap", 0);
 
-	particles.push_back(new ParticleSystem(glm::vec3(-2.f, -2.f, 10.f), ParticleSystem::RAIN));
+	// particles.push_back(new ParticleSystem(glm::vec3(-2.f, -2.f, 10.f), ParticleSystem::RAIN));
 }
 
 RenderEngine::~RenderEngine() {}
@@ -82,7 +87,9 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 
 	renderFlames(flamesShader, entities);
 
-	renderParticles();
+	// renderParticles();
+	setCamera(camera.getMatrix(), particlesShader);
+	meteo->renderRain(particlesShader);
 	
 	// light->render(mainShader, camera);
 	// renderShadowMap();
@@ -103,7 +110,8 @@ void	RenderEngine::renderScene(Shader *shader, Map const & map, std::vector<IGam
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
-	renderCloud(shader);
+	// renderCloud(shader);
+	meteo->renderCloud(shader);
 }
 
 void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const & entities) const {
@@ -378,35 +386,17 @@ void RenderEngine::renderShadowMap()
     glBindVertexArray(0);
 }
 
-void	RenderEngine::renderCloud(Shader *shader) const {
-	static float offset = 0.f;
-	std::vector<glm::mat4> data;
-
-	// for (auto i = entities.begin(); i != entities.end(); i++ ){
-	glm::mat4 transform = glm::mat4();
-	transform = glm::translate(transform, glm::vec3(-5.f + offset, 12.f, 12.f));
-	transform = glm::rotate(transform,glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
-	data.push_back(transform);
-	// }
-	
-    cloudModel->setInstanceBuffer(data);  
-    cloudModel->draw(shader, data.size());
-	if(offset > 20.f)
-		offset = 0.f;
-	offset += 0.005f;
-}
-
 void RenderEngine::renderParticles() const {
 	// if (particles.size() == 0) {
 	// 	particles.push_back(new ParticleSystem(glm::vec3(5.f, 5.f, 2.f), ParticleSystem::RAIN));
 	// }
 
-	setCamera(camera.getMatrix(), particlesShader);
-	particles[0]->draw(particlesShader);
+	// setCamera(camera.getMatrix(), particlesShader);
+	// particles[0]->draw(particlesShader);
 }
 
-void	RenderEngine::recordNewEntities(std::vector<IGameEntity *> & entities) {
-	for(unsigned int it = 0; it < entities.size(); it++) {
-		std::cout << &entities[it] << std::endl;
-	}
-}
+// void	RenderEngine::recordNewEntities(std::vector<IGameEntity *> & entities) {
+// 	for(unsigned int it = 0; it < entities.size(); it++) {
+// 		std::cout << &entities[it] << std::endl;
+// 	}
+// }

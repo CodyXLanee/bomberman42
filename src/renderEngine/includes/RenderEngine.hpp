@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 11:05:26 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/06 12:36:20 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "IGameEntity.hpp"
 # include "Shader.hpp"
 # include "Model.hpp"
+# include "ModelManager.hpp"
 # include "Camera.hpp"
 # include "Light.hpp"
 # include "ParticleSystem.hpp"
@@ -54,12 +55,13 @@ class RenderEngine {
 		Shader		*particlesShader;
 		Shader		*debugDepthQuad;
 		
-		Model		*playerModel;
-		Model		*groundModel;
-		Model		*wallModel;
-		Model		*brickModel;
-		Model		*bombModel;
-		Model		*flameModel;
+		// Model		*playerModel;
+		// Model		*groundModel;
+		// Model		*wallModel;
+		// Model		*brickModel;
+		// Model		*bombModel;
+		// Model		*flameModel;
+		ModelManager	modelManager;
 		Camera  	&camera;
 		Light		*light;
 

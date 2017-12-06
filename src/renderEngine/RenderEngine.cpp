@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 11:14:08 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 12:38:28 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,10 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 								"src/renderEngine/shaders/pointShadowDepth.glfs");
 	// debugDepthQuad = new Shader("src/renderEngine/shaders/debugShadow.glvs",
 	// 							"src/renderEngine/shaders/debugShadow.glfs");
+	
 
 	particlesShader = new Shader("src/renderEngine/shaders/particles.glvs",
 								"src/renderEngine/shaders/particles.glfs");
-	
-	groundModel = new Model("assets/models/obj/groundTile1.obj", false);
-	wallModel = new Model("assets/models/obj/wall.obj", false);
-	playerModel = new Model("assets/models/obj/player.obj", false);
-	brickModel = new Model("assets/models/obj/brick.obj", false);
-	bombModel = new Model("assets/models/obj/bomb.obj", false);
-	flameModel = new Model("assets/models/obj/flame.obj", false);
 
 	light = new Light(glm::vec3(8.f, 15.f, 20.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
 	// light = new Light(glm::vec3(20.f, 15.f, 11.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
@@ -95,7 +89,6 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 
 void	RenderEngine::renderScene(Shader *shader, Map const & map, std::vector<IGameEntity *> &entities) const {
 	shader->use();
-
 	setCamera(camera.getMatrix(), shader);
 	glm::vec3 camPos = camera.getPosition();
 	shader->setVec3("viewPos", camPos.x, camPos.y, camPos.z);
@@ -106,7 +99,6 @@ void	RenderEngine::renderScene(Shader *shader, Map const & map, std::vector<IGam
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
-	// renderCloud(shader);
 	meteo->renderCloud(shader);
 }
 
@@ -137,8 +129,8 @@ void	RenderEngine::renderPlayer(Shader *shader, std::vector<IGameEntity *> const
 
 		data.push_back(transform);
 	}
-    playerModel->setInstanceBuffer(data);  
-    playerModel->draw(shader, 2);
+    modelManager.getModel(ModelManager::PLAYER).setInstanceBuffer(data);  
+    modelManager.getModel(ModelManager::PLAYER).draw(shader, 2);
 }
 
 void	RenderEngine::renderGround(Shader *shader, Map const & map) const {
@@ -152,8 +144,8 @@ void	RenderEngine::renderGround(Shader *shader, Map const & map) const {
 			data.push_back(transform);
 		}
 	}
-	groundModel->setInstanceBuffer(data);
-    groundModel->draw(shader, data.size());
+	modelManager.getModel(ModelManager::GROUND).setInstanceBuffer(data);
+    modelManager.getModel(ModelManager::GROUND).draw(shader, data.size());
 }
 
 void	RenderEngine::renderWall(Shader *shader, const std::vector<IndestructibleBloc> &b, Map const & map) const {
@@ -180,8 +172,8 @@ void	RenderEngine::renderWall(Shader *shader, const std::vector<IndestructibleBl
 			transform = glm::translate(transform, glm::vec3(0.f, map.getSize().x + 1, 0.f));
 			data.push_back(transform);
 	}
-	wallModel->setInstanceBuffer(data);
-    wallModel->draw(shader, data.size());
+	modelManager.getModel(ModelManager::WALL).setInstanceBuffer(data);
+    modelManager.getModel(ModelManager::WALL).draw(shader, data.size());
 }
 
 void	RenderEngine::renderBrick(Shader *shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const {
@@ -194,8 +186,8 @@ void	RenderEngine::renderBrick(Shader *shader, const std::vector<DestructibleBlo
 		transform = glm::mat4(glm::translate(transform, glm::vec3(i->getPosition(), 0.f)));
 		data.push_back(transform);
 	}
-	brickModel->setInstanceBuffer(data);  
-    brickModel->draw(shader, data.size());
+	modelManager.getModel(ModelManager::BRICK).setInstanceBuffer(data);  
+    modelManager.getModel(ModelManager::BRICK).draw(shader, data.size());
 }
 
 static	float		bombs_animation_scale(Bomb const *b){
@@ -213,8 +205,8 @@ void	RenderEngine::renderBombs(Shader *shader, std::vector<IGameEntity *> const 
 			data.push_back(transform);
 		}
 	}
-    bombModel->setInstanceBuffer(data);  
-    bombModel->draw(shader, data.size());
+    modelManager.getModel(ModelManager::BOMB).setInstanceBuffer(data);  
+    modelManager.getModel(ModelManager::BOMB).draw(shader, data.size());
 }
 
 static	float		flames_animation_scale(Flame const *f){
@@ -237,8 +229,8 @@ void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const
 			data.insert(data.begin(), transform);
 		}
 	}
-    flameModel->setInstanceBuffer(data);  
-	flameModel->draw(shader, data.size());
+    modelManager.getModel(ModelManager::FLAME).setInstanceBuffer(data);  
+	modelManager.getModel(ModelManager::FLAME).draw(shader, data.size());
 	data.clear();
 	shader->use();
 	shader->setInt("core", 0);
@@ -251,8 +243,8 @@ void	RenderEngine::renderFlames(Shader *shader, std::vector<IGameEntity *> const
 			data.insert(data.begin(), transform);
 		}
 	}
-    flameModel->setInstanceBuffer(data);  
-    flameModel->draw(shader, data.size());
+    modelManager.getModel(ModelManager::FLAME).setInstanceBuffer(data);  
+    modelManager.getModel(ModelManager::FLAME).draw(shader, data.size());
 }
 
 void	RenderEngine::setCamera(glm::mat4 const & cameraMatrix, Shader *shader) const {

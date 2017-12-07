@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/06 11:05:39 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/07 13:20:49 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void    NuklearGUI::toggle(void *p) {
     else {
         _active_menu.push(*m);
     }
-    // delete m;
+    delete m;
 
 }
 
@@ -81,13 +81,30 @@ void    NuklearGUI::render() {
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
 }
 
+void    NuklearGUI::bindKeyToEvent(Event::Enum ev, std::map<Event::Enum, SDL_Keycode> & displayedKeysMap) {
+    // Reset previously bound _keyToChange if any
+    if (_keyToChange != nullptr) {
+        Event::Enum toReset;
+        for (auto it = displayedKeysMap.begin(); it != displayedKeysMap.end(); it++) {
+            if (it->second == *_keyToChange) {
+                toReset = it->first;
+                displayedKeysMap[toReset] = win.getKeyMap()[toReset];
+                break;
+            }
+        }
+    }
+    // Set key to be changed
+    _keyToChange = &displayedKeysMap[ev];
+    displayedKeysMap[ev] = 0;
+}
+
 void    NuklearGUI::renderKeyBindings() {
     int  w, h;
     SDL_GetWindowSize(win.getWin(), &w, &h);
     SEventManager & event = SEventManager::getInstance();
     
     static std::map<Event::Enum, SDL_Keycode>  displayedKeysMap = win.getKeyMap();
-
+    
     std::string left =  SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_LEFT]);
     std::string right = SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_RIGHT]);
     std::string up =    SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_UP]);
@@ -98,42 +115,32 @@ void    NuklearGUI::renderKeyBindings() {
     NK_WINDOW_BORDER|NK_WINDOW_TITLE)) {
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move up", NK_TEXT_LEFT);
-        if (nk_button_label(ctx, up.c_str()))
-        {
-            _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_UP];
-            displayedKeysMap[Event::HUMAN_PLAYER_UP] = 0;
+        if (nk_button_label(ctx, up.c_str())) {
+            bindKeyToEvent(Event::HUMAN_PLAYER_UP, displayedKeysMap);            
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move down", NK_TEXT_LEFT);
-        if (nk_button_label(ctx, down.c_str()))
-        {
-            _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_DOWN];
-            displayedKeysMap[Event::HUMAN_PLAYER_DOWN] = 0;
+        if (nk_button_label(ctx, down.c_str())) {
+            bindKeyToEvent(Event::HUMAN_PLAYER_DOWN, displayedKeysMap);            
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move left", NK_TEXT_LEFT);
-        if (nk_button_label(ctx, left.c_str()))
-        {
-            _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_LEFT];
-            displayedKeysMap[Event::HUMAN_PLAYER_LEFT] = 0;
+        if (nk_button_label(ctx, left.c_str())) {
+            bindKeyToEvent(Event::HUMAN_PLAYER_LEFT, displayedKeysMap);
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move right", NK_TEXT_LEFT);
-        if (nk_button_label(ctx, right.c_str()))
-        {
-            _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_RIGHT];
-            displayedKeysMap[Event::HUMAN_PLAYER_RIGHT] = 0;
+        if (nk_button_label(ctx, right.c_str())) {
+            bindKeyToEvent(Event::HUMAN_PLAYER_RIGHT, displayedKeysMap);
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Drop bomb", NK_TEXT_LEFT);
-        if (nk_button_label(ctx, drop.c_str()))
-        {
-            _keyToChange = &displayedKeysMap[Event::HUMAN_SPAWN_BOMB];
-            displayedKeysMap[Event::HUMAN_SPAWN_BOMB] = 0;
+        if (nk_button_label(ctx, drop.c_str())) {
+            bindKeyToEvent(Event::HUMAN_SPAWN_BOMB, displayedKeysMap);
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  

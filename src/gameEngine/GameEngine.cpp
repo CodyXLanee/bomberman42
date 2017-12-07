@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 16:22:04 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 19:09:23 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,25 @@
 #include "IndestructibleBloc.hpp"
 #include "DestructibleBloc.hpp"
 
-GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), _playerManager(new PlayerManager()), _gameMode(gm), _winManager(nullptr) {
+GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), 
+_entityList(new std::vector<IGameEntity *>()), 
+_bombManager(new BombManager(_map, _entityList)), 
+_playerManager(new PlayerManager()), 
+_gameMode(gm), 
+_winManager(nullptr) {
 	loadMap("maps/map.json");
 
 }
 
 GameEngine::~GameEngine() {}
 
-void	GameEngine::compute(std::vector<Action::Enum> &actions) {
+void	GameEngine::compute() {
     if (this->_loader.getState() == -1 || !_winManager)
         return ;
-	_playerManager->compute(*_map, _entityList);
-	_collisionsManager.moves(*_map, _entityList);
-	_bombManager.update(*_map, _entityList, actions);
-	_winManager->update(*_map, _entityList);
+	_playerManager->compute(*_map, *_entityList);
+	_collisionsManager.moves(*_map, *_entityList);
+	_bombManager->update();
+	_winManager->update(*_map, *_entityList);
 }
 
 Map const &		GameEngine::getMap() const {
@@ -37,12 +42,12 @@ Map const &		GameEngine::getMap() const {
 }
 
 std::vector<IGameEntity * > &	GameEngine::getEntityList() {
-	return this->_entityList;
+	return *(this->_entityList);
 }
 
 
 glm::vec2 const 				* GameEngine::getPlayerPos(void) const{
-	for (auto i = _entityList.begin(); i != _entityList.end(); i++){
+	for (auto i = _entityList->begin(); i != _entityList->end(); i++){
 		if ((*i)->getType() == Type::PLAYER){
 			return new glm::vec2((*i)->getPosition());
 		}
@@ -78,7 +83,7 @@ void					GameEngine::loadMap(const char *path){
 
     		if (entityType == -2) // undestroyable bloc
     			this->_map->addIndestructibleBlocs(IndestructibleBloc(glm::vec2(j,i)));
-    		if (entityType == -1) // destroyable bloc
+    		if (entityType == 0 && ((rand() % 10) < 5)) // destroyable bloc
     			this->_map->addDestructibleBlocs(DestructibleBloc(glm::vec2(j,i)));
     		// if (entityType == 0) // case vide
     		// 	break;
@@ -86,7 +91,7 @@ void					GameEngine::loadMap(const char *path){
     			glm::vec2		vec(static_cast<float>(j), static_cast<float>(i));
     			Player *	player = new Player(vec, entityType - 1);
 				_playerManager->addPlayer(player);
-    			this->_entityList.push_back(player);
+    			this->_entityList->push_back(player);
 				if (player->getPlayerNb() == 0)
 					_playerManager->setHumanPlayer(player);
     		}

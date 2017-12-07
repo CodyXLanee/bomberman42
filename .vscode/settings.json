@@ -19,6 +19,7 @@
         "__string": "cpp",
         "array": "cpp",
         "__locale": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "memory": "cpp"
     }
 }

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:45:55 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 14:48:20 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/06 22:41:31 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 # define PLAYER_HPP
 
 # include "AGameEntity.hpp"
+# include "Bomb.hpp"
 # include "SEventManager.hpp"
+
+class Bomb;
 
 class Player : public AGameEntity {
 public:
@@ -35,8 +38,16 @@ public:
     void		endNewDirUp(void);
     void		endNewDirDown(void);
 
+    int			getBombCount(void) const;
+    int			getMaxBombNb(void) const;
+    void		addBombToCount(void);
+
+    void        bomb_explodes_callback(void *bomb);
+
 private:
     int         _player_number;
+    int         _max_bomb;
+    int         _bomb_count;
     bool        left, right, up, down;
 	glm::vec2	_graphicalDirection;
 };

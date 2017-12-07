@@ -4,6 +4,7 @@
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"
 # include "Map.hpp"
+# include "CollisionsManager.hpp"
 # include "SEventManager.hpp"
 # include "Player.hpp"
 
@@ -15,15 +16,17 @@ class PlayerManager {
 		PlayerManager();
 		~PlayerManager();
 
-        void    compute(Map const & map, std::vector<IGameEntity *> &entityList);
-        void                    setHumanPlayer(Player *);
-        void                    addPlayer(Player *);
+        void                compute(Map const & map, std::vector<IGameEntity *> &entityList);
+        void                setHumanPlayer(Player *);
+        void                addPlayer(Player *);
 
 private:
 
     Player                  *_human_player;
     std::vector<Player *>   _players;
+    bool					_spawned_bomb;
 
+    void                    ai(Player *p, Map const & map, std::vector<IGameEntity *> &entityList);
     void                    newDirLeft(void *p);
     void                    newDirRight(void *p);
     void                    newDirUp(void *p);
@@ -40,6 +43,9 @@ private:
     void                    humanEndNewDirRight(void *);
     void                    humanEndNewDirUp(void *);
     void                    humanEndNewDirDown(void *);
+
+    void                    humanSpawnBomb(void *);
+    void                    humanEndSpawnBomb(void *);
 
 };
 

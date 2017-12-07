@@ -88,11 +88,11 @@ void    NuklearGUI::renderKeyBindings() {
     
     static std::map<Event::Enum, SDL_Keycode>  displayedKeysMap = win.getKeyMap();
 
-    std::string left =  SDL_GetKeyName(displayedKeysMap.at(Event::PLAYER_LEFT));
-    std::string right = SDL_GetKeyName(displayedKeysMap.at(Event::PLAYER_RIGHT));
-    std::string up =    SDL_GetKeyName(displayedKeysMap.at(Event::PLAYER_UP));
-    std::string down =  SDL_GetKeyName(displayedKeysMap.at(Event::PLAYER_DOWN));
-    std::string drop =  SDL_GetKeyName(displayedKeysMap.at(Event::SPAWN_BOMB));
+    std::string left =  SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_PLAYER_LEFT));
+    std::string right = SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_PLAYER_RIGHT));
+    std::string up =    SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_PLAYER_UP));
+    std::string down =  SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_PLAYER_DOWN));
+    std::string drop =  SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_SPAWN_BOMB));
 
     if (nk_begin(ctx, "KEY BINDINGS", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_TITLE)) {
@@ -100,32 +100,32 @@ void    NuklearGUI::renderKeyBindings() {
         nk_label(ctx, "Move up", NK_TEXT_LEFT);
         if (nk_button_label(ctx, up.c_str()))
         {
-            _keyToChange = &displayedKeysMap[Event::PLAYER_UP];
-            displayedKeysMap[Event::PLAYER_UP] = 0;
+            _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_UP];
+            displayedKeysMap[Event::HUMAN_PLAYER_UP] = 0;
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move down", NK_TEXT_LEFT);
         if (nk_button_label(ctx, down.c_str()))
         {
-            _keyToChange = &displayedKeysMap[Event::PLAYER_DOWN];
-            displayedKeysMap[Event::PLAYER_DOWN] = 0;
+            _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_DOWN];
+            displayedKeysMap[Event::HUMAN_PLAYER_DOWN] = 0;
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move left", NK_TEXT_LEFT);
         if (nk_button_label(ctx, left.c_str()))
         {
-            _keyToChange = &displayedKeysMap[Event::PLAYER_LEFT];
-            displayedKeysMap[Event::PLAYER_LEFT] = 0;
+            _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_LEFT];
+            displayedKeysMap[Event::HUMAN_PLAYER_LEFT] = 0;
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move right", NK_TEXT_LEFT);
         if (nk_button_label(ctx, right.c_str()))
         {
-            _keyToChange = &displayedKeysMap[Event::PLAYER_RIGHT];
-            displayedKeysMap[Event::PLAYER_RIGHT] = 0;
+            _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_RIGHT];
+            displayedKeysMap[Event::HUMAN_PLAYER_RIGHT] = 0;
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);

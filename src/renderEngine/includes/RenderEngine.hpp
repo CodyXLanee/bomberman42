@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/07 13:53:35 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/07 15:36:49 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,9 @@ class RenderEngine {
 
 		WeatherSystem	*meteo;
 
-		std::vector<ParticleSystem *> particles;
-		std::vector<IGameEntity *> entitiesRecorded;
+		std::vector<ParticleSystem *>	particles;
+		std::vector<IGameEntity *>		entitiesRecorded;
+		std::vector<glm::vec2>			fireLights;
 
 		int w;
 		int h;
@@ -75,6 +76,7 @@ class RenderEngine {
 		void	renderFlames(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderParticles() const;
 
+		void	fillFireLights(std::vector<IGameEntity *> const & entities);
 		// void	recordNewEntities(std::vector<IGameEntity *> & entities);
 		void	shadowPass(Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	normalPass(Map const & map, std::vector<IGameEntity *> &entities) const;

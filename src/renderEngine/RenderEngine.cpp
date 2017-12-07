@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/07 14:39:49 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/07 15:37:37 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,7 +319,15 @@ void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGam
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void RenderEngine::renderParticles() const {
+void	RenderEngine::fillFireLights(std::vector<IGameEntity *> const & entities) {
+	fireLights.clear();
+	for (auto it = entities.begin(); it != entities.end(); it++) {
+		if((*it)->getType() == Type::FLAME)
+			fireLights.push_back((*it)->getPosition());
+	}
+}
+
+void	RenderEngine::renderParticles() const {
 	// if (particles.size() == 0) {
 	// 	particles.push_back(new ParticleSystem(glm::vec3(5.f, 5.f, 2.f), ParticleSystem::RAIN));
 	// }

@@ -1,6 +1,6 @@
 # include "PlayerManager.hpp"
 
-PlayerManager::PlayerManager() : _human_player(nullptr), _players(), _spawned_bomb(false){	
+PlayerManager::PlayerManager() : _human_player(nullptr), _spawned_bomb(false){	
     SEventManager & em = SEventManager::getInstance();
 	em.registerEvent(Event::PLAYER_LEFT, MEMBER_CALLBACK(PlayerManager::newDirLeft));
 	em.registerEvent(Event::PLAYER_RIGHT, MEMBER_CALLBACK(PlayerManager::newDirRight));
@@ -113,22 +113,9 @@ PlayerManager::~PlayerManager(){
 //     }
 // }
 
-void        PlayerManager::ai(Player *p, Map const & map, std::vector<IGameEntity *> &entityList) {
-    if(ai1 == nullptr)
-        ai1 = new AI(*p);
-    ai1->compute(map, entityList);
-    // if (can_place_bomb(p))
-        // SEventManager::getInstance().raise(Event::SPAWN_BOMB, p);
-    // get objective position
-    // run to it
-    // run_to_objective(p, map, entityList);
-}
-
 void    PlayerManager::compute(Map const & map, std::vector<IGameEntity *> &entityList){
-    for (auto it = _players.begin(); it != _players.end(); it++){
-        if (*it != _human_player){
-            ai(*it, map, entityList);
-        }
+    for (auto it = _AIs.begin(); it != _AIs.end(); it++){
+       (*it)->compute(map, entityList);
     }
 }
 
@@ -222,5 +209,5 @@ void            PlayerManager::setHumanPlayer(Player *p){
     _human_player = p;
 }
 void            PlayerManager::addPlayer(Player *p){
-    _players.push_back(p);
+    _AIs.push_back(new AI(p));
 }

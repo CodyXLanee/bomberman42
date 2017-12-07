@@ -20,6 +20,9 @@
         "array": "cpp",
         "__locale": "cpp",
         "ios": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "deque": "cpp",
+        "utility": "cpp",
+        "ratio": "cpp"
     }
 }

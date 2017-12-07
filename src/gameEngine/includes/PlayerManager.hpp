@@ -24,9 +24,8 @@ class PlayerManager {
 private:
 
     Player                  *_human_player;
-    std::vector<Player *>   _players;
+    std::vector<AI *>       _AIs;
     bool					_spawned_bomb;
-    AI                      *ai1;
 
     void                    ai(Player *p, Map const & map, std::vector<IGameEntity *> &entityList);
     void                    newDirLeft(void *p);

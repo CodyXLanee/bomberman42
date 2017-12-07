@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/05 19:30:26 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/07 15:48:44 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "Sdl_gl_win.hpp"
 #include "GameEngine.hpp"
 #include "RenderEngine.hpp"
+#include "SoundManager.hpp"
 #include "Camera.hpp"
 
 class SGameManager {
@@ -51,6 +52,7 @@ private:
     Camera              _camera;
     NuklearGUI          _gui;
     RenderEngine        _renderer;
+    SoundManager        _sound;
 
     bool                _game_is_active;
     bool                _quit_game;

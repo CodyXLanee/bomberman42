@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/05 20:12:09 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/07 13:20:04 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ class NuklearGUI
 
         void        handleKey(void *);
         void        toggle(void *);
+        void        bindKeyToEvent(Event::Enum, std::map<Event::Enum, SDL_Keycode> &);
 
         void        renderDebug();
         void        renderMenu();

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:16:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 15:14:33 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/07 09:59:59 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,9 @@ void	ShaderManager::setCamera(glm::mat4 const & camMat) const {
     particlesShader->use();
     particlesShader->setCamera(camMat);
     particlesShader->setView();
+}
+
+void	ShaderManager::setLightingValues(glm::vec3 const &values) const {
+	mainShader->use();
+	mainShader->setVec3("lightingValues", values.x, values.y, values.z);
 }

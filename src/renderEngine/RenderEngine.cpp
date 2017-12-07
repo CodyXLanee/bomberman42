@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 16:53:22 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/07 09:57:43 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	// SEventManager::getInstance().registerEvent(Event::KEYDOWN, MEMBER_CALLBACK_WITH_INSTANCE(WeatherSystem::startRain, meteo));
 }
 
-RenderEngine::~RenderEngine() {}
+RenderEngine::~RenderEngine() {
+	delete meteo;
+}
 
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
 	int	w, h;
@@ -33,6 +35,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shaderManager.setCamera(camera.getMatrix());
+	shaderManager.setLightingValues(meteo->getLightingValues());
 
 	shadowPass(map, entities);
 	normalPass(map, entities);

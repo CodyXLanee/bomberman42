@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:17:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 15:14:11 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/07 10:00:09 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class ShaderManager {
 		Shader	&getParticlesShader() const;
 
 		void	setCamera(glm::mat4 const & camMat) const;
+		void	setLightingValues(glm::vec3 const &values) const;
 	private:
 
 		std::string	directory;

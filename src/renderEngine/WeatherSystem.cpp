@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 17:38:01 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/07 11:22:25 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 WeatherSystem::WeatherSystem() {
 	dayTime = MIDDAY;
-	cloudy = true;
+	cloudy = false;
 	rainy = false;
 
 	init();
@@ -37,8 +37,45 @@ WeatherSystem::~WeatherSystem() {
 void	WeatherSystem::init() {
 	cloudModel = new Model("assets/models/obj/cloud.obj", false);
 	rain = new ParticleSystem(rainy, glm::vec3(-2.f, -2.f, 10.f), ParticleSystem::type::RAIN);
-	sun = new Light(glm::vec3(16.f, 30.f, 40.f), glm::vec3(1.f, 0.941f, 0.713f), Light::DIRECTIONAL);
-	lightingValues = glm::vec3(1.f);
+
+	float ambiant, diffuse, specular;
+	glm::vec3 sunPos, sunColor;
+
+	switch (dayTime) {
+		case MIDDAY:
+			ambiant = 0.4f;
+			diffuse = 0.6f;
+			specular = 0.2;
+			sunPos = glm::vec3(16.f, 30.f, 40.f);
+			sunColor = glm::vec3(1.f, 0.941f, 0.713f);
+			break;
+		case TWILIGHT:
+			ambiant = 0.4f;
+			diffuse = 0.6f;
+			specular = 0.2;
+			sunPos = glm::vec3(16.f, 30.f, 20.f);
+			sunColor = glm::vec3(1.f, 0.941f, 0.713f);
+			break;
+		case MIDNIGHT:
+			ambiant = 0.4f;
+			diffuse = 0.6f;
+			specular = 0.2;
+			sunPos = glm::vec3(16.f, 30.f, 40.f);
+			sunColor = glm::vec3(1.f, 1.f, 1.f);
+			break;
+	}
+
+	if (cloudy) {
+		ambiant /= 2;
+		diffuse /= 2;
+		specular /= 2;
+	}
+	if (rainy) {
+		specular *= 2;
+	}
+
+	sun = new Light(sunPos, sunColor, Light::DIRECTIONAL);
+	lightingValues = glm::vec3(ambiant, diffuse, specular);
 }
 
 void	WeatherSystem::setTime(enum time t) {
@@ -63,7 +100,7 @@ void	WeatherSystem::stopRain(void*) {
 	rain->stop();
 }
 
-glm::vec3 WeatherSystem::getLightingValues() const {
+glm::vec3 const &WeatherSystem::getLightingValues() const {
 	return lightingValues;
 }
 
@@ -74,7 +111,8 @@ Light	&WeatherSystem::getSun() const {
 void	WeatherSystem::renderCloud(Shader &shader) {
 	static float offset = 0.01f;
 	std::vector<glm::mat4> data;
-
+	if (!cloudy)
+		return;
 	for (auto it = cloudsPosition.begin(); it != cloudsPosition.end(); it++ ){
 		(*it).x += offset;
 		glm::mat4 transform = glm::mat4();

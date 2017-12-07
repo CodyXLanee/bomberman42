@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:24 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 17:13:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/07 10:50:20 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 class WeatherSystem {
 	public:
-		enum time { MIDDAY, MIDNIGHT, TWILIGHT };
+		enum time { MIDDAY, TWILIGHT, MIDNIGHT };
 
 		WeatherSystem();
 		WeatherSystem(time t, bool cloudy, bool rainy);
@@ -36,7 +36,7 @@ class WeatherSystem {
 		void	renderRain(Shader &shader) const;
 		void	renderCloud(Shader &shader);
 		
-		glm::vec3	getLightingValues() const;
+		glm::vec3	const &getLightingValues() const;
 		Light		&getSun() const;
 		
 	private:
@@ -45,8 +45,8 @@ class WeatherSystem {
 		void	initClouds();
 
 		time			dayTime;
-		bool cloudy;
-		bool rainy;
+		bool			cloudy;
+		bool			rainy;
 
 		glm::vec3				lightingValues; //ambiant, diffuse, specular
 		Light					*sun;

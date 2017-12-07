@@ -4,6 +4,7 @@
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"
 # include "Map.hpp"
+# include "CollisionsManager.hpp"
 # include "SEventManager.hpp"
 # include "Player.hpp"
 

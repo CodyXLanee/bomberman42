@@ -18,6 +18,7 @@ class CollisionsManager {
 		~CollisionsManager();
 
 		void			moves(Map const & map, std::vector<IGameEntity *> &entityList);
+		static bool		hasObstacle(Map const & map, glm::vec2 v, std::vector<IGameEntity *> const &entityList,  IGameEntity const * entity);
 
 	private:
 		void		compute_player(Player *p);
@@ -25,8 +26,7 @@ class CollisionsManager {
 		int			gestionNoSlipMove(glm::vec2 & pos, IGameEntity const * entity, Map const & map, std::vector<IGameEntity *> &entityList);
 		void		gestionSlipOneDirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map, std::vector<IGameEntity *> &entityList);
 		void		gestionSlipBidirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map);
-		bool		hasObstacle(Map const & map, glm::vec2 v, std::vector<IGameEntity *> const &entityList,  IGameEntity const * entity);
-		bool		collidesWithEntity(glm::vec2 &v, IGameEntity const * entity, std::vector<IGameEntity *> const &entityList);
+		static bool	collidesWithEntity(glm::vec2 &v, IGameEntity const * entity, std::vector<IGameEntity *> const &entityList);
 		void		computePlayerMovement(Map const & map, std::vector<IGameEntity *> &entityList, IGameEntity *player);
 };
 

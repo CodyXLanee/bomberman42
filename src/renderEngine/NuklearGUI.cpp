@@ -55,7 +55,7 @@ void    NuklearGUI::toggle(void *p) {
     else {
         _active_menu.push(*m);
     }
-    // delete m;
+    delete m;
 
 }
 
@@ -100,6 +100,16 @@ void    NuklearGUI::renderKeyBindings() {
         nk_label(ctx, "Move up", NK_TEXT_LEFT);
         if (nk_button_label(ctx, up.c_str()))
         {
+            if (_keyToChange) {
+                Event::Enum e;
+                for (auto it = displayedKeysMap.begin(); it != displayedKeysMap.end(); it++) {
+                    if (it->second == *_keyToChange) {
+                        e = it->first;
+                        displayedKeysMap[e] = win.getKeyMap()[e];
+                        break;
+                    }
+                }
+            }
             _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_UP];
             displayedKeysMap[Event::HUMAN_PLAYER_UP] = 0;
         }
@@ -108,6 +118,16 @@ void    NuklearGUI::renderKeyBindings() {
         nk_label(ctx, "Move down", NK_TEXT_LEFT);
         if (nk_button_label(ctx, down.c_str()))
         {
+            if (_keyToChange) {
+                Event::Enum e;
+                for (auto it = displayedKeysMap.begin(); it != displayedKeysMap.end(); it++) {
+                    if (it->second == *_keyToChange) {
+                        e = it->first;
+                        displayedKeysMap[e] = win.getKeyMap()[e];
+                        break;
+                    }
+                }
+            }
             _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_DOWN];
             displayedKeysMap[Event::HUMAN_PLAYER_DOWN] = 0;
         }
@@ -116,6 +136,16 @@ void    NuklearGUI::renderKeyBindings() {
         nk_label(ctx, "Move left", NK_TEXT_LEFT);
         if (nk_button_label(ctx, left.c_str()))
         {
+            if (_keyToChange) {
+                Event::Enum e;
+                for (auto it = displayedKeysMap.begin(); it != displayedKeysMap.end(); it++) {
+                    if (it->second == *_keyToChange) {
+                        e = it->first;
+                        displayedKeysMap[e] = win.getKeyMap()[e];
+                        break;
+                    }
+                }
+            }
             _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_LEFT];
             displayedKeysMap[Event::HUMAN_PLAYER_LEFT] = 0;
         }
@@ -124,6 +154,16 @@ void    NuklearGUI::renderKeyBindings() {
         nk_label(ctx, "Move right", NK_TEXT_LEFT);
         if (nk_button_label(ctx, right.c_str()))
         {
+            if (_keyToChange) {
+                Event::Enum e;
+                for (auto it = displayedKeysMap.begin(); it != displayedKeysMap.end(); it++) {
+                    if (it->second == *_keyToChange) {
+                        e = it->first;
+                        displayedKeysMap[e] = win.getKeyMap()[e];
+                        break;
+                    }
+                }
+            }
             _keyToChange = &displayedKeysMap[Event::HUMAN_PLAYER_RIGHT];
             displayedKeysMap[Event::HUMAN_PLAYER_RIGHT] = 0;
         }
@@ -132,6 +172,16 @@ void    NuklearGUI::renderKeyBindings() {
         nk_label(ctx, "Drop bomb", NK_TEXT_LEFT);
         if (nk_button_label(ctx, drop.c_str()))
         {
+            if (_keyToChange) {
+                Event::Enum e;
+                for (auto it = displayedKeysMap.begin(); it != displayedKeysMap.end(); it++) {
+                    if (it->second == *_keyToChange) {
+                        e = it->first;
+                        displayedKeysMap[e] = win.getKeyMap()[e];
+                        break;
+                    }
+                }
+            }
             _keyToChange = &displayedKeysMap[Event::HUMAN_SPAWN_BOMB];
             displayedKeysMap[Event::HUMAN_SPAWN_BOMB] = 0;
         }

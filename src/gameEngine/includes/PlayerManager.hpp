@@ -4,6 +4,7 @@
 # include "bomberman.hpp"
 # include "IGameEntity.hpp"
 # include "Map.hpp"
+# include "AI.hpp"
 # include "CollisionsManager.hpp"
 # include "SEventManager.hpp"
 # include "Player.hpp"
@@ -25,6 +26,7 @@ private:
     Player                  *_human_player;
     std::vector<Player *>   _players;
     bool					_spawned_bomb;
+    AI                      *ai1;
 
     void                    ai(Player *p, Map const & map, std::vector<IGameEntity *> &entityList);
     void                    newDirLeft(void *p);

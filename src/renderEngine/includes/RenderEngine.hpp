@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 15:14:04 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/07 13:53:35 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,10 @@ class RenderEngine {
 		void	createDepthCubemap();
 		void	getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const;
+
+		std::vector<glm::vec2>	*aiDebugInfo;
+		void	setAiDebugPointer(void* ptr);
+		void	renderAiDebug(Shader &shader) const;
 };
 
 #endif

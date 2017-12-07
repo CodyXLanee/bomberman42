@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/07 09:57:43 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/07 14:39:49 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	// createDepthCubemap();
 
 	meteo = new WeatherSystem();
-	// SEventManager::getInstance().registerEvent(Event::KEYDOWN, MEMBER_CALLBACK_WITH_INSTANCE(WeatherSystem::startRain, meteo));
+	SEventManager::getInstance().registerEvent(Event::AIPTR, MEMBER_CALLBACK(RenderEngine::setAiDebugPointer));
 }
 
 RenderEngine::~RenderEngine() {
@@ -84,6 +84,8 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
 	meteo->renderCloud(shader);
+
+	renderAiDebug(shader);
 }
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
@@ -331,3 +333,23 @@ void RenderEngine::renderParticles() const {
 // 		std::cout << &entities[it] << std::endl;
 // 	}
 // }
+
+void	RenderEngine::setAiDebugPointer(void* ptr) {
+	aiDebugInfo = static_cast<std::vector<glm::vec2> *>(ptr);
+}
+
+void	RenderEngine::renderAiDebug(Shader &shader) const {
+	if(aiDebugInfo == nullptr || aiDebugInfo->size() == 0)
+		return;
+	std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::AIDEBUG);
+
+	for (auto it = aiDebugInfo->begin(); it != aiDebugInfo->end(); it++) {
+			glm::mat4 transform = glm::mat4();
+			transform = glm::translate(transform, glm::vec3((*it).x + 0.4f, (*it).y + 0.5f, 1.f));
+			// transform = glm::rotate(transform,glm::radians((rand() % 4) * 90.f), glm::vec3(0.f, 0.f, 1.f));
+			data.push_back(transform);
+	}
+    model.setInstanceBuffer(data);  
+    model.draw(shader, data.size());
+}

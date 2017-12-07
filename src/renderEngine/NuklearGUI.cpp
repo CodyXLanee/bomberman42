@@ -88,11 +88,11 @@ void    NuklearGUI::renderKeyBindings() {
     
     static std::map<Event::Enum, SDL_Keycode>  displayedKeysMap = win.getKeyMap();
 
-    std::string left =  SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_PLAYER_LEFT));
-    std::string right = SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_PLAYER_RIGHT));
-    std::string up =    SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_PLAYER_UP));
-    std::string down =  SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_PLAYER_DOWN));
-    std::string drop =  SDL_GetKeyName(displayedKeysMap.at(Event::HUMAN_SPAWN_BOMB));
+    std::string left =  SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_LEFT]);
+    std::string right = SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_RIGHT]);
+    std::string up =    SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_UP]);
+    std::string down =  SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_DOWN]);
+    std::string drop =  SDL_GetKeyName(displayedKeysMap[Event::HUMAN_SPAWN_BOMB]);
 
     if (nk_begin(ctx, "KEY BINDINGS", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_TITLE)) {
@@ -132,8 +132,8 @@ void    NuklearGUI::renderKeyBindings() {
         nk_label(ctx, "Drop bomb", NK_TEXT_LEFT);
         if (nk_button_label(ctx, drop.c_str()))
         {
-            _keyToChange = &displayedKeysMap[Event::SPAWN_BOMB];
-            displayedKeysMap[Event::SPAWN_BOMB] = 0;
+            _keyToChange = &displayedKeysMap[Event::HUMAN_SPAWN_BOMB];
+            displayedKeysMap[Event::HUMAN_SPAWN_BOMB] = 0;
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  

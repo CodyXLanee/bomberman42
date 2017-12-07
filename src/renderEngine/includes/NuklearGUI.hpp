@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/07 13:20:04 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/07 16:55:16 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define NUKLEAR_GUI_HPP
 
 # include <SDL.h>
+# include <SDL_mixer.h>
 # include <vector>
 # include <stack>
 # include "bomberman.hpp"

@@ -1,6 +1,7 @@
 #!/bin/bash
 brew install glm
 brew install sdl2
+brew install sdl2_mixer
 brew install freetype
 brew install pkg-config
 brew install assimp

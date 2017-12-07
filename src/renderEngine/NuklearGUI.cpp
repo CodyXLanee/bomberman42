@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/07 13:20:49 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/07 17:50:55 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,9 +164,9 @@ void    NuklearGUI::renderOptions() {
     SDL_GetWindowSize(win.getWin(), &w, &h);
     SEventManager & event = SEventManager::getInstance();
 
-    static float        masterVolume = 0.8f;
-    static float        musicVolume = 0.5f;
-    static float        effectsVolume = 0.6f;
+    static float        masterVolume = 0.1f;
+    static float        musicVolume = MIX_MAX_VOLUME / 2;
+    static float        effectsVolume = MIX_MAX_VOLUME / 2;
 
     static Screen::Format   displayedFormat = screenFormat;    
     
@@ -211,15 +211,24 @@ void    NuklearGUI::renderOptions() {
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Master volume", NK_TEXT_LEFT);             
-        nk_slider_float(ctx, 0, &masterVolume, 1.0f, 0.1f);
+        if (nk_slider_float(ctx, 0, &masterVolume, 1.f, 0.01f)) {
+            event.raise(Event::MASTER_VOLUME_UPDATE, &masterVolume);
+            /* Master */
+        }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Music volume", NK_TEXT_LEFT);             
-        nk_slider_float(ctx, 0, &musicVolume, 1.0f, 0.1f);
+        if (nk_slider_float(ctx, 0, &musicVolume, MIX_MAX_VOLUME, 1)) {
+            event.raise(Event::MUSIC_VOLUME_UPDATE, &musicVolume);
+            /* Music */
+        }
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Effects volume", NK_TEXT_LEFT);             
-        nk_slider_float(ctx, 0, &effectsVolume, 1.0f, 0.1f);
+        if (nk_slider_float(ctx, 0, &effectsVolume, MIX_MAX_VOLUME, 1)) {
+            event.raise(Event::EFFECTS_VOLUME_UPDATE, &effectsVolume);
+            /* Effects */
+        }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Key bindings", NK_TEXT_LEFT);     

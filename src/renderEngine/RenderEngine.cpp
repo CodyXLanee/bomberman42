@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 13:26:37 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 13:59:34 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ void	RenderEngine::renderWall(Shader &shader, const std::vector<IndestructibleBl
 
 void	RenderEngine::renderBrick(Shader &shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const {
 	(void)map; /////////////////////
-    std::vector<glm::mat4> data;
+	std::vector<glm::mat4> data;
 	Model &model = modelManager.getModel(ModelManager::BRICK);
 
 	glm::mat4 transform;
@@ -177,7 +177,11 @@ void	RenderEngine::renderBrick(Shader &shader, const std::vector<DestructibleBlo
 		transform = glm::mat4(glm::translate(transform, glm::vec3(i->getPosition(), 0.f)));
 		data.push_back(transform);
 	}
-	model.setInstanceBuffer(data);  
+	model.setInstanceBuffer(data); 
+
+	// shaderManager.getMainShader().use();
+	// shaderManager.getMainShader().setInt("isBrick", 1);
+
     model.draw(shader, data.size());
 }
 

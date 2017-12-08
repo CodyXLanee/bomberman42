@@ -6,14 +6,14 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 11:01:29 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 13:44:32 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "WeatherSystem.hpp"
 
 WeatherSystem::WeatherSystem() {
-	dayTime = MIDNIGHT;
+	dayTime = MIDDAY;
 	cloudy = false;
 	rainy = false;
 

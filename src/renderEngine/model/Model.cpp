@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 13:19:25 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 15:57:34 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	Model::processNode(aiNode *node, const aiScene *scene) {
 
 void	Model::loadModel(std::string path) {
 	Assimp::Importer importer;
-	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene *scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_FlipUVs);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		std::cout << "Model loading error: " << importer.GetErrorString() << std::endl;
@@ -202,6 +202,8 @@ std::vector<Vertex> Model::loadVertices(aiMesh *mesh) {
 		glm::vec3 posVector;
 		glm::vec3 normalVector;
 		glm::vec2 textVector;
+		glm::vec3 tangentVector;
+		glm::vec3 bitangentVector;
 
 		posVector.x = mesh->mVertices[i].x;
 		posVector.y = mesh->mVertices[i].y;
@@ -217,6 +219,22 @@ std::vector<Vertex> Model::loadVertices(aiMesh *mesh) {
 			normalVector.z = 0;
 		}
 
+		if (mesh->HasTangentsAndBitangents()) {
+			tangentVector.x = mesh->mTangents[i].x;
+			tangentVector.y = mesh->mTangents[i].y;
+			tangentVector.z = mesh->mTangents[i].z;
+			tangentVector.x = mesh->mBitangents[i].x;
+			tangentVector.y = mesh->mBitangents[i].y;
+			tangentVector.z = mesh->mBitangents[i].z;
+		} else {
+			tangentVector.x = 0;
+			tangentVector.y = 0;
+			tangentVector.z = 0;
+			bitangentVector.x = 0;
+			bitangentVector.y = 0;
+			bitangentVector.z = 0;
+		}
+
 		if(mesh->mTextureCoords[0]) {
 			textVector.x = mesh->mTextureCoords[0][i].x;
 			textVector.y = mesh->mTextureCoords[0][i].y;
@@ -228,6 +246,8 @@ std::vector<Vertex> Model::loadVertices(aiMesh *mesh) {
 		vertex.position = posVector;
 		vertex.normal = normalVector;
 		vertex.texCoords = textVector;
+		vertex.tangent = tangentVector;
+		vertex.bitangent = bitangentVector;
 
 		vertices.push_back(vertex);
 	}

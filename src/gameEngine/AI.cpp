@@ -124,10 +124,10 @@ void    AI::runToObjective(){
 
     for (auto it : dirs){
         updateMapDistRec(_player->getPosition() + AI::dirToVec(it), 0);
-        if (min_dist > _map[_objective]._dist && _map[glm::round(_player->getPosition()) + AI::dirToVec(it)]._free){
+        if (min_dist > _map[_objective]._dist && _map[_player->getPosition() + AI::dirToVec(it)]._free){
             min_dir.clear();
             min_dir.push_back(it);
-            std::cout << glm::to_string(glm::round(_player->getPosition())) << " + " << glm::to_string(AI::dirToVec(it)) <<" => " << glm::to_string(glm::ivec2(_player->getPosition() + AI::dirToVec(it))) << " XX " << glm::to_string(_objective) << std::endl;
+            // std::cout << glm::to_string(glm::round(_player->getPosition())) << " + " << glm::to_string(AI::dirToVec(it)) <<" => " << glm::to_string(glm::ivec2(_player->getPosition() + AI::dirToVec(it))) << " XX " << glm::to_string(_objective) << std::endl;
             min_dist = _map[_objective]._dist;
         }
     }

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/07 15:37:37 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 13:26:37 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	int	w, h;
 
 	SDL_GetWindowSize(win, &w, &h);
+	setFireLights(entities);
 	// recordNewEntities(entities);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -58,7 +59,7 @@ void	RenderEngine::shadowPass(Map const & map, std::vector<IGameEntity *> &entit
 void	RenderEngine::normalPass(Map const & map, std::vector<IGameEntity *> &entities) const {
 	glViewport(0, 0, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	// glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 	renderScene(shaderManager.getMainShader(), map, entities);
@@ -216,7 +217,7 @@ void	RenderEngine::renderFlames(Shader &shader, std::vector<IGameEntity *> const
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
 			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(flames_animation_scale(static_cast<Flame const *>(*i)) / 2));
-			// transform = glm::rotate(transform,glm::radians(static_cast<float>(rand() % 360)), glm::vec3(0.f, 0.f, 1.f));
+			transform = glm::rotate(transform,glm::radians(static_cast<float>(rand() % 360)), glm::vec3(0.f, 0.f, 1.f));
 			data.insert(data.begin(), transform);
 		}
 	}
@@ -231,7 +232,7 @@ void	RenderEngine::renderFlames(Shader &shader, std::vector<IGameEntity *> const
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
 			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(flames_animation_scale(static_cast<Flame const *>(*i))));
-			// transform = glm::rotate(transform,glm::radians((rand() % 4) * 90.f), glm::vec3(0.f, 0.f, 1.f));
+			transform = glm::rotate(transform,glm::radians((rand() % 4) * 90.f), glm::vec3(0.f, 0.f, 1.f));
 			data.insert(data.begin(), transform);
 		}
 	}
@@ -319,12 +320,18 @@ void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGam
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void	RenderEngine::fillFireLights(std::vector<IGameEntity *> const & entities) {
+void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 	fireLights.clear();
 	for (auto it = entities.begin(); it != entities.end(); it++) {
 		if((*it)->getType() == Type::FLAME)
-			fireLights.push_back((*it)->getPosition());
+			fireLights.push_back(glm::vec3((*it)->getPosition(), 1.f));
 	}
+	shaderManager.getMainShader().use();
+	shaderManager.getMainShader().setFloat("fireShininess", sin(rand() % 10));
+	shaderManager.getMainShader().setInt("fireLightNbr", fireLights.size());
+	for (unsigned int i = 0; i < fireLights.size(); i++)
+		shaderManager.getMainShader().setVec3("fireLightPos[" + std::to_string(i) + "]",
+									fireLights[i].x, fireLights[i].y, fireLights[i].z);
 }
 
 void	RenderEngine::renderParticles() const {

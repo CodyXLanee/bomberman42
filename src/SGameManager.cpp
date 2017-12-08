@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 19:10:00 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/08 12:30:54 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,19 @@ SGameManager::~SGameManager() {
 }
 
 void        SGameManager::manage(void) {
-	std::vector<Action::Enum> actions;
-
     SEventManager &em = SEventManager::getInstance();
     // em.raise(Event::TOGGLE, new Menu::Enum(Menu::START));
     em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));    
-	while(!_quit_game && (actions.size() == 0 || actions[0] != Action::ESCAPE)) {
+	while(!_quit_game) {
         if (_new_game)
             new_game(new GameMode::Enum(GameMode::CAMPAIGN));
             
-		_window.eventManager(actions, _gui.getContext());
+		_window.eventManager(_gui.getContext());
 
         if (_game_is_active){
             _game->compute();
             
-            _camera.update(actions, _window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
+            _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
             _renderer.render(_game->getMap(), _game->getEntityList());
         }
 		_gui.render();
@@ -59,8 +57,7 @@ SGameManager &	SGameManager::getInstance(){
     return gm;
 }
 
-void            SGameManager::quit_game(void *p){
-    (void)p;
+void            SGameManager::quit_game(void *){
     _quit_game = true;
 }
 
@@ -73,8 +70,7 @@ void            SGameManager::new_game(void *p){
     delete gm;
 }
 
-void            SGameManager::game_finish(void *p){
-    (void)p;
+void            SGameManager::game_finish(void *){
     _new_game = true;
 }
 

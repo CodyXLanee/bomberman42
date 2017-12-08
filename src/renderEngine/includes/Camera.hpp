@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:26:08 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 23:04:56 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/08 12:17:10 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,28 @@ class Camera {
 	public:
 		Camera(glm::vec3, glm::vec3);
 
+		enum 		Mode { FIXED, FREE, FOLLOW_PLAYER };
+		
 		glm::mat4	getMatrix() const;
 		glm::vec3	getPosition() const;
 		glm::vec3   getFront() const;
 
-		void		update(std::vector<Action::Enum> &, int const, int const, glm::vec2 const *);
-		void		updatePosition(std::vector<Action::Enum> const &);
+		void				setMode(void *);
+		Camera::Mode		getMode() const;
+
+		void		update(int const, int const, glm::vec2 const *);
 		void		updateRotation(int const, int const);
+
 
 	private:
 		Camera();
+
+		void				moveLeft(void *);
+		void				moveRight(void *);
+		void				moveUp(void *);
+		void				moveDown(void *);
+
 		void    			updateFront(void);
-		void    			followPlayer(glm::vec2 const *, std::vector<Action::Enum> &);
 		void				setup();
 		void				reset();
 		void				wiggle(void);
@@ -46,6 +56,8 @@ class Camera {
 		glm::vec3			position;
 		glm::vec3			front;
 		glm::vec3			const up;
+
+		Camera::Mode		mode;
 
 		glm::vec3			initialPosition;
 		float				initialYaw;

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/07 17:50:55 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 12:18:04 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,25 +322,40 @@ void    NuklearGUI::renderStartMenu() {
 void    NuklearGUI::renderDebug() {
     glm::vec3   camPos = camera.getPosition();
     glm::vec3   camFront = camera.getFront();
-    std::string camPosString = "Camera position: " + std::to_string(camPos.x) + " : " + std::to_string(camPos.y) + " : " + std::to_string(camPos.z);
-    std::string camFrontString = "Camera front: " + std::to_string(camFront.x) + " : " + std::to_string(camFront.y) + " : " + std::to_string(camFront.z);
-
-
-     if (nk_begin(ctx, "DEBUG MODE", nk_rect(50, 50, 400, 100),
+    std::string camPosString = std::to_string(camPos.x) + " : " + std::to_string(camPos.y) + " : " + std::to_string(camPos.z);
+    std::string camFrontString = std::to_string(camFront.x) + " : " + std::to_string(camFront.y) + " : " + std::to_string(camFront.z);
+    std::string camModeString = toString(camera.getMode());
+    
+    SEventManager & event = SEventManager::getInstance();
+    
+    int  w, h;
+    SDL_GetWindowSize(win.getWin(), &w, &h);
+     if (nk_begin(ctx, "DEBUG MODE", nk_rect(50, 50, menuWidth, menuHeight / 2),
         NK_WINDOW_BORDER|NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
     {
-        nk_layout_row_begin(ctx, NK_STATIC, 30, 1);
-        {
-            nk_layout_row_push(ctx, 350);
-            nk_label(ctx, camPosString.c_str(), NK_TEXT_LEFT);
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_label(ctx, "Camera position", NK_TEXT_LEFT);
+        nk_label(ctx, camPosString.c_str(), NK_TEXT_CENTERED);
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_label(ctx, "Camera front", NK_TEXT_LEFT);
+        nk_label(ctx, camFrontString.c_str(), NK_TEXT_CENTERED);
+        
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Camera mode", NK_TEXT_LEFT);
+        if (nk_menu_begin_label(ctx, camModeString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth / 2, menuHeight))) {
+            nk_layout_row_dynamic(ctx, optionHeight, 1);
+            
+            if (nk_menu_item_label(ctx, "FIXED", NK_TEXT_CENTERED)) {
+                event.raise(Event::CAMERA_MODE_UPDATE, new Camera::Mode(Camera::Mode::FIXED));
+            }
+            if (nk_menu_item_label(ctx, "FREE", NK_TEXT_CENTERED)) {
+                event.raise(Event::CAMERA_MODE_UPDATE, new Camera::Mode(Camera::Mode::FREE));
+            }
+            if (nk_menu_item_label(ctx, "FOLLOW PLAYER", NK_TEXT_CENTERED)) {
+                event.raise(Event::CAMERA_MODE_UPDATE, new Camera::Mode(Camera::Mode::FOLLOW_PLAYER));
+            }
+            nk_menu_end(ctx);
         }
-        nk_layout_row_end(ctx);
-        nk_layout_row_begin(ctx, NK_STATIC, 30, 1);
-        {
-            nk_layout_row_push(ctx, 350);
-            nk_label(ctx, camFrontString.c_str(), NK_TEXT_LEFT);
-        }
-        nk_layout_row_end(ctx);
     }
     nk_end(ctx);
 }
@@ -360,6 +375,16 @@ std::string     NuklearGUI::toString(Screen::Mode m) const {
     switch (m) {
         case Screen::Mode::WINDOWED:  mode = "WINDOWED"; break;
         case Screen::Mode::FULLSCREEN:mode = "FULLSCREEN"; break;
+    }
+    return mode;
+}
+
+std::string     NuklearGUI::toString(Camera::Mode m) const {
+    std::string mode;
+    switch (m) {
+        case Camera::Mode::FIXED:           mode = "FIXED"; break;
+        case Camera::Mode::FREE:            mode = "FREE"; break;
+        case Camera::Mode::FOLLOW_PLAYER:   mode = "FOLLOW PLAYER"; break;
     }
     return mode;
 }

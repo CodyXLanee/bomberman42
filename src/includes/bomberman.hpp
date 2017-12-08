@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bomberman.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/05 17:41:07 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/08 12:31:52 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,6 @@
 # define FOV 60.f
 # define Z_NEAR 0.1f
 # define Z_FAR 4000.f
-
-
-namespace Action {
-	enum Enum	{
-		NONE,
-		LEFT, RIGHT, UP, DOWN, SPAWN_BOMB,
-		CAMERA_LEFT, CAMERA_RIGHT, CAMERA_UP, CAMERA_DOWN,
-		ESCAPE, DEBUG_MODE, FOLLOW_PLAYER, RESET_CAMERA, MENU, OPTIONS, KEY_BINDINGS,
-		BOMB_EXPLODES, SCREEN_CHANGED
-	};
-}
 
 namespace Screen {
 	enum Resolution {

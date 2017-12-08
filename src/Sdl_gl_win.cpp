@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 19:18:54 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/08 12:29:45 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,77 +90,42 @@ void	Sdl_gl_win::initGL() const {
     glFrontFace(GL_CCW);
 }
 
-void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions, struct nk_context * nk_ctx) {
+void    Sdl_gl_win::eventManager(struct nk_context * nk_ctx) {
     SEventManager & event = SEventManager::getInstance();
     SDL_GetRelativeMouseState(&mouseX,&mouseY);
     nk_input_begin(nk_ctx);
     while (SDL_PollEvent(&events)) {
         if (events.window.event == SDL_WINDOWEVENT_CLOSE ||
             (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE)) {
-                actions.clear();
-            return actions.push_back(Action::ESCAPE);
+                event.raise(Event::QUIT_GAME, nullptr);
         }
         nk_sdl_handle_event(&events);
         if (events.type == SDL_KEYDOWN) {
             event.raise(Event::KEYDOWN, &events.key.keysym.sym);
-            Action::Enum a;
             SDL_Keycode sym = events.key.keysym.sym;
-            // switch (sym) {
-            //     case keyMap[Event::PLAYER_LEFT]:        a = Action::LEFT;           event.raise(Event::PLAYER_LEFT, nullptr); 
-            //     case keyMap[Event::PLAYER_RIGHT]:       a = Action::RIGHT;          event.raise(Event::PLAYER_RIGHT, nullptr); 
-            //     case keyMap[Event::PLAYER_UP]:          a = Action::UP;             event.raise(Event::PLAYER_UP, nullptr); 
-            //     case keyMap[Event::PLAYER_DOWN]:        a = Action::DOWN;           event.raise(Event::PLAYER_DOWN, nullptr); 
-            //     case keyMap[Event::SPAWN_BOMB]:         a = Action::SPAWN_BOMB;     event.raise(Event::SPAWN_BOMB, nullptr); 
-            //     case keyMap[Event::CAMERA_LEFT]:        a = Action::CAMERA_LEFT;    event.raise(Event::CAMERA_LEFT, nullptr); 
-            //     case keyMap[Event::CAMERA_RIGHT]:       a = Action::CAMERA_RIGHT;   event.raise(Event::CAMERA_RIGHT, nullptr); 
-            //     case keyMap[Event::CAMERA_UP]:          a = Action::CAMERA_UP;      event.raise(Event::CAMERA_UP, nullptr); 
-            //     case keyMap[Event::CAMERA_DOWN]:        a = Action::CAMERA_DOWN;    event.raise(Event::CAMERA_DOWN, nullptr); 
-            //     case keyMap[Event::RESET_CAMERA]:       a = Action::RESET_CAMERA;   event.raise(Event::RESET_CAMERA, nullptr); 
-            //     case keyMap[Event::DEBUG_MODE]:         event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::DEBUG)); 
-            //     case keyMap[Event::FOLLOW_PLAYER]:      a = Action::FOLLOW_PLAYER;  event.raise(Event::FOLLOW_PLAYER, nullptr); 
-            //     case keyMap[Event::GUI_BASE_MENU]:      event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::BASE)); 
-            // }
-                     if (sym == keyMap[Event::HUMAN_PLAYER_LEFT]) {     a = Action::LEFT;           event.raise(Event::HUMAN_PLAYER_LEFT, nullptr); }
-                else if (sym == keyMap[Event::HUMAN_PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::HUMAN_PLAYER_RIGHT, nullptr); }
-                else if (sym == keyMap[Event::HUMAN_PLAYER_UP]) {       a = Action::UP;             event.raise(Event::HUMAN_PLAYER_UP, nullptr); }
-                else if (sym == keyMap[Event::HUMAN_PLAYER_DOWN]) {     a = Action::DOWN;           event.raise(Event::HUMAN_PLAYER_DOWN, nullptr); }
-                else if (sym == keyMap[Event::HUMAN_SPAWN_BOMB]) {      a = Action::SPAWN_BOMB;     event.raise(Event::HUMAN_SPAWN_BOMB, nullptr); }
-                else if (sym == keyMap[Event::CAMERA_LEFT]) {           a = Action::CAMERA_LEFT;    event.raise(Event::CAMERA_LEFT, nullptr); }
-                else if (sym == keyMap[Event::CAMERA_RIGHT]) {          a = Action::CAMERA_RIGHT;   event.raise(Event::CAMERA_RIGHT, nullptr); }
-                else if (sym == keyMap[Event::CAMERA_UP]) {             a = Action::CAMERA_UP;      event.raise(Event::CAMERA_UP, nullptr); }
-                else if (sym == keyMap[Event::CAMERA_DOWN]) {           a = Action::CAMERA_DOWN;    event.raise(Event::CAMERA_DOWN, nullptr); }
-                else if (sym == keyMap[Event::RESET_CAMERA]) {          a = Action::RESET_CAMERA;   event.raise(Event::RESET_CAMERA, nullptr); }
-                else if (sym == keyMap[Event::DEBUG_MODE]) {            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::DEBUG)); }
-                else if (sym == keyMap[Event::FOLLOW_PLAYER]) {         a = Action::FOLLOW_PLAYER;  event.raise(Event::FOLLOW_PLAYER, nullptr); }
-                else if (sym == keyMap[Event::GUI_BASE_MENU]) {         event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::BASE)); }
+                     if (sym == keyMap[Event::HUMAN_PLAYER_LEFT])   { event.raise(Event::HUMAN_PLAYER_LEFT, nullptr); }
+                else if (sym == keyMap[Event::HUMAN_PLAYER_RIGHT])  { event.raise(Event::HUMAN_PLAYER_RIGHT, nullptr); }
+                else if (sym == keyMap[Event::HUMAN_PLAYER_UP])     { event.raise(Event::HUMAN_PLAYER_UP, nullptr); }
+                else if (sym == keyMap[Event::HUMAN_PLAYER_DOWN])   { event.raise(Event::HUMAN_PLAYER_DOWN, nullptr); }
+                else if (sym == keyMap[Event::HUMAN_SPAWN_BOMB])    { event.raise(Event::HUMAN_SPAWN_BOMB, nullptr); }
+                else if (sym == keyMap[Event::CAMERA_LEFT])         { event.raise(Event::CAMERA_LEFT, nullptr); }
+                else if (sym == keyMap[Event::CAMERA_RIGHT])        { event.raise(Event::CAMERA_RIGHT, nullptr); }
+                else if (sym == keyMap[Event::CAMERA_UP])           { event.raise(Event::CAMERA_UP, nullptr); }
+                else if (sym == keyMap[Event::CAMERA_DOWN])         { event.raise(Event::CAMERA_DOWN, nullptr); }
+                else if (sym == keyMap[Event::RESET_CAMERA])        { event.raise(Event::RESET_CAMERA, nullptr); }
+                else if (sym == keyMap[Event::DEBUG_MODE])          { event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::DEBUG)); }
+                else if (sym == keyMap[Event::FOLLOW_PLAYER])       { event.raise(Event::FOLLOW_PLAYER, nullptr); }
+                else if (sym == keyMap[Event::GUI_BASE_MENU])       { event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::BASE)); }
                 
-			if (find(actions.begin(), actions.end(), a) == actions.end())
-                actions.push_back(a);
-            else if (a == Action::DEBUG_MODE)
-		    	actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());            
         } 
         if (events.type == SDL_KEYUP) {
             event.raise(Event::KEYUP, &events.key.keysym.sym);            
-            Action::Enum a;
-                     if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_LEFT]) {     a = Action::LEFT;           event.raise(Event::END_HUMAN_PLAYER_LEFT, nullptr); }
-                else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_RIGHT]) {    a = Action::RIGHT;          event.raise(Event::END_HUMAN_PLAYER_RIGHT, nullptr); }
-                else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_UP]) {       a = Action::UP;             event.raise(Event::END_HUMAN_PLAYER_UP, nullptr); }
-                else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_DOWN]) {     a = Action::DOWN;           event.raise(Event::END_HUMAN_PLAYER_DOWN, nullptr); }
-                else if (events.key.keysym.sym == keyMap[Event::HUMAN_SPAWN_BOMB]) {     a = Action::DOWN;           event.raise(Event::END_HUMAN_SPAWN_BOMB, nullptr); }
-            switch(events.key.keysym.sym) {
-                case SDLK_a:        a = Action::LEFT; break;
-                case SDLK_d:        a = Action::RIGHT; break;
-                case SDLK_w:        a = Action::UP; break;
-                case SDLK_s:        a = Action::DOWN; break;
-                case SDLK_LEFT:     a = Action::CAMERA_LEFT; break;
-                case SDLK_RIGHT:    a = Action::CAMERA_RIGHT; break;
-                case SDLK_UP:       a = Action::CAMERA_UP; break;
-                case SDLK_DOWN:     a = Action::CAMERA_DOWN; break;
-                case SDLK_RETURN:   a = Action::RESET_CAMERA; break;
-                case SDLK_SPACE:    a = Action::SPAWN_BOMB; break;
-                case SDLK_2:        a = Action::BOMB_EXPLODES; break;
-            }
-			actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
+                     if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_LEFT])     { event.raise(Event::END_HUMAN_PLAYER_LEFT, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_RIGHT])    { event.raise(Event::END_HUMAN_PLAYER_RIGHT, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_UP])       { event.raise(Event::END_HUMAN_PLAYER_UP, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::HUMAN_PLAYER_DOWN])     { event.raise(Event::END_HUMAN_PLAYER_DOWN, nullptr); }
+                else if (events.key.keysym.sym == keyMap[Event::HUMAN_SPAWN_BOMB])      { event.raise(Event::END_HUMAN_SPAWN_BOMB, nullptr); }
+         
         }
     }
     nk_input_end(nk_ctx);

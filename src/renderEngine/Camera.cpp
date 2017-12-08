@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:27:21 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 23:05:25 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/08 12:34:10 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Camera.hpp"
 #include <cstdlib>
 
-#define CAM_SPEED 1.f
-
 Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
     position(position), front(glm::normalize(position - lookAt)), up(0.f, 0.f, 1.f),
+    mode(Camera::Mode::FIXED),
     initialPosition(position),
     speed(0.5f), sensitivity(0.5f), 
     wiggle_duration(200), wiggle_start(std::chrono::steady_clock::now()) {
@@ -37,7 +36,46 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
         
         updateRotation(0, 0);
         setup();
-        SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Camera::initWiggle));
+
+        SEventManager & event = SEventManager::getInstance();
+        event.registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Camera::initWiggle));
+        event.registerEvent(Event::CAMERA_MODE_UPDATE, MEMBER_CALLBACK(Camera::setMode));
+        event.registerEvent(Event::CAMERA_LEFT, MEMBER_CALLBACK(Camera::moveLeft));
+        event.registerEvent(Event::CAMERA_RIGHT, MEMBER_CALLBACK(Camera::moveRight));
+        event.registerEvent(Event::CAMERA_UP, MEMBER_CALLBACK(Camera::moveUp));
+        event.registerEvent(Event::CAMERA_DOWN, MEMBER_CALLBACK(Camera::moveDown));
+}
+
+void    Camera::moveLeft(void *) {
+    switch (mode) {
+        case FREE:          position -= glm::normalize(glm::cross(front, up)) * speed; break;
+        case FOLLOW_PLAYER: yaw -= speed; break;
+        default: break;
+    }
+}
+
+void    Camera::moveRight(void *) {
+    switch (mode) {
+        case FREE:          position += glm::normalize(glm::cross(front, up)) * speed; break;
+        case FOLLOW_PLAYER: yaw += speed; break;
+        default: break;
+    }
+}
+
+void    Camera::moveUp(void *) {
+    switch (mode) {
+        case FREE:          position += speed * front; break;
+        case FOLLOW_PLAYER: pitch += speed; break;
+        default: break;
+    }
+}
+
+void    Camera::moveDown(void *) {
+    switch (mode) {
+        case FREE:          position -= speed * front; break;
+        case FOLLOW_PLAYER: pitch -= speed; break;
+        default: break;
+    }
 }
 
 void    Camera::reset() {
@@ -57,59 +95,25 @@ void    Camera::wiggle(void){
     if (time_since_wiggle_start > wiggle_duration)
         is_wiggling = false;
     if (is_wiggling) {
-        wiggle_yaw = static_cast <float> (rand()) / static_cast <float>(RAND_MAX) * CAM_SPEED;
-        wiggle_pitch = static_cast <float> (rand()) / static_cast <float>(RAND_MAX) * CAM_SPEED;
+        wiggle_yaw = static_cast <float> (rand()) / static_cast <float>(RAND_MAX) * speed;
+        wiggle_pitch = static_cast <float> (rand()) / static_cast <float>(RAND_MAX) * speed;
     } else {
         wiggle_yaw = 0.f;
         wiggle_pitch = 0.f;
     }
 }
 
-void    Camera::followPlayer(glm::vec2 const * playerPos, std::vector<Action::Enum> & actions){
-    std::for_each(actions.begin(), actions.end(),
-        [this](Action::Enum action) {
-            switch (action) {
-                case Action::CAMERA_UP:     pitch += CAM_SPEED; break;
-                case Action::CAMERA_DOWN:   pitch -= CAM_SPEED; break;
-                case Action::CAMERA_LEFT:   yaw -= CAM_SPEED; break;
-                case Action::CAMERA_RIGHT:  yaw += CAM_SPEED; break;
-                case Action::RESET_CAMERA:  yaw = initialYaw; pitch = initialPitch ; break;
-                default: break;
-            }
-        }
-    );
-    actions.erase(std::remove(actions.begin(), actions.end(), Action::BOMB_EXPLODES), actions.end());
-    wiggle();
-    updateFront();
-    glm::vec3   rel_cam_pos(front * -10.f);
-    position += (glm::vec3(*playerPos, 0.) + rel_cam_pos - position) / 10.f;
-}
-
-void    Camera::update(std::vector<Action::Enum> & actions, int const mouseOffsetX, int const mouseOffsetY, glm::vec2 const *playerPos) {
-    if (find(actions.begin(), actions.end(), Action::DEBUG_MODE) != actions.end()) {
-        updatePosition(actions);
-        updateRotation(mouseOffsetX, mouseOffsetY);
-        setup();
+void    Camera::update(int const mouseOffsetX, int const mouseOffsetY, glm::vec2 const *playerPos) {
+    switch (mode) {
+        case FIXED:         break;
+        case FREE:          updateRotation(mouseOffsetX, mouseOffsetY); break;
+        case FOLLOW_PLAYER:
+            updateFront();
+            glm::vec3   rel_cam_pos(front * -10.f);
+            position += (glm::vec3(*playerPos, 0.) + rel_cam_pos - position) / 10.f;
+            break;
     }
-    else if (find(actions.begin(), actions.end(), Action::FOLLOW_PLAYER) != actions.end()) {
-        followPlayer(playerPos, actions);
-        setup();
-    }
-}
-
-void    Camera::updatePosition(std::vector<Action::Enum> const & actions) {
-    std::for_each(actions.begin(), actions.end(),
-        [this](Action::Enum action) {
-            switch (action) {
-                case Action::CAMERA_UP:     position += speed * front; break;
-                case Action::CAMERA_DOWN:   position -= speed * front; break;
-                case Action::CAMERA_LEFT:   position -= glm::normalize(glm::cross(front, up)) * speed; break;
-                case Action::CAMERA_RIGHT:  position += glm::normalize(glm::cross(front, up)) * speed; break;
-                case Action::RESET_CAMERA:  reset(); break;
-                default: break;
-            }
-        }
-    );
+    setup();
 }
 
 void    Camera::updateFront(void){
@@ -145,4 +149,13 @@ glm::vec3   Camera::getPosition() const {
 
 glm::vec3   Camera::getFront() const {
 	return front;
+}
+
+void    Camera::setMode(void *p) {
+    mode = *static_cast<Camera::Mode*>(p);
+    reset();
+}
+
+Camera::Mode   Camera::getMode() const {
+    return mode;
 }

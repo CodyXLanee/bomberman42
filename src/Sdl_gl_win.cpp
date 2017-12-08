@@ -6,21 +6,10 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 12:29:45 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 13:42:26 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# define NK_INCLUDE_FIXED_TYPES
-# define NK_INCLUDE_STANDARD_IO
-# define NK_INCLUDE_STANDARD_VARARGS
-# define NK_INCLUDE_DEFAULT_ALLOCATOR
-# define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
-# define NK_INCLUDE_FONT_BAKING
-# define NK_INCLUDE_DEFAULT_FONT
-# define NK_IMPLEMENTATION
-# define NK_SDL_GL3_IMPLEMENTATION
-# include "nuklear.h"
-# include "nuklear_sdl_gl3.h"
 # include "Sdl_gl_win.hpp"
 
 Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(height) {

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/08 12:16:05 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 15:11:42 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@
 # include "Camera.hpp"
 # include "SEventManager.hpp"
 # include "Sdl_gl_win.hpp"
-# include "nuklear.h"
-# include "nuklear_sdl_gl3.h"
+
 
 class NuklearGUI
 {
@@ -38,6 +37,7 @@ class NuklearGUI
     private:
         Sdl_gl_win              &win;
         Camera                  &camera;
+        SEventManager           &event;
         struct nk_context       *ctx;
         struct nk_font_atlas    *atlas;
         int                     const menuWidth;
@@ -53,6 +53,7 @@ class NuklearGUI
         void        handleKey(void *);
         void        toggle(void *);
         void        bindKeyToEvent(Event::Enum, std::map<Event::Enum, SDL_Keycode> &);
+        void        hover(int) const;
 
         void        renderDebug();
         void        renderMenu();

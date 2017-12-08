@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/05 20:26:05 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 12:21:40 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Sdl_gl_win {
 		Sdl_gl_win(size_t width, size_t height);
 		~Sdl_gl_win();
 		
-		void			eventManager(std::vector<Action::Enum> &, struct nk_context *);
+		void			eventManager(struct nk_context *);
 		int				getMouseX() const;
 		int				getMouseY() const;
 		SDL_Window		*getWin() const;

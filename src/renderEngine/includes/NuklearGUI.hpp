@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/07 16:55:16 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 12:16:05 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,6 @@ class NuklearGUI
         Screen::Resolution      getScreenResolution() const;
         Screen::Mode            getScreenMode() const;
         void                    render();
-
-        std::string             toString(Screen::Resolution) const;
-        std::string             toString(Screen::Mode) const;
         
     private:
         Sdl_gl_win              &win;
@@ -62,6 +59,10 @@ class NuklearGUI
         void        renderOptions();
         void        renderKeyBindings();
         void        renderStartMenu();
+
+        std::string             toString(Screen::Resolution) const;
+        std::string             toString(Screen::Mode) const;
+        std::string             toString(Camera::Mode) const;
 
         NuklearGUI();
         NuklearGUI(NuklearGUI const &);

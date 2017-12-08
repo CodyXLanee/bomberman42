@@ -12,6 +12,10 @@ uniform vec3 viewPos;
 uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform vec3 lightingValues; // ambiant, diffuse, specular
+
+uniform vec3 fireLightPos[100];
+uniform int fireLightNbr;
+
 uniform sampler2D texture_diffuse;
 uniform sampler2D depthMap;
 
@@ -45,6 +49,31 @@ float	computeShadow(vec4 fragPosLightSpace, vec3 lightDir) {
 	return shadow;
 }
 
+// vec3 computeFireLight(PointLight light, vec3 viewDir)
+vec3 computeFireLight(vec3 firePos, vec3 viewDir)
+{
+    vec3 lightDir = normalize(firePos - fragPos);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    // attenuation
+    float distance    = length(firePos - fragPos);
+    float attenuation = 1.0 / (1.0 + 0.35 * distance + 
+  			     0.44 * (distance * distance));    
+    // combine results
+    vec3 ambient = vec3(0.988, 0.901, 0.411) * 0.02;
+    float diffuse  = 0.5 * diff;
+    float specular = 0.3 * spec;
+
+    ambient  *= attenuation;
+    diffuse  *= attenuation;
+    specular *= attenuation;
+
+    return ambient + diffuse + specular;
+}
+
 vec3	computeLight() {
 	vec3 ambient = lightColor * lightingValues.x;
 
@@ -59,13 +88,20 @@ vec3	computeLight() {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     float specular = spec * lightingValues.z;
 
+    vec3 fire;
+    if (fireLightNbr != 0) {
+        for (int i = 0; i < fireLightNbr; i++) {
+            fire += computeFireLight(fireLightPos[i], viewDir);
+        }
+        fire /= fireLightNbr;
+    }
 	// vec3 result = ambient + diffuse + specular;
 	// vec3 result = ambient + diffuse;
 
     float shadow = computeShadow(fragPosLightSpace, lightDir);       
     vec3 result = (ambient + (1.0 - shadow) * (diffuse + specular)) * lightColor;
-
-	return result;
+    
+	return result + fire;
 }
 
 void main(){

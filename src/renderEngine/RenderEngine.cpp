@@ -6,13 +6,14 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/07 15:37:37 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 10:33:22 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RenderEngine.hpp"
 
 RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera) {
+	std::cout << "RENDFR" << std::endl;
 	SDL_GetWindowSize(win, &w, &h);
 	Shader::perspective = glm::perspective(glm::radians(FOV), static_cast<float>(w) / static_cast<float>(h), Z_NEAR, Z_FAR);
 
@@ -31,6 +32,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 	int	w, h;
 
 	SDL_GetWindowSize(win, &w, &h);
+	setFireLights(entities);
 	// recordNewEntities(entities);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -319,12 +321,17 @@ void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGam
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void	RenderEngine::fillFireLights(std::vector<IGameEntity *> const & entities) {
+void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 	fireLights.clear();
 	for (auto it = entities.begin(); it != entities.end(); it++) {
 		if((*it)->getType() == Type::FLAME)
-			fireLights.push_back((*it)->getPosition());
+			fireLights.push_back(glm::vec3((*it)->getPosition(), 1.f));
 	}
+	shaderManager.getMainShader().use();
+	shaderManager.getMainShader().setInt("fireLightNbr", fireLights.size());
+	for (unsigned int i = 0; i < fireLights.size(); i++)
+		shaderManager.getMainShader().setVec3("fireLightPos[" + std::to_string(i) + "]",
+									fireLights[i].x, fireLights[i].y, fireLights[i].z);
 }
 
 void	RenderEngine::renderParticles() const {

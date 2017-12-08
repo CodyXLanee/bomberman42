@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 11:28:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 13:31:09 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/08 16:46:42 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "IGameEntity.hpp"
 # include "SEventManager.hpp"
 # include "Player.hpp"
+# include <algorithm>
 # include <vector>
 # include <glm/vec2.hpp>
 # include <iostream>
@@ -46,6 +47,9 @@ class AI {
         AI();
 
         static Event::Enum   endEvents(Event::Enum e);
+        static glm::vec2     dirToVec(Event::Enum e);
+        static Event::Enum    vecToDir(glm::vec2 v);
+        static std::vector<Event::Enum>  vecsToDir(glm::vec2 v);
         
         bool    can_place_bomb(void);
         bool    is_safe(glm::ivec2 pos, std::vector<IGameEntity *> & entities);
@@ -62,7 +66,7 @@ class AI {
         std::map<glm::ivec2, Spot>          _map;
         std::vector<glm::vec2>              *_debug_cubes;
         glm::ivec2                          _objective;
-        Event::Enum                         _last_dir;
+        std::vector<Event::Enum>            _last_dir;
         
 };
 

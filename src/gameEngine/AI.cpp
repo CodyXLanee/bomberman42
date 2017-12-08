@@ -1,7 +1,7 @@
 
-#include "AI.hpp"
+# include "AI.hpp"
 # include "Bomb.hpp"
-
+# include <glm/ext.hpp>
 
 
 class Spot {
@@ -34,8 +34,41 @@ Event::Enum     AI::endEvents(Event::Enum e){
     }
 }
 
+glm::vec2     AI::dirToVec(Event::Enum e){
+    switch (e){
+        case Event::PLAYER_LEFT:    return glm::vec2(-1, 0) ;
+        case Event::PLAYER_RIGHT:   return glm::vec2(1, 0) ;
+        case Event::PLAYER_UP:      return glm::vec2(0, 1) ;
+        case Event::PLAYER_DOWN:    return glm::vec2(0, -1);
+        default:                     return glm::vec2(0, 0);
+    }
+}
+
+Event::Enum    AI::vecToDir(glm::vec2 v){
+    if (std::abs(v.x) < 0.1f && std::abs(v.y) < 0.1f)
+        return Event::PLAYER_MOVE;
+    std::cout << "a" << std::endl;
+    if (std::abs(v.x) > std::abs(v.y)){
+        return (v.x > 0 ? Event::PLAYER_RIGHT : Event::PLAYER_LEFT);
+    }
+    else {
+        return (v.y > 0 ? Event::PLAYER_UP : Event::PLAYER_DOWN);
+    }
+}
+
+std::vector<Event::Enum>  AI::vecsToDir(glm::vec2 v){
+    std::vector<Event::Enum> ret;
+    if (std::abs(v.x) > 0.05f){
+        ret.push_back(v.x > 0 ? Event::PLAYER_RIGHT : Event::PLAYER_LEFT);
+    }
+    if (std::abs(v.y) > 0.05f) {
+        ret.push_back(v.y > 0 ? Event::PLAYER_UP : Event::PLAYER_DOWN);
+    }
+    return ret;
+}
+
 bool      AI::can_place_bomb(void){
-    return (_player->getBombCount() < _player->getMaxBombNb());
+    return (_player->getBombCount() < 1);
 }
 
 bool    AI::is_safe(glm::ivec2 pos, std::vector<IGameEntity *> & entities){
@@ -83,38 +116,49 @@ void    AI::updateMap(Map const & map, std::vector<IGameEntity *> & entities){
 }
 
 void    AI::runToObjective(){
-    Event::Enum     min_dir = Event::PLAYER_LEFT;
-    updateMapDistRec(_player->getPosition() + glm::vec2(-1, 0), 0);
+    std::vector<Event::Enum>     min_dir;
+    updateMapDistRec(_player->getPosition(), 0);
     int             min_dist = _map[_objective]._dist;
 
-    updateMapDistRec(_player->getPosition() + glm::vec2(1, 0), 0);
-    if (min_dist > _map[_objective]._dist)
-        min_dir = Event::PLAYER_RIGHT;
+    Event::Enum dirs[4] = {Event::PLAYER_LEFT, Event::PLAYER_RIGHT, Event::PLAYER_UP, Event::PLAYER_DOWN};
 
-    updateMapDistRec(_player->getPosition() + glm::vec2(0, 1), 0);
-    if (min_dist > _map[_objective]._dist)
-        min_dir = Event::PLAYER_UP;
-
-    updateMapDistRec(_player->getPosition() + glm::vec2(0, -1), 0);
-    if (min_dist > _map[_objective]._dist)
-        min_dir = Event::PLAYER_DOWN;
-    updateMapDistRec(_player->getPosition(), 0);
-
-
-    if (_last_dir != min_dir){
-        SEventManager::getInstance().raise(AI::endEvents(_last_dir), _player);
-        _last_dir = min_dir;
+    for (auto it : dirs){
+        updateMapDistRec(_player->getPosition() + AI::dirToVec(it), 0);
+        if (min_dist > _map[_objective]._dist && _map[glm::round(_player->getPosition()) + AI::dirToVec(it)]._free){
+            min_dir.clear();
+            min_dir.push_back(it);
+            std::cout << glm::to_string(glm::round(_player->getPosition())) << " + " << glm::to_string(AI::dirToVec(it)) <<" => " << glm::to_string(glm::ivec2(_player->getPosition() + AI::dirToVec(it))) << " XX " << glm::to_string(_objective) << std::endl;
+            min_dist = _map[_objective]._dist;
+        }
     }
-    SEventManager::getInstance().raise(min_dir, _player);
+
+    if (min_dir.size() == 0){
+        min_dir = AI::vecsToDir(glm::vec2(_objective) - _player->getPosition());
+    }
+    // std::cout << glm::to_string(_player->getPosition()) << " X " << glm::to_string(_objective) << std::endl;
+
+    for (auto i : _last_dir) {
+        if (std::find(min_dir.begin(), min_dir.end(), i) == min_dir.end())
+        SEventManager::getInstance().raise(AI::endEvents(i), _player);
+    }
+    _last_dir.erase(std::remove_if(_last_dir.begin(), _last_dir.end(), [&min_dir](Event::Enum e) {
+                return (std::find(min_dir.begin(), min_dir.end(), e) == min_dir.end());
+            }), _last_dir.end());
+    for (auto i : min_dir){
+        if (_last_dir.size() == 0 || std::find(_last_dir.begin(), _last_dir.end(), i) == _last_dir.end()){
+            _last_dir.push_back(i);
+        }
+        SEventManager::getInstance().raise(i, _player);
+    }
 }
 
 void    AI::run_to_safety(Map const & map, std::vector<IGameEntity *> & entities){
     (void)map;
     (void)entities;
-    if (is_safe(glm::round(_player->getPosition()), entities)){
-        SEventManager::getInstance().raise(AI::endEvents(_last_dir), _player);
-        return;
-    }
+    // if (is_safe(glm::round(_player->getPosition()), entities)){
+    //     SEventManager::getInstance().raise(AI::endEvents(_last_dir), _player);
+    //     return;
+    // }
     updateObjective();
     runToObjective();
 }
@@ -124,9 +168,9 @@ void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
     updateMap(map, entities);
     run_to_safety(map, entities);
     updateDebugCubes(map, entities);
-    // if (can_place_bomb()){
-    //     SEventManager::getInstance().raise(SPAWN_BOMB, _player);
-    // }
+    if (can_place_bomb()){
+        SEventManager::getInstance().raise(Event::SPAWN_BOMB, _player);
+    }
     // run_to_safety(map, entities);
     
 }

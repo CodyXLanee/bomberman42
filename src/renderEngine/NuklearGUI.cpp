@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/08 12:18:04 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 15:19:08 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ void    NuklearGUI::renderOptions() {
     SDL_GetWindowSize(win.getWin(), &w, &h);
     SEventManager & event = SEventManager::getInstance();
 
-    static float        masterVolume = 0.1f;
+    static float        masterVolume = 0.0f;
     static float        musicVolume = MIX_MAX_VOLUME / 2;
     static float        effectsVolume = MIX_MAX_VOLUME / 2;
 

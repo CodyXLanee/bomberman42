@@ -11,7 +11,7 @@ class Spot {
         int                 _dist;
         
         Spot() : _free(false) {};
-        Spot(bool f, bool s) : _free(f), _safe(s) {};
+        Spot(bool f, bool s) : _free(f), _safe(s), _dist(-1) {};
         ~Spot() {};
 };
 
@@ -22,6 +22,16 @@ AI::AI(Player *player) : _player(player), _debug_cubes(new std::vector<glm::vec2
 
 AI::~AI() {
 
+}
+
+Event::Enum     AI::endEvents(Event::Enum e){
+    switch (e){
+        case Event::PLAYER_LEFT:    return Event::END_PLAYER_LEFT;
+        case Event::PLAYER_RIGHT:   return Event::END_PLAYER_RIGHT;
+        case Event::PLAYER_UP:      return Event::END_PLAYER_UP;
+        case Event::PLAYER_DOWN:    return Event::END_PLAYER_DOWN;
+        default:                     return Event::END_PLAYER_LEFT;
+    }
 }
 
 bool      AI::can_place_bomb(void){
@@ -54,12 +64,11 @@ void    AI::updateMapDistRec(glm::ivec2 pos, int rec){
 
 void    AI::updateObjective(void){
     updateMapDistRec(glm::round(_player->getPosition()), 0);
-    auto min = &(*(_map.begin()));
     for (auto i : _map){
-        if (i.second._dist != -1 && i.second._free && (i.second._dist < min->second._dist || min->second._dist == -1))
-            min = &i;
+        if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist < _map[_objective]._dist || _map[_objective]._dist == -1 || !_map[_objective]._safe)){
+            _objective = i.first;
+        }
     }
-    _objective = min->first;
 }
 
 void    AI::updateMap(Map const & map, std::vector<IGameEntity *> & entities){
@@ -73,42 +82,76 @@ void    AI::updateMap(Map const & map, std::vector<IGameEntity *> & entities){
     }
 }
 
+void    AI::runToObjective(){
+    Event::Enum     min_dir = Event::PLAYER_LEFT;
+    updateMapDistRec(_player->getPosition() + glm::vec2(-1, 0), 0);
+    int             min_dist = _map[_objective]._dist;
+
+    updateMapDistRec(_player->getPosition() + glm::vec2(1, 0), 0);
+    if (min_dist > _map[_objective]._dist)
+        min_dir = Event::PLAYER_RIGHT;
+
+    updateMapDistRec(_player->getPosition() + glm::vec2(0, 1), 0);
+    if (min_dist > _map[_objective]._dist)
+        min_dir = Event::PLAYER_UP;
+
+    updateMapDistRec(_player->getPosition() + glm::vec2(0, -1), 0);
+    if (min_dist > _map[_objective]._dist)
+        min_dir = Event::PLAYER_DOWN;
+    updateMapDistRec(_player->getPosition(), 0);
+
+
+    if (_last_dir != min_dir){
+        SEventManager::getInstance().raise(AI::endEvents(_last_dir), _player);
+        _last_dir = min_dir;
+    }
+    SEventManager::getInstance().raise(min_dir, _player);
+}
+
 void    AI::run_to_safety(Map const & map, std::vector<IGameEntity *> & entities){
     (void)map;
     (void)entities;
-    if (is_safe(glm::round(_player->getPosition()), entities))
+    if (is_safe(glm::round(_player->getPosition()), entities)){
+        SEventManager::getInstance().raise(AI::endEvents(_last_dir), _player);
         return;
+    }
     updateObjective();
-    // runToObjective();
+    runToObjective();
 }
 
 void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
     (void)entities;
     updateMap(map, entities);
+    run_to_safety(map, entities);
     updateDebugCubes(map, entities);
     // if (can_place_bomb()){
     //     SEventManager::getInstance().raise(SPAWN_BOMB, _player);
     // }
-    run_to_safety(map, entities);
+    // run_to_safety(map, entities);
+    
 }
 
 bool    AI::shouldAppearInDebug(glm::ivec2 pos){
-    // return _map[pos]._free && _map[pos]._safe;
-    return pos == _objective;
+    // std::cout << (_map[pos]._free && _map[pos]._safe && _map[pos]._dist > 3) << std::endl;
+    return _map[pos]._free && _map[pos]._safe && _map[pos]._dist > 0;
+    // return pos == _objective;
 }
 
 void    AI::updateDebugCubes(Map const & map, std::vector<IGameEntity *> & entities) {
     glm::vec2 mapSize = map.getSize();
 
     (void)entities;
+    (void)mapSize;
     _debug_cubes->clear();
     if (_map.size() == 0)
         return;
 
-    for(unsigned int i = 0; i < mapSize.x; i++) {
-        for(unsigned int j = 0; j < mapSize.y; j++) {
-            if (shouldAppearInDebug(glm::ivec2(i, j)))
-                _debug_cubes->push_back(glm::vec2(i, j));
-        }
-    }
+
+
+    // for (auto i : _map) {
+    //     if (shouldAppearInDebug(i.first))
+    //         _debug_cubes->push_back(i.first);
+    // }
+    _debug_cubes->push_back(_objective);
+    
 }

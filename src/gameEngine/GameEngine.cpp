@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 19:09:23 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/08 12:28:14 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,17 +83,18 @@ void					GameEngine::loadMap(const char *path){
 
     		if (entityType == -2) // undestroyable bloc
     			this->_map->addIndestructibleBlocs(IndestructibleBloc(glm::vec2(j,i)));
-    		if (entityType == 0 && ((rand() % 10) < 5)) // destroyable bloc
+    		if (entityType == 0 && ((rand() % 10) < 2)) // destroyable bloc
     			this->_map->addDestructibleBlocs(DestructibleBloc(glm::vec2(j,i)));
     		// if (entityType == 0) // case vide
     		// 	break;
     		if (entityType >=1 && entityType <=4) {// players (1 is human, the rest is an AI)
     			glm::vec2		vec(static_cast<float>(j), static_cast<float>(i));
     			Player *	player = new Player(vec, entityType - 1);
-				_playerManager->addPlayer(player);
-    			this->_entityList->push_back(player);
 				if (player->getPlayerNb() == 0)
 					_playerManager->setHumanPlayer(player);
+				else
+					_playerManager->addPlayer(player);
+    			this->_entityList->push_back(player);
     		}
 		}
 	}

@@ -4,6 +4,7 @@ in vec2 UV;
 in vec3 fragPos;
 in vec3 fragColor;
 in vec3 normal;
+in mat3 TBN;
 in vec4 fragPosLightSpace;
 
 out vec4 outputColor;
@@ -22,6 +23,7 @@ uniform sampler2D texture_normal;
 uniform sampler2D depthMap;
 
 uniform float alpha;
+uniform int isBrick;
 
 float	computeShadow(vec4 fragPosLightSpace, vec3 lightDir) {
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
@@ -76,10 +78,27 @@ vec3 computeFireLight(vec3 firePos, vec3 viewDir)
     return ambient + diffuse + specular;
 }
 
+
+    // normal = texture(normalMap, fs_in.TexCoords).rgb;
+    // // transform normal vector to range [-1,1]
+    // normal = normalize(normal * 2.0 - 1.0); 
+
+//     normal = texture(normalMap, fs_in.TexCoords).rgb;
+// normal = normalize(normal * 2.0 - 1.0);   
+// normal = normalize(fs_in.TBN * normal);
+
+
 vec3	computeLight() {
 	vec3 ambient = lightColor * lightingValues.x;
 
-	vec3 norm = normalize(normal);
+    vec3 norm;
+    if(isBrick == 1) {
+        norm = texture(texture_normal, UV).rgb;
+        norm = normalize(norm * 2.0 - 1.0);
+        norm = normalize(TBN * norm);
+    } else
+        norm = normalize(normal);
+        
 	vec3 lightDir = normalize(lightPos - fragPos);
 
 	float diff = max(dot(norm, lightDir), 0.0);

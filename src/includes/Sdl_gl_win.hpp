@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 12:21:40 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 13:42:30 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include "bomberman.hpp"
 # include "Shader.hpp"
 # include "SEventManager.hpp"
+# include "nuklear.h"
+# include "nuklear_sdl_gl3.h"
 
 class Sdl_gl_win {
 	public:

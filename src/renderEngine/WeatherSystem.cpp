@@ -6,16 +6,16 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 11:01:29 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 17:06:47 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "WeatherSystem.hpp"
 
 WeatherSystem::WeatherSystem() {
-	dayTime = MIDNIGHT;
-	cloudy = false;
-	rainy = false;
+	dayTime = MIDDAY;
+	cloudy = true;
+	rainy = true;
 
 	init();
 	initClouds();
@@ -45,15 +45,15 @@ void	WeatherSystem::init() {
 		case MIDDAY:
 			ambiant = 0.4f;
 			diffuse = 0.6f;
-			specular = 0.2f;
+			specular = 0.6f;
 			sunPos = glm::vec3(16.f, 30.f, 40.f);
 			sunColor = glm::vec3(1.f, 0.941f, 0.713f);
 			break;
 		case TWILIGHT:
 			ambiant = 0.4f;
 			diffuse = 0.6f;
-			specular = 0.2f;
-			sunPos = glm::vec3(16.f, 30.f, 20.f);
+			specular = 0.8f;
+			sunPos = glm::vec3(16.f, 30.f, 10.f);
 			sunColor = glm::vec3(1.f, 0.941f, 0.713f);
 			break;
 		case MIDNIGHT:

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 13:26:37 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 17:04:38 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
+	meteo->getSun().render(shaderManager.getMainShader(), camera);
 	meteo->renderCloud(shader);
 
 	renderAiDebug(shader);
@@ -168,7 +169,7 @@ void	RenderEngine::renderWall(Shader &shader, const std::vector<IndestructibleBl
 
 void	RenderEngine::renderBrick(Shader &shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const {
 	(void)map; /////////////////////
-    std::vector<glm::mat4> data;
+	std::vector<glm::mat4> data;
 	Model &model = modelManager.getModel(ModelManager::BRICK);
 
 	glm::mat4 transform;
@@ -177,8 +178,13 @@ void	RenderEngine::renderBrick(Shader &shader, const std::vector<DestructibleBlo
 		transform = glm::mat4(glm::translate(transform, glm::vec3(i->getPosition(), 0.f)));
 		data.push_back(transform);
 	}
-	model.setInstanceBuffer(data);  
-    model.draw(shader, data.size());
+	model.setInstanceBuffer(data); 
+
+	shaderManager.getMainShader().use();
+	shaderManager.getMainShader().setInt("isBrick", 1);
+
+	model.draw(shader, data.size());
+		shaderManager.getMainShader().setInt("isBrick", 0);
 }
 
 static	float		bombs_animation_scale(Bomb const *b){

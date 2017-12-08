@@ -23,6 +23,9 @@
         "memory": "cpp",
         "deque": "cpp",
         "utility": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "chrono": "cpp",
+        "limits": "cpp",
+        "random": "cpp"
     }
 }

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:34:49 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/07 17:51:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 15:46:29 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ SoundManager::SoundManager() : masterVolume(0.1f), musicVolume(MIX_MAX_VOLUME / 
     music = Mix_LoadMUS("assets/sounds/carnivalrides.ogg");
     boom = Mix_LoadWAV("assets/sounds/explosions_explode.wav");
     boom2 = Mix_LoadWAV("assets/sounds/explosions_explodemini.wav");
+    hover = Mix_LoadWAV("assets/sounds/hover.wav");
+    click = Mix_LoadWAV("assets/sounds/click2.wav");
 
     updateVolume();
     
@@ -30,13 +32,26 @@ SoundManager::SoundManager() : masterVolume(0.1f), musicVolume(MIX_MAX_VOLUME / 
     event.registerEvent(Event::MASTER_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setMasterVolume));
     event.registerEvent(Event::MUSIC_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setMusicVolume));
     event.registerEvent(Event::EFFECTS_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setEffectsVolume));
+    event.registerEvent(Event::UI_AUDIO, MEMBER_CALLBACK(SoundManager::playUISound));
 }
 
 SoundManager::~SoundManager() {
     Mix_FreeChunk(boom);
     Mix_FreeChunk(boom2);
+    Mix_FreeChunk(hover);
+    Mix_FreeChunk(click);
     Mix_FreeMusic(music);
     Mix_CloseAudio();
+}
+
+void    SoundManager::playUISound(void *s) {
+    UIAudio::Enum   *sound = static_cast<UIAudio::Enum*>(s);
+
+    switch (*sound) {
+        case UIAudio::HOVER: Mix_PlayChannel(-1, hover, 0); break;
+        case UIAudio::CLICK: Mix_PlayChannel(-1, click, 0); break;
+    }
+    delete sound;
 }
 
 void    SoundManager::playBoom(void *) {
@@ -59,6 +74,8 @@ void    SoundManager::updateVolume() {
     Mix_VolumeMusic(masterVolume * musicVolume);
     Mix_VolumeChunk(boom, masterVolume * effectsVolume);
     Mix_VolumeChunk(boom2, masterVolume * effectsVolume);
+    Mix_VolumeChunk(hover, masterVolume * effectsVolume);
+    Mix_VolumeChunk(click, masterVolume * effectsVolume);
 }
 
 void    SoundManager::setMasterVolume(void * v) {

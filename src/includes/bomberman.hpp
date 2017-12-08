@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 12:31:52 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 14:45:55 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ namespace Save {
     enum Enum {SLOT1, SLOT2, SLOT3};
 };
 
-namespace VolumeType {
-    enum Enum {MASTER, MUSIC, SOUND};
+namespace UIAudio {
+    enum Enum { HOVER, CLICK };
 };
 
 namespace WinCondition {

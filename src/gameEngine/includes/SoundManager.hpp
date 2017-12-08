@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:32:15 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/07 17:46:07 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/08 14:53:49 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ class SoundManager
         Mix_Music   *music;
         Mix_Chunk   *boom;
         Mix_Chunk   *boom2;
+        Mix_Chunk   *hover;
+        Mix_Chunk   *click;
 
         float       masterVolume;
         float       musicVolume;
@@ -42,6 +44,7 @@ class SoundManager
 
         void    playMusic(void *);
         void    playBoom(void *);
+        void    playUISound(void *);
 
         void    setMasterVolume(void *);
         void    setEffectsVolume(void *);

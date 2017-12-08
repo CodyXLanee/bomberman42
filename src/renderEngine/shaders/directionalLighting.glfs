@@ -18,6 +18,7 @@ uniform int fireLightNbr;
 uniform float fireShininess;
 
 uniform sampler2D texture_diffuse;
+uniform sampler2D texture_normal;
 uniform sampler2D depthMap;
 
 uniform float alpha;

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:16:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/07 09:59:59 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 13:28:41 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ ShaderManager::ShaderManager() {
 
 	mainShader->use();
 	mainShader->setInt("texture_diffuse", 0);
-	mainShader->setInt("depthMap", 1);
+	mainShader->setInt("texture_normal", 1);
+	mainShader->setInt("depthMap", 2);
 }
 
 ShaderManager::~ShaderManager() {

@@ -6,14 +6,13 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 11:16:42 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 13:26:37 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RenderEngine.hpp"
 
 RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(camera) {
-	std::cout << "RENDFR" << std::endl;
 	SDL_GetWindowSize(win, &w, &h);
 	Shader::perspective = glm::perspective(glm::radians(FOV), static_cast<float>(w) / static_cast<float>(h), Z_NEAR, Z_FAR);
 
@@ -60,7 +59,7 @@ void	RenderEngine::shadowPass(Map const & map, std::vector<IGameEntity *> &entit
 void	RenderEngine::normalPass(Map const & map, std::vector<IGameEntity *> &entities) const {
 	glViewport(0, 0, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	// glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 	renderScene(shaderManager.getMainShader(), map, entities);

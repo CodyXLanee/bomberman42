@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 15:58:48 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 16:50:12 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,13 +151,14 @@ void	Mesh::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 
 void	Mesh::draw(Shader &shader, bool animated, unsigned int instanceCount) {
 
-	unsigned int diffuseNbr = 1;
-	unsigned int normalNbr = 1;
+	// unsigned int diffuseNbr = 1;
+	// unsigned int normalNbr = 1;
 	for(unsigned int i = 0; i < textures.size(); i++) {
 		glActiveTexture(GL_TEXTURE0 + i);
-		std::string name = this->textures[i].type;
-		std::string nbr = (name == "texture_diffuse") ? std::to_string(diffuseNbr++) : std::to_string(normalNbr++);
-		glUniform1i(glGetUniformLocation(shader.getProgramID(), ("material." + name + nbr).c_str()), i);
+		// std::cout << i << " :: " << this->textures[i].type << std::endl;
+		// std::string name = this->textures[i].type;
+		// std::string nbr = (name == "texture_diffuse") ? std::to_string(diffuseNbr++) : std::to_string(normalNbr++);
+		// glUniform1i(glGetUniformLocation(shader.getProgramID(), ("material." + name + nbr).c_str()), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 	glActiveTexture(GL_TEXTURE0);

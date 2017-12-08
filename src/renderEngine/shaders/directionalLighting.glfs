@@ -23,6 +23,7 @@ uniform sampler2D texture_normal;
 uniform sampler2D depthMap;
 
 uniform float alpha;
+uniform int isBrick;
 
 float	computeShadow(vec4 fragPosLightSpace, vec3 lightDir) {
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
@@ -91,16 +92,12 @@ vec3	computeLight() {
 	vec3 ambient = lightColor * lightingValues.x;
 
     vec3 norm;
-    // if(isBrick == 1) {
-        // norm = texture(texture_normal, UV).rgb;
-        // norm = normalize(normal * 2.0 - 1.0);
-
+    if(isBrick == 1) {
         norm = texture(texture_normal, UV).rgb;
-        norm = normalize(normal * 2.0 - 1.0);
-        norm = normalize(TBN * normal);
-
-    // } else
-        // norm = normalize(normal);
+        norm = normalize(norm * 2.0 - 1.0);
+        norm = normalize(TBN * norm);
+    } else
+        norm = normalize(normal);
         
 	vec3 lightDir = normalize(lightPos - fragPos);
 

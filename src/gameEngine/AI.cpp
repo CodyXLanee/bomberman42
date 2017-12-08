@@ -132,10 +132,9 @@ void    AI::runToObjective(){
         }
     }
 
-    if (min_dir.size() == 0){
+    if (min_dir.size() == 0 || glm::length(glm::vec2(_objective) - _player->getPosition()) < 1.30f){
         min_dir = AI::vecsToDir(glm::vec2(_objective) - _player->getPosition());
     }
-    // std::cout << glm::to_string(_player->getPosition()) << " X " << glm::to_string(_objective) << std::endl;
 
     for (auto i : _last_dir) {
         if (std::find(min_dir.begin(), min_dir.end(), i) == min_dir.end())

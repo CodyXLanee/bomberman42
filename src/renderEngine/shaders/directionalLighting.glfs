@@ -15,6 +15,7 @@ uniform vec3 lightingValues; // ambiant, diffuse, specular
 
 uniform vec3 fireLightPos[100];
 uniform int fireLightNbr;
+uniform float fireShininess;
 
 uniform sampler2D texture_diffuse;
 uniform sampler2D depthMap;
@@ -101,7 +102,7 @@ vec3	computeLight() {
     float shadow = computeShadow(fragPosLightSpace, lightDir);       
     vec3 result = (ambient + (1.0 - shadow) * (diffuse + specular)) * lightColor;
     
-	return result + fire;
+	return result + fire * (2 + fireShininess);
 }
 
 void main(){

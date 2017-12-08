@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 10:33:22 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/08 11:16:42 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,7 +218,7 @@ void	RenderEngine::renderFlames(Shader &shader, std::vector<IGameEntity *> const
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
 			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(flames_animation_scale(static_cast<Flame const *>(*i)) / 2));
-			// transform = glm::rotate(transform,glm::radians(static_cast<float>(rand() % 360)), glm::vec3(0.f, 0.f, 1.f));
+			transform = glm::rotate(transform,glm::radians(static_cast<float>(rand() % 360)), glm::vec3(0.f, 0.f, 1.f));
 			data.insert(data.begin(), transform);
 		}
 	}
@@ -233,7 +233,7 @@ void	RenderEngine::renderFlames(Shader &shader, std::vector<IGameEntity *> const
 		if ((*i)->getType() == Type::FLAME){
 			glm::mat4 transform = glm::mat4();
 			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(flames_animation_scale(static_cast<Flame const *>(*i))));
-			// transform = glm::rotate(transform,glm::radians((rand() % 4) * 90.f), glm::vec3(0.f, 0.f, 1.f));
+			transform = glm::rotate(transform,glm::radians((rand() % 4) * 90.f), glm::vec3(0.f, 0.f, 1.f));
 			data.insert(data.begin(), transform);
 		}
 	}
@@ -328,6 +328,7 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 			fireLights.push_back(glm::vec3((*it)->getPosition(), 1.f));
 	}
 	shaderManager.getMainShader().use();
+	shaderManager.getMainShader().setFloat("fireShininess", sin(rand() % 10));
 	shaderManager.getMainShader().setInt("fireLightNbr", fireLights.size());
 	for (unsigned int i = 0; i < fireLights.size(); i++)
 		shaderManager.getMainShader().setVec3("fireLightPos[" + std::to_string(i) + "]",

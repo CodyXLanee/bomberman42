@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/09 15:06:09 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 15:37:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,12 +102,18 @@ void    BombManager::update(void){
             (*i)->update();
     }
     // Erase Bomb/Flames that needs to disapear
-    _entityList->erase(
-        std::remove_if(_entityList->begin(), _entityList->end(),
+    auto remove_it = std::remove_if(_entityList->begin(), _entityList->end(),
             [](const IGameEntity * e) {
                 return (e->getType() == Type::FLAME || e->getType() == Type::BOMB) && e->getState() == State::DYING;
-            }),
-        _entityList->end());
+            });
+    // To call destructors : 
+    for (auto it = remove_it; it != _entityList->end(); it++){
+        delete *it;
+    }
+    _entityList->erase(remove_it, _entityList->end());
+
+
+    // Add new Flames
     if (_flames_to_add->size() > 0){
         _entityList->insert(_entityList->end(), _flames_to_add->begin(), _flames_to_add->end());
         _flames_to_add->clear();

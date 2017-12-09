@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/09 15:14:55 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 18:49:46 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void		Player::bomb_explodes_callback(void *bomb){
 }
 
 void		Player::spawn_flame_callback(void *flame){
-	if (static_cast<IGameEntity *>(flame)->getPosition() == glm::floor(getPosition()))
+	if (static_cast<IGameEntity *>(flame)->getPosition() == glm::round(getPosition()))
 		SEventManager::getInstance().raise(Event::PLAYER_DIES, this);
 }
 

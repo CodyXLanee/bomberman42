@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/08 19:11:49 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 17:28:48 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
 
     event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKey));
     event.registerEvent(Event::GUI_TOGGLE, MEMBER_CALLBACK(NuklearGUI::toggle));
-    event.registerEvent(Event::GUI_BASE_MENU, std::bind(&NuklearGUI::toggle, this, new Menu::Enum(Menu::BASE)));
+    event.registerEvent(Event::GUI_BASE_MENU, std::pair<CallbackType, void*>(std::bind(&NuklearGUI::toggle, this, new Menu::Enum(Menu::BASE)), this));
 
     _keyToChange = nullptr;
 }

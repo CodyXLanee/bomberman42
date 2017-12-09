@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/09 15:37:44 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 18:48:14 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,16 +102,15 @@ void    BombManager::update(void){
             (*i)->update();
     }
     // Erase Bomb/Flames that needs to disapear
-    auto remove_it = std::remove_if(_entityList->begin(), _entityList->end(),
-            [](const IGameEntity * e) {
-                return (e->getType() == Type::FLAME || e->getType() == Type::BOMB) && e->getState() == State::DYING;
-            });
-    // To call destructors : 
-    for (auto it = remove_it; it != _entityList->end(); it++){
-        delete *it;
+    for (auto j = _entityList->begin(); j != _entityList->end(); ++j){
+        if (((*j)->getType() == Type::FLAME || (*j)->getType() == Type::BOMB) && (*j)->getState() == State::DYING){
+            // First call destructors
+            delete *j;
+            *j = nullptr;
+        }
     }
-    _entityList->erase(remove_it, _entityList->end());
-
+    // Then remove from vector
+    _entityList->erase( std::remove(_entityList->begin(), _entityList->end(), nullptr), _entityList->end());
 
     // Add new Flames
     if (_flames_to_add->size() > 0){

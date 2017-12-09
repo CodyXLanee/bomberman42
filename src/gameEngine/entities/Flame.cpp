@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:24:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/09 15:15:14 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 18:49:31 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::FLAME){
 }
 
 Flame::~Flame(){
+    SEventManager::getInstance().unRegisterEvent(Event::PLAYER_MOVE, this);
 }
 
 void    Flame::update(void){
@@ -38,6 +39,6 @@ std::chrono::time_point<std::chrono::steady_clock> const       &Flame::get_creat
 }
 
 void                Flame::player_move_callback(void *player){
-    if (glm::floor(static_cast<IGameEntity *>(player)->getPosition()) == getPosition())
+    if (glm::round(static_cast<IGameEntity *>(player)->getPosition()) == getPosition())
         SEventManager::getInstance().raise(Event::PLAYER_DIES, player);
 }

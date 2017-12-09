@@ -6,13 +6,14 @@
 # include <map>
 # include <vector>
 
+typedef std::function<void(void*)> CallbackType;
+
 #define MEMBER_CALLBACK(funPtr) \
-std::bind(&funPtr, this, std::placeholders::_1)
+std::pair<CallbackType, void*>(std::bind(&funPtr, this, std::placeholders::_1), this)
 
 #define MEMBER_CALLBACK_WITH_INSTANCE(funPtr, instancePtr) \
-std::bind(&funPtr, instancePtr, std::placeholders::_1)
+std::pair<CallbackType, void*>(std::bind(&funPtr, instancePtr, std::placeholders::_1), instancePtr)
 
-typedef std::function<void(void*)> CallbackType;
 
 namespace Event {
 	enum Enum	{
@@ -51,11 +52,12 @@ class SEventManager {
     	~SEventManager();
 		static SEventManager& getInstance();
 
-		void	registerEvent(Event::Enum event, CallbackType);
+		void	registerEvent(Event::Enum event, std::pair<CallbackType, void*> callback_and_author);
+		void	unRegisterEvent(Event::Enum event, void *author);
 		void	raise(Event::Enum event, void*);
 
 	private:
-		std::map<Event::Enum, std::vector<CallbackType>> _map;
+		std::map<Event::Enum, std::vector<std::pair<CallbackType, void*>>> _map;
 
         SEventManager();
         SEventManager(SEventManager const&);              // Don't Implement.

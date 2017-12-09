@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:35 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 22:30:33 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 18:46:40 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), flameNb(2
 }
 
 Bomb::~Bomb(){
+    SEventManager::getInstance().unRegisterEvent(Event::SPAWN_FLAME, this);
 }
 
 int     Bomb::getFlameNb(void) const {

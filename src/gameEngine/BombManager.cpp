@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 22:40:47 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 15:06:09 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void    BombManager::update(void){
     _entityList->erase(
         std::remove_if(_entityList->begin(), _entityList->end(),
             [](const IGameEntity * e) {
-                return e->getState() == State::DYING;
+                return (e->getType() == Type::FLAME || e->getType() == Type::BOMB) && e->getState() == State::DYING;
             }),
         _entityList->end());
     if (_flames_to_add->size() > 0){

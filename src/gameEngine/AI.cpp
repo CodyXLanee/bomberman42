@@ -24,6 +24,13 @@ AI::~AI() {
 
 }
 
+
+
+
+
+/////////////////////////           UTILS           //////////////////////
+
+
 Event::Enum     AI::endEvents(Event::Enum e){
     switch (e){
         case Event::PLAYER_LEFT:    return Event::END_PLAYER_LEFT;
@@ -47,7 +54,6 @@ glm::vec2     AI::dirToVec(Event::Enum e){
 Event::Enum    AI::vecToDir(glm::vec2 v){
     if (std::abs(v.x) < 0.1f && std::abs(v.y) < 0.1f)
         return Event::PLAYER_MOVE;
-    std::cout << "a" << std::endl;
     if (std::abs(v.x) > std::abs(v.y)){
         return (v.x > 0 ? Event::PLAYER_RIGHT : Event::PLAYER_LEFT);
     }
@@ -56,7 +62,8 @@ Event::Enum    AI::vecToDir(glm::vec2 v){
     }
 }
 
-std::vector<Event::Enum>  AI::vecsToDir(glm::vec2 v){
+
+std::vector<Event::Enum>  AI::vecToDirs(glm::vec2 v){
     std::vector<Event::Enum> ret;
     if (std::abs(v.x) > 0.05f){
         ret.push_back(v.x > 0 ? Event::PLAYER_RIGHT : Event::PLAYER_LEFT);
@@ -71,6 +78,8 @@ bool      AI::can_place_bomb(void){
     return (_player->getBombCount() < 1);
 }
 
+
+// NOW UNUSED
 bool    AI::is_safe(glm::ivec2 pos, std::vector<IGameEntity *> & entities){
     for (auto it : entities){
         if (it->getType() == Type::BOMB && ((it->getPosition().x == pos.x && std::abs(it->getPosition().y - pos.y) <= static_cast<Bomb*>(it)->getFlameNb())
@@ -81,6 +90,23 @@ bool    AI::is_safe(glm::ivec2 pos, std::vector<IGameEntity *> & entities){
     }
     return true;
 }
+
+
+
+
+
+void    AI::updateObjective(void){
+    updateMapDistRec(glm::round(_player->getPosition()), 0);
+    for (auto i : _map){
+        if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist < _map[_objective]._dist || _map[_objective]._dist == -1 || !_map[_objective]._safe)){
+            _objective = i.first;
+        }
+    }
+}
+
+
+/////////////////       INTERNAL MAP        ///////////////////////////////////////
+
 
 void    AI::updateMapDistRec(glm::ivec2 pos, int rec){
     auto it = _map.find(pos);
@@ -95,12 +121,27 @@ void    AI::updateMapDistRec(glm::ivec2 pos, int rec){
     }
 }
 
-void    AI::updateObjective(void){
-    updateMapDistRec(glm::round(_player->getPosition()), 0);
-    for (auto i : _map){
-        if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist < _map[_objective]._dist || _map[_objective]._dist == -1 || !_map[_objective]._safe)){
-            _objective = i.first;
-        }
+void    AI::markBombRangeAsUnsafe(glm::ivec2 pos, glm::ivec2 dir, int range){
+    if (_map[pos]._free == false)
+        return;
+    _map[pos]._safe = false;
+    if (range > 0){
+        markBombRangeAsUnsafe(pos + dir, dir, range - 1);
+    }
+}
+
+void    AI::updateMapSafety(IGameEntity *entity){
+    glm::ivec2 pos(entity->getPosition());
+    if (entity->getType() == Type::BOMB){
+        _map[pos]._safe = false;
+        markBombRangeAsUnsafe(pos, glm::ivec2(-1, 0), static_cast<Bomb *>(entity)->getFlameNb());
+        markBombRangeAsUnsafe(pos, glm::ivec2(1, 0), static_cast<Bomb *>(entity)->getFlameNb());
+        markBombRangeAsUnsafe(pos, glm::ivec2(0, -1), static_cast<Bomb *>(entity)->getFlameNb());
+        markBombRangeAsUnsafe(pos, glm::ivec2(0, 1), static_cast<Bomb *>(entity)->getFlameNb());
+    }
+    else if (entity->getType() == Type::FLAME){
+         _map[pos]._safe = false;
+         _map[pos]._free = false;
     }
 }
 
@@ -110,10 +151,21 @@ void    AI::updateMap(Map const & map, std::vector<IGameEntity *> & entities){
     _map.clear();
     for(unsigned int i = 0; i < mapSize.x; i++) {
         for(unsigned int j = 0; j < mapSize.y; j++) {
-            _map.insert(std::pair<glm::vec2, Spot>(glm::vec2(i, j), Spot(!map.hasBloc(glm::vec2(i, j)), is_safe(glm::ivec2(i, j), entities))));
+            _map.insert(std::pair<glm::vec2, Spot>(glm::vec2(i, j), Spot(!map.hasBloc(glm::vec2(i, j)), true)));
         }
     }
+    for (auto i : entities){
+        updateMapSafety(i);
+    }
 }
+
+
+
+
+
+/////////////////////////////       RUN         ////////////////////////////////////////
+
+
 
 void    AI::runToObjective(){
     std::vector<Event::Enum>     min_dir;
@@ -133,7 +185,7 @@ void    AI::runToObjective(){
     }
 
     if (min_dir.size() == 0 || glm::length(glm::vec2(_objective) - _player->getPosition()) < 1.30f){
-        min_dir = AI::vecsToDir(glm::vec2(_objective) - _player->getPosition());
+        min_dir = AI::vecToDirs(glm::vec2(_objective) - _player->getPosition());
     }
 
     for (auto i : _last_dir) {
@@ -162,6 +214,21 @@ void    AI::run_to_safety(Map const & map, std::vector<IGameEntity *> & entities
     runToObjective();
 }
 
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////      COMPUTE         /////////////////////////////
+
+
+
 void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
     (void)entities;
     updateMap(map, entities);
@@ -174,10 +241,11 @@ void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
     
 }
 
+
+///////////////////////////      DEBUG       //////////////////////////////
+
 bool    AI::shouldAppearInDebug(glm::ivec2 pos){
-    // std::cout << (_map[pos]._free && _map[pos]._safe && _map[pos]._dist > 3) << std::endl;
-    return _map[pos]._free && _map[pos]._safe && _map[pos]._dist > 0;
-    // return pos == _objective;
+    return _map[pos]._free && _map[pos]._safe ;
 }
 
 void    AI::updateDebugCubes(Map const & map, std::vector<IGameEntity *> & entities) {

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:18:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 19:08:35 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 15:03:20 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ public:
     std::chrono::time_point<std::chrono::steady_clock> const       &get_creation_time(void) const;
 
 private:
+    void            player_move_callback(void *player);
+
     std::chrono::milliseconds                               ms_before_explode;
     std::chrono::time_point<std::chrono::steady_clock>      creation_time;
 };

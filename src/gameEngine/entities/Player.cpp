@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 22:41:48 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 15:14:55 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ _bomb_count(0),
 left(false), right(false), up(false), down(false),
 _graphicalDirection(glm::vec2(0,0)){
 	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Player::bomb_explodes_callback));
+	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Player::spawn_flame_callback));
 }
 
 glm::vec2	Player::getGraphicalDirection() const
@@ -79,6 +80,11 @@ void		Player::endNewDirDown(void){
 void		Player::bomb_explodes_callback(void *bomb){
 	if (static_cast<Bomb *>(bomb)->getPlayer() == this)
 		_bomb_count--;
+}
+
+void		Player::spawn_flame_callback(void *flame){
+	if (static_cast<IGameEntity *>(flame)->getPosition() == glm::floor(getPosition()))
+		SEventManager::getInstance().raise(Event::PLAYER_DIES, this);
 }
 
 int			Player::getBombCount(void) const {

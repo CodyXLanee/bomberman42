@@ -39,12 +39,14 @@ void		CollisionsManager::computePlayerMovement(Map const & map, std::vector<IGam
 		// set the new position
 		//player->setDirection(normalize(newPos - player->getPosition()));
 
-		SEventManager::getInstance().raise(Event::PLAYER_MOVE, &newPos);
 		player->setPosition(newPos);
+		SEventManager::getInstance().raise(Event::PLAYER_MOVE, player);
 	}
 }
 
 void	CollisionsManager::compute_player(Player *p){
+	if (p->getState() == State::DYING)
+		return;
 	glm::vec2	v = p->getNewDirection();
 	if (!std::isnan(v.x) && !std::isnan(v.y)){ // glm::isnan wouldn't compile for some reason...
 		p->setState(State::MOVING);

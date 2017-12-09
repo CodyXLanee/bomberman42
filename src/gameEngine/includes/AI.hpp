@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 11:28:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 16:46:42 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/09 14:07:06 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,16 @@ class AI {
         static Event::Enum   endEvents(Event::Enum e);
         static glm::vec2     dirToVec(Event::Enum e);
         static Event::Enum    vecToDir(glm::vec2 v);
-        static std::vector<Event::Enum>  vecsToDir(glm::vec2 v);
+        static std::vector<Event::Enum>  vecToDirs(glm::vec2 v);
         
         bool    can_place_bomb(void);
         bool    is_safe(glm::ivec2 pos, std::vector<IGameEntity *> & entities);
         void    updateMapDistRec(glm::ivec2 pos, int rec);
         void    updateObjective(void);
+        
+        void    markBombRangeAsUnsafe(glm::ivec2 pos, glm::ivec2 dir, int range);
+        void    updateMapSafety(IGameEntity *entity);
+        
         void    updateMap(Map const & map, std::vector<IGameEntity *> & entities);
         void    run_to_safety(Map const & map, std::vector<IGameEntity *> & entities);
         bool    shouldAppearInDebug(glm::ivec2 pos);

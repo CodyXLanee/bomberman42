@@ -44,6 +44,8 @@ private:
     void                    humanEndNewDirRight(void *);
     void                    humanEndNewDirUp(void *);
     void                    humanEndNewDirDown(void *);
+    void                    playerDies(void *p);
+
 
     void                    humanSpawnBomb(void *);
     void                    humanEndSpawnBomb(void *);

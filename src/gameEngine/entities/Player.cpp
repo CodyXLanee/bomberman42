@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/09 18:49:46 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 11:56:58 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 Player::Player(const glm::vec2 & pos, int nb) : 
 AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::PLAYER),
 _player_number(nb),
-_max_bomb(2),
+_max_bomb(1),
+_flame_nb(1),
+_speed(1.f),
 _bomb_count(0),
 left(false), right(false), up(false), down(false),
 _graphicalDirection(glm::vec2(0,0)){
@@ -97,4 +99,18 @@ int			Player::getMaxBombNb(void) const {
 
 void		Player::addBombToCount(void) {
 	_bomb_count++;
+}
+
+void        Player::bombUp(void){
+	_max_bomb++;
+}
+void        Player::flameUp(void){
+	_flame_nb++;
+}
+void        Player::speedUp(void){
+	_speed += 0.1;
+}
+
+int         Player::getFlameNb(void) const {
+	return _flame_nb;
 }

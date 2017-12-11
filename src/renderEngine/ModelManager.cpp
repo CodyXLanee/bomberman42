@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/07 13:21:20 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 12:49:08 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ ModelManager::ModelManager() {
 	brickModel = new Model(directory + "brick.obj", false);
 	bombModel = new Model(directory + "bomb.obj", false);
 	flameModel = new Model(directory + "flame.obj", false);
-	aiDebug = new Model(directory + "aiDebug.obj", false);
+	aiDebug = new Model(directory + "bombUp.obj", false);
 }
 
 ModelManager::~ModelManager() {

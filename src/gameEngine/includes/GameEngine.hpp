@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 19:09:34 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 12:09:24 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "IGameEntity.hpp"
 # include "CollisionsManager.hpp"
 # include "BombManager.hpp"
+# include "BonusManager.hpp"
 # include "PlayerManager.hpp"
 # include "WinManager.hpp"
 # include "Map.hpp"
@@ -42,6 +43,7 @@ class GameEngine {
 		Map * 						_map;
 		Loader						_loader;
 		std::vector<IGameEntity *>	*_entityList;
+		BonusManager				*_bonusManager;
 		CollisionsManager			_collisionsManager;
 		BombManager					*_bombManager;
 		PlayerManager				*_playerManager;

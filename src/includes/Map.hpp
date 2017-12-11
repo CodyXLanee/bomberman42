@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 17:06:23 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 21:32:46 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 11:30:11 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "rapidjson/writer.h"
 # include "DestructibleBloc.hpp"
 # include "IndestructibleBloc.hpp"
+# include "SEventManager.hpp"
 # include <iostream>
 # include <fstream>
 # include <vector>

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:35 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/09 18:46:40 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 11:52:07 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <iostream>
 
 Bomb::Bomb(const glm::vec2 & pos, Player *p) : 
-AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), flameNb(2), player(p){
+AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), player(p){
     creation_time = std::chrono::steady_clock::now();
     ms_before_explode = std::chrono::milliseconds(2000);
     SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Bomb::explode_if_touched));
@@ -25,7 +25,7 @@ Bomb::~Bomb(){
 }
 
 int     Bomb::getFlameNb(void) const {
-    return flameNb;
+    return player->getFlameNb();
 }
 
 void    Bomb::update(void){

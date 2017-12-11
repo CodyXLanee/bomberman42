@@ -15,8 +15,10 @@ SRC_NAME =	\
 			gameEngine/WinManager.cpp \
 			gameEngine/CollisionsManager.cpp \
 			gameEngine/BombManager.cpp \
+			gameEngine/BonusManager.cpp \
 			gameEngine/AI.cpp \
 			gameEngine/entities/Bomb.cpp\
+			gameEngine/entities/Bonus.cpp\
 			gameEngine/entities/Flame.cpp\
 			gameEngine/entities/DestructibleBloc.cpp\
 			gameEngine/entities/IndestructibleBloc.cpp\

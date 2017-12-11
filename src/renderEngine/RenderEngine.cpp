@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 09:44:20 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 17:16:16 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
+	renderBonus(shader, entities);
 	meteo->getSun().render(shaderManager.getMainShader(), camera);
 
 	renderAiDebug(shader);
@@ -185,6 +186,34 @@ void	RenderEngine::renderBrick(Shader &shader, const std::vector<DestructibleBlo
 
 	model.draw(shader, data.size());
 		shaderManager.getMainShader().setInt("isBrick", 0);
+}
+
+static std::map< BonusType::Enum, std::pair< Model &, std::vector< glm::mat4> > > init_bonus_map(ModelManager const & modelManager){
+	std::map< BonusType::Enum, std::pair< Model &, std::vector< glm::mat4> > > map;
+
+	map.insert(std::pair<BonusType::Enum, std::pair< Model &, std::vector< glm::mat4> > >(BonusType::FLAME_UP, std::pair< Model &, std::vector< glm::mat4> >(modelManager.getModel(ModelManager::FLAME_UP), std::vector<glm::mat4>())));
+	map.insert(std::pair<BonusType::Enum, std::pair< Model &, std::vector< glm::mat4> > >(BonusType::SPEED_UP, std::pair< Model &, std::vector< glm::mat4> >(modelManager.getModel(ModelManager::SPEED_UP), std::vector<glm::mat4>())));
+	map.insert(std::pair<BonusType::Enum, std::pair< Model &, std::vector< glm::mat4> > >(BonusType::BOMB_UP, std::pair< Model &, std::vector< glm::mat4> >(modelManager.getModel(ModelManager::BOMB_UP), std::vector<glm::mat4>())));
+	return map;
+}
+
+void	RenderEngine::renderBonus(Shader &shader, std::vector<IGameEntity *> const & entities) const {
+	std::map< BonusType::Enum, std::pair< Model &, std::vector< glm::mat4> > > map = init_bonus_map(modelManager);
+	for (auto i = entities.begin(); i != entities.end(); i++ ){
+		if ((*i)->getType() == Type::BONUS){
+			for (auto &&j : map){
+				if (j.first == static_cast<Bonus *>(*i)->getBonusType()){
+					glm::mat4 transform = glm::mat4();
+					transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.5f)));
+					j.second.second.push_back(transform);
+				}
+			}
+		}
+	}
+	for (auto &&j : map){
+		j.second.first.setInstanceBuffer(j.second.second);
+		j.second.first.draw(shader, j.second.second.size());
+	}
 }
 
 static	float		bombs_animation_scale(Bomb const *b){

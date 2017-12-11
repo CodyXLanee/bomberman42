@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 12:28:14 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 12:12:47 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), 
 _entityList(new std::vector<IGameEntity *>()), 
+_bonusManager(new BonusManager(_entityList)),
 _bombManager(new BombManager(_map, _entityList)), 
 _playerManager(new PlayerManager()), 
 _gameMode(gm), 
@@ -34,6 +35,7 @@ void	GameEngine::compute() {
 	_playerManager->compute(*_map, *_entityList);
 	_collisionsManager.moves(*_map, *_entityList);
 	_bombManager->update();
+	_bonusManager->update();
 	_winManager->update(*_map, *_entityList);
 }
 

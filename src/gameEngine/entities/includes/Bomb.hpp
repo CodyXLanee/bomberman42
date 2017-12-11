@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:23 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 22:31:35 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 11:41:15 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ private:
     void                                                    explode(void);
     std::chrono::milliseconds                               ms_before_explode;
     std::chrono::time_point<std::chrono::steady_clock>      creation_time;
-    int                                                     flameNb;
     Player                                                  *player;
 };
 

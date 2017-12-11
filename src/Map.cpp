@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 17:05:57 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/29 21:42:50 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 16:42:19 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ bool						Map::removeDestructibleBlocs(glm::vec2 pos)
 	{
 		if (this->_destructibleBlocs[i].getPosition() == pos)
 		{
+			SEventManager::getInstance().raise(Event::BRICK_BREAKS, &pos);
 			this->_destructibleBlocs.erase(this->_destructibleBlocs.begin()+i);
 			return true;
 		}

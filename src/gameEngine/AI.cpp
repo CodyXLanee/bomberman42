@@ -15,7 +15,7 @@ class Spot {
         ~Spot() {};
 };
 
-AI::AI(Player *player) : _player(player), _debug_cubes(new std::vector<glm::vec2>()){
+AI::AI(Player *player) : _player(player), _debug_cubes(new std::vector<glm::vec2>()), _went_far(false){
     SEventManager & em = SEventManager::getInstance();
     em.raise(Event::AIPTR, _debug_cubes);
 }  
@@ -74,34 +74,60 @@ std::vector<Event::Enum>  AI::vecToDirs(glm::vec2 v){
     return ret;
 }
 
+
+
+
+
+
+
+
+
+
+
+bool        AI::would_be_blocked_by_bomb(void){
+    Bomb    *potential_bomb = new Bomb(glm::round(_player->getPosition()), _player);
+    glm::ivec2  tmp_pos = glm::ivec2(glm::round(_player->getPosition()));
+    updateMapSafety(potential_bomb);
+    delete potential_bomb;
+    bool ret = aimClosestSafeSpace(&tmp_pos);
+    return !ret;
+
+
+}
+
+
 bool      AI::can_place_bomb(void){
     return (_player->getBombCount() < 1);
 }
 
 
-// NOW UNUSED
-bool    AI::is_safe(glm::ivec2 pos, std::vector<IGameEntity *> & entities){
-    for (auto it : entities){
-        if (it->getType() == Type::BOMB && ((it->getPosition().x == pos.x && std::abs(it->getPosition().y - pos.y) <= static_cast<Bomb*>(it)->getFlameNb())
-        || (it->getPosition().y == pos.y && std::abs(it->getPosition().x - pos.x) <= static_cast<Bomb*>(it)->getFlameNb())))
-            return false;
-        if (it->getType() == Type::FLAME && (it->getPosition().x == pos.x && it->getPosition().y == pos.y))
-            return false;
-    }
-    return true;
-}
 
 
-
-
-
-void    AI::updateObjective(void){
+bool    AI::aimClosestSafeSpace(glm::ivec2 *obj){
+    bool ret = false;
     updateMapDistRec(glm::round(_player->getPosition()), 0);
     for (auto i : _map){
-        if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist < _map[_objective]._dist || _map[_objective]._dist == -1 || !_map[_objective]._safe)){
-            _objective = i.first;
+        if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist < _map[*obj]._dist || _map[*obj]._dist == -1 || !_map[*obj]._safe)){
+            *obj = i.first;
+            ret = true;
         }
     }
+    return ret;
+}
+
+bool    AI::aimFarthestSafeSpace(glm::ivec2 *obj){
+    bool ret = false;
+    if (!_went_far)
+        return ret;
+    _went_far = false;
+    updateMapDistRec(glm::round(_player->getPosition()), 0);
+    for (auto i : _map){
+        if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist > _map[*obj]._dist || _map[*obj]._dist == -1 || !_map[*obj]._safe)){
+            *obj = i.first;
+            ret = true;
+        }
+    }
+    return ret;
 }
 
 
@@ -186,6 +212,8 @@ void    AI::runToObjective(){
 
     if (min_dir.size() == 0 || glm::length(glm::vec2(_objective) - _player->getPosition()) < 1.30f){
         min_dir = AI::vecToDirs(glm::vec2(_objective) - _player->getPosition());
+        if (min_dir.size() == 0)
+            _went_far = true;
     }
 
     for (auto i : _last_dir) {
@@ -203,16 +231,6 @@ void    AI::runToObjective(){
     }
 }
 
-void    AI::run_to_safety(Map const & map, std::vector<IGameEntity *> & entities){
-    (void)map;
-    (void)entities;
-    // if (is_safe(glm::round(_player->getPosition()), entities)){
-    //     SEventManager::getInstance().raise(AI::endEvents(_last_dir), _player);
-    //     return;
-    // }
-    updateObjective();
-    runToObjective();
-}
 
 
 
@@ -232,12 +250,23 @@ void    AI::run_to_safety(Map const & map, std::vector<IGameEntity *> & entities
 void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
     (void)entities;
     updateMap(map, entities);
-    run_to_safety(map, entities);
-    updateDebugCubes(map, entities);
     if (can_place_bomb()){
-        SEventManager::getInstance().raise(Event::SPAWN_BOMB, _player);
+        std::cout << "I can place a bomb" << std::endl;
+        if (would_be_blocked_by_bomb()){
+            std::cout << "  NOT safe to place a bomb" << std::endl;
+            updateMap(map, entities);
+            aimFarthestSafeSpace(&_objective);
+        } else {
+            std::cout << "  It's safe to place a bomb" << std::endl;
+            updateMap(map, entities);
+            SEventManager::getInstance().raise(Event::SPAWN_BOMB, _player);
+            aimClosestSafeSpace(&_objective);
+        }
+    } else {
+        aimClosestSafeSpace(&_objective);
     }
-    // run_to_safety(map, entities);
+    updateDebugCubes(map, entities);
+    runToObjective();
     
 }
 
@@ -245,7 +274,7 @@ void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
 ///////////////////////////      DEBUG       //////////////////////////////
 
 bool    AI::shouldAppearInDebug(glm::ivec2 pos){
-    return _map[pos]._free && _map[pos]._safe ;
+    return _map[pos]._free && _map[pos]._dist > 0;
 }
 
 void    AI::updateDebugCubes(Map const & map, std::vector<IGameEntity *> & entities) {
@@ -259,10 +288,10 @@ void    AI::updateDebugCubes(Map const & map, std::vector<IGameEntity *> & entit
 
 
 
-    // for (auto i : _map) {
-    //     if (shouldAppearInDebug(i.first))
-    //         _debug_cubes->push_back(i.first);
-    // }
-    _debug_cubes->push_back(_objective);
+    for (auto i : _map) {
+        if (shouldAppearInDebug(i.first))
+            _debug_cubes->push_back(i.first);
+    }
+    // _debug_cubes->push_back(_objective);
     
 }

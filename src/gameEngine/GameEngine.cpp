@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 12:12:47 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 18:44:17 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void					GameEngine::loadMap(const char *path){
 
     		if (entityType == -2) // undestroyable bloc
     			this->_map->addIndestructibleBlocs(IndestructibleBloc(glm::vec2(j,i)));
-    		if (entityType == 0 && ((rand() % 10) < 2)) // destroyable bloc
+    		if (entityType == 0 && ((rand() % 10) < 6)) // destroyable bloc
     			this->_map->addDestructibleBlocs(DestructibleBloc(glm::vec2(j,i)));
     		// if (entityType == 0) // case vide
     		// 	break;

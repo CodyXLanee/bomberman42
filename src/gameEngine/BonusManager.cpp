@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/11 10:59:46 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 16:52:14 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 17:14:18 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void			BonusManager::update(void){
     }
     _entity_list->erase( std::remove(_entity_list->begin(), _entity_list->end(), nullptr), _entity_list->end());
     for (auto i : *_bonus_queue){
-        std::cout << "emptying queue" << std::endl;
         _entity_list->push_back(i);
     }
     _bonus_queue->clear();
@@ -60,7 +59,6 @@ void            BonusManager::brickBreaksCallback(void *p){
             b = new Bonus(*pos, BonusType::BOMB_UP);
     }
     if (b){
-        std::cout << "pushing bonus to queue" << std::endl;
         _bonus_queue->push_back(b);
     }
 }

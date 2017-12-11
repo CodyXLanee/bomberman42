@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 13:15:14 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 15:08:51 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	Model::processNode(aiNode *node, const aiScene *scene) {
 			
 		if (this->animated == true) {
 			// rootJoint = loadJoints(mesh);
-			this->meshes.push_back(new Mesh(vertices, indices, materials, color, mesh));
+			this->meshes.push_back(new Mesh(vertices, indices, materials, color, mesh, scene));
 			
 			// this->readBonesHierarchy(scene->mRootNode, rootJoint); //localBindTrans == offset matrix
 			// aiNode *rootBone = scene->mRootNode->FindNode(mesh->mBones[0]->mName.data);
@@ -152,7 +152,7 @@ void	Model::processNode(aiNode *node, const aiScene *scene) {
 		}
 		else {
 			// rootJoint = NULL;
-			this->meshes.push_back(new Mesh(vertices, indices, materials, color, mesh));
+			this->meshes.push_back(new Mesh(vertices, indices, materials, color, mesh, scene));
 		}
 	}
 

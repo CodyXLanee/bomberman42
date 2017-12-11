@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 14:11:53 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 15:26:23 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ struct Texture {
 class Mesh {
     public:
         Mesh(std::vector<Vertex>, std::vector<unsigned int>,
-                std::vector<Texture>, aiColor3D color, const aiMesh *pMesh);
+                std::vector<Texture>, aiColor3D color,
+                const aiMesh *pMesh, const aiScene *scene);
         Mesh(Mesh const & src);
         ~Mesh();
     
@@ -67,6 +68,8 @@ class Mesh {
 		void	    setupMesh();
         void        setupBones();
         void        addBoneData(unsigned int vertexID, unsigned int boneID, float weight);
+        std::vector<glm::mat4>	getTransforms(float timeInSeconds);
+        void	    readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform);
         glm::mat4	asssimpToGlmMatrix(aiMatrix4x4 ai) const;
 
         std::vector<Vertex>     vertices;
@@ -78,6 +81,7 @@ class Mesh {
         std::vector<glm::mat4> offsetMatrices;
 
         const aiMesh    *pMesh;
+        const aiScene   *scene;
 
         unsigned int            bonesNbr;
         unsigned int            vao;

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 14:11:54 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 15:31:18 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 int	Mesh::i = 0;
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-			std::vector<Texture> textures, aiColor3D color, const aiMesh *pMesh)
-: vertices(vertices), indices(indices), textures(textures), color(color), pMesh(pMesh) {
+			std::vector<Texture> textures, aiColor3D color, const aiMesh *pMesh, const aiScene *scene)
+: vertices(vertices), indices(indices), textures(textures), color(color), pMesh(pMesh), scene(scene) {
 	bonesNbr = 0;
 	offsetMatrices.resize(pMesh->mNumBones);
 	// Mesh::i++;
@@ -194,6 +194,29 @@ void	Mesh::addBoneData(unsigned int vertexID, unsigned int boneID, float weight)
 		}
 	}
 }
+
+std::vector<glm::mat4>	Mesh::getTransforms(float timeInSeconds) {
+	std::vector<glm::mat4> transforms;
+	glm::mat4 identityMat = glm::mat4(1.0f);
+	float ticksPerSecond = scene->mAnimations[0]->mTicksPerSecond;
+	float timeInTicks = timeInSeconds * ticksPerSecond;
+	float animationTime = fmod(timeInTicks, scene->mAnimations[0]->mDuration);
+
+	readNodeHierarchy(animationTime, scene->mRootNode, identityMat);
+}
+
+void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform) {
+	std::string nodeName(node->mName.data);
+	const aiAnimation *animation = scene->mAnimations[0];
+	glm::mat4 nodeTransform = assimpToGlmMatrix(node->mTransformation);
+	const aiNodeAnim *pNodeAnim = findNodeAnim(animation, nodeName);
+
+	if(pNodeAnim) {
+		aiVector3D scaling;
+		calcInterpolatedScaling(scaling, animationTime, node);
+	}
+}
+
 
 glm::mat4			Mesh::asssimpToGlmMatrix(aiMatrix4x4 ai) const {
 		glm::mat4 mat;

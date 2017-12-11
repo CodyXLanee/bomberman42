@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/11 10:47:21 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 11:54:50 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 16:46:12 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 Bonus::Bonus(const glm::vec2 & pos, BonusType::Enum type) :
 AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BONUS), _bonus_type(type) {
     SEventManager::getInstance().registerEvent(Event::PLAYER_MOVE, MEMBER_CALLBACK(Bonus::playerMoveCallback));
+    std::cout << "CREATING BOnus" << std::endl;
 }
 
 Bonus::~Bonus(){

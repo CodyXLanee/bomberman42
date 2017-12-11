@@ -6,14 +6,15 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/11 10:59:46 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 12:12:35 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 16:52:14 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BonusManager.hpp"
 
 BonusManager::BonusManager(std::vector<IGameEntity *> *entityList) :
-_entity_list(entityList){
+_entity_list(entityList),
+_bonus_queue(new std::vector<Bonus *>()){
     SEventManager::getInstance().registerEvent(Event::BRICK_BREAKS, MEMBER_CALLBACK(BonusManager::brickBreaksCallback));
     SEventManager::getInstance().registerEvent(Event::BONUS_ACTIVATE, MEMBER_CALLBACK(BonusManager::bonusActivateCallback));
 }
@@ -31,6 +32,11 @@ void			BonusManager::update(void){
         }
     }
     _entity_list->erase( std::remove(_entity_list->begin(), _entity_list->end(), nullptr), _entity_list->end());
+    for (auto i : *_bonus_queue){
+        std::cout << "emptying queue" << std::endl;
+        _entity_list->push_back(i);
+    }
+    _bonus_queue->clear();
 }
 void            BonusManager::bonusActivateCallback(void *p){
     std::pair<IGameEntity *, IGameEntity *> *pair = static_cast<std::pair<IGameEntity *, IGameEntity *> *>(p);
@@ -44,7 +50,6 @@ void            BonusManager::bonusActivateCallback(void *p){
 void            BonusManager::brickBreaksCallback(void *p){
     glm::vec2 *pos = static_cast<glm::vec2 *>(p);
     int r = (rand() % 100);
-    std::cout << r << std::endl;
     Bonus   *b = nullptr;
     if (r < 60){
         if (r < 20)
@@ -54,6 +59,8 @@ void            BonusManager::brickBreaksCallback(void *p){
         else
             b = new Bonus(*pos, BonusType::BOMB_UP);
     }
-    if (b)
-        _entity_list->push_back(b);
+    if (b){
+        std::cout << "pushing bonus to queue" << std::endl;
+        _bonus_queue->push_back(b);
+    }
 }

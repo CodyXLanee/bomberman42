@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 09:27:55 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 15:48:25 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include "Player.hpp"
 # include "Flame.hpp"
 # include "Bomb.hpp"
+# include "Bonus.hpp"
 # include <cmath>
 # include <glm/ext.hpp>
 # include <glm/gtx/vector_angle.hpp>
@@ -73,6 +74,7 @@ class RenderEngine {
 		void	renderGround(Shader &shader, Map const & map) const;
 		void	renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderBombs(Shader &shader, std::vector<IGameEntity *> const & entities) const;
+		void	renderBonus(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderFlames(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderParticles() const;
 

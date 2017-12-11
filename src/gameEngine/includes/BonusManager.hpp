@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/11 09:53:11 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 11:51:11 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 16:36:56 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class BonusManager {
         void            brickBreaksCallback(void *);
 
 		std::vector<IGameEntity *>	*_entity_list;
+		std::vector<Bonus *>		*_bonus_queue;
 };
 
 #endif

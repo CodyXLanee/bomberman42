@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:45:55 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 11:41:21 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 17:10:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ public:
     void        speedUp(void);
 
     int         getFlameNb(void) const;
+    float        getSpeedMult(void) const ;
 
     void        bomb_explodes_callback(void *bomb);
     void		spawn_flame_callback(void *flame);
@@ -55,7 +56,7 @@ private:
     int         _player_number;
     int         _max_bomb;
     int         _flame_nb;
-    float       _speed;
+    float       _speed_mult;
     int         _bomb_count;
     bool        left, right, up, down;
 	glm::vec2	_graphicalDirection;

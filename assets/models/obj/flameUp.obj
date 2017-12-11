@@ -1,6 +1,6 @@
 # Blender v2.78 (sub 0) OBJ File: 'bonus.blend'
 # www.blender.org
-mtllib bombUp.mtl
+mtllib flameUp.mtl
 o Cube
 v -0.395006 -0.311833 -0.286151
 v 0.404872 -0.321103 -0.275710

@@ -251,13 +251,10 @@ void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
     (void)entities;
     updateMap(map, entities);
     if (can_place_bomb()){
-        std::cout << "I can place a bomb" << std::endl;
         if (would_be_blocked_by_bomb()){
-            std::cout << "  NOT safe to place a bomb" << std::endl;
             updateMap(map, entities);
             aimFarthestSafeSpace(&_objective);
         } else {
-            std::cout << "  It's safe to place a bomb" << std::endl;
             updateMap(map, entities);
             SEventManager::getInstance().raise(Event::SPAWN_BOMB, _player);
             aimClosestSafeSpace(&_objective);

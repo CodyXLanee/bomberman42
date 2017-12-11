@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 16:50:12 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 14:11:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,21 @@
 
 int	Mesh::i = 0;
 
-// void Mesh::printJointMatrices(Joint *joint) {
-// 	glm::mat4 at = joint->getAnimatedTransform();
-// 	glm::mat4 inv = joint->getInverseBindTransform();
-// 	std::cout << "Bones: " << joint->index << std::endl;
-// 	std::cout << "Animated Transform" << std::endl;
-// 	std::cout << at[0][0] <<  "\t\t" << at[0][1]  <<  "\t\t" << at[0][2]  <<  "\t\t" << at[0][3] << std::endl;
-// 	std::cout << at[1][0] <<  "\t\t" << at[1][1]  <<  "\t\t" << at[1][2]  <<  "\t\t" << at[1][3] << std::endl;
-// 	std::cout << at[2][0] <<  "\t\t" << at[2][1]  <<  "\t\t" << at[2][2]  <<  "\t\t" << at[2][3] << std::endl;
-// 	std::cout << at[3][0] <<  "\t\t" << at[3][1]  <<  "\t\t" << at[3][2]  <<  "\t\t" << at[3][3] << std::endl;
-// 	std::cout << "Inverse Transform" << std::endl;
-// 	std::cout << inv[0][0] <<  "\t\t" << inv[0][1]  <<  "\t\t" << inv[0][2]  <<  "\t\t" << inv[0][3] << std::endl;
-// 	std::cout << inv[1][0] <<  "\t\t" << inv[1][1]  <<  "\t\t" << inv[1][2]  <<  "\t\t" << inv[1][3] << std::endl;
-// 	std::cout << inv[2][0] <<  "\t\t" << inv[2][1]  <<  "\t\t" << inv[2][2]  <<  "\t\t" << inv[2][3] << std::endl;
-// 	std::cout << inv[3][0] <<  "\t\t" << inv[3][1]  <<  "\t\t" << inv[3][2]  <<  "\t\t" << inv[3][3] << std::endl;
-// 	std::cout << " -------------------------------------------" << std::endl;
-// 	for (unsigned int i = 0; i < joint->children.size(); i++) {
-// 		printJointMatrices(joint->children[i]);
-// 	}
-// }
-
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-			std::vector<Texture> textures, aiColor3D color, Joint* rootJoint, unsigned int jointNbr)
-: vertices(vertices), indices(indices), textures(textures), color(color), rootJoint(rootJoint), jointNbr(jointNbr) {
+			std::vector<Texture> textures, aiColor3D color, const aiMesh *pMesh)
+: vertices(vertices), indices(indices), textures(textures), color(color), pMesh(pMesh) {
+	bonesNbr = 0;
+	offsetMatrices.resize(pMesh->mNumBones);
 	// Mesh::i++;
 	// this->rootJoint->calcInverseBindTransform(glm::mat4());
 	// printJointMatrices(&rootJoint);
 	setupMesh();
-	// for (unsigned int i = 0; i < vertices.size(); i++) {
-		// std::cout << "bonesID: " << vertices[i].bonesID[0] << " : " << vertices[i].bonesID[1] << " : " << vertices[i].bonesID[2] << std::endl;
-		// std::cout << "bonesWeigths: " << vertices[i].weigths[0] << " : " << vertices[i].weigths[1] << " : " << vertices[i].weigths[2] << std::endl;
+	setupBones();
+	// if (pMesh->mNumBones != 0) {
+	// 	for (unsigned int i = 0; i < vertices.size(); i++) {
+	// 		std::cout << "bonesID: " << vertices[i].bonesID[0] << " : " << vertices[i].bonesID[1] << " : " << vertices[i].bonesID[2] << std::endl;
+	// 		std::cout << "bonesWeigths: " << vertices[i].weigths[0] << " : " << vertices[i].weigths[1] << " : " << vertices[i].weigths[2] << std::endl;
+	// 	}
 	// }
 	return;
 }
@@ -60,7 +45,7 @@ Mesh::~Mesh() {
 	for (unsigned int i = 0; i < this->textures.size(); i++) {
 		glDeleteTextures(1, &textures[i].id);
 	}
-	delete this->rootJoint;
+	// delete this->rootJoint;
 	Mesh::i--;
 	return;
 }
@@ -92,11 +77,11 @@ void	Mesh::setupMesh() {
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
-	// glEnableVertexAttribArray(5);
-	// glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bonesID));
+	glEnableVertexAttribArray(9);
+	glVertexAttribIPointer(9, 3, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, bonesID));
 
-	// glEnableVertexAttribArray(6);
-	// glVertexAttribIPointer(4, 3, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, weigths));
+	glEnableVertexAttribArray(10);
+	glVertexAttribPointer(10, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, weigths));
 	glBindVertexArray(0);
 
 	// std::vector<glm::vec2>      data;
@@ -167,8 +152,8 @@ void	Mesh::draw(Shader &shader, bool animated, unsigned int instanceCount) {
 		glUniform3f(glGetUniformLocation(shader.getProgramID(), "materialColor"), this->color.r, this->color.g, this->color.b);
 
 	if (animated) {
-		glm::mat4 *jointTransforms = getJointTransforms();
-		glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "jointTransforms"), 16, GL_FALSE, glm::value_ptr(*jointTransforms));
+		// glm::mat4 *jointTransforms = getJointTransforms();
+		// glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "jointTransforms"), 16, GL_FALSE, glm::value_ptr(*jointTransforms));
 	}
 
 	glBindVertexArray(this->vao);
@@ -178,20 +163,62 @@ void	Mesh::draw(Shader &shader, bool animated, unsigned int instanceCount) {
 	return;
 }
 
-glm::mat4* Mesh::getJointTransforms() const {
-	glm::mat4 *jointMatrices = new glm::mat4[this->jointNbr];
-	this->addJointsToArray(this->rootJoint, jointMatrices);
+void		Mesh::setupBones() {
+	for(unsigned int i = 0; i < pMesh->mNumBones; i++) {
+		unsigned int boneIndex = 0;
+		std::string boneName(pMesh->mBones[i]->mName.data);
 
-	return jointMatrices;
-}
+		if (bonesMap.find(boneName) == bonesMap.end()) {
+			boneIndex = bonesNbr;
+			bonesNbr++;
+		} else
+			boneIndex = bonesMap[boneName];
 
-void	Mesh::addJointsToArray(Joint *head, glm::mat4* jointMatrices) const {
-	jointMatrices[head->index] = head->getFinalTransform();
-	for (unsigned int i = 0; i < head->children.size(); i++) {
-		addJointsToArray(head->children[i], jointMatrices);
+		bonesMap[boneName] = boneIndex;
+		offsetMatrices[boneIndex] = asssimpToGlmMatrix(pMesh->mBones[i]->mOffsetMatrix);
+
+		for(unsigned int j = 0; j < pMesh->mBones[i]->mNumWeights; j++) {
+			unsigned int vertexID = pMesh->mBones[i]->mWeights[j].mVertexId;
+			float weight = pMesh->mBones[i]->mWeights[j].mWeight;
+			addBoneData(vertexID, boneIndex, weight);
+		}
 	}
 }
 
-Joint *Mesh::getRootJoint() {
-	return rootJoint;
+void	Mesh::addBoneData(unsigned int vertexID, unsigned int boneID, float weight) {
+	for (unsigned int i = 0; i < 3; i++) {
+		if (vertices[vertexID].weigths[i] == 0) {
+			vertices[vertexID].bonesID[i] = boneID;
+			vertices[vertexID].weigths[i] = weight;
+			return;
+		}
+	}
 }
+
+glm::mat4			Mesh::asssimpToGlmMatrix(aiMatrix4x4 ai) const {
+		glm::mat4 mat;
+		mat[0][0] = ai.a1; mat[1][0] = ai.a2; mat[2][0] = ai.a3; mat[3][0] = ai.a4;
+		mat[0][1] = ai.b1; mat[1][1] = ai.b2; mat[2][1] = ai.b3; mat[3][1] = ai.b4;
+		mat[0][2] = ai.c1; mat[1][2] = ai.c2; mat[2][2] = ai.c3; mat[3][2] = ai.c4;
+		mat[0][3] = ai.d1; mat[1][3] = ai.d2; mat[2][3] = ai.d3; mat[3][3] = ai.d4;
+		return mat;
+}
+
+
+// glm::mat4* Mesh::getJointTransforms() const {
+// 	glm::mat4 *jointMatrices = new glm::mat4[this->jointNbr];
+// 	this->addJointsToArray(this->rootJoint, jointMatrices);
+
+// 	return jointMatrices;
+// }
+
+// void	Mesh::addJointsToArray(Joint *head, glm::mat4* jointMatrices) const {
+// 	jointMatrices[head->index] = head->getFinalTransform();
+// 	for (unsigned int i = 0; i < head->children.size(); i++) {
+// 		addJointsToArray(head->children[i], jointMatrices);
+// 	}
+// }
+
+// Joint *Mesh::getRootJoint() {
+// 	return rootJoint;
+// }

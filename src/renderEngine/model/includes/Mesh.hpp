@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 15:32:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 14:11:53 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,17 @@
 # define MESH_HPP
 
 # include <vector>
+# include <map>
 # include <glm/vec3.hpp>
 # include <glm/vec2.hpp>
 // # include <iostream>
 // # include <fstream>
 # include <assimp/Importer.hpp>
+# include <assimp/scene.h>
 # include <OpenGL/gl3.h>
 
 # include "Shader.hpp" 
-# include "Joint.hpp"
+// # include "Joint.hpp"
 
 struct Vertex {
     glm::vec3 position;
@@ -52,28 +54,32 @@ struct Texture {
 class Mesh {
     public:
         Mesh(std::vector<Vertex>, std::vector<unsigned int>,
-                std::vector<Texture>, aiColor3D color, 
-                Joint *rootJoint, unsigned int jointNbr);
+                std::vector<Texture>, aiColor3D color, const aiMesh *pMesh);
         Mesh(Mesh const & src);
         ~Mesh();
     
 
 		void	draw(Shader &shader, bool animated, unsigned int instanceCount);
         void    setInstanceBuffer(std::vector<glm::mat4> const &);
-		glm::mat4* getJointTransforms() const;
-        Joint *getRootJoint();
-        void printJointMatrices(Joint *joint);
+
     private:
         Mesh();
-		void	setupMesh();
-		void	addJointsToArray(Joint *head, glm::mat4* jointMatrices) const;
+		void	    setupMesh();
+        void        setupBones();
+        void        addBoneData(unsigned int vertexID, unsigned int boneID, float weight);
+        glm::mat4	asssimpToGlmMatrix(aiMatrix4x4 ai) const;
 
         std::vector<Vertex>     vertices;
         std::vector<unsigned int>     indices;
         std::vector<Texture>    textures;
         aiColor3D               color;
-        Joint                   *rootJoint;
-        unsigned int            jointNbr;
+
+        std::map<std::string, unsigned int> bonesMap;
+        std::vector<glm::mat4> offsetMatrices;
+
+        const aiMesh    *pMesh;
+
+        unsigned int            bonesNbr;
         unsigned int            vao;
         unsigned int            vbo;
         unsigned int            ebo;

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 13:21:02 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 13:12:24 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,17 @@ class Model {
 		std::vector<Vertex>			loadVertices(aiMesh *mesh);
 		std::vector<unsigned int>	loadIndices(aiMesh *mesh);
 		std::vector<Texture>		loadMaterials(aiMesh *mesh, const aiScene *scene);
-		Joint 						*loadJoints(aiMesh *mesh);
+		// Joint 						*loadJoints(aiMesh *mesh);
 
-		void				processNode(aiNode *node, const aiScene *scene);
-		// Mesh				processMesh(aiMesh *mesh, const aiScene *scene);
+		void						processNode(aiNode *node, const aiScene *scene);
+	
 		std::vector<Texture>		loadTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 		unsigned int				textureFromFile(const char* path, const std::string &directory);
-		void						readBonesHierarchy(aiNode*, Joint*);
-		void						readBonesHierarchy2(std::vector<glm::mat4> trs, aiNode*, glm::mat4 parentTransform);
-		std::vector<VertexBoneData>	loadBones(const aiMesh *mesh);
-		void						applyPoseToJoints(Joint *joint, glm::mat4 parentTransform);
+
+		// void						readBonesHierarchy(aiNode*, Joint*);
+		// void						readBonesHierarchy2(std::vector<glm::mat4> trs, aiNode*, glm::mat4 parentTransform);
+		// std::vector<VertexBoneData>	loadBones(const aiMesh *mesh);
+		// void						applyPoseToJoints(Joint *joint, glm::mat4 parentTransform);
 		glm::mat4					asssimpToGlmMatrix(aiMatrix4x4 ai) const;
 		void						printMat(glm::mat4 mat);
 		std::vector<glm::mat4>		getKeyFrame(aiAnimation *animation);
@@ -57,9 +58,9 @@ class Model {
 		std::string 						directory;
 		std::vector<Texture>    			texturesLoaded;
 		// std::vector<VertexBoneData> bones;
-		std::map<std::string, unsigned int> bonesMap;
-		std::vector<glm::mat4> 				bonesMatrix;
-		std::vector<glm::mat4> 				finalTransform;
+  
+		// std::vector<glm::mat4> 				bonesMatrix;
+		// std::vector<glm::mat4> 				finalTransform;
 		glm::mat4							globalInverse;
 
 		static int i;

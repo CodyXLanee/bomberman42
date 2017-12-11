@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 09:44:20 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 10:22:21 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,14 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderGround(shader, map);
 	renderWall(shader, map.getIndestructibleBlocs(), map);
 	renderBrick(shader, map.getDestructibleBlocs(), map);
-	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
 	meteo->getSun().render(shaderManager.getMainShader(), camera);
 
-	renderAiDebug(shader);
+	shaderManager.getAnimatedShader().use();
+	shaderManager.getAnimatedShader().setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	renderPlayer(shader, entities);
+
+	// renderAiDebug(shader);
 }
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {

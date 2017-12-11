@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/09 18:47:19 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/11 09:44:20 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,13 +79,13 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
 	meteo->getSun().setShaderVariables(shader);
 	
+	meteo->renderCloud(shader);
 	renderGround(shader, map);
 	renderWall(shader, map.getIndestructibleBlocs(), map);
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
 	meteo->getSun().render(shaderManager.getMainShader(), camera);
-	meteo->renderCloud(shader);
 
 	renderAiDebug(shader);
 }

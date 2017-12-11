@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 17:06:47 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 09:41:50 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ void	WeatherSystem::init() {
 	}
 
 	if (cloudy) {
-		ambiant /= 2;
-		diffuse /= 2;
-		specular /= 2;
+		ambiant *= 0.7f;
+		diffuse *= 0.7f;
+		specular *= 0.7f;
 	}
 	if (rainy) {
 		specular *= 2;

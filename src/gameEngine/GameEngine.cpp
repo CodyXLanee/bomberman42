@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 18:44:17 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/12 15:53:14 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ _winManager(nullptr) {
 GameEngine::~GameEngine() {}
 
 void	GameEngine::compute() {
+	// auto start = std::chrono::system_clock::now();
+
     if (this->_loader.getState() == -1 || !_winManager)
         return ;
 	_playerManager->compute(*_map, *_entityList);
@@ -37,6 +39,11 @@ void	GameEngine::compute() {
 	_bombManager->update();
 	_bonusManager->update();
 	_winManager->update(*_map, *_entityList);
+
+	// auto end = std::chrono::system_clock::now();
+	// auto elapsed = end - start;
+	// std::cout << "Game Engine compute time : " << elapsed.count() << std::endl;
+
 }
 
 Map const &		GameEngine::getMap() const {
@@ -89,7 +96,7 @@ void					GameEngine::loadMap(const char *path){
     			this->_map->addDestructibleBlocs(DestructibleBloc(glm::vec2(j,i)));
     		// if (entityType == 0) // case vide
     		// 	break;
-    		if (entityType >=1 && entityType <=4) {// players (1 is human, the rest is an AI)
+    		if (entityType >=1 && entityType <=5) {// players (1 is human, the rest is an AI)
     			glm::vec2		vec(static_cast<float>(j), static_cast<float>(i));
     			Player *	player = new Player(vec, entityType - 1);
 				if (player->getPlayerNb() == 0)

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 11:28:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 18:35:26 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/12 14:53:00 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class AI {
 
         static Event::Enum   endEvents(Event::Enum e);
         static glm::vec2     dirToVec(Event::Enum e);
+        static glm::ivec2     dirToIVec(Event::Enum e);
         static Event::Enum    vecToDir(glm::vec2 v);
         static std::vector<Event::Enum>  vecToDirs(glm::vec2 v);
         
@@ -55,11 +56,14 @@ class AI {
         bool    can_place_bomb(void);
         bool    is_safe(glm::ivec2 pos, std::vector<IGameEntity *> & entities);
         void    updateMapDistRec(glm::ivec2 pos, int rec);
+        void    SAFEupdateMapDistRec(glm::ivec2 pos, int rec);
+        
+        bool    lookForBonus(glm::ivec2 *obj);
         bool    aimClosestSafeSpace(glm::ivec2 *obj);
         bool    aimFarthestSafeSpace(glm::ivec2 *obj);
         
         void    markBombRangeAsUnsafe(glm::ivec2 pos, glm::ivec2 dir, int range);
-        void    updateMapSafety(IGameEntity *entity);
+        void    updateMapWithEntity(IGameEntity *entity);
         
         void    updateMap(Map const & map, std::vector<IGameEntity *> & entities);
         bool    shouldAppearInDebug(glm::ivec2 pos);
@@ -73,6 +77,7 @@ class AI {
         glm::ivec2                          _objective;
         std::vector<Event::Enum>            _last_dir;
         bool                                _went_far;
+        bool                                _going_safely;
         
 };
 

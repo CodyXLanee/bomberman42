@@ -27,7 +27,7 @@ SRC_NAME =	\
 			renderEngine/NuklearGUI.cpp \
 			renderEngine/model/Model.cpp \
 			renderEngine/model/Mesh.cpp \
-			renderEngine/model/Joint.cpp \
+			renderEngine/model/mathToos.cpp \
 			renderEngine/Shader.cpp \
 			renderEngine/Camera.cpp \
 			renderEngine/Light.cpp \

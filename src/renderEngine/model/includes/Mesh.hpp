@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 15:26:23 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 10:43:06 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <OpenGL/gl3.h>
 
 # include "Shader.hpp" 
+# include "mathTools.hpp" 
 // # include "Joint.hpp"
 
 struct Vertex {
@@ -79,6 +80,7 @@ class Mesh {
 
         std::map<std::string, unsigned int> bonesMap;
         std::vector<glm::mat4> offsetMatrices;
+        std::vector<glm::mat4> finalTransform;
 
         const aiMesh    *pMesh;
         const aiScene   *scene;

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 15:31:18 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 11:15:30 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 : vertices(vertices), indices(indices), textures(textures), color(color), pMesh(pMesh), scene(scene) {
 	bonesNbr = 0;
 	offsetMatrices.resize(pMesh->mNumBones);
+	finalTransform.resize(pMesh->mNumBones);
 	// Mesh::i++;
 	// this->rootJoint->calcInverseBindTransform(glm::mat4());
 	// printJointMatrices(&rootJoint);
@@ -196,13 +197,14 @@ void	Mesh::addBoneData(unsigned int vertexID, unsigned int boneID, float weight)
 }
 
 std::vector<glm::mat4>	Mesh::getTransforms(float timeInSeconds) {
-	std::vector<glm::mat4> transforms;
 	glm::mat4 identityMat = glm::mat4(1.0f);
 	float ticksPerSecond = scene->mAnimations[0]->mTicksPerSecond;
 	float timeInTicks = timeInSeconds * ticksPerSecond;
 	float animationTime = fmod(timeInTicks, scene->mAnimations[0]->mDuration);
 
 	readNodeHierarchy(animationTime, scene->mRootNode, identityMat);
+
+	return finalTransform;
 }
 
 void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform) {
@@ -212,19 +214,28 @@ void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm:
 	const aiNodeAnim *pNodeAnim = findNodeAnim(animation, nodeName);
 
 	if(pNodeAnim) {
-		aiVector3D scaling;
-		calcInterpolatedScaling(scaling, animationTime, node);
+		aiVector3D scaling = calcInterpolatedScaling(animationTime, pNodeAnim);
+		glm::mat4 scaleMat = initScaleTransform(scaling);
+
+		aiQuaternion rotation = calcInterpolatedRotation(animationTime, pNodeAnim);
+		glm::mat4 rotMat = glm::mat4(asssimpToGlmMatrix(rotation.getMatrix()));
+
+		aiVector3D Translation = calcInterpolatedPosition(animationTime, pNodeAnim);
+		glm::mat4 transMat = initTransationTransform(translation);
+		
+		nodeTransform = transMat * rotMat * scaleMat;
 	}
-}
 
+	glm::mat4 globalTransform = parentTransform * nodeTransform;
 
-glm::mat4			Mesh::asssimpToGlmMatrix(aiMatrix4x4 ai) const {
-		glm::mat4 mat;
-		mat[0][0] = ai.a1; mat[1][0] = ai.a2; mat[2][0] = ai.a3; mat[3][0] = ai.a4;
-		mat[0][1] = ai.b1; mat[1][1] = ai.b2; mat[2][1] = ai.b3; mat[3][1] = ai.b4;
-		mat[0][2] = ai.c1; mat[1][2] = ai.c2; mat[2][2] = ai.c3; mat[3][2] = ai.c4;
-		mat[0][3] = ai.d1; mat[1][3] = ai.d2; mat[2][3] = ai.d3; mat[3][3] = ai.d4;
-		return mat;
+	if (bonesMap.find(nodeName) != bonesMap.end()) {
+		unsigned int boneIndex = bonesMap[nodeName];
+		finalTransform[boneIndex] = globalInverse * globalTransform * offsetMatrices[boneIndex];	
+	}
+
+	for (unsigned int i = 0; i < node->mNumChildren; i++) {
+		readNodeHierarchy(animationTime, node->mChildren[i], globalTransform);
+	}
 }
 
 

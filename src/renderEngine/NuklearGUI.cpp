@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/09 17:28:48 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/12 17:55:54 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,10 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     event.registerEvent(Event::GUI_TOGGLE, MEMBER_CALLBACK(NuklearGUI::toggle));
     event.registerEvent(Event::GUI_BASE_MENU, std::pair<CallbackType, void*>(std::bind(&NuklearGUI::toggle, this, new Menu::Enum(Menu::BASE)), this));
 
+    start_time = std::chrono::steady_clock::now();
+    frames = 0;
+    fps = 0.f;
+    
     _keyToChange = nullptr;
 }
 
@@ -362,12 +366,25 @@ void    NuklearGUI::renderStartMenu() {
     nk_end(ctx);
 }
 
+void    NuklearGUI::update_fps(void){
+    std::chrono::milliseconds   dur = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_time);
+    frames++;
+    if (dur.count() > 250){
+        fps = static_cast<float>(frames) / static_cast<float>(dur.count()) * 1000.f;
+        start_time = std::chrono::steady_clock::now();
+        frames = 0;
+    }
+}
+
 void    NuklearGUI::renderDebug() {
     glm::vec3   camPos = camera.getPosition();
     glm::vec3   camFront = camera.getFront();
     std::string camPosString = std::to_string(camPos.x) + " : " + std::to_string(camPos.y) + " : " + std::to_string(camPos.z);
     std::string camFrontString = std::to_string(camFront.x) + " : " + std::to_string(camFront.y) + " : " + std::to_string(camFront.z);
     std::string camModeString = toString(camera.getMode());
+
+    update_fps();
+    std::string FPSString = std::to_string(fps);
     
     SEventManager & event = SEventManager::getInstance();
     
@@ -382,6 +399,10 @@ void    NuklearGUI::renderDebug() {
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Camera front", NK_TEXT_LEFT);
         nk_label(ctx, camFrontString.c_str(), NK_TEXT_CENTERED);
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_label(ctx, "FPS : ", NK_TEXT_LEFT);
+        nk_label(ctx, FPSString.c_str(), NK_TEXT_CENTERED);
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Camera mode", NK_TEXT_LEFT);

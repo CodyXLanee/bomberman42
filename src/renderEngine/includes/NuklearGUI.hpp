@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/08 15:11:42 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/12 17:49:03 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ class NuklearGUI
         int                     const menuWidth;
         int                     const menuHeight;
         int                     const optionHeight;
+
+        std::chrono::time_point<std::chrono::steady_clock>          start_time;
+        float                                                       fps;
+        int                                                         frames;
+        void                                                        update_fps(void);
 
         Screen::Format          screenFormat;
 

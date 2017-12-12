@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 10:43:06 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 13:10:40 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ class Mesh {
         void        addBoneData(unsigned int vertexID, unsigned int boneID, float weight);
         std::vector<glm::mat4>	getTransforms(float timeInSeconds);
         void	    readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform);
-        glm::mat4	asssimpToGlmMatrix(aiMatrix4x4 ai) const;
+        const aiNodeAnim *findNodeAnim(const aiAnimation *animation, const std::string nodeName) const;
 
         std::vector<Vertex>     vertices;
         std::vector<unsigned int>     indices;
@@ -81,6 +81,7 @@ class Mesh {
         std::map<std::string, unsigned int> bonesMap;
         std::vector<glm::mat4> offsetMatrices;
         std::vector<glm::mat4> finalTransform;
+        glm::mat4				globalInverse;
 
         const aiMesh    *pMesh;
         const aiScene   *scene;

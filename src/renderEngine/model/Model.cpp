@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 15:08:51 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 13:07:46 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ void	Model::loadModel(std::string path) {
 		std::cout << "Model loading error: " << importer.GetErrorString() << std::endl;
 		return;
 	}
-	this->globalInverse = asssimpToGlmMatrix(scene->mRootNode->mTransformation);
-	this->globalInverse = glm::inverse(this->globalInverse);
+	// this->globalInverse = asssimpToGlmMatrix(scene->mRootNode->mTransformation);
+	// this->globalInverse = glm::inverse(this->globalInverse);
 	this->directory = path.substr(0, path.find_last_of('/'));
 
 	aiNode *node = scene->mRootNode;

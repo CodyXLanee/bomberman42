@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 11:15:30 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 13:12:49 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 	bonesNbr = 0;
 	offsetMatrices.resize(pMesh->mNumBones);
 	finalTransform.resize(pMesh->mNumBones);
+
+	globalInverse = assimpToGlmMatrix(scene->mRootNode->mTransformation);
+	globalInverse = glm::inverse(globalInverse);
 	// Mesh::i++;
 	// this->rootJoint->calcInverseBindTransform(glm::mat4());
 	// printJointMatrices(&rootJoint);
@@ -176,7 +179,7 @@ void		Mesh::setupBones() {
 			boneIndex = bonesMap[boneName];
 
 		bonesMap[boneName] = boneIndex;
-		offsetMatrices[boneIndex] = asssimpToGlmMatrix(pMesh->mBones[i]->mOffsetMatrix);
+		offsetMatrices[boneIndex] = assimpToGlmMatrix(pMesh->mBones[i]->mOffsetMatrix);
 
 		for(unsigned int j = 0; j < pMesh->mBones[i]->mNumWeights; j++) {
 			unsigned int vertexID = pMesh->mBones[i]->mWeights[j].mVertexId;
@@ -215,13 +218,14 @@ void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm:
 
 	if(pNodeAnim) {
 		aiVector3D scaling = calcInterpolatedScaling(animationTime, pNodeAnim);
-		glm::mat4 scaleMat = initScaleTransform(scaling);
+		// glm::mat4 scaleMat = initScaleTransform(scaling);
+		glm::mat4 scaleMat = glm::scale(scaleMat, glm::vec3(scaling.x, scaling.y, scaling.z));
 
-		aiQuaternion rotation = calcInterpolatedRotation(animationTime, pNodeAnim);
-		glm::mat4 rotMat = glm::mat4(asssimpToGlmMatrix(rotation.getMatrix()));
+		glm::mat4 rotMat = calcInterpolatedRotation(animationTime, pNodeAnim);
 
-		aiVector3D Translation = calcInterpolatedPosition(animationTime, pNodeAnim);
-		glm::mat4 transMat = initTransationTransform(translation);
+		aiVector3D translation = calcInterpolatedPosition(animationTime, pNodeAnim);
+		// glm::mat4 transMat = initTransationTransform(translation);
+		glm::mat4 transMat = glm::translate(transMat, glm::vec3(translation.x, translation.y, translation.z));
 		
 		nodeTransform = transMat * rotMat * scaleMat;
 	}
@@ -236,6 +240,16 @@ void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm:
 	for (unsigned int i = 0; i < node->mNumChildren; i++) {
 		readNodeHierarchy(animationTime, node->mChildren[i], globalTransform);
 	}
+}
+
+const aiNodeAnim *Mesh::findNodeAnim(const aiAnimation *animation, const std::string nodeName) const {
+	for (unsigned int i = 0; i < animation->mNumChannels; i++) {
+		const aiNodeAnim *nodeAnim = animation->mChannels[i];
+		if (std::string(nodeAnim->mNodeName.data) == nodeName)
+			return nodeAnim;
+	}
+
+	return nullptr;
 }
 
 

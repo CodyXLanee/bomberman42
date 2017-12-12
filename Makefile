@@ -3,7 +3,7 @@
 NAME = bomberman
 
 CC = clang++
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -ggdb
 
 SRC_PATH = ./src/
 SRC_NAME =	\

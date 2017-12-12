@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 13:34:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 15:24:42 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,9 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 	glm::vec3 camPos = camera.getPosition();
 	Model &model = modelManager.getModel(ModelManager::PLAYER);
 	std::vector<glm::mat4> bonesTransforms = model.getBonesTransforms(0.5f);
+
+	for (uint i = 0; i < bonesTransforms.size(); i++)
+		debugMat(bonesTransforms[i]);
 
 	shader.use();
 	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);

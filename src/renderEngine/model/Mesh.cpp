@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 13:12:49 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 14:27:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,14 @@
 int	Mesh::i = 0;
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-			std::vector<Texture> textures, aiColor3D color, const aiMesh *pMesh, const aiScene *scene)
-: vertices(vertices), indices(indices), textures(textures), color(color), pMesh(pMesh), scene(scene) {
+			std::vector<Texture> textures, aiColor3D color, const aiMesh *pMesh, const aiScene *scene, std::string path)
+: vertices(vertices), indices(indices), textures(textures), color(color), pMesh(pMesh), path(path) {
+	// Assimp::Importer importer;
+	this->scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_FlipUVs);
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+		std::cout << "Model loading error: " << importer.GetErrorString() << std::endl;
+		return;
+	}
 	bonesNbr = 0;
 	offsetMatrices.resize(pMesh->mNumBones);
 	finalTransform.resize(pMesh->mNumBones);
@@ -201,12 +207,12 @@ void	Mesh::addBoneData(unsigned int vertexID, unsigned int boneID, float weight)
 
 std::vector<glm::mat4>	Mesh::getTransforms(float timeInSeconds) {
 	glm::mat4 identityMat = glm::mat4(1.0f);
+
 	float ticksPerSecond = scene->mAnimations[0]->mTicksPerSecond;
 	float timeInTicks = timeInSeconds * ticksPerSecond;
 	float animationTime = fmod(timeInTicks, scene->mAnimations[0]->mDuration);
 
 	readNodeHierarchy(animationTime, scene->mRootNode, identityMat);
-
 	return finalTransform;
 }
 
@@ -215,7 +221,6 @@ void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm:
 	const aiAnimation *animation = scene->mAnimations[0];
 	glm::mat4 nodeTransform = assimpToGlmMatrix(node->mTransformation);
 	const aiNodeAnim *pNodeAnim = findNodeAnim(animation, nodeName);
-
 	if(pNodeAnim) {
 		aiVector3D scaling = calcInterpolatedScaling(animationTime, pNodeAnim);
 		// glm::mat4 scaleMat = initScaleTransform(scaling);

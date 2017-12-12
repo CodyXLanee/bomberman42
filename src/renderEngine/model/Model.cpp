@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 13:07:46 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 14:18:31 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 
 int	Model::i = 0;
 
-Model::Model(std::string path, bool animated) {
+Model::Model(std::string path, bool animated) : path(path) {
 	this->animated = animated;
 	loadModel(path);
-	std::cout << path << std::endl;
+	// std::cout << path << std::endl;
 	// for (auto it = bonesMatrix.begin(); it != bonesMatrix.end(); it++) {
 	// 	printMat(*it);
 	// }
@@ -47,6 +47,7 @@ void	Model::loadModel(std::string path) {
 	// this->globalInverse = glm::inverse(this->globalInverse);
 	this->directory = path.substr(0, path.find_last_of('/'));
 
+	// std::cout << path << ": " << scene->HasAnimations() << std::endl;
 	aiNode *node = scene->mRootNode;
 	// for(unsigned int i = 0; i < node->mNumChildren; i++) {
 	// 	if (node->mChildren[i]->mNumMeshes != 0) {
@@ -143,7 +144,7 @@ void	Model::processNode(aiNode *node, const aiScene *scene) {
 			
 		if (this->animated == true) {
 			// rootJoint = loadJoints(mesh);
-			this->meshes.push_back(new Mesh(vertices, indices, materials, color, mesh, scene));
+			this->meshes.push_back(new Mesh(vertices, indices, materials, color, mesh, scene, path));
 			
 			// this->readBonesHierarchy(scene->mRootNode, rootJoint); //localBindTrans == offset matrix
 			// aiNode *rootBone = scene->mRootNode->FindNode(mesh->mBones[0]->mName.data);
@@ -152,7 +153,7 @@ void	Model::processNode(aiNode *node, const aiScene *scene) {
 		}
 		else {
 			// rootJoint = NULL;
-			this->meshes.push_back(new Mesh(vertices, indices, materials, color, mesh, scene));
+			this->meshes.push_back(new Mesh(vertices, indices, materials, color, mesh, scene, path));
 		}
 	}
 
@@ -381,6 +382,10 @@ void	Model::draw(Shader &shader, unsigned int instanceCount) {
 	}
 }
 
+std::vector<glm::mat4>	Model::getBonesTransforms(float timeInSeconds) const {
+	return meshes[0]->getTransforms(timeInSeconds);
+}
+
 unsigned int		Model::textureFromFile(const char* path, const std::string &directory) {
 	std::string filename = std::string(path);
 	filename = directory + "/" + filename;
@@ -416,21 +421,14 @@ unsigned int		Model::textureFromFile(const char* path, const std::string &direct
 }
 
 
-glm::mat4			Model::asssimpToGlmMatrix(aiMatrix4x4 ai) const {
-		glm::mat4 mat;
-		mat[0][0] = ai.a1; mat[1][0] = ai.a2; mat[2][0] = ai.a3; mat[3][0] = ai.a4;
-		mat[0][1] = ai.b1; mat[1][1] = ai.b2; mat[2][1] = ai.b3; mat[3][1] = ai.b4;
-		mat[0][2] = ai.c1; mat[1][2] = ai.c2; mat[2][2] = ai.c3; mat[3][2] = ai.c4;
-		mat[0][3] = ai.d1; mat[1][3] = ai.d2; mat[2][3] = ai.d3; mat[3][3] = ai.d4;
-		return mat;
-}
-
-void				Model::printMat(glm::mat4 mat) {
-		std::cout << mat[0][0] << "\t" << mat[0][1] << "\t" << mat[0][2] << "\t" << mat[0][3] << std::endl;
-		std::cout << mat[1][0] << "\t" << mat[1][1] << "\t" << mat[1][2] << "\t" << mat[1][3] << std::endl;
-		std::cout << mat[2][0] << "\t" << mat[2][1] << "\t" << mat[2][2] << "\t" << mat[2][3] << std::endl;
-		std::cout << mat[3][0] << "\t" << mat[3][1] << "\t" << mat[3][2] << "\t" << mat[3][3] << std::endl << std::endl;
-}
+// glm::mat4			Model::asssimpToGlmMatrix(aiMatrix4x4 ai) const {
+// 		glm::mat4 mat;
+// 		mat[0][0] = ai.a1; mat[1][0] = ai.a2; mat[2][0] = ai.a3; mat[3][0] = ai.a4;
+// 		mat[0][1] = ai.b1; mat[1][1] = ai.b2; mat[2][1] = ai.b3; mat[3][1] = ai.b4;
+// 		mat[0][2] = ai.c1; mat[1][2] = ai.c2; mat[2][2] = ai.c3; mat[3][2] = ai.c4;
+// 		mat[0][3] = ai.d1; mat[1][3] = ai.d2; mat[2][3] = ai.d3; mat[3][3] = ai.d4;
+// 		return mat;
+// }
 
 void				Model::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 13:12:24 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 14:11:28 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Model {
 
 		void	draw(Shader &shader, unsigned int instanceCount);
 		void	setInstanceBuffer(std::vector<glm::mat4> const &);
+		std::vector<glm::mat4>		getBonesTransforms(float timeInSeconds) const;
 		// void drawInstanced(Shader *shader);
 		
 	private:
@@ -49,10 +50,11 @@ class Model {
 		// void						readBonesHierarchy2(std::vector<glm::mat4> trs, aiNode*, glm::mat4 parentTransform);
 		// std::vector<VertexBoneData>	loadBones(const aiMesh *mesh);
 		// void						applyPoseToJoints(Joint *joint, glm::mat4 parentTransform);
-		glm::mat4					asssimpToGlmMatrix(aiMatrix4x4 ai) const;
-		void						printMat(glm::mat4 mat);
-		std::vector<glm::mat4>		getKeyFrame(aiAnimation *animation);
+		// glm::mat4					asssimpToGlmMatrix(aiMatrix4x4 ai) const;
+		// void						printMat(glm::mat4 mat);
+		// std::vector<glm::mat4>		getKeyFrame(aiAnimation *animation);
 
+		std::string							path;
 		bool								animated;
 		std::vector<Mesh*>					meshes;
 		std::string 						directory;
@@ -61,7 +63,7 @@ class Model {
   
 		// std::vector<glm::mat4> 				bonesMatrix;
 		// std::vector<glm::mat4> 				finalTransform;
-		glm::mat4							globalInverse;
+		// glm::mat4							globalInverse;
 
 		static int i;
 };

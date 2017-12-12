@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 13:10:40 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 14:20:31 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 // # include <fstream>
 # include <assimp/Importer.hpp>
 # include <assimp/scene.h>
+# include <assimp/postprocess.h>
 # include <OpenGL/gl3.h>
 
 # include "Shader.hpp" 
@@ -56,20 +57,20 @@ class Mesh {
     public:
         Mesh(std::vector<Vertex>, std::vector<unsigned int>,
                 std::vector<Texture>, aiColor3D color,
-                const aiMesh *pMesh, const aiScene *scene);
+                const aiMesh *pMesh, const aiScene *scene, std::string path);
         Mesh(Mesh const & src);
         ~Mesh();
     
 
 		void	draw(Shader &shader, bool animated, unsigned int instanceCount);
         void    setInstanceBuffer(std::vector<glm::mat4> const &);
+        std::vector<glm::mat4>	getTransforms(float timeInSeconds);
 
     private:
         Mesh();
 		void	    setupMesh();
         void        setupBones();
         void        addBoneData(unsigned int vertexID, unsigned int boneID, float weight);
-        std::vector<glm::mat4>	getTransforms(float timeInSeconds);
         void	    readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform);
         const aiNodeAnim *findNodeAnim(const aiAnimation *animation, const std::string nodeName) const;
 
@@ -85,6 +86,8 @@ class Mesh {
 
         const aiMesh    *pMesh;
         const aiScene   *scene;
+        std::string     path;
+        Assimp::Importer importer;
 
         unsigned int            bonesNbr;
         unsigned int            vao;

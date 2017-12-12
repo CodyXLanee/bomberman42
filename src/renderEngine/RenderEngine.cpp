@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 10:22:21 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/12 13:34:45 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,16 +86,23 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderBombs(shader, entities);
 	meteo->getSun().render(shaderManager.getMainShader(), camera);
 
-	shaderManager.getAnimatedShader().use();
-	shaderManager.getAnimatedShader().setVec3("viewPos", camPos.x, camPos.y, camPos.z);
-	renderPlayer(shader, entities);
+	// shaderManager.getAnimatedShader().use();
+	// shaderManager.getAnimatedShader().setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	renderPlayer(shaderManager.getAnimatedShader(), entities);
 
 	// renderAiDebug(shader);
 }
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
     std::vector<glm::mat4> data;
+	glm::vec3 camPos = camera.getPosition();
 	Model &model = modelManager.getModel(ModelManager::PLAYER);
+	std::vector<glm::mat4> bonesTransforms = model.getBonesTransforms(0.5f);
+
+	shader.use();
+	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	for (unsigned int i = 0; i < bonesTransforms.size(); ++i)
+		shader.setMat4("jointTransforms[" + std::to_string(i) + "]", bonesTransforms[i]);
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)

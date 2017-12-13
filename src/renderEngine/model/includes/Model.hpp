@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 13:58:26 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 14:11:21 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 class Model {
 	public:
-		Model(std::string path, bool animated);
+		Model(std::string path);
 		~Model();
 
 		void	draw(Shader &shader, unsigned int instanceCount);
@@ -45,7 +45,6 @@ class Model {
 		unsigned int				textureFromFile(const char* path, const std::string &directory);
 
 		std::string							path;
-		bool								animated;
 		std::vector<Mesh*>					meshes;
 		std::string 						directory;
 		std::vector<Texture>    			texturesLoaded;

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 13:58:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 14:11:53 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class Mesh {
         ~Mesh();
     
 
-		void	draw(Shader &shader, bool animated, unsigned int instanceCount);
+		void	draw(Shader &shader, unsigned int instanceCount);
         void    setInstanceBuffer(std::vector<glm::mat4> const &);
         std::vector<glm::mat4>	getTransforms(float timeInSeconds);
 

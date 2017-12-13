@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 13:58:05 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 14:11:09 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@
 
 int	Model::i = 0;
 
-Model::Model(std::string path, bool animated) : path(path) {
-	this->animated = animated;
+Model::Model(std::string path) : path(path) {
 	loadModel(path);
 	Model::i++;
 	return;
@@ -206,7 +205,7 @@ std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type, st
 
 void	Model::draw(Shader &shader, unsigned int instanceCount) {
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {
-		meshes[i]->draw(shader, this->animated, instanceCount);
+		meshes[i]->draw(shader, instanceCount);
 	}
 }
 

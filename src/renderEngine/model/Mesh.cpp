@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 13:56:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 14:12:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void	Mesh::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 	glDeleteBuffers(1, &this->ibo);
 }
 
-void	Mesh::draw(Shader &shader, bool animated, unsigned int instanceCount) {
+void	Mesh::draw(Shader &shader, unsigned int instanceCount) {
 
 	// unsigned int diffuseNbr = 1;
 	// unsigned int normalNbr = 1;
@@ -138,11 +138,6 @@ void	Mesh::draw(Shader &shader, bool animated, unsigned int instanceCount) {
 
 	if (textures.size() == 0)
 		glUniform3f(glGetUniformLocation(shader.getProgramID(), "materialColor"), this->color.r, this->color.g, this->color.b);
-
-	if (animated) {
-		// glm::mat4 *jointTransforms = getJointTransforms();
-		// glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "jointTransforms"), 16, GL_FALSE, glm::value_ptr(*jointTransforms));
-	}
 
 	glBindVertexArray(this->vao);
 	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, instanceCount);

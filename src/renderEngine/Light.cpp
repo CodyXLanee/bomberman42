@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 09:38:15 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 13:30:03 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 14:13:14 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Light::Light(glm::vec3 position, glm::vec3 color, enum type t)
 				: position(position), color(color), type(t) {
-	model = new Model("assets/models/obj/light.obj",false);
+	model = new Model("assets/models/obj/light.obj");
 	lookAt = glm::vec3(5.0f, 5.0f, 0.0f);
 }
 

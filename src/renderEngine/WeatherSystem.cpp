@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 09:41:50 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 14:13:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ WeatherSystem::~WeatherSystem() {
 }
 
 void	WeatherSystem::init() {
-	cloudModel = new Model("assets/models/obj/cloud.obj", false);
+	cloudModel = new Model("assets/models/obj/cloud.obj");
 	rain = new ParticleSystem(rainy, glm::vec3(-2.f, -2.f, 10.f), ParticleSystem::type::RAIN);
 
 	float ambiant, diffuse, specular;

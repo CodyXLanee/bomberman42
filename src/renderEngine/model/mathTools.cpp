@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/12 10:30:21 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 13:32:12 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 10:07:50 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,4 +139,26 @@ void				printMat(glm::mat4 mat) {
 		std::cout << mat[1][0] << "\t" << mat[1][1] << "\t" << mat[1][2] << "\t" << mat[1][3] << std::endl;
 		std::cout << mat[2][0] << "\t" << mat[2][1] << "\t" << mat[2][2] << "\t" << mat[2][3] << std::endl;
 		std::cout << mat[3][0] << "\t" << mat[3][1] << "\t" << mat[3][2] << "\t" << mat[3][3] << std::endl << std::endl;
+}
+
+void				debugMat(glm::mat4 mat, std::string str) {
+        float m[4][4];
+        std::string s = str;
+		m[0][0] = mat[0][0]; 
+        m[0][1] = mat[0][1]; 
+        m[0][2] = mat[0][2]; 
+        m[0][3] = mat[0][3];
+		m[1][0] = mat[1][0]; 
+        m[1][1] = mat[1][1]; 
+        m[1][2] = mat[1][2]; 
+        m[1][3] = mat[1][3];
+		m[2][0] = mat[2][0]; 
+        m[2][1] = mat[2][1]; 
+        m[2][2] = mat[2][2]; 
+        m[2][3] = mat[2][3];
+		m[3][0] = mat[3][0]; 
+        m[3][1] = mat[3][1]; 
+        m[3][2] = mat[3][2]; 
+        m[3][3] = mat[3][3];
+        
 }

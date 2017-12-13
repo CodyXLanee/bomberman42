@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 13:34:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 10:13:38 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,15 +94,18 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 }
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
+	static float fakeTime = 0.f;
     std::vector<glm::mat4> data;
 	glm::vec3 camPos = camera.getPosition();
 	Model &model = modelManager.getModel(ModelManager::PLAYER);
-	std::vector<glm::mat4> bonesTransforms = model.getBonesTransforms(0.5f);
+	std::vector<glm::mat4> bonesTransforms = model.getBonesTransforms(fakeTime);
 
 	shader.use();
 	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
-	for (unsigned int i = 0; i < bonesTransforms.size(); ++i)
+	for (unsigned int i = 0; i < bonesTransforms.size(); ++i) {
+		// debugMat(bonesTransforms[i]);
 		shader.setMat4("jointTransforms[" + std::to_string(i) + "]", bonesTransforms[i]);
+	}
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
@@ -130,6 +133,7 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 	}
     model.setInstanceBuffer(data);  
     model.draw(shader, data.size());
+	fakeTime += 0.01;
 }
 
 void	RenderEngine::renderGround(Shader &shader, Map const & map) const {

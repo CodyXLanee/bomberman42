@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 14:27:33 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 10:10:42 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,6 @@ std::vector<glm::mat4>	Mesh::getTransforms(float timeInSeconds) {
 	float ticksPerSecond = scene->mAnimations[0]->mTicksPerSecond;
 	float timeInTicks = timeInSeconds * ticksPerSecond;
 	float animationTime = fmod(timeInTicks, scene->mAnimations[0]->mDuration);
-
 	readNodeHierarchy(animationTime, scene->mRootNode, identityMat);
 	return finalTransform;
 }
@@ -224,18 +223,23 @@ void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm:
 	if(pNodeAnim) {
 		aiVector3D scaling = calcInterpolatedScaling(animationTime, pNodeAnim);
 		// glm::mat4 scaleMat = initScaleTransform(scaling);
-		glm::mat4 scaleMat = glm::scale(scaleMat, glm::vec3(scaling.x, scaling.y, scaling.z));
+		glm::mat4 scaleMat = glm::mat4(1.f);
+		scaleMat = glm::scale(scaleMat, glm::vec3(scaling.x, scaling.y, scaling.z));
 
-		glm::mat4 rotMat = calcInterpolatedRotation(animationTime, pNodeAnim);
+		glm::mat4 rotMat = glm::mat4(1.f);
+		rotMat = calcInterpolatedRotation(animationTime, pNodeAnim);
 
 		aiVector3D translation = calcInterpolatedPosition(animationTime, pNodeAnim);
 		// glm::mat4 transMat = initTransationTransform(translation);
-		glm::mat4 transMat = glm::translate(transMat, glm::vec3(translation.x, translation.y, translation.z));
-		
+		glm::mat4 transMat = glm::mat4(1.f);
+		transMat = glm::translate(transMat, glm::vec3(translation.x, translation.y, translation.z));
 		nodeTransform = transMat * rotMat * scaleMat;
 	}
 
 	glm::mat4 globalTransform = parentTransform * nodeTransform;
+	debugMat(parentTransform, "parent");
+	debugMat(nodeTransform, "node");
+	debugMat(globalTransform, "global");
 
 	if (bonesMap.find(nodeName) != bonesMap.end()) {
 		unsigned int boneIndex = bonesMap[nodeName];

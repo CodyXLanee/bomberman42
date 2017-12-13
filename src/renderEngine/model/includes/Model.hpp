@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 14:11:21 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 15:24:57 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,11 @@ class Model {
 		Model(std::string path);
 		~Model();
 
-		void	draw(Shader &shader, unsigned int instanceCount);
-		void	setInstanceBuffer(std::vector<glm::mat4> const &);
+		void	draw(Shader &shader, std::vector<glm::mat4> const & transforms);
+		// void	setInstanceBuffer(std::vector<glm::mat4> const &);
 		std::vector<glm::mat4>		getBonesTransforms(float timeInSeconds) const;
+		bool						isAnimated() const;
+		void						setAnimation(unsigned int animation, float timeInSeconds);
 		
 	private:
 		Model();
@@ -48,6 +50,7 @@ class Model {
 		std::vector<Mesh*>					meshes;
 		std::string 						directory;
 		std::vector<Texture>    			texturesLoaded;
+		bool								animated;
 
 		static int i;
 };

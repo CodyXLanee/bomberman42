@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 14:11:53 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 15:22:26 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,32 +59,35 @@ class Mesh {
         ~Mesh();
     
 
-		void	draw(Shader &shader, unsigned int instanceCount);
-        void    setInstanceBuffer(std::vector<glm::mat4> const &);
-        std::vector<glm::mat4>	getTransforms(float timeInSeconds);
+		void	                draw(Shader &shader, std::vector<glm::mat4> const & transforms);
+        void                    setInstanceBuffer(std::vector<glm::mat4> const &);
+        std::vector<glm::mat4>	getBonesTransforms(float timeInSeconds);
+        void                    setAnimation(unsigned int animation, float timeInSeconds);
 
     private:
         Mesh();
-		void	    setupMesh();
-        void        setupBones();
-        void        addBoneData(unsigned int vertexID, unsigned int boneID, float weight);
-        void	    readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform);
-        const aiNodeAnim *findNodeAnim(const aiAnimation *animation, const std::string nodeName) const;
+		void	            setupMesh();
+        void                setupBones();
+        void                addBoneData(unsigned int vertexID, unsigned int boneID, float weight);
+        void	            readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform);
+        const aiNodeAnim    *findNodeAnim(const aiAnimation *animation, const std::string nodeName) const;
 
-        std::vector<Vertex>     vertices;
-        std::vector<unsigned int>     indices;
-        std::vector<Texture>    textures;
-        aiColor3D               color;
+        std::vector<Vertex>         vertices;
+        std::vector<unsigned int>   indices;
+        std::vector<Texture>        textures;
+        aiColor3D                   color;
 
         std::map<std::string, unsigned int> bonesMap;
-        std::vector<glm::mat4> offsetMatrices;
-        std::vector<glm::mat4> finalTransform;
-        glm::mat4				globalInverse;
+        std::vector<glm::mat4>              offsetMatrices;
+        std::vector<glm::mat4>              finalTransform;
+        glm::mat4				            globalInverse;
+        float                               animationTime;
+        unsigned int                        animationSelected;
 
-        const aiMesh    *pMesh;
-        const aiScene   *scene;
-        std::string     path;
-        Assimp::Importer importer;
+        const aiMesh        *pMesh;
+        const aiScene       *scene;
+        std::string         path;
+        Assimp::Importer    importer;
 
         unsigned int            bonesNbr;
         unsigned int            vao;

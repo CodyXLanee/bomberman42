@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 14:12:33 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 15:19:08 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void	Mesh::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 	glDeleteBuffers(1, &this->ibo);
 }
 
-void	Mesh::draw(Shader &shader, unsigned int instanceCount) {
+void	Mesh::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 
 	// unsigned int diffuseNbr = 1;
 	// unsigned int normalNbr = 1;
@@ -139,8 +139,17 @@ void	Mesh::draw(Shader &shader, unsigned int instanceCount) {
 	if (textures.size() == 0)
 		glUniform3f(glGetUniformLocation(shader.getProgramID(), "materialColor"), this->color.r, this->color.g, this->color.b);
 
+	setInstanceBuffer(transforms);
+	if(scene->HasAnimations()) {
+		std::vector<glm::mat4> bonesTransforms = getBonesTransforms(animationTime);
+
+		for (unsigned int i = 0; i < bonesTransforms.size(); ++i) {
+			shader.setMat4("jointTransforms[" + std::to_string(i) + "]", bonesTransforms[i]);
+		}
+	}
+
 	glBindVertexArray(this->vao);
-	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, instanceCount);
+	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, transforms.size());
 	glBindVertexArray(0);
 	
 	return;
@@ -178,7 +187,7 @@ void	Mesh::addBoneData(unsigned int vertexID, unsigned int boneID, float weight)
 	}
 }
 
-std::vector<glm::mat4>	Mesh::getTransforms(float timeInSeconds) {
+std::vector<glm::mat4>	Mesh::getBonesTransforms(float timeInSeconds) {
 	glm::mat4 identityMat = glm::mat4(1.0f);
 
 	float ticksPerSecond = scene->mAnimations[0]->mTicksPerSecond;
@@ -232,4 +241,9 @@ const aiNodeAnim *Mesh::findNodeAnim(const aiAnimation *animation, const std::st
 	}
 
 	return nullptr;
+}
+
+void	Mesh::setAnimation(unsigned int animation, float timeInSeconds) {
+	animationTime = timeInSeconds;
+	animationSelected = animation;
 }

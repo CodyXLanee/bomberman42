@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 14:11:09 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 15:25:52 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	Model::loadModel(std::string path) {
 		std::cout << "Model loading error: " << importer.GetErrorString() << std::endl;
 		return;
 	}
+	animated = scene->HasAnimations();
 	this->directory = path.substr(0, path.find_last_of('/'));
 
 	aiNode *node = scene->mRootNode;
@@ -203,16 +204,6 @@ std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type, st
 	return textures;
 }
 
-void	Model::draw(Shader &shader, unsigned int instanceCount) {
-	for(unsigned int i = 0; i < this->meshes.size(); i++) {
-		meshes[i]->draw(shader, instanceCount);
-	}
-}
-
-std::vector<glm::mat4>	Model::getBonesTransforms(float timeInSeconds) const {
-	return meshes[0]->getTransforms(timeInSeconds);
-}
-
 unsigned int		Model::textureFromFile(const char* path, const std::string &directory) {
 	std::string filename = std::string(path);
 	filename = directory + "/" + filename;
@@ -247,8 +238,18 @@ unsigned int		Model::textureFromFile(const char* path, const std::string &direct
 	return textureID;
 }
 
-void				Model::setInstanceBuffer(std::vector<glm::mat4> const & data) {
+void	Model::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {
-		meshes[i]->setInstanceBuffer(data);
+		meshes[i]->draw(shader, transforms);
+	}
+}
+
+bool	Model::isAnimated() const {
+	return animated;
+}
+
+void	Model::setAnimation(unsigned int animation, float timeInSeconds) {
+	if (animated) {
+		meshes[0]->setAnimation(animation, timeInSeconds);
 	}
 }

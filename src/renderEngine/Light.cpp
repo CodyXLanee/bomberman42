@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 09:38:15 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 14:13:14 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 14:23:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,8 @@ void	Light::render(Shader &shader, Camera const &camera) const {
 
 	glm::vec3 camPos = camera.getPosition();
 	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
-    shader.setView();
-	model->setInstanceBuffer(data);  
-    model->draw(shader, data.size());
+    shader.setView(); 
+    model->draw(shader, data);
 }
 
 void	Light::setShaderVariables(Shader &shader) const {

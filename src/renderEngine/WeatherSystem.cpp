@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 14:13:05 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 14:23:49 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,9 +125,8 @@ void	WeatherSystem::renderCloud(Shader &shader) {
 			(*it) = glm::vec3( -5 - rX, rY + 5, 12.f);
 		}
 	}
-	
-    cloudModel->setInstanceBuffer(data);  
-    cloudModel->draw(shader, data.size());
+
+    cloudModel->draw(shader, data);
 }
 
 void	WeatherSystem::renderRain(Shader &shader) const {

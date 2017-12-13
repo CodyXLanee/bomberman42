@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 10:13:38 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 13:39:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderWall(shader, map.getIndestructibleBlocs(), map);
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderBombs(shader, entities);
+	renderScenery(shader);
 	meteo->getSun().render(shaderManager.getMainShader(), camera);
 
 	// shaderManager.getAnimatedShader().use();
@@ -93,6 +94,19 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	// renderAiDebug(shader);
 }
 
+void	RenderEngine::renderScenery(Shader &shader) const {
+	std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::SCENERY);
+
+	glm::mat4 transform = glm::mat4();
+	transform = glm::translate(transform, glm::vec3(5.f, 5.f, 0.f));
+	transform = glm::rotate(transform, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+	data.push_back(transform);
+
+	model.setInstanceBuffer(data);
+    model.draw(shader, data.size());
+}
+
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	static float fakeTime = 0.f;
     std::vector<glm::mat4> data;
@@ -100,10 +114,13 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 	Model &model = modelManager.getModel(ModelManager::PLAYER);
 	std::vector<glm::mat4> bonesTransforms = model.getBonesTransforms(fakeTime);
 
+	// for (uint i = 0; i < bonesTransforms.size(); i++)
+	// 	debugMat(bonesTransforms[i]);
+
 	shader.use();
 	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
 	for (unsigned int i = 0; i < bonesTransforms.size(); ++i) {
-		// debugMat(bonesTransforms[i]);
+		debugMat(bonesTransforms[i], "bla");
 		shader.setMat4("jointTransforms[" + std::to_string(i) + "]", bonesTransforms[i]);
 	}
 	

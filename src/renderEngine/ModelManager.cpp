@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 15:46:22 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/13 13:48:56 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 ModelManager::ModelManager() {
 	directory = "assets/models/obj/";
 	groundModel = new Model(directory + "groundTile1.obj", false);
-	wallModel = new Model(directory + "wall.obj", false);
 	playerModel = new Model(directory + "player.obj", false);
+	wallModel = new Model(directory + "wall.obj", false);
 	brickModel = new Model(directory + "brick.obj", false);
-	bombModel = new Model(directory + "bomb.obj", false);
 	flameModel = new Model(directory + "flame.obj", false);
+	bombModel = new Model(directory + "bomb.obj", false);
 	aiDebug = new Model(directory + "aiDebug.obj", false);
 	flameUpModel = new Model(directory + "flameUp.obj", false);
 	bombUpModel = new Model(directory + "bombUp.obj", false);

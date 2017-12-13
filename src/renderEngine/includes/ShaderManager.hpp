@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:17:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/07 10:00:09 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 10:20:25 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ class ShaderManager {
 		~ShaderManager();
 
 		Shader	&getMainShader() const;
+		Shader	&getAnimatedShader() const;
 		Shader	&getDirectionalShadowShader() const;
 		Shader	&getPointShadowShader() const;
 		Shader	&getFlamesShader() const;
@@ -33,6 +34,7 @@ class ShaderManager {
 		std::string	directory;
 
 		Shader		*mainShader;
+		Shader		*animatedShader;
 		Shader		*flamesShader;
 		Shader		*directionalShadowShader;
 		Shader		*pointShadowShader;

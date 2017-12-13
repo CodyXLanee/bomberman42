@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 17:16:16 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/13 13:55:15 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,17 +83,44 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderGround(shader, map);
 	renderWall(shader, map.getIndestructibleBlocs(), map);
 	renderBrick(shader, map.getDestructibleBlocs(), map);
-	renderPlayer(shader, entities);
 	renderBombs(shader, entities);
 	renderBonus(shader, entities);
 	meteo->getSun().render(shaderManager.getMainShader(), camera);
 
-	renderAiDebug(shader);
+	renderPlayer(shader, entities);
+	// renderPlayer(shaderManager.getAnimatedShader(), entities);
+
+	// renderAiDebug(shader);
 }
 
+// void	RenderEngine::renderScenery(Shader &shader) const {
+// 	std::vector<glm::mat4> data;
+// 	Model &model = modelManager.getModel(ModelManager::SCENERY);
+
+// 	glm::mat4 transform = glm::mat4();
+// 	transform = glm::translate(transform, glm::vec3(5.f, 5.f, 0.f));
+// 	transform = glm::rotate(transform, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+// 	data.push_back(transform);
+
+// 	model.setInstanceBuffer(data);
+//     model.draw(shader, data.size());
+// }
+
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
+	static float fakeTime = 0.f;
     std::vector<glm::mat4> data;
+	glm::vec3 camPos = camera.getPosition();
 	Model &model = modelManager.getModel(ModelManager::PLAYER);
+	// std::vector<glm::mat4> bonesTransforms = model.getBonesTransforms(fakeTime);
+
+	// for (uint i = 0; i < bonesTransforms.size(); i++)
+	// 	debugMat(bonesTransforms[i]);
+
+	shader.use();
+	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
+	// for (unsigned int i = 0; i < bonesTransforms.size(); ++i) {
+	// 	shader.setMat4("jointTransforms[" + std::to_string(i) + "]", bonesTransforms[i]);
+	// }
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
@@ -121,6 +148,7 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 	}
     model.setInstanceBuffer(data);  
     model.draw(shader, data.size());
+	fakeTime += 0.01;
 }
 
 void	RenderEngine::renderGround(Shader &shader, Map const & map) const {

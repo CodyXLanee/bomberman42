@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:16:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 16:39:01 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/11 10:22:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ ShaderManager::ShaderManager() {
 								 directory + "directionalLighting.glfs");
 	// mainShader = new Shader( directory + "static_model_instanced.glvs",
 	// 							 directory + "omnidirectionalLighting.glfs");
+	animatedShader = new Shader( directory + "animated_model_instanced.glvs",
+								 directory + "directionalLighting.glfs");
 	flamesShader = new Shader( directory + "flames.glvs",
 								 directory + "flames.glfs");
 	directionalShadowShader = new Shader( directory + "directionalShadowDepth.glvs",
@@ -37,6 +39,7 @@ ShaderManager::ShaderManager() {
 
 ShaderManager::~ShaderManager() {
 	delete mainShader;
+	delete animatedShader;
 	delete flamesShader;
 	delete directionalShadowShader;
 	delete pointShadowShader;
@@ -45,6 +48,10 @@ ShaderManager::~ShaderManager() {
 
 Shader	&ShaderManager::getMainShader() const {
 	return *mainShader;
+}
+
+Shader	&ShaderManager::getAnimatedShader() const {
+	return *animatedShader;
 }
 
 Shader	&ShaderManager::getDirectionalShadowShader() const {
@@ -67,6 +74,9 @@ void	ShaderManager::setCamera(glm::mat4 const & camMat) const {
 	mainShader->use();
     mainShader->setCamera(camMat);
     mainShader->setView();
+	animatedShader->use();
+    animatedShader->setCamera(camMat);
+    animatedShader->setView();
 	flamesShader->use();
     flamesShader->setCamera(camMat);
     flamesShader->setView();
@@ -78,4 +88,6 @@ void	ShaderManager::setCamera(glm::mat4 const & camMat) const {
 void	ShaderManager::setLightingValues(glm::vec3 const &values) const {
 	mainShader->use();
 	mainShader->setVec3("lightingValues", values.x, values.y, values.z);
+	animatedShader->use();
+	animatedShader->setVec3("lightingValues", values.x, values.y, values.z);
 }

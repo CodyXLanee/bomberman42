@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/12 17:55:54 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 18:10:43 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,9 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     fps = 0.f;
     
     _keyToChange = nullptr;
+
+    ctx->style.window.spacing = nk_vec2(0,0); // between items
+    ctx->style.window.padding = nk_vec2(0,0); // above / under items
 }
 
 NuklearGUI::~NuklearGUI() {
@@ -85,16 +88,17 @@ void    NuklearGUI::handleKey(void * p) {
 }
 
 void    NuklearGUI::render() {
-    if (_active_menu.empty())
-        return;
-    switch (_active_menu.top()){
-        case Menu::NONE:                break;
-        case Menu::DEBUG:               renderDebug(); break;
-        case Menu::KEY_BINDINGS:        renderKeyBindings(); break;
-        case Menu::BASE:                renderMenu(); break;
-        case Menu::OPTIONS:             renderOptions(); break;
-        case Menu::START:               renderStartMenu(); break;
-    }  
+    if (!_active_menu.empty()) {
+        switch (_active_menu.top()){
+            case Menu::NONE:                break;
+            case Menu::DEBUG:               renderDebug(); break;
+            case Menu::KEY_BINDINGS:        renderKeyBindings(); break;
+            case Menu::BASE:                renderMenu(); break;
+            case Menu::OPTIONS:             renderOptions(); break;
+            case Menu::START:               renderStartMenu(); break;
+        }  
+    }
+    renderHUD();
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
 }
 
@@ -376,6 +380,53 @@ void    NuklearGUI::update_fps(void){
     }
 }
 
+void    NuklearGUI::renderHUD() {
+
+    static struct nk_image portrait = loadImage("assets/textures/BlackBM-avatar.png", GL_RGBA);
+    static struct nk_image bomb = loadImage("assets/textures/BombupspriteHUD.png", GL_RGBA);
+    static struct nk_image skate = loadImage("assets/textures/SkatespriteHUD.png", GL_RGBA);
+    static struct nk_image fire = loadImage("assets/textures/FireupspriteHUD.png", GL_RGBA);
+
+    float   avatar_w = 150;
+    float   avatar_h = 150;
+    float   avatar_x = 50;
+    float   avatar_y = 50;
+    float   bon_w = avatar_w * 0.75f;
+    float   bon_h = avatar_h * 0.75f;
+    
+    if (nk_begin(ctx, "BONUSES", nk_rect(avatar_x + avatar_w * 0.75f, avatar_y + (avatar_h - bon_h) / 2, bon_w, bon_h),
+    NK_WINDOW_NO_SCROLLBAR)) {   
+        nk_layout_row_dynamic(ctx, bon_h/3, 3);
+        nk_spacing(ctx, 1);
+        nk_image(ctx, bomb);
+        nk_label(ctx, "1", NK_TEXT_CENTERED);
+        
+        nk_layout_row_dynamic(ctx, bon_h/3, 3); 
+        nk_spacing(ctx, 1);
+        nk_image(ctx, skate);
+        nk_label(ctx, "1", NK_TEXT_CENTERED);
+             
+        nk_layout_row_dynamic(ctx, bon_h/3, 3);  
+        nk_spacing(ctx, 1);
+        nk_image(ctx, fire);
+        nk_label(ctx, "1", NK_TEXT_CENTERED);
+    }
+    nk_end(ctx); 
+    
+    struct nk_style_item tmp = ctx->style.window.fixed_background;
+    ctx->style.window.fixed_background = nk_style_item_hide();
+    
+    if (nk_begin(ctx, "AVATAR", nk_rect(avatar_x, avatar_y, avatar_w, avatar_h),
+    NK_WINDOW_NO_SCROLLBAR)) {   
+        nk_layout_row_dynamic(ctx, avatar_h, 1);          
+        nk_image(ctx, portrait);
+    }    
+    nk_end(ctx); 
+    
+    ctx->style.window.fixed_background = tmp;
+    
+}
+
 void    NuklearGUI::renderDebug() {
     glm::vec3   camPos = camera.getPosition();
     glm::vec3   camFront = camera.getFront();
@@ -430,6 +481,26 @@ void            NuklearGUI::hover(int id) const {
         event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::HOVER));
         hovered = id;
     } 
+}
+
+struct nk_image  NuklearGUI::loadImage(std::string const filename, GLint format)
+{
+    int x,y,n;
+    GLuint tex;
+    unsigned char *data = stbi_load(filename.c_str(), &x, &y, &n, 0);
+    std::cout << filename << " " << x << " " << y << std::endl;
+    if (!data) throw std::runtime_error("NuklearGUI::loadImage() - Failed to load image: " + filename);
+
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, x, y, 0, format, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(data);
+    return nk_image_id((int)tex);
 }
 
 std::string     NuklearGUI::toString(Screen::Resolution r) const {

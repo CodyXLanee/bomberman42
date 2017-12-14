@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/12 17:49:03 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 16:17:38 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "Camera.hpp"
 # include "SEventManager.hpp"
 # include "Sdl_gl_win.hpp"
+# include <stb_image.h>
 
 
 class NuklearGUI
@@ -65,6 +66,9 @@ class NuklearGUI
         void        renderOptions();
         void        renderKeyBindings();
         void        renderStartMenu();
+        void        renderHUD();
+
+        struct nk_image         loadImage(std::string const, GLint);        
 
         std::string             toString(Screen::Resolution) const;
         std::string             toString(Screen::Mode) const;

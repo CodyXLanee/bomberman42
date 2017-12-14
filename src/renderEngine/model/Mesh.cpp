@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 15:19:08 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 10:02:09 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,10 @@ void	Mesh::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 		for (unsigned int i = 0; i < bonesTransforms.size(); ++i) {
 			shader.setMat4("jointTransforms[" + std::to_string(i) + "]", bonesTransforms[i]);
 		}
-	}
-
+		shader.setBool("isAnimated", 1);
+	} else
+		shader.setBool("isAnimated", 0);
+		
 	glBindVertexArray(this->vao);
 	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, transforms.size());
 	glBindVertexArray(0);

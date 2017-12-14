@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 15:28:56 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 10:35:22 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	meteo->getSun().render(shaderManager.getMainShader(), camera);
 
 	renderPlayer(shader, entities);
-	// renderPlayer(shaderManager.getAnimatedShader(), entities);
 
 	// renderAiDebug(shader);
 }

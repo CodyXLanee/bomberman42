@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Shader.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:44:33 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/02 22:12:13 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/12/14 09:54:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,10 @@ void    Shader::setFloat(const std::string &name, float value) const {
 }
 
 void    Shader::setInt(const std::string &name, float value) const {
+    glUniform1i(glGetUniformLocation(this->programID, name.c_str()), value);
+}
+
+void    Shader::setBool(const std::string &name, bool value) const {
     glUniform1i(glGetUniformLocation(this->programID, name.c_str()), value);
 }
 

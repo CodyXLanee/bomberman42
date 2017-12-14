@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:17:58 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 14:08:26 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 17:59:20 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 class ModelManager {
 	public:
-		enum model { PLAYER, GROUND, WALL, BRICK, BOMB, FLAME, AIDEBUG, FLAME_UP, BOMB_UP, SPEED_UP, SCENERY };
+		enum model { PLAYER, GROUND, WALL, BRICK, BOMB, FLAME, AIDEBUG, FLAME_UP, BOMB_UP, SPEED_UP, SCENERY, BALOON };
 
 
 
@@ -40,6 +40,7 @@ class ModelManager {
 		Model		*flameUpModel;
 		Model		*bombUpModel;
 		Model		*speedUpModel;
+		Model		*baloonModel;
 		Model		*sceneryModel;
 };
 

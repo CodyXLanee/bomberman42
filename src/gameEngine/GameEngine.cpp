@@ -6,11 +6,12 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 15:53:14 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 19:27:49 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Player.hpp"
+#include "Enemy.hpp"
 #include "GameEngine.hpp"
 #include "glm/ext.hpp"
 #include "IndestructibleBloc.hpp"
@@ -19,9 +20,10 @@
 GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), 
 _entityList(new std::vector<IGameEntity *>()), 
 _bonusManager(new BonusManager(_entityList)),
+_enemyManager(new EnemyManager(_entityList)),
 _bombManager(new BombManager(_map, _entityList)), 
 _playerManager(new PlayerManager()), 
-_gameMode(gm), 
+_gameMode(gm),
 _winManager(nullptr) {
 	loadMap("maps/map.json");
 
@@ -38,6 +40,7 @@ void	GameEngine::compute() {
 	_collisionsManager.moves(*_map, *_entityList);
 	_bombManager->update();
 	_bonusManager->update();
+	_enemyManager->update();
 	_winManager->update(*_map, *_entityList);
 
 	// auto end = std::chrono::system_clock::now();
@@ -127,5 +130,13 @@ void					GameEngine::loadMap(const char *path){
         return ;
     this->_map->setSunColor(glm::vec3(sun[0]["color"][0].GetFloat(), sun[0]["color"][1].GetFloat(), sun[0]["color"][2].GetFloat()));
 
+	rapidjson::Value *enemies = this->_loader.getValue("enemies");
+	if (!enemies || !enemies->IsArray())
+		return;
+	for (unsigned int i = 0 ; i < enemies[0].Size() ; i++){
+		if (!enemies[0][i].HasMember("pos") || !enemies[0][i].HasMember("type") || !enemies[0][i]["pos"].IsArray() || enemies[0][i]["pos"].Size() != 2 || !enemies[0][i]["pos"][0].IsInt() || !enemies[0][i]["pos"][1].IsInt() || !enemies[0][i]["type"].IsInt())
+			return;
+		_entityList->push_back(new Enemy(glm::vec2(enemies[0][i]["pos"][0].GetInt(), enemies[0][i]["pos"][1].GetInt()), static_cast<EnemyType::Enum>(enemies[0][i]["type"].GetInt())));
+	}
 
 }

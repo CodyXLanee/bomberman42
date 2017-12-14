@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 14:58:46 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 16:49:25 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ ModelManager::ModelManager() {
 	flameUpModel = new Model(directory + "flameUp.obj");
 	bombUpModel = new Model(directory + "bombUp.obj");
 	speedUpModel = new Model(directory + "speedUp.obj");
+
+	baloonModel = new Model(directory + "baloon.obj");
 	
 	aiDebug = new Model(directory + "aiDebug.obj");
 }
@@ -56,6 +58,7 @@ Model	&ModelManager::getModel(enum model m) const {
 		case FLAME_UP:	return *flameUpModel; break;
 		case BOMB_UP:	return *bombUpModel; break;
 		case SPEED_UP:	return *speedUpModel; break;
+		case BALOON:	return *baloonModel; break;
 		case SCENERY: return *sceneryModel; break;
 	}
 }

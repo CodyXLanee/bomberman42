@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 14:44:07 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 18:58:47 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderBombs(shader, entities);
 	renderBonus(shader, entities);
+	renderEnemies(shader, entities);
 	renderScenery(shader);
 	// meteo->getSun().render(shaderManager.getMainShader(), camera);
 
@@ -221,6 +222,33 @@ void	RenderEngine::renderBonus(Shader &shader, std::vector<IGameEntity *> const 
 		if ((*i)->getType() == Type::BONUS){
 			for (auto &&j : map){
 				if (j.first == static_cast<Bonus *>(*i)->getBonusType()){
+					glm::mat4 transform = glm::mat4();
+					transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.5f)));
+					j.second.second.push_back(transform);
+				}
+			}
+		}
+	}
+	for (auto &&j : map){
+		j.second.first.draw(shader, j.second.second);
+	}
+}
+
+static std::map< EnemyType::Enum, std::pair< Model &, std::vector< glm::mat4> > > init_enemy_map(ModelManager const & modelManager){
+	std::map< EnemyType::Enum, std::pair< Model &, std::vector< glm::mat4> > > map;
+
+	map.insert(std::pair<EnemyType::Enum, std::pair< Model &, std::vector< glm::mat4> > >(EnemyType::BALOON, std::pair< Model &, std::vector< glm::mat4> >(modelManager.getModel(ModelManager::BALOON), std::vector<glm::mat4>())));
+	// map.insert(std::pair<EnemyType::Enum, std::pair< Model &, std::vector< glm::mat4> > >(EnemyType::SPEED_UP, std::pair< Model &, std::vector< glm::mat4> >(modelManager.getModel(ModelManager::SPEED_UP), std::vector<glm::mat4>())));
+	// map.insert(std::pair<EnemyType::Enum, std::pair< Model &, std::vector< glm::mat4> > >(EnemyType::BOMB_UP, std::pair< Model &, std::vector< glm::mat4> >(modelManager.getModel(ModelManager::BOMB_UP), std::vector<glm::mat4>())));
+	return map;
+}
+
+void	RenderEngine::renderEnemies(Shader &shader, std::vector<IGameEntity *> const & entities) const {
+	std::map< EnemyType::Enum, std::pair< Model &, std::vector< glm::mat4> > > map = init_enemy_map(modelManager);
+	for (auto i = entities.begin(); i != entities.end(); i++ ){
+		if ((*i)->getType() == Type::ENEMY){
+			for (auto &&j : map){
+				if (j.first == static_cast<Enemy *>(*i)->getEnemyType()){
 					glm::mat4 transform = glm::mat4();
 					transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.5f)));
 					j.second.second.push_back(transform);

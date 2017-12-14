@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 15:29:24 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 10:53:52 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 ModelManager::ModelManager() {
 	directory = "assets/models/obj/";
 	groundModel = new Model(directory + "groundTile1.obj");
-	playerModel = new Model(directory + "player.obj");
-	// playerModel = new Model(directory + "cowboy.dae");
+	// playerModel = new Model(directory + "player.obj");
+	playerModel = new Model(directory + "cowboy.dae");
 	wallModel = new Model(directory + "wall.obj");
 	brickModel = new Model(directory + "brick.obj");
 	flameModel = new Model(directory + "flame.obj");

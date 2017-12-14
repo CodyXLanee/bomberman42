@@ -16,12 +16,15 @@ uniform bool isAnimated;
 
 void main()
 {
+    mat4 transformModelMat;
     if(isAnimated) {
         mat4 jointTransform = jointTransforms[jointIndices[0]] * weights[0];
         for (int i = 1; i < MAX_WEIGHTS; i++) {
             jointTransform += jointTransforms[jointIndices[i]] * weights[i];
         }
-        gl_Position = lightSpaceMatrix * modelsMatrix * jointTransform * vec4(position, 1.0);
+        transformModelMat = modelsMatrix * jointTransform;
     } else
-        gl_Position = lightSpaceMatrix * modelsMatrix * vec4(position, 1.0);
+        transformModelMat = modelsMatrix;
+        
+    gl_Position = lightSpaceMatrix * transformModelMat * vec4(position, 1.0);
 }

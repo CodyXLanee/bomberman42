@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:16:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 10:35:00 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 10:54:51 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 ShaderManager::ShaderManager() {
 	directory = "src/renderEngine/shaders/";
 
-	mainShader = new Shader( directory + "static_model_instanced.glvs",
+	mainShader = new Shader( directory + "main.glvs",
 								 directory + "directionalLighting.glfs");
-	// mainShader = new Shader( directory + "static_model_instanced.glvs",
+	// mainShader = new Shader( directory + "main.glvs",
 	// 							 directory + "omnidirectionalLighting.glfs");
 	flamesShader = new Shader( directory + "flames.glvs",
 								 directory + "flames.glfs");

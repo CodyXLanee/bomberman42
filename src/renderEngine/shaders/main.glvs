@@ -1,0 +1,58 @@
+#version 400
+
+const int MAX_JOINTS = 50;
+const int MAX_WEIGHTS = 3;
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normalIn;
+layout(location = 2) in vec2 textCoords;
+layout(location = 3) in vec3 tangent;
+layout(location = 4) in vec3 bitangent;
+layout(location = 5) in mat4 modelsMatrix;
+
+layout(location = 9) in ivec3 jointIndices;
+layout(location = 10) in vec3 weights;
+
+
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 lightSpaceMatrix;
+
+uniform vec3 materialColor;
+
+uniform mat4 jointTransforms[MAX_JOINTS];
+uniform bool isAnimated;
+
+out vec3 fragColor;
+out vec3 fragPos;
+out vec3 normal;
+out vec2 UV;
+out mat3 TBN;
+out vec4 fragPosLightSpace;
+
+
+void main()
+{
+    fragColor = materialColor;
+    UV = textCoords;
+
+    mat4 transformModelMat;
+    if (isAnimated) {
+        mat4 jointTransform = jointTransforms[jointIndices[0]] * weights[0];
+        for (int i = 1; i < MAX_WEIGHTS; i++) {
+            jointTransform += jointTransforms[jointIndices[i]] * weights[i];
+        }
+        transformModelMat = modelsMatrix * jointTransform;
+    } else
+        transformModelMat = modelsMatrix;
+
+    
+    fragPos = vec3(transformModelMat * vec4(position, 1.0));
+    fragPosLightSpace = lightSpaceMatrix * vec4(fragPos, 1.0);
+    normal = mat3(viewMatrix * transformModelMat) * normalIn;
+    vec3 T = normalize(vec3(transformModelMat * vec4(tangent,   0.0)));
+    vec3 B = normalize(vec3(transformModelMat * vec4(bitangent, 0.0)));
+    vec3 N = normalize(vec3(transformModelMat * vec4(normal,    0.0)));
+    TBN = mat3(T, B, N);
+    gl_Position = (projectionMatrix * viewMatrix * transformModelMat) * vec4(position, 1.0);
+}

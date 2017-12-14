@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/11 09:41:50 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 12:00:11 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 WeatherSystem::WeatherSystem() {
 	dayTime = MIDDAY;
-	cloudy = true;
-	rainy = true;
+	cloudy = false;
+	rainy = false;
 
 	init();
 	initClouds();
@@ -35,7 +35,7 @@ WeatherSystem::~WeatherSystem() {
 }
 
 void	WeatherSystem::init() {
-	cloudModel = new Model("assets/models/obj/cloud.obj", false);
+	cloudModel = new Model("assets/models/obj/cloud.obj");
 	rain = new ParticleSystem(rainy, glm::vec3(-2.f, -2.f, 10.f), ParticleSystem::type::RAIN);
 
 	float ambiant, diffuse, specular;
@@ -125,9 +125,8 @@ void	WeatherSystem::renderCloud(Shader &shader) {
 			(*it) = glm::vec3( -5 - rX, rY + 5, 12.f);
 		}
 	}
-	
-    cloudModel->setInstanceBuffer(data);  
-    cloudModel->draw(shader, data.size());
+
+    cloudModel->draw(shader, data);
 }
 
 void	WeatherSystem::renderRain(Shader &shader) const {

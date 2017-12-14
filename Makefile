@@ -3,7 +3,7 @@
 NAME = bomberman
 
 CC = clang++
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -ggdb
 
 SRC_PATH = ./src/
 SRC_NAME =	\
@@ -29,7 +29,7 @@ SRC_NAME =	\
 			renderEngine/NuklearGUI.cpp \
 			renderEngine/model/Model.cpp \
 			renderEngine/model/Mesh.cpp \
-			renderEngine/model/Joint.cpp \
+			renderEngine/model/mathTools.cpp \
 			renderEngine/Shader.cpp \
 			renderEngine/Camera.cpp \
 			renderEngine/Light.cpp \

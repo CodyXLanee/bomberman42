@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 09:38:15 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 13:30:03 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 14:23:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Light::Light(glm::vec3 position, glm::vec3 color, enum type t)
 				: position(position), color(color), type(t) {
-	model = new Model("assets/models/obj/light.obj",false);
+	model = new Model("assets/models/obj/light.obj");
 	lookAt = glm::vec3(5.0f, 5.0f, 0.0f);
 }
 
@@ -73,9 +73,8 @@ void	Light::render(Shader &shader, Camera const &camera) const {
 
 	glm::vec3 camPos = camera.getPosition();
 	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
-    shader.setView();
-	model->setInstanceBuffer(data);  
-    model->draw(shader, data.size());
+    shader.setView(); 
+    model->draw(shader, data);
 }
 
 void	Light::setShaderVariables(Shader &shader) const {

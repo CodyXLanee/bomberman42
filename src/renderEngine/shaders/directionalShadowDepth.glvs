@@ -1,10 +1,30 @@
 #version 400
+
+const int MAX_JOINTS = 50;
+const int MAX_WEIGHTS = 3;
+
 layout (location = 0) in vec3 position;
 layout (location = 5) in mat4 modelsMatrix;
 
+layout(location = 9) in ivec3 jointIndices;
+layout(location = 10) in vec3 weights;
+
 uniform mat4 lightSpaceMatrix;
+
+uniform mat4 jointTransforms[MAX_JOINTS];
+uniform bool isAnimated;
 
 void main()
 {
-    gl_Position = lightSpaceMatrix * modelsMatrix * vec4(position, 1.0);
+    mat4 transformModelMat;
+    if(isAnimated) {
+        mat4 jointTransform = jointTransforms[jointIndices[0]] * weights[0];
+        for (int i = 1; i < MAX_WEIGHTS; i++) {
+            jointTransform += jointTransforms[jointIndices[i]] * weights[i];
+        }
+        transformModelMat = modelsMatrix * jointTransform;
+    } else
+        transformModelMat = modelsMatrix;
+        
+    gl_Position = lightSpaceMatrix * transformModelMat * vec4(position, 1.0);
 }

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 15:32:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/13 15:22:26 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,16 @@
 # define MESH_HPP
 
 # include <vector>
+# include <map>
 # include <glm/vec3.hpp>
 # include <glm/vec2.hpp>
-// # include <iostream>
-// # include <fstream>
 # include <assimp/Importer.hpp>
+# include <assimp/scene.h>
+# include <assimp/postprocess.h>
 # include <OpenGL/gl3.h>
 
 # include "Shader.hpp" 
-# include "Joint.hpp"
+# include "mathTools.hpp" 
 
 struct Vertex {
     glm::vec3 position;
@@ -52,28 +53,43 @@ struct Texture {
 class Mesh {
     public:
         Mesh(std::vector<Vertex>, std::vector<unsigned int>,
-                std::vector<Texture>, aiColor3D color, 
-                Joint *rootJoint, unsigned int jointNbr);
+                std::vector<Texture>, aiColor3D color,
+                const aiMesh *pMesh, const aiScene *scene, std::string path);
         Mesh(Mesh const & src);
         ~Mesh();
     
 
-		void	draw(Shader &shader, bool animated, unsigned int instanceCount);
-        void    setInstanceBuffer(std::vector<glm::mat4> const &);
-		glm::mat4* getJointTransforms() const;
-        Joint *getRootJoint();
-        void printJointMatrices(Joint *joint);
+		void	                draw(Shader &shader, std::vector<glm::mat4> const & transforms);
+        void                    setInstanceBuffer(std::vector<glm::mat4> const &);
+        std::vector<glm::mat4>	getBonesTransforms(float timeInSeconds);
+        void                    setAnimation(unsigned int animation, float timeInSeconds);
+
     private:
         Mesh();
-		void	setupMesh();
-		void	addJointsToArray(Joint *head, glm::mat4* jointMatrices) const;
+		void	            setupMesh();
+        void                setupBones();
+        void                addBoneData(unsigned int vertexID, unsigned int boneID, float weight);
+        void	            readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform);
+        const aiNodeAnim    *findNodeAnim(const aiAnimation *animation, const std::string nodeName) const;
 
-        std::vector<Vertex>     vertices;
-        std::vector<unsigned int>     indices;
-        std::vector<Texture>    textures;
-        aiColor3D               color;
-        Joint                   *rootJoint;
-        unsigned int            jointNbr;
+        std::vector<Vertex>         vertices;
+        std::vector<unsigned int>   indices;
+        std::vector<Texture>        textures;
+        aiColor3D                   color;
+
+        std::map<std::string, unsigned int> bonesMap;
+        std::vector<glm::mat4>              offsetMatrices;
+        std::vector<glm::mat4>              finalTransform;
+        glm::mat4				            globalInverse;
+        float                               animationTime;
+        unsigned int                        animationSelected;
+
+        const aiMesh        *pMesh;
+        const aiScene       *scene;
+        std::string         path;
+        Assimp::Importer    importer;
+
+        unsigned int            bonesNbr;
         unsigned int            vao;
         unsigned int            vbo;
         unsigned int            ebo;

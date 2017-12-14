@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 15:57:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 14:40:02 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 
 int	Model::i = 0;
 
-Model::Model(std::string path, bool animated) {
-	this->animated = animated;
+Model::Model(std::string path) : path(path) {
+	hasBumpMap = false;
 	loadModel(path);
 	Model::i++;
 	return;
@@ -31,84 +31,6 @@ Model::~Model() {
 	return;
 }
 
-std::vector<glm::mat4>  Model::getKeyFrame(aiAnimation *animation) {
-	std::vector<glm::mat4> boneMatrices;
-	boneMatrices.resize(this->bonesMap.size());
-
-	for (unsigned int i = 0; i < animation->mNumChannels; i++) {
-	
-		aiVector3D ScalingKey = animation->mChannels[i]->mScalingKeys[0].mValue;
-		aiQuaternion RotationKey = animation->mChannels[i]->mRotationKeys[0].mValue;
-		aiVector3D PositionKey = animation->mChannels[i]->mPositionKeys[0].mValue;
-
-		glm::vec3 s(ScalingKey.x, ScalingKey.y, ScalingKey.z);
-		glm::quat q(RotationKey.w, RotationKey.x, RotationKey.y, RotationKey.z);
-		glm::vec3 t(PositionKey.x, PositionKey.y, PositionKey.z);
-
-		glm::mat4 S = glm::scale(glm::mat4(1), s);
-		glm::mat4 R = glm::mat4_cast(q);
-		glm::mat4 T = glm::translate(glm::mat4(1), t);
-
-		glm::mat4 M = T * R * S;
-
-		boneMatrices[bonesMap[animation->mChannels[i]->mNodeName.data]] = M;	
-	}
-	return boneMatrices;
-}
-
-void	setTransforms(std::vector<glm::mat4> matrices, Joint *bone) {
-	// glm::mat4 mat = bone->getAnimatedTransform();
-	bone->setAnimatedTransform(matrices[bone->index]);
-	for (unsigned int i = 0; i < bone->children.size(); i++) {
-		setTransforms(matrices, bone->children[i]);
-	}
-}
-
-void	Model::readBonesHierarchy2(std::vector<glm::mat4> trs, aiNode* node, glm::mat4 parentTransform) {
-	std::string nodeName(node->mName.data);
-	// const aiNodeAnim* nodeAnim = FindNodeAnim(animation, nodeName);
-
-	// glm::mat4 nodeTransform = trs[BonesMap[nodeName]];
-	glm::mat4 globalTransformation = parentTransform * trs[bonesMap[nodeName]];
-	finalTransform[bonesMap[nodeName]] = globalInverse * globalTransformation *
-											bonesMatrix[bonesMap[nodeName]];
-	for (unsigned int i = 0; i < node->mNumChildren; i++) {
-		readBonesHierarchy2(trs, node->mChildren[i], globalTransformation);
-	}
-}
-
-void	Model::processNode(aiNode *node, const aiScene *scene) {
-	// std::cout << "PROCESS NODE: "<< node->mNumChildren << " : " << this->directory << std::endl;
-	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
-		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		std::vector<Vertex>	vertices = loadVertices(mesh);
-		std::vector<unsigned int> indices = loadIndices(mesh);
-		std::vector<Texture> materials = loadMaterials(mesh, scene);
-		aiColor3D color(0.f,0.f,0.f);
-		if (materials.size() == 0)
-			scene->mMaterials[mesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_DIFFUSE,color);
-		Joint *rootJoint;
-			
-		if (this->animated == true) {
-			rootJoint = loadJoints(mesh);
-			this->meshes.push_back(new Mesh(vertices, indices, materials, color, rootJoint, mesh->mNumBones));
-			
-			this->readBonesHierarchy(scene->mRootNode, rootJoint); //localBindTrans == offset matrix
-			aiNode *rootBone = scene->mRootNode->FindNode(mesh->mBones[0]->mName.data);
-			this->readBonesHierarchy2(getKeyFrame(scene->mAnimations[0]), rootBone, glm::mat4(1.0));
-			setTransforms(finalTransform, meshes[0]->getRootJoint()); //animatedTra = TRS matrix
-		}
-		else {
-			rootJoint = NULL;
-			this->meshes.push_back(new Mesh(vertices, indices, materials, color, rootJoint, mesh->mNumBones));
-		}
-	}
-
-	for (unsigned int i = 0; i < node->mNumChildren; i++) {
-		processNode(node->mChildren[i], scene);
-	}
-}
-
 void	Model::loadModel(std::string path) {
 	Assimp::Importer importer;
 	const aiScene *scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -117,80 +39,30 @@ void	Model::loadModel(std::string path) {
 		std::cout << "Model loading error: " << importer.GetErrorString() << std::endl;
 		return;
 	}
-	this->globalInverse = asssimpToGlmMatrix(scene->mRootNode->mTransformation);
-	this->globalInverse = glm::inverse(this->globalInverse);
+	animated = scene->HasAnimations();
 	this->directory = path.substr(0, path.find_last_of('/'));
 
 	aiNode *node = scene->mRootNode;
-	// for(unsigned int i = 0; i < node->mNumChildren; i++) {
-	// 	if (node->mChildren[i]->mNumMeshes != 0) {
-	// 		node = node->mChildren[i];
-	// 		break;
-	// 	}
-	// }
 	
 	processNode(node, scene);
-	// aiMesh *mesh = scene->mMeshes[node->mMeshes[0]];
-	// std::vector<Vertex>	vertices = loadVertices(mesh);
-	// std::vector<unsigned int> indices = loadIndices(mesh);
-	// std::vector<Texture> materials = loadMaterials(mesh, scene);
-	// Joint *rootJoint;
-	// 			// std::cout << path << std::endl;
-	// if (this->animated == true) {
-	// 	rootJoint = loadJoints(mesh);
-	// 	this->meshes.push_back(Mesh(vertices, indices, materials, rootJoint, mesh->mNumBones));
-		
-	// 	this->readBonesHierarchy(scene->mRootNode, rootJoint); //localBindTrans == offset matrix
-	// 	aiNode *rootBone = scene->mRootNode->FindNode(mesh->mBones[0]->mName.data);
-	// 	this->readBonesHierarchy2(getKeyFrame(scene->mAnimations[0]), rootBone, glm::mat4(1.0));
-	// 	setTransforms(finalTransform, meshes[0].getRootJoint()); //animatedTra = TRS matrix
-	// }
-	// else {
-	// 	rootJoint = NULL;
-	// 	this->meshes.push_back(Mesh(vertices, indices, materials, rootJoint, mesh->mNumBones));
-	// }
-
-
-
-	// applyPoseToJoints(rootJoint, glm::mat4(1.0)); //must set finalTransform
-
-	// printMat());
 }
 
-void	Model::applyPoseToJoints(Joint *joint, glm::mat4 parentTransform) {
-	// glm::mat4 currentLocalTransform = bonesMatrix[joint->index];
-	glm::mat4 nodeTransform = joint->getAnimatedTransform();
-	glm::mat4 globalTransform = parentTransform * nodeTransform;
-	glm::mat4 finalTransform = this->globalInverse * globalTransform * joint->getInverseBindTransform();
-	
-	joint->setFinalTransform(finalTransform);
+void	Model::processNode(aiNode *node, const aiScene *scene) {
 
-	for (unsigned int i = 0; i < joint->children.size(); i++) {
-		applyPoseToJoints(joint->children[i], globalTransform);
+	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
+		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+		std::vector<Vertex>	vertices = loadVertices(mesh);
+		std::vector<unsigned int> indices = loadIndices(mesh);
+		std::vector<Texture> materials = loadMaterials(mesh, scene);
+		aiColor3D color(0.f,0.f,0.f);
+		if (materials.size() == 0)
+			scene->mMaterials[mesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_DIFFUSE,color);
+
+		this->meshes.push_back(new Mesh(vertices, indices, materials, color, mesh, scene, path));
 	}
 
-}
-
-void	Model::readBonesHierarchy(aiNode *node, Joint *joint) {
-
-	aiNode *nodeFound = node->FindNode(joint->name.c_str());
-	if (nodeFound) {
-		for (unsigned int i = 0; i < nodeFound->mNumChildren; i++) {
-			unsigned int index = bonesMap[nodeFound->mChildren[i]->mName.data];
-			Joint *newChild = new Joint(index,
-							nodeFound->mChildren[i]->mName.data,
-							bonesMatrix[index]);
-	// glm::mat4 mat = asssimpToGlmMatrix(nodeFound->mTransformation);
-	// std::cout << "blba" << std::endl;
-	// std::cout << mat[0][0] <<  "\t" << mat[0][1]  <<  "\t" << mat[0][2]  <<  "\t" << mat[0][3] << std::endl;
-	// std::cout << mat[1][0] <<  "\t" << mat[1][1]  <<  "\t" << mat[1][2]  <<  "\t" << mat[1][3] << std::endl;
-	// std::cout << mat[2][0] <<  "\t" << mat[2][1]  <<  "\t" << mat[2][2]  <<  "\t" << mat[2][3] << std::endl;
-	// std::cout << mat[3][0] <<  "\t" << mat[3][1]  <<  "\t" << mat[3][2]  <<  "\t" << mat[3][3] << std::endl;
-			// newChild.setAnimatedTransform(bonesMatrix[index]);
-			// joint->setInverseBindTransform(node->mTransformation);
-			joint->addChild(newChild);
-			this->readBonesHierarchy(node, newChild);
-		}
+	for (unsigned int i = 0; i < node->mNumChildren; i++) {
+		processNode(node->mChildren[i], scene);
 	}
 }
 
@@ -307,44 +179,6 @@ std::vector<Texture>	Model::loadMaterials(aiMesh *mesh, const aiScene *scene) {
 	return textures;
 }
 
-Joint	*Model::loadJoints(aiMesh *mesh) {
-	// std::cout << "A"  << std::endl;
-	aiBone *rootBone = mesh->mBones[0];
-	
-	// glm::mat4 mat = asssimpToGlmMatrix(rootBone->mOffsetMatrix);
-	Joint *rootJoint = new Joint(0, rootBone->mName.C_Str(), glm::mat4(1.0));
-
-	// std::cout << "B"  << std::endl;
-	std::vector<int> boneIDs;
-	std::vector<float> boneWeights;
-	std::vector<glm::mat4> boneMatrices;
-	
-	boneIDs.resize(mesh->mNumVertices * 3);
-	boneWeights.resize(mesh->mNumVertices * 3);
-	boneMatrices.resize(mesh->mNumBones);
-	finalTransform.resize(mesh->mNumBones);
-	for (unsigned int i = 0; i < mesh->mNumBones; i++) {
-		aiBone *bone = mesh->mBones[i];
-		this->bonesMap[bone->mName.data] = i;
-		boneMatrices[i] = asssimpToGlmMatrix(bone->mOffsetMatrix);
-		for (unsigned int j = 0; j < bone->mNumWeights; j++) {
-			aiVertexWeight weight = bone->mWeights[j];
-			unsigned int vertexStart = weight.mVertexId * 3;
-			for (unsigned int k = 0; k < 3; k++) {
-				if (boneWeights[vertexStart + k] == 0) {
-					boneWeights[vertexStart + k] = weight.mWeight;
-					boneIDs[vertexStart + k] = i;
-					break;
-				}
-			}
-		}
-	}
-
-	this->bonesMatrix = boneMatrices;
-	return rootJoint;
-}
-
-
 std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
 	std::vector<Texture> textures;
 	for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
@@ -366,15 +200,11 @@ std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type, st
 			texture.path = str;
 			textures.push_back(texture);
 			texturesLoaded.push_back(texture);
+			if (type == aiTextureType_HEIGHT)
+				hasBumpMap = true;
 		}
 	}
 	return textures;
-}
-
-void	Model::draw(Shader &shader, unsigned int instanceCount) {
-	for(unsigned int i = 0; i < this->meshes.size(); i++) {
-		meshes[i]->draw(shader, this->animated, instanceCount);
-	}
 }
 
 unsigned int		Model::textureFromFile(const char* path, const std::string &directory) {
@@ -411,25 +241,21 @@ unsigned int		Model::textureFromFile(const char* path, const std::string &direct
 	return textureID;
 }
 
-
-glm::mat4			Model::asssimpToGlmMatrix(aiMatrix4x4 ai) const {
-		glm::mat4 mat;
-		mat[0][0] = ai.a1; mat[1][0] = ai.a2; mat[2][0] = ai.a3; mat[3][0] = ai.a4;
-		mat[0][1] = ai.b1; mat[1][1] = ai.b2; mat[2][1] = ai.b3; mat[3][1] = ai.b4;
-		mat[0][2] = ai.c1; mat[1][2] = ai.c2; mat[2][2] = ai.c3; mat[3][2] = ai.c4;
-		mat[0][3] = ai.d1; mat[1][3] = ai.d2; mat[2][3] = ai.d3; mat[3][3] = ai.d4;
-		return mat;
-}
-
-void				Model::printMat(glm::mat4 mat) {
-		std::cout << mat[0][0] << mat[0][1] << mat[0][2] << mat[0][3] << std::endl;
-		std::cout << mat[1][0] << mat[1][1] << mat[1][2] << mat[1][3] << std::endl;
-		std::cout << mat[2][0] << mat[2][1] << mat[2][2] << mat[2][3] << std::endl;
-		std::cout << mat[3][0] << mat[3][1] << mat[3][2] << mat[3][3] << std::endl;
-}
-
-void				Model::setInstanceBuffer(std::vector<glm::mat4> const & data) {
+void	Model::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
+		// meshes[0]->draw(shader, transforms);
+	shader.use();
+	shader.setInt("hasBumpMap", hasBumpMap);
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {
-		meshes[i]->setInstanceBuffer(data);
+		meshes[i]->draw(shader, transforms);
+	}
+}
+
+bool	Model::isAnimated() const {
+	return animated;
+}
+
+void	Model::setAnimation(unsigned int animation, float timeInSeconds) {
+	if (animated) {
+		meshes[0]->setAnimation(animation, timeInSeconds);
 	}
 }

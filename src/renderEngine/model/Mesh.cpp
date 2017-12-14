@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 16:50:12 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 14:32:34 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,37 +14,29 @@
 
 int	Mesh::i = 0;
 
-// void Mesh::printJointMatrices(Joint *joint) {
-// 	glm::mat4 at = joint->getAnimatedTransform();
-// 	glm::mat4 inv = joint->getInverseBindTransform();
-// 	std::cout << "Bones: " << joint->index << std::endl;
-// 	std::cout << "Animated Transform" << std::endl;
-// 	std::cout << at[0][0] <<  "\t\t" << at[0][1]  <<  "\t\t" << at[0][2]  <<  "\t\t" << at[0][3] << std::endl;
-// 	std::cout << at[1][0] <<  "\t\t" << at[1][1]  <<  "\t\t" << at[1][2]  <<  "\t\t" << at[1][3] << std::endl;
-// 	std::cout << at[2][0] <<  "\t\t" << at[2][1]  <<  "\t\t" << at[2][2]  <<  "\t\t" << at[2][3] << std::endl;
-// 	std::cout << at[3][0] <<  "\t\t" << at[3][1]  <<  "\t\t" << at[3][2]  <<  "\t\t" << at[3][3] << std::endl;
-// 	std::cout << "Inverse Transform" << std::endl;
-// 	std::cout << inv[0][0] <<  "\t\t" << inv[0][1]  <<  "\t\t" << inv[0][2]  <<  "\t\t" << inv[0][3] << std::endl;
-// 	std::cout << inv[1][0] <<  "\t\t" << inv[1][1]  <<  "\t\t" << inv[1][2]  <<  "\t\t" << inv[1][3] << std::endl;
-// 	std::cout << inv[2][0] <<  "\t\t" << inv[2][1]  <<  "\t\t" << inv[2][2]  <<  "\t\t" << inv[2][3] << std::endl;
-// 	std::cout << inv[3][0] <<  "\t\t" << inv[3][1]  <<  "\t\t" << inv[3][2]  <<  "\t\t" << inv[3][3] << std::endl;
-// 	std::cout << " -------------------------------------------" << std::endl;
-// 	for (unsigned int i = 0; i < joint->children.size(); i++) {
-// 		printJointMatrices(joint->children[i]);
-// 	}
-// }
-
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-			std::vector<Texture> textures, aiColor3D color, Joint* rootJoint, unsigned int jointNbr)
-: vertices(vertices), indices(indices), textures(textures), color(color), rootJoint(rootJoint), jointNbr(jointNbr) {
-	// Mesh::i++;
-	// this->rootJoint->calcInverseBindTransform(glm::mat4());
-	// printJointMatrices(&rootJoint);
+			std::vector<Texture> textures, aiColor3D color, const aiMesh *pMesh, const aiScene *scene, std::string path)
+: vertices(vertices), indices(indices), textures(textures), color(color), pMesh(pMesh), path(path) {
 	setupMesh();
-	// for (unsigned int i = 0; i < vertices.size(); i++) {
-		// std::cout << "bonesID: " << vertices[i].bonesID[0] << " : " << vertices[i].bonesID[1] << " : " << vertices[i].bonesID[2] << std::endl;
-		// std::cout << "bonesWeigths: " << vertices[i].weigths[0] << " : " << vertices[i].weigths[1] << " : " << vertices[i].weigths[2] << std::endl;
-	// }
+	bonesNbr = 0;
+	animationSelected = 0;
+
+	this->scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_FlipUVs);
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+		std::cout << "Model loading error: " << importer.GetErrorString() << std::endl;
+		return;
+	}
+	
+	if(!(this->scene->HasAnimations()))
+		return;
+
+	offsetMatrices.resize(pMesh->mNumBones);
+	finalTransform.resize(pMesh->mNumBones);
+
+	globalInverse = assimpToGlmMatrix(scene->mRootNode->mTransformation);
+	globalInverse = glm::inverse(globalInverse);
+
+	setupBones();
 	return;
 }
 
@@ -60,7 +52,7 @@ Mesh::~Mesh() {
 	for (unsigned int i = 0; i < this->textures.size(); i++) {
 		glDeleteTextures(1, &textures[i].id);
 	}
-	delete this->rootJoint;
+	// delete this->rootJoint;
 	Mesh::i--;
 	return;
 }
@@ -92,30 +84,12 @@ void	Mesh::setupMesh() {
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
-	// glEnableVertexAttribArray(5);
-	// glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bonesID));
+	glEnableVertexAttribArray(9);
+	glVertexAttribIPointer(9, 3, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, bonesID));
 
-	// glEnableVertexAttribArray(6);
-	// glVertexAttribIPointer(4, 3, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, weigths));
+	glEnableVertexAttribArray(10);
+	glVertexAttribPointer(10, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, weigths));
 	glBindVertexArray(0);
-
-	// std::vector<glm::vec2>      data;
-	// data.push_back(glm::vec2(2, 3));
-	// data.push_back(glm::vec2(15, 20));
-
-	// unsigned int vbo;
-	// glGenBuffers(1, &vbo);
-	// glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * data.size(), &data[0], GL_STATIC_DRAW);
-	// glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-	// glEnableVertexAttribArray(5);
-	// glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	// glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), static_cast<void*>(0));
-	// glBindBuffer(GL_ARRAY_BUFFER, 0);	
-	// glVertexAttribDivisor(5, 1); 
-
 
 	return;
 }
@@ -149,7 +123,7 @@ void	Mesh::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 	glDeleteBuffers(1, &this->ibo);
 }
 
-void	Mesh::draw(Shader &shader, bool animated, unsigned int instanceCount) {
+void	Mesh::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 
 	// unsigned int diffuseNbr = 1;
 	// unsigned int normalNbr = 1;
@@ -166,32 +140,110 @@ void	Mesh::draw(Shader &shader, bool animated, unsigned int instanceCount) {
 	if (textures.size() == 0)
 		glUniform3f(glGetUniformLocation(shader.getProgramID(), "materialColor"), this->color.r, this->color.g, this->color.b);
 
-	if (animated) {
-		glm::mat4 *jointTransforms = getJointTransforms();
-		glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "jointTransforms"), 16, GL_FALSE, glm::value_ptr(*jointTransforms));
-	}
+	setInstanceBuffer(transforms);
+	if(scene->HasAnimations()) {
+		std::vector<glm::mat4> bonesTransforms = getBonesTransforms(animationTime);
 
+		for (unsigned int i = 0; i < bonesTransforms.size(); ++i) {
+			shader.setMat4("jointTransforms[" + std::to_string(i) + "]", bonesTransforms[i]);
+		}
+		shader.setBool("isAnimated", 1);
+	} else
+		shader.setBool("isAnimated", 0);
+		
 	glBindVertexArray(this->vao);
-	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, instanceCount);
+	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, transforms.size());
 	glBindVertexArray(0);
 	
 	return;
 }
 
-glm::mat4* Mesh::getJointTransforms() const {
-	glm::mat4 *jointMatrices = new glm::mat4[this->jointNbr];
-	this->addJointsToArray(this->rootJoint, jointMatrices);
+void		Mesh::setupBones() {
+	for(unsigned int i = 0; i < pMesh->mNumBones; i++) {
+		unsigned int boneIndex = 0;
+		std::string boneName(pMesh->mBones[i]->mName.data);
 
-	return jointMatrices;
-}
+		if (bonesMap.find(boneName) == bonesMap.end()) {
+			boneIndex = bonesNbr;
+			bonesNbr++;
+		} else
+			boneIndex = bonesMap[boneName];
 
-void	Mesh::addJointsToArray(Joint *head, glm::mat4* jointMatrices) const {
-	jointMatrices[head->index] = head->getFinalTransform();
-	for (unsigned int i = 0; i < head->children.size(); i++) {
-		addJointsToArray(head->children[i], jointMatrices);
+		bonesMap[boneName] = boneIndex;
+		offsetMatrices[boneIndex] = assimpToGlmMatrix(pMesh->mBones[i]->mOffsetMatrix);
+
+		for(unsigned int j = 0; j < pMesh->mBones[i]->mNumWeights; j++) {
+			unsigned int vertexID = pMesh->mBones[i]->mWeights[j].mVertexId;
+			float weight = pMesh->mBones[i]->mWeights[j].mWeight;
+			addBoneData(vertexID, boneIndex, weight);
+		}
 	}
 }
 
-Joint *Mesh::getRootJoint() {
-	return rootJoint;
+void	Mesh::addBoneData(unsigned int vertexID, unsigned int boneID, float weight) {
+	for (unsigned int i = 0; i < 3; i++) {
+		if (vertices[vertexID].weigths[i] == 0) {
+			vertices[vertexID].bonesID[i] = boneID;
+			vertices[vertexID].weigths[i] = weight;
+			return;
+		}
+	}
+}
+
+std::vector<glm::mat4>	Mesh::getBonesTransforms(float timeInSeconds) {
+	glm::mat4 identityMat = glm::mat4(1.0f);
+	
+	float ticksPerSecond = scene->mAnimations[animationSelected]->mTicksPerSecond;
+	float timeInTicks = timeInSeconds * ticksPerSecond;
+	float animationTime = fmod(timeInTicks, scene->mAnimations[animationSelected]->mDuration);
+	readNodeHierarchy(animationTime, scene->mRootNode, identityMat);
+	return finalTransform;
+}
+
+void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform) {
+	std::string nodeName(node->mName.data);
+	const aiAnimation *animation = scene->mAnimations[animationSelected];
+	glm::mat4 nodeTransform = assimpToGlmMatrix(node->mTransformation);
+	const aiNodeAnim *pNodeAnim = findNodeAnim(animation, nodeName);
+	if(pNodeAnim) {
+		aiVector3D scaling = calcInterpolatedScaling(animationTime, pNodeAnim);
+		// glm::mat4 scaleMat = initScaleTransform(scaling);
+		glm::mat4 scaleMat = glm::mat4(1.f);
+		scaleMat = glm::scale(scaleMat, glm::vec3(scaling.x, scaling.y, scaling.z));
+
+		glm::mat4 rotMat = glm::mat4(1.f);
+		rotMat = calcInterpolatedRotation(animationTime, pNodeAnim);
+
+		aiVector3D translation = calcInterpolatedPosition(animationTime, pNodeAnim);
+		// glm::mat4 transMat = initTransationTransform(translation);
+		glm::mat4 transMat = glm::mat4(1.f);
+		transMat = glm::translate(transMat, glm::vec3(translation.x, translation.y, translation.z));
+		nodeTransform = transMat * rotMat * scaleMat;
+	}
+
+	glm::mat4 globalTransform = parentTransform * nodeTransform;
+
+	if (bonesMap.find(nodeName) != bonesMap.end()) {
+		unsigned int boneIndex = bonesMap[nodeName];
+		finalTransform[boneIndex] = globalInverse * globalTransform * offsetMatrices[boneIndex];	
+	}
+
+	for (unsigned int i = 0; i < node->mNumChildren; i++) {
+		readNodeHierarchy(animationTime, node->mChildren[i], globalTransform);
+	}
+}
+
+const aiNodeAnim *Mesh::findNodeAnim(const aiAnimation *animation, const std::string nodeName) const {
+	for (unsigned int i = 0; i < animation->mNumChannels; i++) {
+		const aiNodeAnim *nodeAnim = animation->mChannels[i];
+		if (std::string(nodeAnim->mNodeName.data) == nodeName)
+			return nodeAnim;
+	}
+
+	return nullptr;
+}
+
+void	Mesh::setAnimation(unsigned int animation, float timeInSeconds) {
+	animationTime = timeInSeconds;
+	animationSelected = animation;
 }

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 11:28:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/12 14:53:00 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 15:29:17 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ class AI {
         
         bool    would_be_blocked_by_bomb(void);
         bool    can_place_bomb(void);
-        bool    is_safe(glm::ivec2 pos, std::vector<IGameEntity *> & entities);
+        
+        void    resetMapDist(void);
         void    updateMapDistRec(glm::ivec2 pos, int rec);
         void    SAFEupdateMapDistRec(glm::ivec2 pos, int rec);
         

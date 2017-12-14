@@ -101,9 +101,9 @@ bool        AI::would_be_blocked_by_bomb(void){
     updateMapWithEntity(potential_bomb);
     delete potential_bomb;
     bool ret = aimClosestSafeSpace(&tmp_pos);
+    
+    // true if the above didn't find any target
     return !ret;
-
-
 }
 
 
@@ -114,8 +114,12 @@ bool      AI::can_place_bomb(void){
 
 
 
+
+/////////////////////////       OBJECTIVE UPDATE        ////////////////////////////////
+
 bool    AI::aimClosestSafeSpace(glm::ivec2 *obj){
     bool ret = false;
+    resetMapDist();
     updateMapDistRec(glm::round(_player->getPosition()), 0);
     for (auto i : _map){
         if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist < _map[*obj]._dist || _map[*obj]._dist == -1 || !_map[*obj]._safe)){
@@ -127,12 +131,14 @@ bool    AI::aimClosestSafeSpace(glm::ivec2 *obj){
     return ret;
 }
 
+
 static bool is_good_bonus_spot(Spot &s){
     return (s._dist != -1 && s._free && s._safe && s._has_bonus);
 }
 
 bool    AI::lookForBonus(glm::ivec2 *obj){
     bool ret = false;
+    resetMapDist();
     SAFEupdateMapDistRec(glm::round(_player->getPosition()), 0);
     for (auto i : _map){
         if (is_good_bonus_spot(i.second) && (i.second._dist < _map[*obj]._dist ||!is_good_bonus_spot(_map[*obj]))){
@@ -149,6 +155,7 @@ bool    AI::aimFarthestSafeSpace(glm::ivec2 *obj){
     if (!_went_far)
         return ret;
     _went_far = false;
+    resetMapDist();
     SAFEupdateMapDistRec(glm::round(_player->getPosition()), 0);
     for (auto i : _map){
         if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist > _map[*obj]._dist || _map[*obj]._dist == -1 || !_map[*obj]._safe)){
@@ -163,20 +170,14 @@ bool    AI::aimFarthestSafeSpace(glm::ivec2 *obj){
 
 /////////////////       INTERNAL MAP        ///////////////////////////////////////
 
-
-void    AI::SAFEupdateMapDistRec(glm::ivec2 pos, int rec){
-    auto it = _map.find(pos);
-    if (it != _map.end()){
-        if (it->second._free && it->second._safe && (it->second._dist == -1 || rec < it->second._dist)){
-            it->second._dist = rec;
-            SAFEupdateMapDistRec(glm::ivec2(pos.x + 1, pos.y), rec + 1);
-            SAFEupdateMapDistRec(glm::ivec2(pos.x, pos.y + 1), rec + 1);
-            SAFEupdateMapDistRec(glm::ivec2(pos.x, pos.y - 1), rec + 1);
-            SAFEupdateMapDistRec(glm::ivec2(pos.x - 1, pos.y), rec + 1);
-        }
+void    AI::resetMapDist(void){
+    for (auto i = _map.begin(); i != _map.end(); i++){
+        (*i).second._dist = -1;
     }
 }
 
+// Fills the map's _dist field, going recursively from the initial position <pos>.
+// the <rec> argument should be 0.
 void    AI::updateMapDistRec(glm::ivec2 pos, int rec){
     auto it = _map.find(pos);
     if (it != _map.end()){
@@ -186,6 +187,20 @@ void    AI::updateMapDistRec(glm::ivec2 pos, int rec){
             updateMapDistRec(glm::ivec2(pos.x, pos.y + 1), rec + 1);
             updateMapDistRec(glm::ivec2(pos.x, pos.y - 1), rec + 1);
             updateMapDistRec(glm::ivec2(pos.x - 1, pos.y), rec + 1);
+        }
+    }
+}
+
+// Does the same as the above function except the recursion doesn't fill the spots that aren't safe.
+void    AI::SAFEupdateMapDistRec(glm::ivec2 pos, int rec){
+    auto it = _map.find(pos);
+    if (it != _map.end()){
+        if (it->second._free && it->second._safe && (it->second._dist == -1 || rec < it->second._dist)){
+            it->second._dist = rec;
+            SAFEupdateMapDistRec(glm::ivec2(pos.x + 1, pos.y), rec + 1);
+            SAFEupdateMapDistRec(glm::ivec2(pos.x, pos.y + 1), rec + 1);
+            SAFEupdateMapDistRec(glm::ivec2(pos.x, pos.y - 1), rec + 1);
+            SAFEupdateMapDistRec(glm::ivec2(pos.x - 1, pos.y), rec + 1);
         }
     }
 }
@@ -219,11 +234,13 @@ void    AI::updateMapWithEntity(IGameEntity *entity){
     }
 }
 
+
 void    AI::updateMap(Map const & map, std::vector<IGameEntity *> & entities){
     glm::vec2 mapSize = map.getSize();
     _map.clear();
     for(int i = -1; i < mapSize.x + 1; i++) {
         for(int j = -1; j < mapSize.y + 1; j++) {
+                                                                    // See Spot class defined at the start of this file.
             _map.insert(std::pair<glm::vec2, Spot>(glm::vec2(i, j), Spot(!map.hasBloc(glm::vec2(i, j)), true)));
         }
     }
@@ -241,92 +258,58 @@ void    AI::updateMap(Map const & map, std::vector<IGameEntity *> & entities){
 void    AI::runToObjective(){
     std::vector<Event::Enum>     min_dir;
 
+
+    // Here we update the _dist field of the map, but with the _objective as the origin (rather than the _player's position)
+    // That way we can easily determine wich Spot next to the player's position is the closest from the _objective.
+    resetMapDist();
     if (_going_safely)
         SAFEupdateMapDistRec(_objective, 0);
     else
         updateMapDistRec(_objective, 0);
-    // std::vector<glm::ivec2> dirs = {glm::ivec2(0, 0), glm::ivec2(1, 0), glm::ivec2(-1, 0), glm::ivec2(0, 1), glm::ivec2(0, -1)};
     
     Event::Enum dirs[4] = {Event::PLAYER_LEFT, Event::PLAYER_RIGHT, Event::PLAYER_UP, Event::PLAYER_DOWN};
 
     int             min_dist = _map[glm::ivec2(glm::round(_player->getPosition()))]._dist;
     
+    // Iterates through the 4 possible directions
+    // Determine the direction with the minimal distance from the objective.
     for (auto it : dirs){
         if (min_dist > _map[glm::ivec2(glm::round(_player->getPosition())) + AI::dirToIVec(it)]._dist && _map[glm::ivec2(glm::round(_player->getPosition())) + AI::dirToIVec(it)]._dist != -1){
             min_dir.clear();
             min_dir.push_back(it);
-            // std::cout << glm::to_string(glm::round(glm::ivec2(glm::round(_player->getPosition())))) << " + " << glm::to_string(AI::dirToVec(it)) <<" => " << glm::to_string(glm::ivec2(glm::ivec2(glm::round(_player->getPosition())) + AI::dirToVec(it))) << " XX " << glm::to_string(_objective) << std::endl;
             min_dist = _map[glm::ivec2(glm::round(_player->getPosition())) + AI::dirToIVec(it)]._dist;
         }
     }
 
+    // If the Spot with the minimal distance is the _player's position
+    // a.k.a. we're very close from the _ojective
     if (min_dir.size() == 0 || glm::length(glm::vec2(_objective) - _player->getPosition()) < 1.f){
+        // We calculate the direction(s) we want to take using the difference between the _objective and _player position vectors
         min_dir = AI::vecToDirs(glm::vec2(_objective) - _player->getPosition());
-        if (min_dir.size() == 0)
-            _went_far = true;
+        if (min_dir.size() == 0) // if we're on the _objective.
+            _went_far = true;    // this boolean is used to determine if we should update the _objective when we're trying to "go far". See aimFarthestSafeSpace
     }
 
+    // We raise the event that ends the player's movement if the movement was previously called and isn't anymore
     for (auto i : _last_dir) {
         if (std::find(min_dir.begin(), min_dir.end(), i) == min_dir.end()){
             SEventManager::getInstance().raise(AI::endEvents(i), _player);
-            // std::cout << "END : " << i << std::endl;
         }
     }
+    // Remove ended directions from _last_dir
     _last_dir.erase(std::remove_if(_last_dir.begin(), _last_dir.end(), [&min_dir](Event::Enum e) {
                 return (std::find(min_dir.begin(), min_dir.end(), e) == min_dir.end());
             }), _last_dir.end());
-    for (auto i : min_dir){
-        if (_last_dir.size() == 0 || std::find(_last_dir.begin(), _last_dir.end(), i) == _last_dir.end()){
-            _last_dir.push_back(i);
-        }
-        // std::cout << "Start : " << i << std::endl;
-        SEventManager::getInstance().raise(i, _player);
-    }
-
-}
-
-/*
-void    AI::runToObjective(){
-    std::vector<Event::Enum>     min_dir;
-    if (_going_safely)
-        SAFEupdateMapDistRec(_player->getPosition(), 0);
-    else
-        updateMapDistRec(_player->getPosition(), 0);
-    int             min_dist = _map[_objective]._dist;
-
-    Event::Enum dirs[4] = {Event::PLAYER_LEFT, Event::PLAYER_RIGHT, Event::PLAYER_UP, Event::PLAYER_DOWN};
-
-    for (auto it : dirs){
-        updateMapDistRec(_player->getPosition() + AI::dirToVec(it), 0);
-        if (min_dist > _map[_objective]._dist && _map[_player->getPosition() + AI::dirToVec(it)]._free){
-            min_dir.clear();
-            min_dir.push_back(it);
-            // std::cout << glm::to_string(glm::round(_player->getPosition())) << " + " << glm::to_string(AI::dirToVec(it)) <<" => " << glm::to_string(glm::ivec2(_player->getPosition() + AI::dirToVec(it))) << " XX " << glm::to_string(_objective) << std::endl;
-            min_dist = _map[_objective]._dist;
-        }
-    }
-
-    if (min_dir.size() == 0 || glm::length(glm::vec2(_objective) - _player->getPosition()) < 1.30f){
-        min_dir = AI::vecToDirs(glm::vec2(_objective) - _player->getPosition());
-        if (min_dir.size() == 0)
-            _went_far = true;
-    }
-
-    for (auto i : _last_dir) {
-        if (std::find(min_dir.begin(), min_dir.end(), i) == min_dir.end())
-        SEventManager::getInstance().raise(AI::endEvents(i), _player);
-    }
-    _last_dir.erase(std::remove_if(_last_dir.begin(), _last_dir.end(), [&min_dir](Event::Enum e) {
-                return (std::find(min_dir.begin(), min_dir.end(), e) == min_dir.end());
-            }), _last_dir.end());
+    
+    // Add new movement to _last_dir for future use.
     for (auto i : min_dir){
         if (_last_dir.size() == 0 || std::find(_last_dir.begin(), _last_dir.end(), i) == _last_dir.end()){
             _last_dir.push_back(i);
         }
         SEventManager::getInstance().raise(i, _player);
     }
+
 }
-*/
 
 
 
@@ -344,26 +327,20 @@ void    AI::runToObjective(){
 
 
 void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
-    (void)entities;
     updateMap(map, entities);
     if (can_place_bomb()){
         if (would_be_blocked_by_bomb()){
-            updateMap(map, entities);
             aimFarthestSafeSpace(&_objective);
         } else {
-            updateMap(map, entities);
             SEventManager::getInstance().raise(Event::SPAWN_BOMB, _player);
             aimClosestSafeSpace(&_objective);
         }
     } else {
         if (!lookForBonus(&_objective)){
-            updateMap(map, entities);
             aimClosestSafeSpace(&_objective);
         }
     }
     updateDebugCubes(map, entities);
-
-    updateMap(map, entities);
     runToObjective();
     
 }

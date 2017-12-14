@@ -46,7 +46,7 @@ void		CollisionsManager::computeEntityMovement(Map const & map, std::vector<IGam
 			if (newPos == entity->getPosition()){
 				SEventManager::getInstance().raise(Event::ENEMY_COLLIDES, entity);
 			}
-			// SEventManager::getInstance().raise(Event::ENEMY_MOVE, entity);
+			SEventManager::getInstance().raise(Event::ENEMY_MOVE, entity);
 		}
 		entity->setPosition(newPos);
 		if (entity->getType() == Type::PLAYER){

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 17:09:50 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 22:40:26 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ left(false), right(false), up(false), down(false),
 _graphicalDirection(glm::vec2(0,0)){
 	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Player::bomb_explodes_callback));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Player::spawn_flame_callback));
+	SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Player::enemy_move_callback));
 }
 
 glm::vec2	Player::getGraphicalDirection() const
@@ -87,6 +88,11 @@ void		Player::bomb_explodes_callback(void *bomb){
 void		Player::spawn_flame_callback(void *flame){
 	if (static_cast<IGameEntity *>(flame)->getPosition() == glm::round(getPosition()))
 		SEventManager::getInstance().raise(Event::PLAYER_DIES, this);
+}
+
+void    	Player::enemy_move_callback(void *enemy){
+    if (glm::round(static_cast<IGameEntity *>(enemy)->getPosition()) == glm::round(getPosition()))
+        SEventManager::getInstance().raise(Event::PLAYER_DIES, this);
 }
 
 int			Player::getBombCount(void) const {

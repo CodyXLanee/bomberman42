@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 19:10:51 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/14 22:07:58 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 22:46:19 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ class EnemyManager {
 		void			update(void);
 	private:
 		void            enemyCollidesCallback(void *entity);
+		void            enemyDiesCallback(void *enemy);
 		glm::vec2       updateDirectionBaloon(glm::vec2 direction);
+		
 		std::vector<IGameEntity *>	*_entity_list;
 };
 

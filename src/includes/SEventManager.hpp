@@ -31,7 +31,7 @@ namespace Event {
 
 		BRICK_BREAKS,
 
-		PLAYER_DIES,
+		PLAYER_DIES, ENEMY_DIES,
 
 		BONUS_ACTIVATE,
 
@@ -46,7 +46,7 @@ namespace Event {
 		GAME_WIN, GAME_FINISH,
 		
 		PLAYER_MOVE, ENEMY_MOVE,
-		
+
 		ENEMY_COLLIDES,
 
 		AIPTR

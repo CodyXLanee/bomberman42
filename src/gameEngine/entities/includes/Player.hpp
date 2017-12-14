@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:45:55 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 17:10:44 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 22:36:43 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ public:
 
     void        bomb_explodes_callback(void *bomb);
     void		spawn_flame_callback(void *flame);
+    void    	enemy_move_callback(void *enemy);
 
 private:
     int         _player_number;

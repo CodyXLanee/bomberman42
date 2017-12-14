@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:24:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/09 18:49:31 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 22:43:00 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,9 @@ std::chrono::time_point<std::chrono::steady_clock> const       &Flame::get_creat
 void                Flame::player_move_callback(void *player){
     if (glm::round(static_cast<IGameEntity *>(player)->getPosition()) == getPosition())
         SEventManager::getInstance().raise(Event::PLAYER_DIES, player);
+}
+
+void                Flame::enemy_move_callback(void *enemy){
+    if (glm::round(static_cast<IGameEntity *>(enemy)->getPosition()) == getPosition())
+        SEventManager::getInstance().raise(Event::ENEMY_DIES, enemy);
 }

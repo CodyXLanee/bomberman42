@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 19:20:30 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/14 22:31:41 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 22:45:17 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 EnemyManager::EnemyManager(std::vector<IGameEntity *> *entityList) : _entity_list(entityList){
 	SEventManager::getInstance().registerEvent(Event::ENEMY_COLLIDES, MEMBER_CALLBACK(EnemyManager::enemyCollidesCallback));
+	SEventManager::getInstance().registerEvent(Event::ENEMY_DIES, MEMBER_CALLBACK(EnemyManager::enemyDiesCallback));
 }
 
 EnemyManager::~EnemyManager(){
@@ -35,7 +36,10 @@ void            EnemyManager::enemyCollidesCallback(void *entity){
     if (enemy->getEnemyType() == EnemyType::BALOON){
         enemy->setDirection(updateDirectionBaloon(enemy->getDirection()));
     }
-    
+}
+
+void            EnemyManager::enemyDiesCallback(void *enemy){
+    static_cast<Enemy *>(enemy)->setState(State::DYING);
 }
 
 glm::vec2       EnemyManager::updateDirectionBaloon(glm::vec2 direction){

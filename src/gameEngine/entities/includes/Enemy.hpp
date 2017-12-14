@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 16:19:24 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/14 19:24:59 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/14 22:22:36 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "SEventManager.hpp"
 
 namespace EnemyType {
-    enum Enum {BALOON = 0};
+    enum Enum {BALOON};
 };
 
 class Enemy : public AGameEntity {

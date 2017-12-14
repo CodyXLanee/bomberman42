@@ -27,7 +27,7 @@ class CollisionsManager {
 		void		gestionSlipOneDirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map, std::vector<IGameEntity *> &entityList);
 		void		gestionSlipBidirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map);
 		static bool	collidesWithEntity(glm::vec2 &v, IGameEntity const * entity, std::vector<IGameEntity *> const &entityList);
-		void		computePlayerMovement(Map const & map, std::vector<IGameEntity *> &entityList, IGameEntity *player);
+		void		computeEntityMovement(Map const & map, std::vector<IGameEntity *> &entityList, IGameEntity *player);
 };
 
 #endif

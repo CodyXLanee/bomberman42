@@ -12,7 +12,10 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &ent
 		switch((*i)->getType()){
 			case Type::PLAYER:
 				compute_player(static_cast<Player *>(*i));
-				computePlayerMovement(map, entityList, (*i));
+				computeEntityMovement(map, entityList, (*i));
+				break;
+			case Type::ENEMY:
+				computeEntityMovement(map, entityList, (*i));
 				break;
 			default:
 				break;
@@ -20,27 +23,35 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &ent
 	}
 }
 
-void		CollisionsManager::computePlayerMovement(Map const & map, std::vector<IGameEntity *> &entityList, IGameEntity *player){
-	if (player->getState() == State::MOVING){
-		glm::vec2	newPos = player->getPosition() + (player->getDirection() * player->getSpeed());
+void		CollisionsManager::computeEntityMovement(Map const & map, std::vector<IGameEntity *> &entityList, IGameEntity *entity){
+	if (entity->getState() == State::MOVING){
+		glm::vec2	newPos = entity->getPosition() + (entity->getDirection() * entity->getSpeed());
 		
 		gestionBorderMap(newPos, map);
 		
-		if (!gestionNoSlipMove(newPos, player, map, entityList))
+		if (!gestionNoSlipMove(newPos, entity, map, entityList))
 		{
-			if (player->getDirection().x == 0 || player->getDirection().y == 0)
-				gestionSlipOneDirection(newPos, player, map, entityList);
+			if (entity->getDirection().x == 0 || entity->getDirection().y == 0)
+				gestionSlipOneDirection(newPos, entity, map, entityList);
 			else
-				gestionSlipBidirection(newPos, player, map);
+				gestionSlipBidirection(newPos, entity, map);
 		}
 
 		// gestion border
 
 		// set the new position
-		//player->setDirection(normalize(newPos - player->getPosition()));
+		//entity->setDirection(normalize(newPos - entity->getPosition()));
 
-		player->setPosition(newPos);
-		SEventManager::getInstance().raise(Event::PLAYER_MOVE, player);
+		if (entity->getType() == Type::ENEMY){
+			if (newPos == entity->getPosition()){
+				SEventManager::getInstance().raise(Event::ENEMY_COLLIDES, entity);
+			}
+			// SEventManager::getInstance().raise(Event::ENEMY_MOVE, entity);
+		}
+		entity->setPosition(newPos);
+		if (entity->getType() == Type::PLAYER){
+			SEventManager::getInstance().raise(Event::PLAYER_MOVE, entity);
+		}
 	}
 }
 

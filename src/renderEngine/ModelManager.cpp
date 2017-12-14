@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 10:53:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 14:58:46 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,23 @@
 
 ModelManager::ModelManager() {
 	directory = "assets/models/obj/";
+
+	playerModel = new Model(directory + "player.obj");
+	// playerModel = new Model(directory + "cowboy.dae");
+
 	groundModel = new Model(directory + "groundTile1.obj");
-	// playerModel = new Model(directory + "player.obj");
-	playerModel = new Model(directory + "cowboy.dae");
 	wallModel = new Model(directory + "wall.obj");
 	brickModel = new Model(directory + "brick.obj");
+	sceneryModel = new Model(directory + "sceneryGround.obj");
+
 	flameModel = new Model(directory + "flame.obj");
 	bombModel = new Model(directory + "bomb.obj");
-	aiDebug = new Model(directory + "aiDebug.obj");
+
 	flameUpModel = new Model(directory + "flameUp.obj");
 	bombUpModel = new Model(directory + "bombUp.obj");
 	speedUpModel = new Model(directory + "speedUp.obj");
+	
+	aiDebug = new Model(directory + "aiDebug.obj");
 }
 
 ModelManager::~ModelManager() {
@@ -35,6 +41,7 @@ ModelManager::~ModelManager() {
 	delete bombModel;
 	delete flameModel;
 	delete aiDebug;
+	delete sceneryModel;
 }
 
 Model	&ModelManager::getModel(enum model m) const {
@@ -49,5 +56,6 @@ Model	&ModelManager::getModel(enum model m) const {
 		case FLAME_UP:	return *flameUpModel; break;
 		case BOMB_UP:	return *bombUpModel; break;
 		case SPEED_UP:	return *speedUpModel; break;
+		case SCENERY: return *sceneryModel; break;
 	}
 }

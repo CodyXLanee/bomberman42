@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 14:23:49 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 12:00:11 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 WeatherSystem::WeatherSystem() {
 	dayTime = MIDDAY;
-	cloudy = true;
-	rainy = true;
+	cloudy = false;
+	rainy = false;
 
 	init();
 	initClouds();

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 15:25:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 14:40:02 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 int	Model::i = 0;
 
 Model::Model(std::string path) : path(path) {
+	hasBumpMap = false;
 	loadModel(path);
 	Model::i++;
 	return;
@@ -199,6 +200,8 @@ std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type, st
 			texture.path = str;
 			textures.push_back(texture);
 			texturesLoaded.push_back(texture);
+			if (type == aiTextureType_HEIGHT)
+				hasBumpMap = true;
 		}
 	}
 	return textures;
@@ -239,6 +242,9 @@ unsigned int		Model::textureFromFile(const char* path, const std::string &direct
 }
 
 void	Model::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
+		// meshes[0]->draw(shader, transforms);
+	shader.use();
+	shader.setInt("hasBumpMap", hasBumpMap);
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {
 		meshes[i]->draw(shader, transforms);
 	}

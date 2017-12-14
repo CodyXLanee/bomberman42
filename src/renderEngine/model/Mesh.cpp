@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 10:02:09 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 14:32:34 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 : vertices(vertices), indices(indices), textures(textures), color(color), pMesh(pMesh), path(path) {
 	setupMesh();
 	bonesNbr = 0;
+	animationSelected = 0;
 
 	this->scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_FlipUVs);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -191,17 +192,17 @@ void	Mesh::addBoneData(unsigned int vertexID, unsigned int boneID, float weight)
 
 std::vector<glm::mat4>	Mesh::getBonesTransforms(float timeInSeconds) {
 	glm::mat4 identityMat = glm::mat4(1.0f);
-
-	float ticksPerSecond = scene->mAnimations[0]->mTicksPerSecond;
+	
+	float ticksPerSecond = scene->mAnimations[animationSelected]->mTicksPerSecond;
 	float timeInTicks = timeInSeconds * ticksPerSecond;
-	float animationTime = fmod(timeInTicks, scene->mAnimations[0]->mDuration);
+	float animationTime = fmod(timeInTicks, scene->mAnimations[animationSelected]->mDuration);
 	readNodeHierarchy(animationTime, scene->mRootNode, identityMat);
 	return finalTransform;
 }
 
 void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform) {
 	std::string nodeName(node->mName.data);
-	const aiAnimation *animation = scene->mAnimations[0];
+	const aiAnimation *animation = scene->mAnimations[animationSelected];
 	glm::mat4 nodeTransform = assimpToGlmMatrix(node->mTransformation);
 	const aiNodeAnim *pNodeAnim = findNodeAnim(animation, nodeName);
 	if(pNodeAnim) {
@@ -221,9 +222,6 @@ void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm:
 	}
 
 	glm::mat4 globalTransform = parentTransform * nodeTransform;
-	debugMat(parentTransform, "parent");
-	debugMat(nodeTransform, "node");
-	debugMat(globalTransform, "global");
 
 	if (bonesMap.find(nodeName) != bonesMap.end()) {
 		unsigned int boneIndex = bonesMap[nodeName];

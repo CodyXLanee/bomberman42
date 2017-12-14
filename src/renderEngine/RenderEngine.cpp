@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 10:35:22 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/14 14:44:07 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,25 +85,25 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderBrick(shader, map.getDestructibleBlocs(), map);
 	renderBombs(shader, entities);
 	renderBonus(shader, entities);
-	meteo->getSun().render(shaderManager.getMainShader(), camera);
+	renderScenery(shader);
+	// meteo->getSun().render(shaderManager.getMainShader(), camera);
 
 	renderPlayer(shader, entities);
 
 	// renderAiDebug(shader);
 }
 
-// void	RenderEngine::renderScenery(Shader &shader) const {
-// 	std::vector<glm::mat4> data;
-// 	Model &model = modelManager.getModel(ModelManager::SCENERY);
+void	RenderEngine::renderScenery(Shader &shader) const {
+	std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::SCENERY);
 
-// 	glm::mat4 transform = glm::mat4();
-// 	transform = glm::translate(transform, glm::vec3(5.f, 5.f, 0.f));
-// 	transform = glm::rotate(transform, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-// 	data.push_back(transform);
+	glm::mat4 transform = glm::mat4();
+	transform = glm::translate(transform, glm::vec3(5.f, 5.f, 0.f));
+	transform = glm::rotate(transform, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+	data.push_back(transform);
 
-// 	model.setInstanceBuffer(data);
-//     model.draw(shader, data);
-// }
+    model.draw(shader, data);
+}
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	static float fakeTime = 0.f;
@@ -119,7 +119,7 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 			continue;
 		glm::mat4 transform = glm::mat4();
 		transform = glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
-		// transform = glm::scale(transform, glm::vec3(.4f, .4f, .4f));
+		transform = glm::scale(transform, glm::vec3(2.f, 2.f, 2.f));
 		// transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
 
 		glm::vec2	graphicalDir = dynamic_cast<Player*>(*i)->getGraphicalDirection();
@@ -200,10 +200,10 @@ void	RenderEngine::renderBrick(Shader &shader, const std::vector<DestructibleBlo
 	} 
 
 	shaderManager.getMainShader().use();
-	shaderManager.getMainShader().setInt("isBrick", 1);
+	// shaderManager.getMainShader().setInt("isBrick", 1);
 
 	model.draw(shader, data);
-		shaderManager.getMainShader().setInt("isBrick", 0);
+		// shaderManager.getMainShader().setInt("isBrick", 0);
 }
 
 static std::map< BonusType::Enum, std::pair< Model &, std::vector< glm::mat4> > > init_bonus_map(ModelManager const & modelManager){

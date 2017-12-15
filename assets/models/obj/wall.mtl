@@ -1,16 +1,13 @@
 # Blender MTL File: 'wall.blend'
 # Material Count: 1
 
-newmtl Material.001
+newmtl Material
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
 Kd 1.000000 1.000000 1.000000
-Ks 1.000000 1.000000 1.000000
+Ks 0.802721 0.802721 0.802721
 Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ../../textures/metal/metal_COLOR.jpg
-# map_Ks ../../textures/metal/metal_SPEC.jpg
-# map_Bump ../../textures/metal/metal_NRM.jpg
-
+map_Kd ../../textures/marble/diffuse.jpg

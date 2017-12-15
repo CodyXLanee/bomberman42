@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/15 13:17:19 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/15 15:18:55 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ class NuklearGUI
         void        renderMenu();
         void        renderOptions();
         void        renderKeyBindings();
+        void        renderGameModeSelectionMenu();
         void        renderStartMenu();
         void        renderHUD();
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/15 14:09:59 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/15 15:18:57 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,6 @@ void    NuklearGUI::toggle(void *p) {
     else {
         _active_menu.push(*m);
     }
-    delete m;
-
 }
 
 void    NuklearGUI::handleKey(void * p) {
@@ -102,6 +100,7 @@ void    NuklearGUI::render() {
             case Menu::BASE:                renderMenu(); break;
             case Menu::OPTIONS:             renderOptions(); break;
             case Menu::START:               renderStartMenu(); break;
+            case Menu::SELECT_GAME_MODE:    renderGameModeSelectionMenu(); break;
         }  
     }
     renderHUD();
@@ -372,6 +371,46 @@ void    NuklearGUI::renderMenu() {
     nk_end(ctx);
 }
 
+void    NuklearGUI::renderGameModeSelectionMenu() {
+    int  w, h;
+    SDL_GetWindowSize(win.getWin(), &w, &h);
+    SEventManager & event = SEventManager::getInstance();
+    if (nk_begin(ctx, "", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
+        NK_WINDOW_BORDER|NK_WINDOW_TITLE))
+    {
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Brawl"))
+        {
+            GameMode::Enum  *gm = new GameMode::Enum(GameMode::BRAWL);
+            event.raise(Event::NEW_GAME, gm);
+            delete gm;
+
+            Menu::Enum  *me = new Menu::Enum(Menu::NONE);
+            event.raise(Event::GUI_TOGGLE, me);
+            delete me;
+        }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Campaign"))
+        {
+            GameMode::Enum  *gm = new GameMode::Enum(GameMode::CAMPAIGN);
+            event.raise(Event::NEW_GAME, gm);
+            delete gm;
+
+            Menu::Enum  *me = new Menu::Enum(Menu::NONE);
+            event.raise(Event::GUI_TOGGLE, me);
+            delete me;
+        }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Back"))
+        {
+            Menu::Enum  *me = new Menu::Enum(Menu::START);
+            event.raise(Event::GUI_TOGGLE, me);
+            delete me;
+        }
+    }
+    nk_end(ctx);
+}
+
 void    NuklearGUI::renderStartMenu() {
     SEventManager & event = SEventManager::getInstance();
     if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
@@ -380,8 +419,9 @@ void    NuklearGUI::renderStartMenu() {
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "New Game"))
         {
-            event.raise(Event::NEW_GAME, nullptr);
-            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::NONE));
+            Menu::Enum  *me = new Menu::Enum(Menu::SELECT_GAME_MODE);
+            event.raise(Event::GUI_TOGGLE, me);
+            delete me;
         }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Load Game"))

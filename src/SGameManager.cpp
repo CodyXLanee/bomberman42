@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/08 12:30:54 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/15 15:16:56 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,23 @@ SGameManager::SGameManager() :
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
     _gui(_window, _camera), 
     _renderer(_window.getWin(), _camera),
-    _game_is_active(true), _quit_game(false), _new_game(false) {
+    _dev_mode(true),                                                   // <---- DEV MODE !
+    _game_is_active(false), _quit_game(false), _new_game(false) {
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::QUIT_GAME, MEMBER_CALLBACK(SGameManager::quit_game));
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
     em.registerEvent(Event::GAME_FINISH, MEMBER_CALLBACK(SGameManager::game_finish));
 }
 
-
 SGameManager::~SGameManager() {
 }
 
 void        SGameManager::manage(void) {
     SEventManager &em = SEventManager::getInstance();
-    // em.raise(Event::TOGGLE, new Menu::Enum(Menu::START));
-    em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));    
+    if (!_dev_mode)
+        em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::START));
+    else
+        em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));    
 	while(!_quit_game) {
         if (_new_game)
             new_game(new GameMode::Enum(GameMode::CAMPAIGN));
@@ -67,7 +69,6 @@ void            SGameManager::new_game(void *p){
     _game = new GameEngine(*gm);
     _game_is_active = true;
     _new_game = false;
-    delete gm;
 }
 
 void            SGameManager::game_finish(void *){

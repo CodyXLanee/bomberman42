@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 14:26:02 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 09:22:25 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class Model {
 		std::vector<Texture>    			texturesLoaded;
 		bool								animated;
 		bool								hasBumpMap;
+		bool								hasSpecularMap;
 
 		static int i;
 };

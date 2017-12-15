@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/14 18:10:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/15 09:27:23 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -488,7 +488,7 @@ struct nk_image  NuklearGUI::loadImage(std::string const filename, GLint format)
     int x,y,n;
     GLuint tex;
     unsigned char *data = stbi_load(filename.c_str(), &x, &y, &n, 0);
-    std::cout << filename << " " << x << " " << y << std::endl;
+    // std::cout << filename << " " << x << " " << y << std::endl;
     if (!data) throw std::runtime_error("NuklearGUI::loadImage() - Failed to load image: " + filename);
 
     glGenTextures(1, &tex);

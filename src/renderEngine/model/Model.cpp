@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 14:40:02 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 09:23:28 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	Model::i = 0;
 
 Model::Model(std::string path) : path(path) {
 	hasBumpMap = false;
+	hasSpecularMap = false;
 	loadModel(path);
 	Model::i++;
 	return;
@@ -170,8 +171,8 @@ std::vector<Texture>	Model::loadMaterials(aiMesh *mesh, const aiScene *scene) {
 	std::vector<Texture> diffuseMaps = loadTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-	// std::vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR, "texture_specular");
-	// textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+	std::vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR, "texture_specular");
+	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
 	std::vector<Texture> normalMaps = loadTextures(material, aiTextureType_HEIGHT, "texture_normal");
 	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
@@ -202,6 +203,8 @@ std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type, st
 			texturesLoaded.push_back(texture);
 			if (type == aiTextureType_HEIGHT)
 				hasBumpMap = true;
+			if (type == aiTextureType_SPECULAR)
+				hasSpecularMap = true;
 		}
 	}
 	return textures;
@@ -245,6 +248,7 @@ void	Model::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 		// meshes[0]->draw(shader, transforms);
 	shader.use();
 	shader.setInt("hasBumpMap", hasBumpMap);
+	shader.setInt("hasSpecularMap", hasSpecularMap);
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {
 		meshes[i]->draw(shader, transforms);
 	}

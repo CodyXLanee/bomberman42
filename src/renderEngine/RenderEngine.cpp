@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 15:23:23 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 16:33:23 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderBombs(shader, entities);
 	renderBonus(shader, entities);
 	renderEnemies(shader, entities);
-	// renderScenery(shader);
+	renderScenery(shader);
 	// meteo->getSun().render(shaderManager.getMainShader(), camera);
 
 	renderPlayer(shader, entities);

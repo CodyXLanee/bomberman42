@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 14:46:49 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 16:33:17 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ ModelManager::ModelManager() {
 	wallModel = new Model(directory + "wall.obj");
 	groundModel = new Model(directory + "groundTile1.obj");
 	brickModel = new Model(directory + "brick.obj");
-	// sceneryModel = new Model(directory + "sceneryGround.obj");
+	sceneryModel = new Model(directory + "sceneryGround.obj");
 
 	flameModel = new Model(directory + "flame.obj");
 	bombModel = new Model(directory + "bomb.obj");

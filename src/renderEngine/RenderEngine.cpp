@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 16:33:23 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 17:14:26 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities
 void	RenderEngine::shadowPass(Map const & map, std::vector<IGameEntity *> &entities) const {
 	glDisable(GL_BLEND);
 
-	glViewport(0, 0, 1024, 1024);
+	glViewport(0, 0, 2048, 2048);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -316,7 +316,7 @@ void	RenderEngine::renderFlames(Shader &shader, std::vector<IGameEntity *> const
 }
 
 void	RenderEngine::createShadowBuffer() {
-	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
 	glGenFramebuffers(1, &depthMapFBO);
 	glGenTextures(1, &depthMap);
 	

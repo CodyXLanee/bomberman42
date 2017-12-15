@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 09:38:15 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 15:45:49 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 17:35:19 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ glm::vec3	Light::getColor() const {
 }
 
 glm::mat4	Light::getDirectionalLightSpaceMatrix() const {
-	glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.f, 200.f);
+	glm::mat4 lightProjection = glm::ortho(-30.0f, 30.0f, -30.0f, 30.0f, 0.f, 200.f);
 	
 	glm::mat4 lightView = glm::lookAt(position, 
 							lookAt, 

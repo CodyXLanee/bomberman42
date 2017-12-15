@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/14 18:10:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/15 14:06:08 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,13 @@
 
 NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     win(sgw), camera(camera), event(SEventManager::getInstance()),
-    menuWidth(500), menuHeight(500), optionHeight(30),
     _active_menu(){
     ctx = nk_sdl_init(win.getWin());
     nk_sdl_font_stash_begin(&atlas);
     struct nk_font *future = nk_font_atlas_add_from_file(atlas, "assets/fonts/kenvector_future_thin.ttf", 13, 0);
     nk_style_set_font(ctx, &future->handle);
     nk_sdl_font_stash_end();
-    set_style(ctx, THEME_BLUE);
+    set_style(ctx, THEME_WHITE);
 
     screenFormat = {
         Screen::Resolution::RES_1920_1080,
@@ -51,9 +50,6 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     fps = 0.f;
     
     _keyToChange = nullptr;
-
-    ctx->style.window.spacing = nk_vec2(0,0); // between items
-    ctx->style.window.padding = nk_vec2(0,0); // above / under items
 }
 
 NuklearGUI::~NuklearGUI() {
@@ -88,6 +84,16 @@ void    NuklearGUI::handleKey(void * p) {
 }
 
 void    NuklearGUI::render() {
+    SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);
+
+   float spacingY =  ctx->style.window.spacing.y; // between items
+   float paddingY =  ctx->style.window.padding.y; // = nk_vec2(0,0); // above / under items
+
+    menuWidth = windowWidth / 4;
+    optionHeight = windowHeight / 25;
+
+    menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
+
     if (!_active_menu.empty()) {
         switch (_active_menu.top()){
             case Menu::NONE:                break;
@@ -121,8 +127,6 @@ void    NuklearGUI::bindKeyToEvent(Event::Enum ev, std::map<Event::Enum, SDL_Key
 }
 
 void    NuklearGUI::renderKeyBindings() {
-    int  w, h;
-    SDL_GetWindowSize(win.getWin(), &w, &h);
     SEventManager & event = SEventManager::getInstance();
     
     static std::map<Event::Enum, SDL_Keycode>  displayedKeysMap = win.getKeyMap();
@@ -133,8 +137,8 @@ void    NuklearGUI::renderKeyBindings() {
     std::string down =  SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_DOWN]);
     std::string drop =  SDL_GetKeyName(displayedKeysMap[Event::HUMAN_SPAWN_BOMB]);
 
-    if (nk_begin(ctx, "KEY BINDINGS", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
-    NK_WINDOW_BORDER|NK_WINDOW_TITLE)) {
+    if (nk_begin(ctx, "KEY BINDINGS", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+    NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move up", NK_TEXT_LEFT);
         hover(1);
@@ -172,6 +176,14 @@ void    NuklearGUI::renderKeyBindings() {
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         hover(6);
+        nk_spacing(ctx, 1);       
+        if (nk_button_label(ctx, "Reset to default"))
+        {
+            /* reset key bindings */
+        }
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        hover(6);
         if (nk_button_label(ctx, "Apply"))
         {
             win.setKeyMap(displayedKeysMap);
@@ -190,9 +202,6 @@ void    NuklearGUI::renderKeyBindings() {
 }
 
 void    NuklearGUI::renderOptions() {
-
-    int  w, h;
-    SDL_GetWindowSize(win.getWin(), &w, &h);
     SEventManager & event = SEventManager::getInstance();
 
     static float        masterVolume = 0.0f;
@@ -204,10 +213,9 @@ void    NuklearGUI::renderOptions() {
     std::string screenResString = toString(displayedFormat.resolution);
     std::string screenModeString = toString(displayedFormat.mode);
 
-    if (nk_begin(ctx, "OPTIONS", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
-        NK_WINDOW_BORDER|NK_WINDOW_TITLE))
+    if (nk_begin(ctx, "OPTIONS", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+        NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
-        nk_menubar_begin(ctx);
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Screen resolution", NK_TEXT_LEFT);
         if (nk_menu_begin_label(ctx, screenResString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth / 2, menuHeight))) {
@@ -246,7 +254,6 @@ void    NuklearGUI::renderOptions() {
             }
             nk_menu_end(ctx);
         }
-        nk_menubar_end(ctx);
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Master volume", NK_TEXT_LEFT);             
@@ -278,7 +285,7 @@ void    NuklearGUI::renderOptions() {
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::KEY_BINDINGS));  
         }
 
-        nk_layout_row_dynamic(ctx, optionHeight, 1); 
+        nk_layout_row_dynamic(ctx, optionHeight, 2); 
         hover(2);
         if (nk_button_label(ctx, "Apply"))
         {
@@ -289,7 +296,6 @@ void    NuklearGUI::renderOptions() {
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));  
         }
-        nk_layout_row_dynamic(ctx, optionHeight, 1); 
         hover(3); 
         if (nk_button_label(ctx, "Back"))
         {
@@ -303,11 +309,9 @@ void    NuklearGUI::renderOptions() {
 }
 
 void    NuklearGUI::renderMenu() {
-    int  w, h;
-    SDL_GetWindowSize(win.getWin(), &w, &h);
     SEventManager & event = SEventManager::getInstance();
-    if (nk_begin(ctx, "MENU", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
-        NK_WINDOW_BORDER|NK_WINDOW_TITLE))
+    if (nk_begin(ctx, "MENU", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+        NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         hover(1);
@@ -319,15 +323,47 @@ void    NuklearGUI::renderMenu() {
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         hover(2);
+        if (nk_button_label(ctx, "Restart level"))
+        {
+            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
+            /* restart */
+        }
+
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(3);
+        if (nk_button_label(ctx, "How to play"))
+        {
+            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
+            /* how to play */
+        }
+
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(4);
         if (nk_button_label(ctx, "Options"))
         {
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));
         }
+
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(5);
+        if (nk_button_label(ctx, "Save"))
+        {
+            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
+            /* save */
+        }
+
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(6);
+        if (nk_button_label(ctx, "Back to main menu"))
+        {
+            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::NONE)); // Must be changed
+        }
    
         nk_layout_row_dynamic(ctx, optionHeight, 1);
-        hover(3); 
-        if (nk_button_label(ctx, "Quit"))
+        hover(7); 
+        if (nk_button_label(ctx, "Quit game"))
         {
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
             event.raise(Event::QUIT_GAME, nullptr);
@@ -337,11 +373,9 @@ void    NuklearGUI::renderMenu() {
 }
 
 void    NuklearGUI::renderStartMenu() {
-    int  w, h;
-    SDL_GetWindowSize(win.getWin(), &w, &h);
     SEventManager & event = SEventManager::getInstance();
-    if (nk_begin(ctx, "", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
-        NK_WINDOW_BORDER|NK_WINDOW_TITLE))
+    if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+        NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "New Game"))
@@ -387,26 +421,31 @@ void    NuklearGUI::renderHUD() {
     static struct nk_image skate = loadImage("assets/textures/SkatespriteHUD.png", GL_RGBA);
     static struct nk_image fire = loadImage("assets/textures/FireupspriteHUD.png", GL_RGBA);
 
-    float   avatar_w = 150;
-    float   avatar_h = 150;
+
+    float spacingY =  ctx->style.window.spacing.y; // between items
+    float paddingY =  ctx->style.window.padding.y; // = nk_vec2(0,0); // above / under items 
+
+    float   avatar_w = windowWidth * 0.075f;
+    float   avatar_h = avatar_w;
     float   avatar_x = 50;
     float   avatar_y = 50;
     float   bon_w = avatar_w * 0.75f;
-    float   bon_h = avatar_h * 0.75f;
+    float   line_height = (avatar_h * 0.6f) / 3;
+    float   bon_h = line_height * 3 + spacingY * 3 + paddingY * 2;
     
-    if (nk_begin(ctx, "BONUSES", nk_rect(avatar_x + avatar_w * 0.75f, avatar_y + (avatar_h - bon_h) / 2, bon_w, bon_h),
-    NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, bon_h/3, 3);
+    if (nk_begin(ctx, "BONUSES", nk_rect(avatar_x + avatar_w * 0.7f, avatar_y + (avatar_h - bon_h) / 2, bon_w, bon_h),
+    NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {   
+        nk_layout_row_dynamic(ctx, line_height, 3);
         nk_spacing(ctx, 1);
         nk_image(ctx, bomb);
         nk_label(ctx, "1", NK_TEXT_CENTERED);
         
-        nk_layout_row_dynamic(ctx, bon_h/3, 3); 
+        nk_layout_row_dynamic(ctx, line_height, 3); 
         nk_spacing(ctx, 1);
         nk_image(ctx, skate);
         nk_label(ctx, "1", NK_TEXT_CENTERED);
              
-        nk_layout_row_dynamic(ctx, bon_h/3, 3);  
+        nk_layout_row_dynamic(ctx, line_height, 3);  
         nk_spacing(ctx, 1);
         nk_image(ctx, fire);
         nk_label(ctx, "1", NK_TEXT_CENTERED);
@@ -439,10 +478,8 @@ void    NuklearGUI::renderDebug() {
     
     SEventManager & event = SEventManager::getInstance();
     
-    int  w, h;
-    SDL_GetWindowSize(win.getWin(), &w, &h);
-     if (nk_begin(ctx, "DEBUG MODE", nk_rect(50, 50, menuWidth, menuHeight / 2),
-        NK_WINDOW_BORDER|NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+     if (nk_begin(ctx, "DEBUG MODE", nk_rect(50, 50, menuWidth, menuHeight),
+        NK_WINDOW_BORDER|NK_WINDOW_MINIMIZABLE))
     {
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Camera position", NK_TEXT_LEFT);
@@ -488,7 +525,6 @@ struct nk_image  NuklearGUI::loadImage(std::string const filename, GLint format)
     int x,y,n;
     GLuint tex;
     unsigned char *data = stbi_load(filename.c_str(), &x, &y, &n, 0);
-    std::cout << filename << " " << x << " " << y << std::endl;
     if (!data) throw std::runtime_error("NuklearGUI::loadImage() - Failed to load image: " + filename);
 
     glGenTextures(1, &tex);

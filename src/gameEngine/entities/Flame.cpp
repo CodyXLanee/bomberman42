@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:24:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/14 22:43:00 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/15 15:28:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,12 @@ AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::FLAME){
     creation_time = std::chrono::steady_clock::now();
     ms_before_explode = std::chrono::milliseconds(1000);
     SEventManager::getInstance().registerEvent(Event::PLAYER_MOVE, MEMBER_CALLBACK(Flame::player_move_callback));
+    SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Flame::enemy_move_callback));
 }
 
 Flame::~Flame(){
     SEventManager::getInstance().unRegisterEvent(Event::PLAYER_MOVE, this);
+    SEventManager::getInstance().unRegisterEvent(Event::ENEMY_MOVE, this);
 }
 
 void    Flame::update(void){

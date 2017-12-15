@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 09:25:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 14:10:23 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ RenderEngine::~RenderEngine() {
 }
 
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
-	int	w, h;
-
 	SDL_GetWindowSize(win, &w, &h);
 	setFireLights(entities);
 	// recordNewEntities(entities);

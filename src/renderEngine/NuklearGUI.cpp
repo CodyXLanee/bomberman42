@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/15 14:09:59 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/15 17:27:00 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ void    NuklearGUI::render() {
 
     menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
 
+    //std::cout << menuWidth << " " << menuHeight << std::endl;
+
     if (!_active_menu.empty()) {
         switch (_active_menu.top()){
             case Menu::NONE:                break;
@@ -102,6 +104,7 @@ void    NuklearGUI::render() {
             case Menu::BASE:                renderMenu(); break;
             case Menu::OPTIONS:             renderOptions(); break;
             case Menu::START:               renderStartMenu(); break;
+            case Menu::LEVEL_SELECTION:               renderLevelSelection(); break;
         }  
     }
     renderHUD();
@@ -372,6 +375,51 @@ void    NuklearGUI::renderMenu() {
     nk_end(ctx);
 }
 
+void    NuklearGUI::renderLevelSelection() {
+//    SEventManager & event = SEventManager::getInstance();
+
+    static struct nk_image  levelImage = loadImage("assets/textures/level1.png", GL_RGBA);
+    static Level::Enum      level = Level::ONE;
+
+    struct nk_vec2 spacing = ctx->style.window.spacing;
+    struct nk_vec2 padding = ctx->style.window.padding;
+    float   imageSize = (menuHeight - optionHeight) - padding.y * 2 - spacing.y * 2;
+
+    if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+    NK_WINDOW_BORDER |NK_WINDOW_NO_SCROLLBAR ))
+    {
+        nk_layout_row_dynamic(ctx, imageSize, 1);
+        nk_button_image(ctx, levelImage);
+
+        nk_layout_row_dynamic(ctx, optionHeight, 6);
+        if (nk_button_label(ctx, "Back")) 
+        {
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::LEVEL_SELECTION));            
+        }
+        nk_spacing(ctx, 1);
+        if (nk_button_label(ctx, "Previous"))
+        {
+            if (level > Level::ONE)
+            {
+                level = static_cast<Level::Enum>(level - 1);
+                levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
+            }
+        }
+        if (nk_button_label(ctx, "Next"))
+        {
+            if (level < Level::THREE)
+            {
+                level = static_cast<Level::Enum>(level + 1);
+                levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
+            }
+        }
+        nk_spacing(ctx, 1);
+        nk_label(ctx, std::string("Level " + std::to_string(level + 1)).c_str(), NK_TEXT_CENTERED);
+
+    }
+    nk_end(ctx);      
+}
+
 void    NuklearGUI::renderStartMenu() {
     SEventManager & event = SEventManager::getInstance();
     if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
@@ -390,13 +438,19 @@ void    NuklearGUI::renderStartMenu() {
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Level Selection"))
+        {
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::LEVEL_SELECTION));            
+        }
+
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Options"))
         {
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));  
         }
    
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "Quit"))
+        if (nk_button_label(ctx, "Quit Game"))
         {
             event.raise(Event::QUIT_GAME, nullptr);  
         }

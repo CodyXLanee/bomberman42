@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 14:45:55 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/15 16:52:35 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,16 @@ namespace Screen {
 }
 
 namespace Menu {
-	enum Enum {NONE, DEBUG, BASE, OPTIONS, KEY_BINDINGS, START};
+	enum Enum {NONE, DEBUG, BASE, OPTIONS, KEY_BINDINGS, START, LEVEL_SELECTION};
 }
 
 namespace GameMode {
     enum Enum {BRAWL, CAMPAIGN};
 };
+
+namespace Level {
+	enum Enum {ONE, TWO, THREE}; // Levels should be renamed properly accordingly to their 'style' ?
+}
 
 namespace Save {
     enum Enum {SLOT1, SLOT2, SLOT3};

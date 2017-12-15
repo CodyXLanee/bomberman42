@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 14:10:23 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/15 16:33:23 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 			continue;
 		glm::mat4 transform = glm::mat4();
 		transform = glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
-		transform = glm::scale(transform, glm::vec3(2.f, 2.f, 2.f));
+		// transform = glm::scale(transform, glm::vec3(2.f, 2.f, 2.f));
 		// transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
 
 		glm::vec2	graphicalDir = dynamic_cast<Player*>(*i)->getGraphicalDirection();

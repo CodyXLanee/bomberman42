@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 16:49:25 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/15 16:33:17 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ ModelManager::ModelManager() {
 	playerModel = new Model(directory + "player.obj");
 	// playerModel = new Model(directory + "cowboy.dae");
 
-	groundModel = new Model(directory + "groundTile1.obj");
 	wallModel = new Model(directory + "wall.obj");
+	groundModel = new Model(directory + "groundTile1.obj");
 	brickModel = new Model(directory + "brick.obj");
 	sceneryModel = new Model(directory + "sceneryGround.obj");
 

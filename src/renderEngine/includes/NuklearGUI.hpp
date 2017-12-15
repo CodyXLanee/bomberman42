@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/15 15:12:56 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/15 17:30:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ class NuklearGUI
         void        renderOptions();
         void        renderKeyBindings();
         void        renderLevelSelection();
+        void        renderGameModeSelectionMenu();
         void        renderStartMenu();
         void        renderHUD();
 

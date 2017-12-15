@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 10:50:26 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 14:11:45 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ void	WeatherSystem::init() {
 	}
 
 	/////////
-		ambiant = 0.2f;
-		diffuse = 0.7f;
-		specular = 0.5f;
+		ambiant = 0.3f;
+		diffuse = 0.9f;
+		specular = 1.f;
 	/////////
 
 	sun = new Light(sunPos, sunColor, Light::DIRECTIONAL);

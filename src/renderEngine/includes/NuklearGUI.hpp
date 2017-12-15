@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/15 12:13:43 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/15 15:18:55 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,12 @@ class NuklearGUI
         SEventManager           &event;
         struct nk_context       *ctx;
         struct nk_font_atlas    *atlas;
-        int                     const menuWidth;
-        int                     const menuHeight;
-        int                     const optionHeight;
+        
+        float                   menuWidth;
+        float                   menuHeight;
+        int                     windowWidth;
+        int                     windowHeight;
+        float                   optionHeight;
 
         std::chrono::time_point<std::chrono::steady_clock>          start_time;
         float                                                       fps;

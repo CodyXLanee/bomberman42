@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 18:58:47 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/15 14:10:23 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ RenderEngine::~RenderEngine() {
 }
 
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
-	int	w, h;
-
 	SDL_GetWindowSize(win, &w, &h);
 	setFireLights(entities);
 	// recordNewEntities(entities);
@@ -59,7 +57,7 @@ void	RenderEngine::shadowPass(Map const & map, std::vector<IGameEntity *> &entit
 void	RenderEngine::normalPass(Map const & map, std::vector<IGameEntity *> &entities) const {
 	glViewport(0, 0, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glActiveTexture(GL_TEXTURE2);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	// glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 	renderScene(shaderManager.getMainShader(), map, entities);

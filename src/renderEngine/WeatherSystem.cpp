@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 12:00:11 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 14:11:45 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,12 @@ void	WeatherSystem::init() {
 	if (rainy) {
 		specular *= 2;
 	}
+
+	/////////
+		ambiant = 0.3f;
+		diffuse = 0.9f;
+		specular = 1.f;
+	/////////
 
 	sun = new Light(sunPos, sunColor, Light::DIRECTIONAL);
 	lightingValues = glm::vec3(ambiant, diffuse, specular);

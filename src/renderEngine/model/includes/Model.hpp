@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 09:22:25 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/15 13:21:18 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,20 @@
 
 # include "Mesh.hpp"
 
+struct Material {
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+
+	Material() {ambient = glm::vec3(1.f); diffuse = glm::vec3(1.f); specular = glm::vec3(1.f);};
+};
+
 class Model {
 	public:
 		Model(std::string path);
 		~Model();
 
-		void	draw(Shader &shader, std::vector<glm::mat4> const & transforms);
-		// void	setInstanceBuffer(std::vector<glm::mat4> const &);
+		void						draw(Shader &shader, std::vector<glm::mat4> const & transforms);
 		std::vector<glm::mat4>		getBonesTransforms(float timeInSeconds) const;
 		bool						isAnimated() const;
 		void						setAnimation(unsigned int animation, float timeInSeconds);
@@ -46,13 +53,14 @@ class Model {
 		std::vector<Texture>		loadTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 		unsigned int				textureFromFile(const char* path, const std::string &directory);
 
-		std::string							path;
-		std::vector<Mesh*>					meshes;
-		std::string 						directory;
-		std::vector<Texture>    			texturesLoaded;
-		bool								animated;
-		bool								hasBumpMap;
-		bool								hasSpecularMap;
+		std::string					path;
+		std::vector<Mesh*>			meshes;
+		std::string 				directory;
+		std::vector<Texture>    	texturesLoaded;
+		Material					material;
+		bool						animated;
+		bool						hasBumpMap;
+		bool						hasSpecularMap;
 
 		static int i;
 };

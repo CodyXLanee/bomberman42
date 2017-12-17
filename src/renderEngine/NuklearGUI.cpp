@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/17 16:36:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/17 18:12:21 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ void    NuklearGUI::render() {
             case Menu::START:               renderStartMenu(); break;
             case Menu::LEVEL_SELECTION:     renderLevelSelection(); break;
             case Menu::SELECT_GAME_MODE:    renderGameModeSelectionMenu(); break;
+            case Menu::SELECT_SLOT:         renderSelectSlot(); break;
         }  
     }
     renderHUD();
@@ -609,6 +610,44 @@ void    NuklearGUI::renderDebug() {
                 event.raise(Event::CAMERA_MODE_UPDATE, new Camera::Mode(Camera::Mode::FOLLOW_PLAYER));
             }
             nk_menu_end(ctx);
+        }
+    }
+    nk_end(ctx);
+}
+
+void            NuklearGUI::renderSelectSlot(void){
+    int  w, h;
+    SDL_GetWindowSize(win.getWin(), &w, &h);
+    SEventManager & event = SEventManager::getInstance();
+    if (nk_begin(ctx, "", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
+        NK_WINDOW_BORDER|NK_WINDOW_TITLE))
+    {
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "SLOT 1"))
+        {
+            Save::Enum  slot = Save::SLOT1;
+            event.raise(Event::LOAD_SLOT, &slot);
+
+            Menu::Enum  me = Menu::START;
+            event.raise(Event::GUI_TOGGLE, &me);
+        }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "SLOT 2"))
+        {
+            Save::Enum  slot = Save::SLOT2;
+            event.raise(Event::LOAD_SLOT, &slot);
+
+            Menu::Enum  me = Menu::START;
+            event.raise(Event::GUI_TOGGLE, &me);
+        }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "SLOT 3"))
+        {
+            Save::Enum  slot = Save::SLOT3;
+            event.raise(Event::LOAD_SLOT, &slot);
+
+            Menu::Enum  me = Menu::START;
+            event.raise(Event::GUI_TOGGLE, &me);
         }
     }
     nk_end(ctx);

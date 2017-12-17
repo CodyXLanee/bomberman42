@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/16 18:16:04 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/17 18:14:51 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ private:
     
     void            game_finish(void *p);
     void            useSlot(void) const;
+    void            loadSlot(void *s);
 
     Sdl_gl_win          _window;
     GameEngine          *_game;

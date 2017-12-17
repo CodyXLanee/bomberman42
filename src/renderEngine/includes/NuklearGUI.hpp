@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/17 16:36:44 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/17 17:59:08 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ class NuklearGUI
         void        renderGameModeSelectionMenu();
         void        renderStartMenu();
         void        renderHUD();
+        void        renderSelectSlot(void);
 
         void        setMasterVolume(void * v);
         void        setEffectsVolume(void * v);

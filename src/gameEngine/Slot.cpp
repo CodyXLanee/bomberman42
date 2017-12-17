@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/17 16:28:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/17 18:21:32 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,20 @@ void            Slot::load_key_map(rapidjson::Value *val){
 
 Slot::Slot(Save::Enum save) : _save(save){
     _loader.setPath(save_to_path(save));
-    if (_loader.load() != 1){
-		throw std::runtime_error(save_to_path(save).c_str());
-	}
-    load_campaign_max_level(_loader.getValue("campaign_max_level"));
-    load_float_val(_loader.getValue("master_volume"), &_masterVolume);
-    load_float_val(_loader.getValue("music_volume"), &_musicVolume);
-    load_float_val(_loader.getValue("effects_volume"), &_effectsVolume);
-    load_screen_format(_loader.getValue("screen_format"));
-    load_key_map(_loader.getValue("keyMap"));
+    try {
+        if (_loader.load() != 1){
+            throw std::runtime_error(save_to_path(save).c_str());
+        }
+        load_campaign_max_level(_loader.getValue("campaign_max_level"));
+        load_float_val(_loader.getValue("master_volume"), &_masterVolume);
+        load_float_val(_loader.getValue("music_volume"), &_musicVolume);
+        load_float_val(_loader.getValue("effects_volume"), &_effectsVolume);
+        load_screen_format(_loader.getValue("screen_format"));
+        load_key_map(_loader.getValue("keyMap"));
+    }
+    catch (std::runtime_error &){
+        std::cout << "Error while loading " << save_to_path(save) << std::endl;
+    }
 
     SEventManager &event = SEventManager::getInstance();
 

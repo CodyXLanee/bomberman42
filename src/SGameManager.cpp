@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/17 14:06:26 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/17 18:14:46 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,12 @@ void            SGameManager::useSlot(void) const {
     
     f = _slot->get_effects_volume();
     em.raise(Event::EFFECTS_VOLUME_UPDATE, &f);
-    
+}
 
-
+void        SGameManager::loadSlot(void *s){
+    Save::Enum slot = *static_cast<Save::Enum *>(s);
+    _slot = new Slot(slot);
+    useSlot();
 }
 
 SGameManager::SGameManager() : 
@@ -43,7 +46,7 @@ SGameManager::SGameManager() :
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
     _gui(_window, _camera), 
     _renderer(_window.getWin(), _camera),
-    _slot(new Slot(Save::SLOT1)),
+    _slot(nullptr),
     _dev_mode(false),                                                   // <---- DEV MODE !
     _game_is_active(false), _quit_game(false), _new_game(false){
     SEventManager &em = SEventManager::getInstance();
@@ -51,7 +54,7 @@ SGameManager::SGameManager() :
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
     em.registerEvent(Event::GAME_FINISH, MEMBER_CALLBACK(SGameManager::game_finish));
 
-    useSlot();
+    em.registerEvent(Event::LOAD_SLOT, MEMBER_CALLBACK(SGameManager::loadSlot));
 }
 
 SGameManager::~SGameManager() {
@@ -63,7 +66,7 @@ SGameManager::~SGameManager() {
 void        SGameManager::manage(void) {
     SEventManager &em = SEventManager::getInstance();
     if (!_dev_mode)
-        em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::START));
+        em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::SELECT_SLOT));
     else
         em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));    
 	while(!_quit_game) {

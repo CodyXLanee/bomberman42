@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/15 17:36:35 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/17 16:36:02 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 
 NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     win(sgw), camera(camera), event(SEventManager::getInstance()),
+    _masterVolume(0.f), _effectsVolume(0.f), _musicVolume(0.f),
     _active_menu(){
     ctx = nk_sdl_init(win.getWin());
     nk_sdl_font_stash_begin(&atlas);
@@ -44,6 +45,12 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKey));
     event.registerEvent(Event::GUI_TOGGLE, MEMBER_CALLBACK(NuklearGUI::toggle));
     event.registerEvent(Event::GUI_BASE_MENU, std::pair<CallbackType, void*>(std::bind(&NuklearGUI::toggle, this, new Menu::Enum(Menu::BASE)), this));
+
+    event.registerEvent(Event::MASTER_VOLUME_UPDATE, MEMBER_CALLBACK(NuklearGUI::setMasterVolume));
+    event.registerEvent(Event::MUSIC_VOLUME_UPDATE, MEMBER_CALLBACK(NuklearGUI::setMusicVolume));
+    event.registerEvent(Event::EFFECTS_VOLUME_UPDATE, MEMBER_CALLBACK(NuklearGUI::setEffectsVolume));
+
+    event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(NuklearGUI::updateScreenFormat));
 
     start_time = std::chrono::steady_clock::now();
     frames = 0;
@@ -188,14 +195,15 @@ void    NuklearGUI::renderKeyBindings() {
         hover(6);
         if (nk_button_label(ctx, "Apply"))
         {
-            win.setKeyMap(displayedKeysMap);
+            // win.setKeyMap(displayedKeysMap);
+            event.raise(Event::KEY_MAP_UPDATE, &displayedKeysMap);
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::KEY_BINDINGS));
         }
         hover(7);
         if (nk_button_label(ctx, "Back"))
         {
-            displayedKeysMap = win.getKeyMap();;
+            displayedKeysMap = win.getKeyMap();
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::KEY_BINDINGS));
         }
@@ -206,9 +214,9 @@ void    NuklearGUI::renderKeyBindings() {
 void    NuklearGUI::renderOptions() {
     SEventManager & event = SEventManager::getInstance();
 
-    static float        masterVolume = 0.0f;
-    static float        musicVolume = MIX_MAX_VOLUME / 2;
-    static float        effectsVolume = MIX_MAX_VOLUME / 2;
+    // static float        masterVolume = 0.0f;
+    // static float        musicVolume = MIX_MAX_VOLUME / 2;
+    // static float        effectsVolume = MIX_MAX_VOLUME / 2;
 
     static Screen::Format   displayedFormat = screenFormat;    
     
@@ -259,22 +267,22 @@ void    NuklearGUI::renderOptions() {
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Master volume", NK_TEXT_LEFT);             
-        if (nk_slider_float(ctx, 0, &masterVolume, 1.f, 0.01f)) {
-            event.raise(Event::MASTER_VOLUME_UPDATE, &masterVolume);
+        if (nk_slider_float(ctx, 0, &_masterVolume, 1.f, 0.01f)) {
+            event.raise(Event::MASTER_VOLUME_UPDATE, &_masterVolume);
             /* Master */
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Music volume", NK_TEXT_LEFT);             
-        if (nk_slider_float(ctx, 0, &musicVolume, MIX_MAX_VOLUME, 1)) {
-            event.raise(Event::MUSIC_VOLUME_UPDATE, &musicVolume);
+        if (nk_slider_float(ctx, 0, &_musicVolume, MIX_MAX_VOLUME, 1)) {
+            event.raise(Event::MUSIC_VOLUME_UPDATE, &_musicVolume);
             /* Music */
         }
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Effects volume", NK_TEXT_LEFT);             
-        if (nk_slider_float(ctx, 0, &effectsVolume, MIX_MAX_VOLUME, 1)) {
-            event.raise(Event::EFFECTS_VOLUME_UPDATE, &effectsVolume);
+        if (nk_slider_float(ctx, 0, &_effectsVolume, MIX_MAX_VOLUME, 1)) {
+            event.raise(Event::EFFECTS_VOLUME_UPDATE, &_effectsVolume);
             /* Effects */
         }
 
@@ -660,4 +668,22 @@ std::string     NuklearGUI::toString(Camera::Mode m) const {
         case Camera::Mode::FOLLOW_PLAYER:   mode = "FOLLOW PLAYER"; break;
     }
     return mode;
+}
+
+void    NuklearGUI::setMasterVolume(void * v) {
+    _masterVolume = *static_cast<float*>(v);
+}
+
+void    NuklearGUI::setEffectsVolume(void * v) {
+    _effectsVolume = *static_cast<float*>(v);
+}
+
+void    NuklearGUI::setMusicVolume(void * v) {
+    _musicVolume = *static_cast<float*>(v);
+}
+
+void    NuklearGUI::updateScreenFormat(void *f) {
+    Screen::Format  *format = static_cast<Screen::Format*>(f);
+    screenFormat.resolution = format->resolution;
+    screenFormat.mode = format->mode;
 }

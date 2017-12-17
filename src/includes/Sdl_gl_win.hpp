@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 13:42:30 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/17 13:49:06 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Sdl_gl_win {
 		Sdl_gl_win();
 		void			initSDL();
 		void			updateScreenFormat(void *);
+		void            updateKeyMap(void *k);
 
 		SDL_Event		events;
 		SDL_GLContext	ctx;

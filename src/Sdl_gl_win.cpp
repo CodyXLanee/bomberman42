@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 13:42:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/17 16:43:27 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(heigh
 
     SEventManager & event = SEventManager::getInstance();
     event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(Sdl_gl_win::updateScreenFormat));
+
+    event.registerEvent(Event::KEY_MAP_UPDATE, MEMBER_CALLBACK(Sdl_gl_win::updateKeyMap));
 }
 
 Sdl_gl_win::~Sdl_gl_win() {
@@ -161,4 +163,11 @@ int             Sdl_gl_win::getMouseX() const {
 
 int             Sdl_gl_win::getMouseY() const {
     return mouseY;
+}
+
+void            Sdl_gl_win::updateKeyMap(void *k){
+    std::map<Event::Enum, SDL_Keycode>  *km = static_cast<std::map<Event::Enum, SDL_Keycode>  *>(k);
+    for (auto &&i : *km){
+        keyMap[i.first] = i.second;
+    }
 }

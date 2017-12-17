@@ -18,6 +18,7 @@ SRC_NAME =	\
 			gameEngine/EnemyManager.cpp \
 			gameEngine/BonusManager.cpp \
 			gameEngine/AI.cpp \
+			gameEngine/Slot.cpp \
 			gameEngine/entities/Bomb.cpp\
 			gameEngine/entities/Bonus.cpp\
 			gameEngine/entities/Enemy.cpp\

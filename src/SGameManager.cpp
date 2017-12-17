@@ -6,27 +6,58 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/15 15:16:56 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/17 14:06:26 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SGameManager.hpp"
 #include "SEventManager.hpp"
 
+void            SGameManager::useSlot(void) const {
+    SEventManager &em = SEventManager::getInstance();
+    Screen::Format  *sf = new Screen::Format(_slot->get_screenFormat());
+    std::map<Event::Enum, SDL_Keycode>  *km = new std::map<Event::Enum, SDL_Keycode>(_slot->getKeyMap());
+
+    em.raise(Event::SCREEN_FORMAT_UPDATE, sf);
+    delete sf;
+
+    em.raise(Event::KEY_MAP_UPDATE, km);
+    delete km;
+
+    float   f;
+    f = _slot->get_master_volume();
+    em.raise(Event::MASTER_VOLUME_UPDATE, &f);
+
+    f = _slot->get_music_volume();
+    em.raise(Event::MUSIC_VOLUME_UPDATE, &f);
+    
+    f = _slot->get_effects_volume();
+    em.raise(Event::EFFECTS_VOLUME_UPDATE, &f);
+    
+
+
+}
+
 SGameManager::SGameManager() : 
     _window(1920, 1080), 
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
     _gui(_window, _camera), 
     _renderer(_window.getWin(), _camera),
-    _dev_mode(true),                                                   // <---- DEV MODE !
-    _game_is_active(false), _quit_game(false), _new_game(false) {
+    _slot(new Slot(Save::SLOT1)),
+    _dev_mode(false),                                                   // <---- DEV MODE !
+    _game_is_active(false), _quit_game(false), _new_game(false){
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::QUIT_GAME, MEMBER_CALLBACK(SGameManager::quit_game));
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
     em.registerEvent(Event::GAME_FINISH, MEMBER_CALLBACK(SGameManager::game_finish));
+
+    useSlot();
 }
 
 SGameManager::~SGameManager() {
+    if (_slot){
+        _slot->save();
+    }
 }
 
 void        SGameManager::manage(void) {

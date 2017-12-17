@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/15 17:30:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/17 16:36:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,10 @@ class NuklearGUI
         int                     windowHeight;
         float                   optionHeight;
 
+        float                   _masterVolume;
+        float                   _effectsVolume;
+        float                   _musicVolume;
+
         std::chrono::time_point<std::chrono::steady_clock>          start_time;
         float                                                       fps;
         int                                                         frames;
@@ -72,6 +76,11 @@ class NuklearGUI
         void        renderGameModeSelectionMenu();
         void        renderStartMenu();
         void        renderHUD();
+
+        void        setMasterVolume(void * v);
+        void        setEffectsVolume(void * v);
+        void        setMusicVolume(void * v);
+        void        updateScreenFormat(void *f);
 
         struct nk_image         loadImage(std::string const, GLint);        
 

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/18 14:41:30 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 15:10:34 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void        SGameManager::loadSlot(void *s){
 }
 
 SGameManager::SGameManager() : 
-    _window(1920, 1080), 
+    _window(1600, 900), 
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
     _gui(_window, _camera), 
     _renderer(_window.getWin(), _camera),

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/17 16:36:44 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 12:30:04 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ class NuklearGUI
         ~NuklearGUI();
 
         struct nk_context *     getContext() const;
-        Screen::Resolution      getScreenResolution() const;
-        Screen::Mode            getScreenMode() const;
+      //  Screen::Resolution      getScreenResolution() const;
+      //  Screen::Mode            getScreenMode() const;
         void                    render();
         
     private:
@@ -84,8 +84,8 @@ class NuklearGUI
 
         struct nk_image         loadImage(std::string const, GLint);        
 
-        std::string             toString(Screen::Resolution) const;
-        std::string             toString(Screen::Mode) const;
+        std::string             toString(SDL_DisplayMode const &) const;
+        std::string             toString(Screen::WindowMode) const;
         std::string             toString(Camera::Mode) const;
 
         NuklearGUI();

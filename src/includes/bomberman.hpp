@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 17:29:27 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 12:50:11 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,21 @@
 # define Z_NEAR 0.1f
 # define Z_FAR 4000.f
 
+# include <SDL.h>
+
 namespace Screen {
-	enum Resolution {
-		RES_2560_1440 = 0,
-		RES_1920_1080,
-		RES_1024_768
-	};
-	enum Mode {
+	// enum Resolution {
+	// 	RES_2560_1440 = 0,
+	// 	RES_1920_1080,
+	// 	RES_1024_768
+	// };
+	enum WindowMode {
 		WINDOWED = 0,
 		FULLSCREEN
 	};
 	struct Format {
-		Screen::Resolution	resolution;
-		Screen::Mode		mode;
+		SDL_DisplayMode		displayMode;
+		Screen::WindowMode	windowMode;
 	};
 }
 

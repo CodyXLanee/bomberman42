@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Slot.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/17 16:28:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 12:49:04 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,13 @@ void            Slot::load_float_val(rapidjson::Value *val, float *float_val){
 }
 
 void            Slot::load_screen_format(rapidjson::Value *val){
-    if (!val || !val[0].HasMember("resolution") || !val[0].HasMember("mode") || !val[0]["resolution"].IsInt() || !val[0]["mode"].IsInt())
-		throw std::runtime_error("Slot loading fail.");
-    _screenFormat.resolution = static_cast<Screen::Resolution>(val[0]["resolution"].GetInt());
-    _screenFormat.mode = static_cast<Screen::Mode>(val[0]["mode"].GetInt());
+    if (!val || !val[0].HasMember("resolution_width") || !val[0].HasMember("resolution_height") || !val[0].HasMember("mode") || !val[0]["resolution_width"].IsInt() || !val[0]["resolution_height"].IsInt() || !val[0]["mode"].IsInt())
+        throw std::runtime_error("Slot loading fail.");
+    SDL_DisplayMode dm;
+    dm.w = val[0]["resolution_width"].GetInt();
+    dm.h = val[0]["resolution_height"].GetInt();
+    _screenFormat.displayMode = dm; 
+    _screenFormat.windowMode = static_cast<Screen::WindowMode>(val[0]["mode"].GetInt());
 }
 
 
@@ -88,8 +91,9 @@ void                                Slot::save(){
     
     rapidjson::Value s(rapidjson::kObjectType);
 
-    s.AddMember("resolution", rapidjson::Value(_screenFormat.resolution), d.GetAllocator());
-    s.AddMember("mode", rapidjson::Value(_screenFormat.mode), d.GetAllocator());
+    s.AddMember("resolution_width", rapidjson::Value(_screenFormat.displayMode.w), d.GetAllocator());
+    s.AddMember("resolution_height", rapidjson::Value(_screenFormat.displayMode.h), d.GetAllocator());
+    s.AddMember("mode", rapidjson::Value(_screenFormat.windowMode), d.GetAllocator());
     d.AddMember("screen_format", s, d.GetAllocator());
 
     rapidjson::Value events(rapidjson::kArrayType);
@@ -148,8 +152,8 @@ std::map<Event::Enum, SDL_Keycode> const                &Slot::getKeyMap() const
 
 void                                Slot::updateScreenFormat(void *f) {
     Screen::Format  *format = static_cast<Screen::Format*>(f);
-    _screenFormat.resolution = format->resolution;
-    _screenFormat.mode = format->mode;
+    _screenFormat.displayMode = format->displayMode;
+    _screenFormat.windowMode = format->windowMode;
 }
 
 void                                Slot::updateKeyMap(void *k){

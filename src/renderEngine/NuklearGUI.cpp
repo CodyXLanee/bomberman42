@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/17 16:36:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 13:26:02 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,6 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     nk_style_set_font(ctx, &future->handle);
     nk_sdl_font_stash_end();
     set_style(ctx, THEME_WHITE);
-
-    screenFormat = {
-        Screen::Resolution::RES_1920_1080,
-        Screen::Mode::WINDOWED
-    };
 
     event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKey));
     event.registerEvent(Event::GUI_TOGGLE, MEMBER_CALLBACK(NuklearGUI::toggle));
@@ -214,14 +209,11 @@ void    NuklearGUI::renderKeyBindings() {
 void    NuklearGUI::renderOptions() {
     SEventManager & event = SEventManager::getInstance();
 
-    // static float        masterVolume = 0.0f;
-    // static float        musicVolume = MIX_MAX_VOLUME / 2;
-    // static float        effectsVolume = MIX_MAX_VOLUME / 2;
-
-    static Screen::Format   displayedFormat = screenFormat;    
+    static Screen::Format                       displayedFormat = screenFormat;  
+    static std::vector<SDL_DisplayMode> const & modes = win.getDisplayModes();  
     
-    std::string screenResString = toString(displayedFormat.resolution);
-    std::string screenModeString = toString(displayedFormat.mode);
+    std::string screenResString = toString(displayedFormat.displayMode);
+    std::string screenModeString = toString(displayedFormat.windowMode);
 
     if (nk_begin(ctx, "OPTIONS", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
@@ -231,19 +223,11 @@ void    NuklearGUI::renderOptions() {
         if (nk_menu_begin_label(ctx, screenResString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth / 2, menuHeight))) {
             nk_layout_row_dynamic(ctx, optionHeight, 1);
 
-            if (nk_menu_item_label(ctx, "2560 x 1440", NK_TEXT_CENTERED)) {
-                event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
-                displayedFormat.resolution = Screen::Resolution::RES_2560_1440;
-            }
-
-            if (nk_menu_item_label(ctx, "1920 x 1080", NK_TEXT_CENTERED)) {
-                event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
-                displayedFormat.resolution = Screen::Resolution::RES_1920_1080;
-            }
-
-            if (nk_menu_item_label(ctx, "1024 x 768", NK_TEXT_CENTERED)) {
-                event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
-                displayedFormat.resolution = Screen::Resolution::RES_1024_768;
+            for (size_t i = 0; i < modes.size(); ++i) {
+                if (nk_menu_item_label(ctx, toString(modes[i]).c_str(), NK_TEXT_CENTERED)) {
+                    event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
+                    displayedFormat.displayMode = modes[i];
+                }
             }
             nk_menu_end(ctx);
         }
@@ -255,12 +239,12 @@ void    NuklearGUI::renderOptions() {
             nk_layout_row_dynamic(ctx, optionHeight, 1);
             if (nk_menu_item_label(ctx, "WINDOWED", NK_TEXT_CENTERED)) {
                 event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
-                displayedFormat.mode = Screen::Mode::WINDOWED;
+                displayedFormat.windowMode = Screen::WindowMode::WINDOWED;
             }
 
             if (nk_menu_item_label(ctx, "FULLSCREEN", NK_TEXT_CENTERED)) {
                 event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
-                displayedFormat.mode = Screen::Mode::FULLSCREEN;
+                displayedFormat.windowMode = Screen::WindowMode::FULLSCREEN;
             }
             nk_menu_end(ctx);
         }
@@ -299,9 +283,11 @@ void    NuklearGUI::renderOptions() {
         hover(2);
         if (nk_button_label(ctx, "Apply"))
         {
-            if (screenFormat.resolution != displayedFormat.resolution || screenFormat.mode != displayedFormat.mode) {
-                screenFormat = displayedFormat;
-                event.raise(Event::SCREEN_FORMAT_UPDATE, &displayedFormat);  
+            if (screenFormat.displayMode.w != displayedFormat.displayMode.w
+                || screenFormat.displayMode.h != displayedFormat.displayMode.h
+                || screenFormat.windowMode != displayedFormat.windowMode) {
+                    screenFormat = displayedFormat;
+                    event.raise(Event::SCREEN_FORMAT_UPDATE, &displayedFormat);  
             }
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));  
@@ -641,21 +627,15 @@ struct nk_image  NuklearGUI::loadImage(std::string const filename, GLint format)
     return nk_image_id((int)tex);
 }
 
-std::string     NuklearGUI::toString(Screen::Resolution r) const {
-    std::string res;
-    switch (r) {
-        case Screen::Resolution::RES_2560_1440: res = "2560 x 1440"; break;
-        case Screen::Resolution::RES_1920_1080: res = "1920 x 1080"; break;
-        case Screen::Resolution::RES_1024_768:  res = "1024 x 768"; break;
-    }
-    return res;
+std::string     NuklearGUI::toString(SDL_DisplayMode const & m) const {
+    return std::to_string(m.w) + " x " + std::to_string(m.h);
 }
 
-std::string     NuklearGUI::toString(Screen::Mode m) const {
+std::string     NuklearGUI::toString(Screen::WindowMode m) const {
     std::string mode;
     switch (m) {
-        case Screen::Mode::WINDOWED:  mode = "WINDOWED"; break;
-        case Screen::Mode::FULLSCREEN:mode = "FULLSCREEN"; break;
+        case Screen::WindowMode::WINDOWED:  mode = "WINDOWED"; break;
+        case Screen::WindowMode::FULLSCREEN:mode = "FULLSCREEN"; break;
     }
     return mode;
 }
@@ -684,6 +664,6 @@ void    NuklearGUI::setMusicVolume(void * v) {
 
 void    NuklearGUI::updateScreenFormat(void *f) {
     Screen::Format  *format = static_cast<Screen::Format*>(f);
-    screenFormat.resolution = format->resolution;
-    screenFormat.mode = format->mode;
+    screenFormat.displayMode = format->displayMode;
+    screenFormat.windowMode = format->windowMode;
 }

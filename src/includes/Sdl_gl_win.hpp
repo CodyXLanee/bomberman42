@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/17 13:49:06 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 12:49:56 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Sdl_gl_win {
 		int				getMouseX() const;
 		int				getMouseY() const;
 		SDL_Window		*getWin() const;
+		std::vector<SDL_DisplayMode> const &	getDisplayModes() const;
 		void			initGL() const;
 		
 		std::map<Event::Enum, SDL_Keycode>	getKeyMap() const;
@@ -47,6 +48,7 @@ class Sdl_gl_win {
 		SDL_Event		events;
 		SDL_GLContext	ctx;
 		SDL_Window		*win;
+		std::vector<SDL_DisplayMode>	modes;
 		int				mouseX;
 		int				mouseY;
 		size_t			width;

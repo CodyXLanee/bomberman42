@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 13:33:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 14:37:21 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -437,6 +437,11 @@ void    NuklearGUI::renderStartMenu() {
         {
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));  
         }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Slot selection"))
+        {
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::SELECT_SLOT));  
+        }
    
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Quit Game"))
@@ -556,39 +561,72 @@ void    NuklearGUI::renderDebug() {
 }
 
 void            NuklearGUI::renderSelectSlot(void){
-    int  w, h;
-    SDL_GetWindowSize(win.getWin(), &w, &h);
     SEventManager & event = SEventManager::getInstance();
-    if (nk_begin(ctx, "", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
-        NK_WINDOW_BORDER|NK_WINDOW_TITLE))
+
+    static struct nk_vec2 spacing =  ctx->style.window.spacing;
+    static struct nk_vec2 padding =  ctx->style.window.padding; 
+
+    static float groupHeight = menuHeight - 2 * padding.y - spacing.y; 
+
+    if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+        NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "SLOT 1"))
+        nk_layout_row_dynamic(ctx, groupHeight, 3);  
+        nk_group_begin(ctx, "SLOT 1", NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR);
         {
-            Save::Enum  slot = Save::SLOT1;
-            event.raise(Event::LOAD_SLOT, &slot);
-
-            Menu::Enum  me = Menu::START;
-            event.raise(Event::GUI_TOGGLE, &me);
+            nk_layout_row_dynamic(ctx, optionHeight, 1);  
+            if (nk_button_label(ctx, "SLOT 1"))
+            {
+                Save::Enum  slot = Save::SLOT1;
+                event.raise(Event::LOAD_SLOT, &slot);
+    
+                Menu::Enum  me = Menu::START;
+                event.raise(Event::GUI_TOGGLE, &me);
+            }
+            nk_label(ctx, "Stuff", NK_TEXT_CENTERED);
+            nk_label(ctx, "describing", NK_TEXT_CENTERED);
+            nk_label(ctx, "the save", NK_TEXT_CENTERED);
+            nk_label(ctx, "...", NK_TEXT_CENTERED);            
+            nk_button_color(ctx, nk_rgb(0,0,255));            
+            
+            nk_group_end(ctx);            
         }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "SLOT 2"))
+        nk_group_begin(ctx, "SLOT 2", NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR);
         {
-            Save::Enum  slot = Save::SLOT2;
-            event.raise(Event::LOAD_SLOT, &slot);
+            nk_layout_row_dynamic(ctx, optionHeight, 1);  
+            if (nk_button_label(ctx, "SLOT 2"))
+            {
+                Save::Enum  slot = Save::SLOT2;
+                event.raise(Event::LOAD_SLOT, &slot);
 
-            Menu::Enum  me = Menu::START;
-            event.raise(Event::GUI_TOGGLE, &me);
+                Menu::Enum  me = Menu::START;
+                event.raise(Event::GUI_TOGGLE, &me);
+            }
+            nk_label(ctx, "Stuff", NK_TEXT_CENTERED);
+            nk_label(ctx, "describing", NK_TEXT_CENTERED);
+            nk_label(ctx, "the save", NK_TEXT_CENTERED);
+            nk_label(ctx, "...", NK_TEXT_CENTERED);
+            nk_button_color(ctx, nk_rgb(255,0,0));            
+            nk_group_end(ctx);            
         }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "SLOT 3"))
+        nk_group_begin(ctx, "SLOT 3", NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR);
         {
-            Save::Enum  slot = Save::SLOT3;
-            event.raise(Event::LOAD_SLOT, &slot);
+            nk_layout_row_dynamic(ctx, optionHeight, 1);  
+            if (nk_button_label(ctx, "SLOT 3"))
+            {
+                Save::Enum  slot = Save::SLOT3;
+                event.raise(Event::LOAD_SLOT, &slot);
 
-            Menu::Enum  me = Menu::START;
-            event.raise(Event::GUI_TOGGLE, &me);
-        }
+                Menu::Enum  me = Menu::START;
+                event.raise(Event::GUI_TOGGLE, &me);
+            }
+            nk_label(ctx, "Stuff", NK_TEXT_CENTERED);
+            nk_label(ctx, "describing", NK_TEXT_CENTERED);
+            nk_label(ctx, "the save", NK_TEXT_CENTERED);
+            nk_label(ctx, "...", NK_TEXT_CENTERED);
+            nk_button_color(ctx, nk_rgb(0,255,0));            
+            nk_group_end(ctx);
+        }    
     }
     nk_end(ctx);
 }

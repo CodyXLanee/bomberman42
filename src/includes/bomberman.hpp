@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/17 17:57:31 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 12:21:58 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ namespace Screen {
 }
 
 namespace Menu {
-	enum Enum {NONE, DEBUG, BASE, OPTIONS, KEY_BINDINGS, START, LEVEL_SELECTION, SELECT_GAME_MODE, SELECT_SLOT};
+	enum Enum {NONE, DEBUG, BASE, OPTIONS, KEY_BINDINGS, START, LEVEL_SELECTION, SELECT_SLOT};
 }
 
 namespace GameMode {

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/17 18:12:21 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 12:25:32 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@ void    NuklearGUI::render() {
             case Menu::OPTIONS:             renderOptions(); break;
             case Menu::START:               renderStartMenu(); break;
             case Menu::LEVEL_SELECTION:     renderLevelSelection(); break;
-            case Menu::SELECT_GAME_MODE:    renderGameModeSelectionMenu(); break;
             case Menu::SELECT_SLOT:         renderSelectSlot(); break;
         }  
     }
@@ -428,70 +427,27 @@ void    NuklearGUI::renderLevelSelection() {
     nk_end(ctx);       
 }
 
-void    NuklearGUI::renderGameModeSelectionMenu() {
-    int  w, h;
-    SDL_GetWindowSize(win.getWin(), &w, &h);
-    SEventManager & event = SEventManager::getInstance();
-    if (nk_begin(ctx, "", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
-        NK_WINDOW_BORDER|NK_WINDOW_TITLE))
-    {
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "Brawl"))
-        {
-            GameMode::Enum  *gm = new GameMode::Enum(GameMode::BRAWL);
-            event.raise(Event::NEW_GAME, gm);
-            delete gm;
-
-            Menu::Enum  *me = new Menu::Enum(Menu::NONE);
-            event.raise(Event::GUI_TOGGLE, me);
-            delete me;
-        }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "Campaign"))
-        {
-            GameMode::Enum  *gm = new GameMode::Enum(GameMode::CAMPAIGN);
-            event.raise(Event::NEW_GAME, gm);
-            delete gm;
-
-            Menu::Enum  *me = new Menu::Enum(Menu::NONE);
-            event.raise(Event::GUI_TOGGLE, me);
-            delete me;
-        }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "Back"))
-        {
-            Menu::Enum  *me = new Menu::Enum(Menu::START);
-            event.raise(Event::GUI_TOGGLE, me);
-            delete me;
-        }
-    }
-    nk_end(ctx);
-}
-
 void    NuklearGUI::renderStartMenu() {
     SEventManager & event = SEventManager::getInstance();
     if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "New Game"))
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        if (nk_button_label(ctx, "Campaign"))
         {
-            Menu::Enum  *me = new Menu::Enum(Menu::SELECT_GAME_MODE);
-            event.raise(Event::GUI_TOGGLE, me);
-            delete me;
-        }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "Load Game"))
-        {
-            // event.raise(Event::LOAD_GAME, new Menu::Enum(, &menu));
+            Menu::Enum  me = Menu::LEVEL_SELECTION;
+            event.raise(Event::GUI_TOGGLE, &me);
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "Level Selection"))
+        if (nk_button_label(ctx, "Brawl"))
         {
-            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::LEVEL_SELECTION));            
-        }
+            GameMode::Enum  gm = GameMode::BRAWL;
+            event.raise(Event::NEW_GAME, &gm);
 
+            Menu::Enum  me = Menu::NONE;
+            event.raise(Event::GUI_TOGGLE, &me);
+        }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Options"))
         {

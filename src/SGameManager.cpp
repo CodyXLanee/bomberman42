@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/17 18:14:46 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 14:41:30 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ void        SGameManager::manage(void) {
             
             _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
             _renderer.render(_game->getMap(), _game->getEntityList());
+            _gui.renderHUD();
         }
 		_gui.render();
 		_window.initGL();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bomberman.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/18 16:13:04 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 16:24:15 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ namespace Difficulty {
 	enum Enum {EASY, MEDIUM, HARD};
 }
 
-namespace Player {
+namespace PlayerColor {
 	enum Enum {WHITE, BLACK, RED, YELLOW};
 }
 

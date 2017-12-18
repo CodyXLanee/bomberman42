@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 16:21:37 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 16:24:50 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -417,7 +417,7 @@ void    NuklearGUI::renderNewBrawlMenu() {
     static Level::Enum      level = Level::ONE;    
     static struct nk_image  levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
 
-    static Player::Enum     player = Player::WHITE;
+    static PlayerColor::Enum     player = PlayerColor::WHITE;
     static struct nk_image  playerImage = loadImage("assets/textures/BlackBM-avatar.png", GL_RGBA);    
 
     static  int enemies = 1;    
@@ -442,10 +442,10 @@ void    NuklearGUI::renderNewBrawlMenu() {
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Player", NK_TEXT_LEFT);
         if (nk_button_image_label(ctx, playerImage, toString(player).c_str(), NK_TEXT_CENTERED)) {
-            if (player == Player::YELLOW)
-                player = Player::WHITE;
+            if (player == PlayerColor::YELLOW)
+                player = PlayerColor::WHITE;
             else
-                player = static_cast<Player::Enum>(player + 1);
+                player = static_cast<PlayerColor::Enum>(player + 1);
             // change playerImage here
         }        
         
@@ -750,13 +750,13 @@ std::string     NuklearGUI::toString(Camera::Mode m) const {
     return mode;
 }
 
-std::string     NuklearGUI::toString(Player::Enum p) const {
+std::string     NuklearGUI::toString(PlayerColor::Enum p) const {
     std::string player;
     switch (p) {
-        case Player::WHITE:           player = "WHITE"; break;
-        case Player::BLACK:           player = "BLACK"; break;
-        case Player::RED:             player = "RED"; break;
-        case Player::YELLOW:          player = "YELLOW"; break;
+        case PlayerColor::WHITE:           player = "WHITE"; break;
+        case PlayerColor::BLACK:           player = "BLACK"; break;
+        case PlayerColor::RED:             player = "RED"; break;
+        case PlayerColor::YELLOW:          player = "YELLOW"; break;
     }
     return player;
 }

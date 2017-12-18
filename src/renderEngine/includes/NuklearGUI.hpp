@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 16:17:46 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 16:25:11 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ class NuklearGUI
         std::string             toString(SDL_DisplayMode const &) const;
         std::string             toString(Screen::WindowMode) const;
         std::string             toString(Camera::Mode) const;
-        std::string             toString(Player::Enum) const;
+        std::string             toString(PlayerColor::Enum) const;
         std::string             toString(Difficulty::Enum) const;
 
         NuklearGUI();

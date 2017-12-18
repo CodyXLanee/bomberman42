@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/18 12:50:11 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 13:32:39 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,6 @@
 # include <SDL.h>
 
 namespace Screen {
-	// enum Resolution {
-	// 	RES_2560_1440 = 0,
-	// 	RES_1920_1080,
-	// 	RES_1024_768
-	// };
 	enum WindowMode {
 		WINDOWED = 0,
 		FULLSCREEN
@@ -36,7 +31,7 @@ namespace Screen {
 }
 
 namespace Menu {
-	enum Enum {NONE, DEBUG, BASE, OPTIONS, KEY_BINDINGS, START, LEVEL_SELECTION, SELECT_GAME_MODE};
+	enum Enum {NONE, DEBUG, BASE, OPTIONS, KEY_BINDINGS, START, LEVEL_SELECTION, SELECT_SLOT};
 }
 
 namespace GameMode {

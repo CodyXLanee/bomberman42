@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 12:30:04 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 13:33:44 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ class NuklearGUI
         ~NuklearGUI();
 
         struct nk_context *     getContext() const;
-      //  Screen::Resolution      getScreenResolution() const;
-      //  Screen::Mode            getScreenMode() const;
         void                    render();
         
     private:
@@ -76,6 +74,7 @@ class NuklearGUI
         void        renderGameModeSelectionMenu();
         void        renderStartMenu();
         void        renderHUD();
+        void        renderSelectSlot(void);
 
         void        setMasterVolume(void * v);
         void        setEffectsVolume(void * v);

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 16:24:50 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 18:31:28 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ void    NuklearGUI::render() {
     menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
 
     if (!_active_menu.empty()) {
+        if (_active_menu.top() != Menu::NONE && _active_menu.top() != Menu::DEBUG)
+            renderBackgroundImage();
         switch (_active_menu.top()){
             case Menu::NONE:                break;
             case Menu::DEBUG:               renderDebug(); break;
@@ -203,6 +205,19 @@ void    NuklearGUI::renderKeyBindings() {
     }
     nk_end(ctx);
 }
+
+void    NuklearGUI::renderBackgroundImage() {
+
+    static struct nk_image image = loadImage("assets/textures/bomb_background.png", GL_RGBA);
+
+    if (nk_begin(ctx, "BACKGROUND", nk_rect(0, 0, windowWidth, windowHeight),
+    NK_WINDOW_NO_SCROLLBAR)) {
+        nk_layout_row_dynamic(ctx, windowHeight, 1);
+        nk_image(ctx, image);
+    }    
+    nk_end(ctx); 
+}
+
 
 void    NuklearGUI::renderOptions() {
     SEventManager & event = SEventManager::getInstance();

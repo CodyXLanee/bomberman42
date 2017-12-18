@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 16:25:11 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 18:30:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class NuklearGUI
         void        bindKeyToEvent(Event::Enum, std::map<Event::Enum, SDL_Keycode> &);
         void        hover(int) const;
 
+        void        renderBackgroundImage();
         void        renderDebug();
         void        renderMenu();
         void        renderOptions();

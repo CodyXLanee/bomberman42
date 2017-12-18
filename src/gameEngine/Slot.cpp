@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Slot.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/17 16:28:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 13:31:47 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,13 @@ void            Slot::load_float_val(rapidjson::Value *val, float *float_val){
 }
 
 void            Slot::load_screen_format(rapidjson::Value *val){
-    if (!val || !val[0].HasMember("resolution") || !val[0].HasMember("mode") || !val[0]["resolution"].IsInt() || !val[0]["mode"].IsInt())
-		throw std::runtime_error("Slot loading fail.");
-    _screenFormat.resolution = static_cast<Screen::Resolution>(val[0]["resolution"].GetInt());
-    _screenFormat.mode = static_cast<Screen::Mode>(val[0]["mode"].GetInt());
+    if (!val || !val[0].HasMember("resolution_width") || !val[0].HasMember("resolution_height") || !val[0].HasMember("mode") || !val[0]["resolution_width"].IsInt() || !val[0]["resolution_height"].IsInt() || !val[0]["mode"].IsInt())
+        throw std::runtime_error("Slot loading fail.");
+    SDL_DisplayMode dm;
+    dm.w = val[0]["resolution_width"].GetInt();
+    dm.h = val[0]["resolution_height"].GetInt();
+    _screenFormat.displayMode = dm; 
+    _screenFormat.windowMode = static_cast<Screen::WindowMode>(val[0]["mode"].GetInt());
 }
 
 
@@ -53,15 +56,20 @@ void            Slot::load_key_map(rapidjson::Value *val){
 
 Slot::Slot(Save::Enum save) : _save(save){
     _loader.setPath(save_to_path(save));
-    if (_loader.load() != 1){
-		throw std::runtime_error(save_to_path(save).c_str());
-	}
-    load_campaign_max_level(_loader.getValue("campaign_max_level"));
-    load_float_val(_loader.getValue("master_volume"), &_masterVolume);
-    load_float_val(_loader.getValue("music_volume"), &_musicVolume);
-    load_float_val(_loader.getValue("effects_volume"), &_effectsVolume);
-    load_screen_format(_loader.getValue("screen_format"));
-    load_key_map(_loader.getValue("keyMap"));
+    try {
+        if (_loader.load() != 1){
+            throw std::runtime_error(save_to_path(save).c_str());
+        }
+        load_campaign_max_level(_loader.getValue("campaign_max_level"));
+        load_float_val(_loader.getValue("master_volume"), &_masterVolume);
+        load_float_val(_loader.getValue("music_volume"), &_musicVolume);
+        load_float_val(_loader.getValue("effects_volume"), &_effectsVolume);
+        load_screen_format(_loader.getValue("screen_format"));
+        load_key_map(_loader.getValue("keyMap"));
+    }
+    catch (std::runtime_error &){
+        std::cout << "Error while loading " << save_to_path(save) << std::endl;
+    }
 
     SEventManager &event = SEventManager::getInstance();
 
@@ -88,8 +96,9 @@ void                                Slot::save(){
     
     rapidjson::Value s(rapidjson::kObjectType);
 
-    s.AddMember("resolution", rapidjson::Value(_screenFormat.resolution), d.GetAllocator());
-    s.AddMember("mode", rapidjson::Value(_screenFormat.mode), d.GetAllocator());
+    s.AddMember("resolution_width", rapidjson::Value(_screenFormat.displayMode.w), d.GetAllocator());
+    s.AddMember("resolution_height", rapidjson::Value(_screenFormat.displayMode.h), d.GetAllocator());
+    s.AddMember("mode", rapidjson::Value(_screenFormat.windowMode), d.GetAllocator());
     d.AddMember("screen_format", s, d.GetAllocator());
 
     rapidjson::Value events(rapidjson::kArrayType);
@@ -148,8 +157,8 @@ std::map<Event::Enum, SDL_Keycode> const                &Slot::getKeyMap() const
 
 void                                Slot::updateScreenFormat(void *f) {
     Screen::Format  *format = static_cast<Screen::Format*>(f);
-    _screenFormat.resolution = format->resolution;
-    _screenFormat.mode = format->mode;
+    _screenFormat.displayMode = format->displayMode;
+    _screenFormat.windowMode = format->windowMode;
 }
 
 void                                Slot::updateKeyMap(void *k){

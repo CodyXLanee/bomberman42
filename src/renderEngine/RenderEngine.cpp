@@ -106,6 +106,7 @@ void	RenderEngine::renderScenery(Shader &shader) const {
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	static float fakeTime = 0.f;
+	int numAnim = 0;
     std::vector<glm::mat4> data;
 	glm::vec3 camPos = camera.getPosition();
 	Model &model = modelManager.getModel(ModelManager::PLAYER);
@@ -116,9 +117,11 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
 			continue;
+		if ((*i)->getState() == State::MOVING)
+			numAnim = 1;
 		glm::mat4 transform = glm::mat4();
 		transform = glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
-		// transform = glm::scale(transform, glm::vec3(2.f, 2.f, 2.f));
+		// transform = glm::scale(transform, glm::vec3(1.f, 1.f, 1.f));
 		// transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
 
 		glm::vec2	graphicalDir = dynamic_cast<Player*>(*i)->getGraphicalDirection();
@@ -137,8 +140,7 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 
 		data.push_back(transform);
 	}
-	
-	model.setAnimation(0, fakeTime);
+	model.setAnimation(numAnim, fakeTime);
     model.draw(shader, data);
 	fakeTime += 0.01;
 }

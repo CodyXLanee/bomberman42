@@ -44,7 +44,7 @@ SGameManager::SGameManager() :
     _gui(_window, _camera), 
     _renderer(_window.getWin(), _camera),
     _slot(new Slot(Save::SLOT1)),
-    _dev_mode(false),                                                   // <---- DEV MODE !
+    _dev_mode(true),                                                   // <---- DEV MODE !
     _game_is_active(false), _quit_game(false), _new_game(false){
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::QUIT_GAME, MEMBER_CALLBACK(SGameManager::quit_game));

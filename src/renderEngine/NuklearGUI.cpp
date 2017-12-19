@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 18:31:28 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 14:17:41 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void    NuklearGUI::handleKey(void * p) {
     }
 }
 
-void    NuklearGUI::render() {
+void    NuklearGUI::render(bool game_is_active) {
     SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);
 
    float spacingY =  ctx->style.window.spacing.y; // between items
@@ -94,9 +94,15 @@ void    NuklearGUI::render() {
 
     menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
 
+    if (game_is_active) {
+        renderHUD();
+    }
+    else {
+        renderBackgroundImage();
+    }
     if (!_active_menu.empty()) {
-        if (_active_menu.top() != Menu::NONE && _active_menu.top() != Menu::DEBUG)
-            renderBackgroundImage();
+     //   if (_active_menu.top() != Menu::NONE && _active_menu.top() != Menu::DEBUG)
+      //      renderBackgroundImage();
         switch (_active_menu.top()){
             case Menu::NONE:                break;
             case Menu::DEBUG:               renderDebug(); break;
@@ -548,49 +554,50 @@ void    NuklearGUI::update_fps(void){
 
 void    NuklearGUI::renderHUD() {
 
-    static struct nk_image portrait = loadImage("assets/textures/BlackBM-avatar.png", GL_RGBA);
-    static struct nk_image bomb = loadImage("assets/textures/BombupspriteHUD.png", GL_RGBA);
-    static struct nk_image skate = loadImage("assets/textures/SkatespriteHUD.png", GL_RGBA);
-    static struct nk_image fire = loadImage("assets/textures/FireupspriteHUD.png", GL_RGBA);
+    static struct nk_image portrait = loadImage("assets/textures/white_HUD.png", GL_RGBA);
+    static struct nk_image portrait2 = loadImage("assets/textures/yellow_HUD.png", GL_RGBA);
 
+    static struct nk_vec2 spacing =  ctx->style.window.spacing; // between items
+   // static struct nk_vec2 padding =  ctx->style.window.padding; // = nk_vec2(0,0); // above / under items 
 
-    float spacingY =  ctx->style.window.spacing.y; // between items
-    float paddingY =  ctx->style.window.padding.y; // = nk_vec2(0,0); // above / under items 
-
-    float   avatar_w = windowWidth * 0.075f;
+    float   avatar_w = windowWidth * 0.1f;
     float   avatar_h = avatar_w;
     float   avatar_x = 50;
     float   avatar_y = 50;
-    float   bon_w = avatar_w * 0.75f;
-    float   line_height = (avatar_h * 0.6f) / 3;
-    float   bon_h = line_height * 3 + spacingY * 3 + paddingY * 2;
-    
-    if (nk_begin(ctx, "BONUSES", nk_rect(avatar_x + avatar_w * 0.7f, avatar_y + (avatar_h - bon_h) / 2, bon_w, bon_h),
-    NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, line_height, 3);
-        nk_spacing(ctx, 1);
-        nk_image(ctx, bomb);
-        nk_label(ctx, "1", NK_TEXT_CENTERED);
-        
-        nk_layout_row_dynamic(ctx, line_height, 3); 
-        nk_spacing(ctx, 1);
-        nk_image(ctx, skate);
-        nk_label(ctx, "1", NK_TEXT_CENTERED);
-             
-        nk_layout_row_dynamic(ctx, line_height, 3);  
-        nk_spacing(ctx, 1);
-        nk_image(ctx, fire);
-        nk_label(ctx, "1", NK_TEXT_CENTERED);
-    }
-    nk_end(ctx); 
-    
     struct nk_style_item tmp = ctx->style.window.fixed_background;
-    ctx->style.window.fixed_background = nk_style_item_hide();
+    ctx->style.window.fixed_background = nk_style_item_image(portrait);
+    float w = avatar_w + 8 * spacing.x;
+    float h = avatar_h + 2 * spacing.y;
     
-    if (nk_begin(ctx, "AVATAR", nk_rect(avatar_x, avatar_y, avatar_w, avatar_h),
+    if (nk_begin(ctx, "TOP_LEFT_HUD", nk_rect(avatar_x, avatar_y, w, h),
     NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, avatar_h, 1);          
-        nk_image(ctx, portrait);
+        nk_layout_row_dynamic(ctx, avatar_h - optionHeight, 1);                
+        nk_layout_row_static(ctx, optionHeight, avatar_w / 8, 8);
+        nk_spacing(ctx, 1);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "3", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "1", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "6", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+    }    
+    nk_end(ctx); 
+
+    ctx->style.window.fixed_background = nk_style_item_image(portrait2);    
+
+    if (nk_begin(ctx, "TOP_RIGHT_HUD", nk_rect(windowWidth - w - avatar_x, avatar_y, w, h),
+    NK_WINDOW_NO_SCROLLBAR)) {   
+        nk_layout_row_dynamic(ctx, avatar_h - optionHeight, 1);                
+        nk_layout_row_static(ctx, optionHeight, avatar_w / 8, 8);
+        nk_spacing(ctx, 1);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "2", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "4", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "5", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
     }    
     nk_end(ctx); 
     

@@ -244,21 +244,28 @@ static std::map< EnemyType::Enum, std::pair< Model &, std::vector< glm::mat4> > 
 }
 
 void	RenderEngine::renderEnemies(Shader &shader, std::vector<IGameEntity *> const & entities) const {
+	static float fakeTime = 0.f;
+	Model &model = modelManager.getModel(ModelManager::BALOON);
 	std::map< EnemyType::Enum, std::pair< Model &, std::vector< glm::mat4> > > map = init_enemy_map(modelManager);
+
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() == Type::ENEMY){
 			for (auto &&j : map){
 				if (j.first == static_cast<Enemy *>(*i)->getEnemyType()){
 					glm::mat4 transform = glm::mat4();
-					transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.5f)));
+					transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f)));
 					j.second.second.push_back(transform);
 				}
 			}
 		}
 	}
 	for (auto &&j : map){
-		j.second.first.draw(shader, j.second.second);
+		// j.second.first.draw(shader, j.second.second);
+
+		model.setAnimation(1, fakeTime);
+	    model.draw(shader, j.second.second);
 	}
+	fakeTime += 0.01;
 }
 
 static	float		bombs_animation_scale(Bomb const *b){

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 17:58:32 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 10:35:38 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,11 @@ class RenderEngine {
 
 		WeatherSystem	*meteo;
 
-		std::vector<ParticleSystem *>	particles;
+		std::vector<std::pair<ParticleSystem *, int>>	particles;
 		std::vector<IGameEntity *>		entitiesRecorded;
 		std::vector<glm::vec3>			fireLights;
+		void	setBombParticles(void *);
+		void	setFireParticles(void *);
 
 		int w;
 		int h;
@@ -71,7 +73,7 @@ class RenderEngine {
 
 		void	renderScene(Shader &shader, Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	renderWall(Shader &shader, const std::vector<IndestructibleBloc> &b, Map const & map) const;
-		void	renderBrick(Shader &shader, const std::vector<DestructibleBloc> &blocs, Map const & map) const;
+		void	renderBrick(Shader &shader, const std::vector<DestructibleBloc> &blocs) const;
 		void	renderGround(Shader &shader, Map const & map) const;
 		void	renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderBombs(Shader &shader, std::vector<IGameEntity *> const & entities) const;
@@ -79,13 +81,13 @@ class RenderEngine {
 		void	renderFlames(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderEnemies(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderScenery(Shader &shader) const;
-		void	renderParticles() const;
+		void	renderParticles();
 
 		void	setFireLights(std::vector<IGameEntity *> const & entities);
 		// void	recordNewEntities(std::vector<IGameEntity *> & entities);
 		void	shadowPass(Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	normalPass(Map const & map, std::vector<IGameEntity *> &entities) const;
-		void	blendedPass(std::vector<IGameEntity *> &entities) const;
+		void	blendedPass(std::vector<IGameEntity *> &entities);
 
 		void	createShadowBuffer();
 		void	createDepthCubemap();

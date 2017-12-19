@@ -15,7 +15,7 @@
 ModelManager::ModelManager() {
 	directory = "assets/models/obj/";
 
-		playerModel = new Model(directory + "playerbibis.fbx");
+	playerModel = new Model(directory + "player.fbx");
 	// playerModel = new Model(directory + "player.dae");
 	// playerModel = new Model(directory + "cowboy.dae");
 
@@ -31,7 +31,8 @@ ModelManager::ModelManager() {
 	bombUpModel = new Model(directory + "bombUp.obj");
 	speedUpModel = new Model(directory + "speedUp.obj");
 
-	baloonModel = new Model(directory + "baloon.obj");
+	// baloonModel = new Model(directory + "baloon.obj");
+	baloonModel = new Model(directory + "mob.fbx");
 	
 	aiDebug = new Model(directory + "aiDebug.obj");
 }

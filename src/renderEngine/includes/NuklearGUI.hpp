@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 11:49:59 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 18:32:19 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ class NuklearGUI
         ~NuklearGUI();
 
         struct nk_context *     getContext() const;
-        void                    renderHUD();        
-        void                    render();
+        void                    render(bool);
         
     private:
         Sdl_gl_win              &win;
@@ -47,28 +46,30 @@ class NuklearGUI
         int                     windowWidth;
         int                     windowHeight;
         float                   optionHeight;
-
+        
         float                   _masterVolume;
         float                   _effectsVolume;
         float                   _musicVolume;
-
+        
         std::chrono::time_point<std::chrono::steady_clock>          start_time;
         float                                                       fps;
         int                                                         frames;
         void                                                        update_fps(void);
-
+        
         Screen::Format          screenFormat;
-
+        
         std::stack<Menu::Enum>              _active_menu;
         std::map<Event::Enum, SDL_Keycode>  _keysMap;
         SDL_Keycode                       * _keyToChange;
-
+        
+        void        setupFont();
         void        handleKey(void *);
         void        toggle(void *);
         void        bindKeyToEvent(Event::Enum, std::map<Event::Enum, SDL_Keycode> &);
         void        hover(int) const;
-
+        
         void        renderBackgroundImage();
+        void        renderHUD();        
         void        renderDebug();
         void        renderMenu();
         void        renderOptions();

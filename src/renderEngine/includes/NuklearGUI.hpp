@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 18:30:44 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 11:49:59 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "Camera.hpp"
 # include "SEventManager.hpp"
 # include "Sdl_gl_win.hpp"
+# include "GameParams.hpp"
 # include <stb_image.h>
 
 

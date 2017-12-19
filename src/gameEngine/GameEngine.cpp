@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 19:27:49 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 11:48:53 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@
 #include "IndestructibleBloc.hpp"
 #include "DestructibleBloc.hpp"
 
-GameEngine::GameEngine(GameMode::Enum gm) : _map(new Map()), 
+GameEngine::GameEngine(GameParams &gp) : _map(new Map()), 
 _entityList(new std::vector<IGameEntity *>()), 
 _bonusManager(new BonusManager(_entityList)),
 _enemyManager(new EnemyManager(_entityList)),
 _bombManager(new BombManager(_map, _entityList)), 
-_playerManager(new PlayerManager()), 
-_gameMode(gm),
+_playerManager(new PlayerManager()),
+_gameParams(gp),
 _winManager(nullptr) {
 	loadMap("maps/map.json");
 

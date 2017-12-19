@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 18:31:28 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 15:13:26 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     _masterVolume(0.f), _effectsVolume(0.f), _musicVolume(0.f),
     _active_menu(){
     ctx = nk_sdl_init(win.getWin());
-    nk_sdl_font_stash_begin(&atlas);
-    struct nk_font *future = nk_font_atlas_add_from_file(atlas, "assets/fonts/kenvector_future_thin.ttf", 13, 0);
-    nk_style_set_font(ctx, &future->handle);
-    nk_sdl_font_stash_end();
+
+    SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);    
+    setupFont();
+
     set_style(ctx, THEME_WHITE);
 
     event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKey));
@@ -75,6 +75,14 @@ void    NuklearGUI::toggle(void *p) {
     }
 }
 
+void    NuklearGUI::setupFont() {
+    nk_sdl_font_stash_begin(&atlas);
+    struct nk_font *future = nk_font_atlas_add_from_file(atlas, "assets/fonts/kenvector_future_thin.ttf", windowWidth / 100, 0);
+    nk_style_set_font(ctx, &future->handle);
+    nk_sdl_font_stash_end();
+    ctx->style.button.rounding = windowWidth / 50;
+}
+
 void    NuklearGUI::handleKey(void * p) {
     SDL_Keycode key = *static_cast<int*>(p);
     if (_keyToChange != nullptr) {
@@ -83,20 +91,26 @@ void    NuklearGUI::handleKey(void * p) {
     }
 }
 
-void    NuklearGUI::render() {
-    SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);
+void    NuklearGUI::render(bool game_is_active) {
 
    float spacingY =  ctx->style.window.spacing.y; // between items
    float paddingY =  ctx->style.window.padding.y; // = nk_vec2(0,0); // above / under items
+    
+   SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);   
+   menuWidth = windowWidth / 2;
+   optionHeight = windowHeight / 10;
+   menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
+   setupFont();
 
-    menuWidth = windowWidth / 4;
-    optionHeight = windowHeight / 25;
-
-    menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
-
+    if (game_is_active) {
+        renderHUD();
+    }
+    else {
+        renderBackgroundImage();
+    }
     if (!_active_menu.empty()) {
-        if (_active_menu.top() != Menu::NONE && _active_menu.top() != Menu::DEBUG)
-            renderBackgroundImage();
+     //   if (_active_menu.top() != Menu::NONE && _active_menu.top() != Menu::DEBUG)
+      //      renderBackgroundImage();
         switch (_active_menu.top()){
             case Menu::NONE:                break;
             case Menu::DEBUG:               renderDebug(); break;
@@ -548,49 +562,52 @@ void    NuklearGUI::update_fps(void){
 
 void    NuklearGUI::renderHUD() {
 
-    static struct nk_image portrait = loadImage("assets/textures/BlackBM-avatar.png", GL_RGBA);
-    static struct nk_image bomb = loadImage("assets/textures/BombupspriteHUD.png", GL_RGBA);
-    static struct nk_image skate = loadImage("assets/textures/SkatespriteHUD.png", GL_RGBA);
-    static struct nk_image fire = loadImage("assets/textures/FireupspriteHUD.png", GL_RGBA);
+    static struct nk_image portrait = loadImage("assets/textures/white_HUD.png", GL_RGBA);
+    static struct nk_image portrait2 = loadImage("assets/textures/yellow_HUD.png", GL_RGBA);
 
+    static struct nk_vec2 spacing =  ctx->style.window.spacing; // between items
+   // static struct nk_vec2 padding =  ctx->style.window.padding; // = nk_vec2(0,0); // above / under items 
 
-    float spacingY =  ctx->style.window.spacing.y; // between items
-    float paddingY =  ctx->style.window.padding.y; // = nk_vec2(0,0); // above / under items 
-
-    float   avatar_w = windowWidth * 0.075f;
+    float   avatar_w = windowWidth * 0.1f;
     float   avatar_h = avatar_w;
     float   avatar_x = 50;
     float   avatar_y = 50;
-    float   bon_w = avatar_w * 0.75f;
-    float   line_height = (avatar_h * 0.6f) / 3;
-    float   bon_h = line_height * 3 + spacingY * 3 + paddingY * 2;
-    
-    if (nk_begin(ctx, "BONUSES", nk_rect(avatar_x + avatar_w * 0.7f, avatar_y + (avatar_h - bon_h) / 2, bon_w, bon_h),
-    NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, line_height, 3);
-        nk_spacing(ctx, 1);
-        nk_image(ctx, bomb);
-        nk_label(ctx, "1", NK_TEXT_CENTERED);
-        
-        nk_layout_row_dynamic(ctx, line_height, 3); 
-        nk_spacing(ctx, 1);
-        nk_image(ctx, skate);
-        nk_label(ctx, "1", NK_TEXT_CENTERED);
-             
-        nk_layout_row_dynamic(ctx, line_height, 3);  
-        nk_spacing(ctx, 1);
-        nk_image(ctx, fire);
-        nk_label(ctx, "1", NK_TEXT_CENTERED);
-    }
-    nk_end(ctx); 
-    
     struct nk_style_item tmp = ctx->style.window.fixed_background;
-    ctx->style.window.fixed_background = nk_style_item_hide();
+    ctx->style.window.fixed_background = nk_style_item_image(portrait);
+    float w = avatar_w + 8 * spacing.x;
+    float h = avatar_h + 2 * spacing.y;
+
+    float barHeight = avatar_h * 0.22f;
     
-    if (nk_begin(ctx, "AVATAR", nk_rect(avatar_x, avatar_y, avatar_w, avatar_h),
+    if (nk_begin(ctx, "TOP_LEFT_HUD", nk_rect(avatar_x, avatar_y, w, h),
     NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, avatar_h, 1);          
-        nk_image(ctx, portrait);
+        nk_layout_row_dynamic(ctx, avatar_h - barHeight, 1);                
+        nk_layout_row_static(ctx, barHeight, avatar_w / 8, 8);
+        nk_spacing(ctx, 1);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "3", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "1", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "6", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+    }    
+    nk_end(ctx); 
+
+    ctx->style.window.fixed_background = nk_style_item_image(portrait2);    
+
+    if (nk_begin(ctx, "TOP_RIGHT_HUD", nk_rect(windowWidth - w - avatar_x, avatar_y, w, h),
+    NK_WINDOW_NO_SCROLLBAR)) {   
+        nk_layout_row_dynamic(ctx, avatar_h - barHeight, 1);                
+        nk_layout_row_static(ctx, barHeight, avatar_w / 8, 8);
+        nk_spacing(ctx, 1);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "2", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "4", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
+        nk_label(ctx, "5", NK_TEXT_LEFT);
+        nk_spacing(ctx, 1);
     }    
     nk_end(ctx); 
     

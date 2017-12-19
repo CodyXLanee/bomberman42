@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 11:26:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/06 16:47:24 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/19 11:20:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ void	ParticleSystem::init() {
 		case FIRE:
 			particleNbr = 10;
 			for(unsigned int i = 0; i < particleNbr; i++) {
-				float r1 = static_cast<float>((rand() % 10)) - 10.f;
-				float r2 = static_cast<float>((rand() % 10)) - 10.f;
-				positions.push_back(oriPos + glm::vec3(r1 / 10.f, r2 / 10.f, 0.f));
+				float r1 = static_cast<float>((rand() % 10)) - 5.f;
+				float r2 = static_cast<float>((rand() % 10)) - 5.f;
+				positions.push_back(oriPos + glm::vec3(r1 / 10.f, r2 / 10.f, 0.5f));
 			}
 			break;
 		case BOMB:

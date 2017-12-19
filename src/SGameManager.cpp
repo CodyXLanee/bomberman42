@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/18 15:10:34 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/19 14:13:58 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,8 @@ void        SGameManager::manage(void) {
             
             _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
             _renderer.render(_game->getMap(), _game->getEntityList());
-            _gui.renderHUD();
         }
-		_gui.render();
+		_gui.render(_game_is_active);
 		_window.initGL();
 		SDL_GL_SwapWindow(_window.getWin());
 	}

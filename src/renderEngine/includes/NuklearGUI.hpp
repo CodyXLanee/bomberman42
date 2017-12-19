@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 12:17:13 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/19 14:31:46 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ class NuklearGUI
         std::map<Event::Enum, SDL_Keycode>  _keysMap;
         SDL_Keycode                       * _keyToChange;
         
+        void        setupFont();
         void        handleKey(void *);
         void        toggle(void *);
         void        bindKeyToEvent(Event::Enum, std::map<Event::Enum, SDL_Keycode> &);

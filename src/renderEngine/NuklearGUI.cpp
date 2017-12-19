@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 14:17:41 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/19 15:13:26 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     _masterVolume(0.f), _effectsVolume(0.f), _musicVolume(0.f),
     _active_menu(){
     ctx = nk_sdl_init(win.getWin());
-    nk_sdl_font_stash_begin(&atlas);
-    struct nk_font *future = nk_font_atlas_add_from_file(atlas, "assets/fonts/kenvector_future_thin.ttf", 13, 0);
-    nk_style_set_font(ctx, &future->handle);
-    nk_sdl_font_stash_end();
+
+    SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);    
+    setupFont();
+
     set_style(ctx, THEME_WHITE);
 
     event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKey));
@@ -75,6 +75,14 @@ void    NuklearGUI::toggle(void *p) {
     }
 }
 
+void    NuklearGUI::setupFont() {
+    nk_sdl_font_stash_begin(&atlas);
+    struct nk_font *future = nk_font_atlas_add_from_file(atlas, "assets/fonts/kenvector_future_thin.ttf", windowWidth / 100, 0);
+    nk_style_set_font(ctx, &future->handle);
+    nk_sdl_font_stash_end();
+    ctx->style.button.rounding = windowWidth / 50;
+}
+
 void    NuklearGUI::handleKey(void * p) {
     SDL_Keycode key = *static_cast<int*>(p);
     if (_keyToChange != nullptr) {
@@ -84,15 +92,15 @@ void    NuklearGUI::handleKey(void * p) {
 }
 
 void    NuklearGUI::render(bool game_is_active) {
-    SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);
 
    float spacingY =  ctx->style.window.spacing.y; // between items
    float paddingY =  ctx->style.window.padding.y; // = nk_vec2(0,0); // above / under items
-
-    menuWidth = windowWidth / 4;
-    optionHeight = windowHeight / 25;
-
-    menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
+    
+   SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);   
+   menuWidth = windowWidth / 2;
+   optionHeight = windowHeight / 10;
+   menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
+   setupFont();
 
     if (game_is_active) {
         renderHUD();
@@ -568,11 +576,13 @@ void    NuklearGUI::renderHUD() {
     ctx->style.window.fixed_background = nk_style_item_image(portrait);
     float w = avatar_w + 8 * spacing.x;
     float h = avatar_h + 2 * spacing.y;
+
+    float barHeight = avatar_h * 0.22f;
     
     if (nk_begin(ctx, "TOP_LEFT_HUD", nk_rect(avatar_x, avatar_y, w, h),
     NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, avatar_h - optionHeight, 1);                
-        nk_layout_row_static(ctx, optionHeight, avatar_w / 8, 8);
+        nk_layout_row_dynamic(ctx, avatar_h - barHeight, 1);                
+        nk_layout_row_static(ctx, barHeight, avatar_w / 8, 8);
         nk_spacing(ctx, 1);
         nk_spacing(ctx, 1);
         nk_label(ctx, "3", NK_TEXT_LEFT);
@@ -588,8 +598,8 @@ void    NuklearGUI::renderHUD() {
 
     if (nk_begin(ctx, "TOP_RIGHT_HUD", nk_rect(windowWidth - w - avatar_x, avatar_y, w, h),
     NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, avatar_h - optionHeight, 1);                
-        nk_layout_row_static(ctx, optionHeight, avatar_w / 8, 8);
+        nk_layout_row_dynamic(ctx, avatar_h - barHeight, 1);                
+        nk_layout_row_static(ctx, barHeight, avatar_w / 8, 8);
         nk_spacing(ctx, 1);
         nk_spacing(ctx, 1);
         nk_label(ctx, "2", NK_TEXT_LEFT);

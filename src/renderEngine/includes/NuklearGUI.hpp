@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 13:33:44 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 18:30:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class NuklearGUI
         ~NuklearGUI();
 
         struct nk_context *     getContext() const;
+        void                    renderHUD();        
         void                    render();
         
     private:
@@ -66,14 +67,15 @@ class NuklearGUI
         void        bindKeyToEvent(Event::Enum, std::map<Event::Enum, SDL_Keycode> &);
         void        hover(int) const;
 
+        void        renderBackgroundImage();
         void        renderDebug();
         void        renderMenu();
         void        renderOptions();
         void        renderKeyBindings();
         void        renderLevelSelection();
         void        renderGameModeSelectionMenu();
+        void        renderNewBrawlMenu();
         void        renderStartMenu();
-        void        renderHUD();
         void        renderSelectSlot(void);
 
         void        setMasterVolume(void * v);
@@ -86,6 +88,8 @@ class NuklearGUI
         std::string             toString(SDL_DisplayMode const &) const;
         std::string             toString(Screen::WindowMode) const;
         std::string             toString(Camera::Mode) const;
+        std::string             toString(PlayerColor::Enum) const;
+        std::string             toString(Difficulty::Enum) const;
 
         NuklearGUI();
         NuklearGUI(NuklearGUI const &);

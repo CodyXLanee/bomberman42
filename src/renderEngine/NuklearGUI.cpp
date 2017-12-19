@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/18 13:33:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/18 18:31:28 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ void    NuklearGUI::render() {
     menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
 
     if (!_active_menu.empty()) {
+        if (_active_menu.top() != Menu::NONE && _active_menu.top() != Menu::DEBUG)
+            renderBackgroundImage();
         switch (_active_menu.top()){
             case Menu::NONE:                break;
             case Menu::DEBUG:               renderDebug(); break;
@@ -104,9 +106,9 @@ void    NuklearGUI::render() {
             case Menu::START:               renderStartMenu(); break;
             case Menu::LEVEL_SELECTION:     renderLevelSelection(); break;
             case Menu::SELECT_SLOT:         renderSelectSlot(); break;
+            case Menu::NEW_BRAWL:           renderNewBrawlMenu(); break;
         }  
     }
-    renderHUD();
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
 }
 
@@ -203,6 +205,19 @@ void    NuklearGUI::renderKeyBindings() {
     }
     nk_end(ctx);
 }
+
+void    NuklearGUI::renderBackgroundImage() {
+
+    static struct nk_image image = loadImage("assets/textures/bomb_background.png", GL_RGBA);
+
+    if (nk_begin(ctx, "BACKGROUND", nk_rect(0, 0, windowWidth, windowHeight),
+    NK_WINDOW_NO_SCROLLBAR)) {
+        nk_layout_row_dynamic(ctx, windowHeight, 1);
+        nk_image(ctx, image);
+    }    
+    nk_end(ctx); 
+}
+
 
 void    NuklearGUI::renderOptions() {
     SEventManager & event = SEventManager::getInstance();
@@ -304,6 +319,7 @@ void    NuklearGUI::renderOptions() {
 
 void    NuklearGUI::renderMenu() {
     SEventManager & event = SEventManager::getInstance();
+
     if (nk_begin(ctx, "MENU", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
@@ -320,14 +336,14 @@ void    NuklearGUI::renderMenu() {
         if (nk_button_label(ctx, "Restart level"))
         {
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
-            /* restart */
+            event.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         hover(3);
         if (nk_button_label(ctx, "How to play"))
         {
-            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
+            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK)); 
             /* how to play */
         }
 
@@ -411,6 +427,74 @@ void    NuklearGUI::renderLevelSelection() {
     nk_end(ctx);       
 }
 
+void    NuklearGUI::renderNewBrawlMenu() {
+
+    static Level::Enum      level = Level::ONE;    
+    static struct nk_image  levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
+
+    static PlayerColor::Enum     player = PlayerColor::WHITE;
+    static struct nk_image  playerImage = loadImage("assets/textures/BlackBM-avatar.png", GL_RGBA);    
+
+    static  int enemies = 1;    
+    static  Difficulty::Enum difficulty = Difficulty::EASY;    
+
+    if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+    NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
+
+        nk_layout_row_dynamic(ctx, optionHeight * 2, 1);
+        nk_image(ctx, levelImage);
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Arena", NK_TEXT_LEFT);
+        if (nk_button_label(ctx, std::string("Arena " + std::to_string(level + 1)).c_str())) {
+            if (level == Level::THREE)
+                level = Level::ONE;
+            else
+                level = static_cast<Level::Enum>(level + 1);
+            levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
+        }   
+        
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Player", NK_TEXT_LEFT);
+        if (nk_button_image_label(ctx, playerImage, toString(player).c_str(), NK_TEXT_CENTERED)) {
+            if (player == PlayerColor::YELLOW)
+                player = PlayerColor::WHITE;
+            else
+                player = static_cast<PlayerColor::Enum>(player + 1);
+            // change playerImage here
+        }        
+        
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Enemies", NK_TEXT_LEFT);
+        if (nk_button_label(ctx, std::to_string(enemies).c_str())) {
+            if (enemies == 3)
+                enemies = 1;
+            else
+                enemies += 1;
+        }
+            
+        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_label(ctx, "Difficulty", NK_TEXT_LEFT);
+        if (nk_button_label(ctx, toString(difficulty).c_str())) {
+            if (difficulty == Difficulty::HARD)
+                difficulty = Difficulty::EASY;
+            else
+                difficulty = static_cast<Difficulty::Enum>(difficulty + 1);
+        }        
+        
+        nk_layout_row_dynamic(ctx, optionHeight, 2);        
+        if (nk_button_label(ctx, "Back")) {
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::NEW_BRAWL));  
+        }    
+        if (nk_button_label(ctx, "Go !")) {
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::NONE));  
+            event.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::BRAWL));
+        }   
+
+        nk_end(ctx);
+    }
+}
+
 void    NuklearGUI::renderStartMenu() {
     SEventManager & event = SEventManager::getInstance();
     if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
@@ -426,16 +510,21 @@ void    NuklearGUI::renderStartMenu() {
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Brawl"))
         {
-            GameMode::Enum  gm = GameMode::BRAWL;
-            event.raise(Event::NEW_GAME, &gm);
+         //   GameMode::Enum  gm = GameMode::BRAWL;
+          //  event.raise(Event::NEW_GAME, &gm);
 
-            Menu::Enum  me = Menu::NONE;
+            Menu::Enum  me = Menu::NEW_BRAWL;
             event.raise(Event::GUI_TOGGLE, &me);
         }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Options"))
         {
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));  
+        }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Slot selection"))
+        {
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::SELECT_SLOT));  
         }
    
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
@@ -556,39 +645,72 @@ void    NuklearGUI::renderDebug() {
 }
 
 void            NuklearGUI::renderSelectSlot(void){
-    int  w, h;
-    SDL_GetWindowSize(win.getWin(), &w, &h);
     SEventManager & event = SEventManager::getInstance();
-    if (nk_begin(ctx, "", nk_rect(w / 2 - menuWidth / 2, h / 2 - menuHeight / 2, menuWidth, menuHeight),
-        NK_WINDOW_BORDER|NK_WINDOW_TITLE))
+
+    static struct nk_vec2 spacing =  ctx->style.window.spacing;
+    static struct nk_vec2 padding =  ctx->style.window.padding; 
+
+    static float groupHeight = menuHeight - 2 * padding.y - spacing.y; 
+
+    if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+        NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "SLOT 1"))
+        nk_layout_row_dynamic(ctx, groupHeight, 3);  
+        nk_group_begin(ctx, "SLOT 1", NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR);
         {
-            Save::Enum  slot = Save::SLOT1;
-            event.raise(Event::LOAD_SLOT, &slot);
-
-            Menu::Enum  me = Menu::START;
-            event.raise(Event::GUI_TOGGLE, &me);
+            nk_layout_row_dynamic(ctx, optionHeight, 1);  
+            if (nk_button_label(ctx, "SLOT 1"))
+            {
+                Save::Enum  slot = Save::SLOT1;
+                event.raise(Event::LOAD_SLOT, &slot);
+    
+                Menu::Enum  me = Menu::START;
+                event.raise(Event::GUI_TOGGLE, &me);
+            }
+            nk_label(ctx, "Stuff", NK_TEXT_CENTERED);
+            nk_label(ctx, "describing", NK_TEXT_CENTERED);
+            nk_label(ctx, "the save", NK_TEXT_CENTERED);
+            nk_label(ctx, "...", NK_TEXT_CENTERED);            
+            nk_button_color(ctx, nk_rgb(0,0,255));            
+            
+            nk_group_end(ctx);            
         }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "SLOT 2"))
+        nk_group_begin(ctx, "SLOT 2", NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR);
         {
-            Save::Enum  slot = Save::SLOT2;
-            event.raise(Event::LOAD_SLOT, &slot);
+            nk_layout_row_dynamic(ctx, optionHeight, 1);  
+            if (nk_button_label(ctx, "SLOT 2"))
+            {
+                Save::Enum  slot = Save::SLOT2;
+                event.raise(Event::LOAD_SLOT, &slot);
 
-            Menu::Enum  me = Menu::START;
-            event.raise(Event::GUI_TOGGLE, &me);
+                Menu::Enum  me = Menu::START;
+                event.raise(Event::GUI_TOGGLE, &me);
+            }
+            nk_label(ctx, "Stuff", NK_TEXT_CENTERED);
+            nk_label(ctx, "describing", NK_TEXT_CENTERED);
+            nk_label(ctx, "the save", NK_TEXT_CENTERED);
+            nk_label(ctx, "...", NK_TEXT_CENTERED);
+            nk_button_color(ctx, nk_rgb(255,0,0));            
+            nk_group_end(ctx);            
         }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "SLOT 3"))
+        nk_group_begin(ctx, "SLOT 3", NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR);
         {
-            Save::Enum  slot = Save::SLOT3;
-            event.raise(Event::LOAD_SLOT, &slot);
+            nk_layout_row_dynamic(ctx, optionHeight, 1);  
+            if (nk_button_label(ctx, "SLOT 3"))
+            {
+                Save::Enum  slot = Save::SLOT3;
+                event.raise(Event::LOAD_SLOT, &slot);
 
-            Menu::Enum  me = Menu::START;
-            event.raise(Event::GUI_TOGGLE, &me);
-        }
+                Menu::Enum  me = Menu::START;
+                event.raise(Event::GUI_TOGGLE, &me);
+            }
+            nk_label(ctx, "Stuff", NK_TEXT_CENTERED);
+            nk_label(ctx, "describing", NK_TEXT_CENTERED);
+            nk_label(ctx, "the save", NK_TEXT_CENTERED);
+            nk_label(ctx, "...", NK_TEXT_CENTERED);
+            nk_button_color(ctx, nk_rgb(0,255,0));            
+            nk_group_end(ctx);
+        }    
     }
     nk_end(ctx);
 }
@@ -641,6 +763,27 @@ std::string     NuklearGUI::toString(Camera::Mode m) const {
         case Camera::Mode::FOLLOW_PLAYER:   mode = "FOLLOW PLAYER"; break;
     }
     return mode;
+}
+
+std::string     NuklearGUI::toString(PlayerColor::Enum p) const {
+    std::string player;
+    switch (p) {
+        case PlayerColor::WHITE:           player = "WHITE"; break;
+        case PlayerColor::BLACK:           player = "BLACK"; break;
+        case PlayerColor::RED:             player = "RED"; break;
+        case PlayerColor::YELLOW:          player = "YELLOW"; break;
+    }
+    return player;
+}
+
+std::string     NuklearGUI::toString(Difficulty::Enum d) const {
+    std::string difficulty;
+    switch (d) {
+        case Difficulty::EASY:             difficulty = "EASY"; break;
+        case Difficulty::MEDIUM:           difficulty = "MEDIUM"; break;
+        case Difficulty::HARD:             difficulty = "HARD"; break;
+    }
+    return difficulty;
 }
 
 void    NuklearGUI::setMasterVolume(void * v) {

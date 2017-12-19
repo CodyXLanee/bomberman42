@@ -15,7 +15,8 @@
 ModelManager::ModelManager() {
 	directory = "assets/models/obj/";
 
-	playerModel = new Model(directory + "player.obj");
+		playerModel = new Model(directory + "playerbibis.fbx");
+	// playerModel = new Model(directory + "player.dae");
 	// playerModel = new Model(directory + "cowboy.dae");
 
 	wallModel = new Model(directory + "wall.obj");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/17 18:14:46 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/18 15:10:34 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void        SGameManager::loadSlot(void *s){
 }
 
 SGameManager::SGameManager() : 
-    _window(1920, 1080), 
+    _window(1600, 900), 
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
     _gui(_window, _camera), 
     _renderer(_window.getWin(), _camera),
@@ -80,6 +80,7 @@ void        SGameManager::manage(void) {
             
             _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
             _renderer.render(_game->getMap(), _game->getEntityList());
+            _gui.renderHUD();
         }
 		_gui.render();
 		_window.initGL();

@@ -41,6 +41,7 @@ void	Model::loadModel(std::string path) {
 		return;
 	}
 	animated = scene->HasAnimations();
+	// std::cout << scene->mNumAnimations << std::endl;
 	this->directory = path.substr(0, path.find_last_of('/'));
 
 	aiNode *node = scene->mRootNode;
@@ -274,6 +275,8 @@ bool	Model::isAnimated() const {
 
 void	Model::setAnimation(unsigned int animation, float timeInSeconds) {
 	if (animated) {
-		meshes[0]->setAnimation(animation, timeInSeconds);
+		for (unsigned int i = 0; i < meshes.size(); i++) {
+			meshes[i]->setAnimation(animation, timeInSeconds);
+		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 15:13:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/19 16:14:45 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void    NuklearGUI::render(bool game_is_active) {
    float paddingY =  ctx->style.window.padding.y; // = nk_vec2(0,0); // above / under items
     
    SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);   
-   menuWidth = windowWidth / 2;
+   menuWidth = windowWidth / 3;
    optionHeight = windowHeight / 10;
    menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
    setupFont();
@@ -158,35 +158,35 @@ void    NuklearGUI::renderKeyBindings() {
     if (nk_begin(ctx, "KEY BINDINGS", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Move up", NK_TEXT_LEFT);
+        nk_label(ctx, "Move up", NK_TEXT_CENTERED);
         hover(1);
         if (nk_button_label(ctx, up.c_str())) {
             bindKeyToEvent(Event::HUMAN_PLAYER_UP, displayedKeysMap);            
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Move down", NK_TEXT_LEFT);
+        nk_label(ctx, "Move down", NK_TEXT_CENTERED);
         hover(2);
         if (nk_button_label(ctx, down.c_str())) {
             bindKeyToEvent(Event::HUMAN_PLAYER_DOWN, displayedKeysMap);            
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Move left", NK_TEXT_LEFT);
+        nk_label(ctx, "Move left", NK_TEXT_CENTERED);
         hover(3);
         if (nk_button_label(ctx, left.c_str())) {
             bindKeyToEvent(Event::HUMAN_PLAYER_LEFT, displayedKeysMap);
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Move right", NK_TEXT_LEFT);
+        nk_label(ctx, "Move right", NK_TEXT_CENTERED);
         hover(4);
         if (nk_button_label(ctx, right.c_str())) {
             bindKeyToEvent(Event::HUMAN_PLAYER_RIGHT, displayedKeysMap);
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Drop bomb", NK_TEXT_LEFT);
+        nk_label(ctx, "Drop bomb", NK_TEXT_CENTERED);
         hover(5);
         if (nk_button_label(ctx, drop.c_str())) {
             bindKeyToEvent(Event::HUMAN_SPAWN_BOMB, displayedKeysMap);
@@ -223,13 +223,32 @@ void    NuklearGUI::renderKeyBindings() {
 void    NuklearGUI::renderBackgroundImage() {
 
     static struct nk_image image = loadImage("assets/textures/bomb_background.png", GL_RGBA);
+    static struct nk_image bomb = loadImage("assets/textures/bg_bomb.png", GL_RGBA);
+    static struct nk_image bomberman = loadImage("assets/textures/bg_bomberman.png", GL_RGBA);
+    static float offsetX = 0;
+    static float direction = 1.f;
+    offsetX += direction;
+    if (offsetX < -100 || offsetX > 100)
+        direction = -direction;
+
+    struct nk_style_item tmp = ctx->style.window.fixed_background;
+    ctx->style.window.fixed_background = nk_style_item_image(image);
 
     if (nk_begin(ctx, "BACKGROUND", nk_rect(0, 0, windowWidth, windowHeight),
-    NK_WINDOW_NO_SCROLLBAR)) {
-        nk_layout_row_dynamic(ctx, windowHeight, 1);
-        nk_image(ctx, image);
+    NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_NOT_INTERACTIVE)) {
+
+        nk_layout_space_begin(ctx, NK_STATIC, windowHeight, 10);
+        nk_layout_space_push(ctx, nk_rect(offsetX,0,654,525));
+        nk_image(ctx, bomb);
+        nk_layout_space_push(ctx, nk_rect(windowWidth / 2 - offsetX,0,611,843));
+        nk_image(ctx, bomberman);
+        
+      
     }    
     nk_end(ctx); 
+
+    ctx->style.window.fixed_background = tmp;
+    
 }
 
 
@@ -246,7 +265,7 @@ void    NuklearGUI::renderOptions() {
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Screen resolution", NK_TEXT_LEFT);
+        nk_label(ctx, "Screen resolution", NK_TEXT_CENTERED);
         if (nk_menu_begin_label(ctx, screenResString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth / 2, menuHeight))) {
             nk_layout_row_dynamic(ctx, optionHeight, 1);
 
@@ -260,7 +279,7 @@ void    NuklearGUI::renderOptions() {
         }
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Screen mode", NK_TEXT_LEFT);     
+        nk_label(ctx, "Screen mode", NK_TEXT_CENTERED);     
         if (nk_menu_begin_label(ctx, screenModeString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth / 2, menuHeight))) {
 
             nk_layout_row_dynamic(ctx, optionHeight, 1);
@@ -277,28 +296,28 @@ void    NuklearGUI::renderOptions() {
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Master volume", NK_TEXT_LEFT);             
+        nk_label(ctx, "Master volume", NK_TEXT_CENTERED);             
         if (nk_slider_float(ctx, 0, &_masterVolume, 1.f, 0.01f)) {
             event.raise(Event::MASTER_VOLUME_UPDATE, &_masterVolume);
             /* Master */
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Music volume", NK_TEXT_LEFT);             
+        nk_label(ctx, "Music volume", NK_TEXT_CENTERED);             
         if (nk_slider_float(ctx, 0, &_musicVolume, MIX_MAX_VOLUME, 1)) {
             event.raise(Event::MUSIC_VOLUME_UPDATE, &_musicVolume);
             /* Music */
         }
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Effects volume", NK_TEXT_LEFT);             
+        nk_label(ctx, "Effects volume", NK_TEXT_CENTERED);             
         if (nk_slider_float(ctx, 0, &_effectsVolume, MIX_MAX_VOLUME, 1)) {
             event.raise(Event::EFFECTS_VOLUME_UPDATE, &_effectsVolume);
             /* Effects */
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Key bindings", NK_TEXT_LEFT);  
+        nk_label(ctx, "Key bindings", NK_TEXT_CENTERED);  
         hover(1);   
         if (nk_button_label(ctx, "Configure"))
         {
@@ -447,7 +466,7 @@ void    NuklearGUI::renderNewBrawlMenu() {
     static struct nk_image  levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
 
     static PlayerColor::Enum     player = PlayerColor::WHITE;
-    static struct nk_image  playerImage = loadImage("assets/textures/BlackBM-avatar.png", GL_RGBA);    
+    static struct nk_image  playerImage = loadImage("assets/textures/white.png", GL_RGBA);    
 
     static  int enemies = 1;    
     static  Difficulty::Enum difficulty = Difficulty::EASY;    
@@ -459,7 +478,7 @@ void    NuklearGUI::renderNewBrawlMenu() {
         nk_image(ctx, levelImage);
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Arena", NK_TEXT_LEFT);
+        nk_label(ctx, "Arena", NK_TEXT_CENTERED);
         if (nk_button_label(ctx, std::string("Arena " + std::to_string(level + 1)).c_str())) {
             if (level == Level::THREE)
                 level = Level::ONE;
@@ -469,7 +488,7 @@ void    NuklearGUI::renderNewBrawlMenu() {
         }   
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Player", NK_TEXT_LEFT);
+        nk_label(ctx, "Player", NK_TEXT_CENTERED);
         if (nk_button_image_label(ctx, playerImage, toString(player).c_str(), NK_TEXT_CENTERED)) {
             if (player == PlayerColor::YELLOW)
                 player = PlayerColor::WHITE;
@@ -479,7 +498,7 @@ void    NuklearGUI::renderNewBrawlMenu() {
         }        
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Enemies", NK_TEXT_LEFT);
+        nk_label(ctx, "Enemies", NK_TEXT_CENTERED);
         if (nk_button_label(ctx, std::to_string(enemies).c_str())) {
             if (enemies == 3)
                 enemies = 1;
@@ -488,7 +507,7 @@ void    NuklearGUI::renderNewBrawlMenu() {
         }
             
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Difficulty", NK_TEXT_LEFT);
+        nk_label(ctx, "Difficulty", NK_TEXT_CENTERED);
         if (nk_button_label(ctx, toString(difficulty).c_str())) {
             if (difficulty == Difficulty::HARD)
                 difficulty = Difficulty::EASY;

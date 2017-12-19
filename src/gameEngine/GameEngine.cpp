@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 11:48:53 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 18:25:21 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,11 @@ _bombManager(new BombManager(_map, _entityList)),
 _playerManager(new PlayerManager()),
 _gameParams(gp),
 _winManager(nullptr) {
-	loadMap("maps/map.json");
+	loadMap("maps/brawl_0.json");
+	if (_gameParams.get_game_mode() == GameMode::BRAWL){
+		std::cout << "fdsa" << std::endl;
+		placeBrawlPlayers();
+	}
 
 }
 
@@ -67,6 +71,27 @@ glm::vec2 const 				* GameEngine::getPlayerPos(void) const{
 	return new glm::vec2(0., 0.);
 }
 
+glm::vec2				GameEngine::placeBrawlAI(Player *human, int i){
+	glm::vec2	v(human->getPosition());
+	if (i == 0 || i == 2)
+		v.y = human->getPosition().y == 0.f ? _map->getSize().y - 1.f : 0.f;
+	if (i == 0 || i == 1 )
+		v.x = human->getPosition().x == 0.f ? _map->getSize().x - 1.f : 0.f;
+	return v;
+}
+
+void					GameEngine::placeBrawlPlayers(void){
+	// Set the Human Player at a random corner
+	Player *human = new Player(glm::vec2((rand() % 2) * (_map->getSize().x - 1), (rand() % 2) * (_map->getSize().y - 1)), 0);
+	this->_entityList->push_back(human);
+	_playerManager->setHumanPlayer(human);
+	for (int i = 0; i < _gameParams.get_brawl_enemy_nb(); i++){
+		Player *p = new Player(placeBrawlAI(human, i), i + 1);
+		_playerManager->addPlayer(p);
+		this->_entityList->push_back(p);
+	}
+}
+
 void					GameEngine::loadMap(const char *path){
     rapidjson::Value * grid;
     rapidjson::Value * sun;
@@ -99,15 +124,16 @@ void					GameEngine::loadMap(const char *path){
     			this->_map->addDestructibleBlocs(DestructibleBloc(glm::vec2(j,i)));
     		// if (entityType == 0) // case vide
     		// 	break;
-    		if (entityType >=1 && entityType <=5) {// players (1 is human, the rest is an AI)
-    			glm::vec2		vec(static_cast<float>(j), static_cast<float>(i));
-    			Player *	player = new Player(vec, entityType - 1);
-				if (player->getPlayerNb() == 0)
-					_playerManager->setHumanPlayer(player);
-				else
-					_playerManager->addPlayer(player);
-    			this->_entityList->push_back(player);
-    		}
+			
+    		// if (entityType >=1 && entityType <=5) {// players (1 is human, the rest is an AI)
+    		// 	glm::vec2		vec(static_cast<float>(j), static_cast<float>(i));
+    		// 	Player *	player = new Player(vec, entityType - 1);
+			// 	if (player->getPlayerNb() == 0)
+			// 		_playerManager->setHumanPlayer(player);
+			// 	else
+			// 		_playerManager->addPlayer(player);
+    		// 	this->_entityList->push_back(player);
+    		// }
 		}
 	}
 	// OTHER ATTRIBUTES

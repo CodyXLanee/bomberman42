@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 11:51:58 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 15:46:34 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,9 @@ class GameEngine {
 	private:
 		GameEngine();		// not implemented;
 		void								loadMap(const char *path);
+		glm::vec2							placeBrawlAI(Player *human, int i);
+		void								placeBrawlPlayers(void);
+		
 		Map * 						_map;
 		Loader						_loader;
 		std::vector<IGameEntity *>	*_entityList;

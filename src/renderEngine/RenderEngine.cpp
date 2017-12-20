@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 11:22:30 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/19 15:09:04 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	// createDepthCubemap();
 
 	meteo = new WeatherSystem();
-	SEventManager::getInstance().registerEvent(Event::SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::setBombParticles));
+	SEventManager::getInstance().registerEvent(Event::SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::addBombParticles));
+	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(RenderEngine::removeBombParticles));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(RenderEngine::setFireParticles));
 	SEventManager::getInstance().registerEvent(Event::AIPTR, MEMBER_CALLBACK(RenderEngine::setAiDebugPointer));
 }
@@ -32,7 +33,6 @@ RenderEngine::~RenderEngine() {
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
 	SDL_GetWindowSize(win, &w, &h);
 	setFireLights(entities);
-	// recordNewEntities(entities);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shaderManager.setCamera(camera.getMatrix());
@@ -411,8 +411,50 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 void	RenderEngine::renderParticles() {
 	for (auto it = particles.begin(); it != particles.end(); it++) {
 		(*it).first->draw(shaderManager.getParticlesShader());
-		(*it).second--;
-		if ((*it).second == 0) {
+		// (*it).second--;
+		// std::chrono::milliseconds life;
+		// if ((*it).second->getType() == Type::BOMB)
+		// 	life = static_cast<Bomb *>((*it).second)->get_ms_before_explode();
+		// else if ((*it).second->getType() == Type::FLAME)
+		// 	life = static_cast<Flame *>((*it).second)->get_ms_before_explode();
+			
+		// if (life <= static_cast<std::chrono::milliseconds>(10)) {
+		// 	delete (*it).first;
+		// 	particles.erase(it);
+		// 	it--;
+		// }
+		// try {
+		// 	(*it).second->getType();
+		// } catch (const std::bad_alloc &) {
+		// 	delete (*it).first;
+		// 	particles.erase(it);
+		// 	it--;
+		// }
+		// if ((*it).second == nullptr) {
+		// }
+			
+	}
+}
+
+void	RenderEngine::addBombParticles(void *bomb) {
+	Bomb *b = static_cast<Bomb *>(bomb);
+	
+	glm::vec2 pos = b->getPosition();
+	particles.push_back(std::pair<ParticleSystem *, Bomb *>(
+		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::type::BOMB),
+		b));
+	particles.back().first->start();
+}
+
+void	RenderEngine::removeBombParticles(void *bomb) {
+	Bomb *b = static_cast<Bomb *>(bomb);
+	
+	for (auto it = particles.begin(); it != particles.end(); it++) {
+		std::cout << it->second->getPosition().x << std::endl;
+		std::cout << b->getPosition().x << std::endl;
+		if (it->second->getPosition() == b->getPosition()) {
+			std::cout << "a" << std::endl;
+			(*it).first->stop();
 			delete (*it).first;
 			particles.erase(it);
 			it--;
@@ -420,19 +462,13 @@ void	RenderEngine::renderParticles() {
 	}
 }
 
-void	RenderEngine::setBombParticles(void *bomb) {
-	glm::vec2 pos = static_cast<IGameEntity *>(bomb)->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, int>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::type::BOMB),
-		100));
-	particles.back().first->start();
-}
-
-void	RenderEngine::setFireParticles(void *Fire) {
-	glm::vec2 pos = static_cast<IGameEntity *>(Fire)->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, int>(
+void	RenderEngine::setFireParticles(void *fire) {
+	Flame *f = static_cast<Flame *>(fire);
+	
+	glm::vec2 pos = f->getPosition();
+	particles.push_back(std::pair<ParticleSystem *, Flame *>(
 		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::type::FIRE),
-		100));
+		f));
 	particles.back().first->start();
 }
 

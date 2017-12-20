@@ -62,9 +62,10 @@ vec3 computeFireLight(vec3 firePos, vec3 viewDir)
 {
     vec3 lightDir = normalize(firePos - fragPos);
     // diffuse shading
-    float diff = max(dot(normal, lightDir), 0.0);
+    vec3 norm = normalize(normal);
+    float diff = max(dot(norm, lightDir), 0.0);
     // specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     // attenuation
     float distance    = length(firePos - fragPos);
@@ -114,7 +115,7 @@ vec3	computeLight() {
     else
         specular = spec * lightSpecular * materialSpecular;
 
-    vec3 fire;
+    vec3 fire = vec3(0, 0 ,0);
     if (fireLightNbr != 0) {
         for (int i = 0; i < fireLightNbr; i++) {
             fire += computeFireLight(fireLightPos[i], viewDir);

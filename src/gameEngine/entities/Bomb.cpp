@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:35 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 11:52:07 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/20 11:06:38 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), player(p)
     creation_time = std::chrono::steady_clock::now();
     ms_before_explode = std::chrono::milliseconds(2000);
     SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Bomb::explode_if_touched));
+    SEventManager::getInstance().raise(Event::SPAWN_BOMB, this);
 }
 
 Bomb::~Bomb(){
@@ -55,11 +56,3 @@ std::chrono::time_point<std::chrono::steady_clock> const       &Bomb::get_creati
 const Player                                                   *Bomb::getPlayer(void) const {
     return player;
 }
-
-
-// gameEngine/entities/Bomb.cpp\
-
-
-// if (find(actions.begin(), actions.end(), Action::SPAWN_BOMB) != actions.end()){
-//     _entityList.push_back(new Bomb(p->getPosition()));
-// }

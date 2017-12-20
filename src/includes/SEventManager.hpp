@@ -31,8 +31,8 @@ namespace Event {
 		END_HUMAN_PLAYER_LEFT, END_HUMAN_PLAYER_RIGHT, END_HUMAN_PLAYER_UP, END_HUMAN_PLAYER_DOWN,
 /*		nullptr											*/
 		HUMAN_SPAWN_BOMB, END_HUMAN_SPAWN_BOMB,
-/*		Player *  		 | Flame *						*/
-		PLAYER_SPAWN_BOMB, SPAWN_FLAME,
+/*		Player *  		 | Flame *	  |	Bomb *			*/
+		PLAYER_SPAWN_BOMB, SPAWN_FLAME, SPAWN_BOMB,
 
 /*		Bomb *		 | Flame *							*/
 		BOMB_EXPLODES, FLAME_DISAPEAR,

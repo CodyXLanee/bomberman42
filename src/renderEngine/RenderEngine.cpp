@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/20 10:21:56 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/20 11:33:19 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -412,8 +412,15 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 }
 
 void	RenderEngine::renderParticles() {
+	// std::cout << particles.size() << std::endl;
 	for (auto it = particles.begin(); it != particles.end(); it++) {
 		(*it).first->draw(shaderManager.getParticlesShader());
+		if (it->first->getType() == ParticleSystem::Type::FIRE && it->first->isRunning() == false) {
+			// std::cout << "ERASE" << std::endl;
+			delete it->first;
+			particles.erase(it);
+			it--;
+		}
 		// (*it).second--;
 		// std::chrono::milliseconds life;
 		// if ((*it).second->getType() == Type::BOMB)
@@ -444,7 +451,7 @@ void	RenderEngine::addBombParticles(void *bomb) {
 	
 	glm::vec2 pos = b->getPosition();
 	particles.push_back(std::pair<ParticleSystem *, Bomb *>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::type::BOMB),
+		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::Type::BOMB),
 		b));
 	particles.back().first->start();
 }
@@ -471,7 +478,7 @@ void	RenderEngine::setFireParticles(void *fire) {
 	
 	glm::vec2 pos = f->getPosition();
 	particles.push_back(std::pair<ParticleSystem *, Flame *>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::type::FIRE),
+		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::Type::FIRE),
 		f));
 	particles.back().first->start();
 }

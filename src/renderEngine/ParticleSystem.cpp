@@ -6,20 +6,20 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 11:26:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 11:20:33 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/20 11:32:47 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParticleSystem.hpp"
 
-ParticleSystem::ParticleSystem(glm::vec3 position, enum type t)
+ParticleSystem::ParticleSystem(glm::vec3 position, enum Type t)
 	: running(false), type(t), oriPos(position) {
 	createBuffers();
 	if(running)
 		init();
 }
 
-ParticleSystem::ParticleSystem(bool active, glm::vec3 position, enum type t)
+ParticleSystem::ParticleSystem(bool active, glm::vec3 position, enum Type t)
 	: running(active), type(t), oriPos(position) {
 	createBuffers();
 	if(running)
@@ -135,6 +135,10 @@ void	ParticleSystem::draw(Shader &shader) {
 }
 
 void	ParticleSystem::updateFire(Shader &shader) {
+	// std::cout << "SIZE: " << positions.size() << std::endl;
+	if (positions.size() <= 1)
+		stop();
+
     std::vector<glm::mat4> data;
 	for (auto i = positions.begin(); i != positions.end(); i++){
         float r = static_cast<float>((rand() % 5)) - 2.5f;
@@ -221,4 +225,12 @@ void	ParticleSystem::start() {
 
 void	ParticleSystem::stop() {
 	running = false;
+}
+
+bool	ParticleSystem::isRunning() const {
+	return running;
+}
+
+ParticleSystem::Type	ParticleSystem::getType() const {
+	return type;
 }

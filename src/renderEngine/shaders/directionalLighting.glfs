@@ -2,7 +2,6 @@
 
 in vec2 UV;
 in vec3 fragPos;
-in vec3 fragColor;
 in vec3 normal;
 in mat3 TBN;
 in vec4 fragPosLightSpace;
@@ -130,8 +129,6 @@ vec3	computeLight() {
 }
 
 void main(){
-	vec3 truc = fragColor;
-
 	vec3 light = computeLight();
 
     outputColor = vec4(light, alpha) * texture(texture_diffuse, UV);

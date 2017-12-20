@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 15:09:04 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/20 10:21:56 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderEnemies(shader, entities);
 	renderScenery(shader);
 	// meteo->getSun().render(shaderManager.getMainShader(), camera);
-
 	renderPlayer(shader, entities);
+
 
 	// renderAiDebug(shader);
 }
@@ -110,11 +110,7 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 	static float fakeTime = 0.f;
 	int numAnim = 0;
     std::vector<glm::mat4> data;
-	glm::vec3 camPos = camera.getPosition();
 	Model &model = modelManager.getModel(ModelManager::PLAYER);
-
-	shader.use();
-	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
@@ -455,18 +451,19 @@ void	RenderEngine::addBombParticles(void *bomb) {
 
 void	RenderEngine::removeBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
+	(void)b;
 	
-	for (auto it = particles.begin(); it != particles.end(); it++) {
-		std::cout << it->second->getPosition().x << std::endl;
-		std::cout << b->getPosition().x << std::endl;
-		if (it->second->getPosition() == b->getPosition()) {
-			std::cout << "a" << std::endl;
-			(*it).first->stop();
-			delete (*it).first;
-			particles.erase(it);
-			it--;
-		}
-	}
+	// for (auto it = particles.begin(); it != particles.end(); it++) {
+	// 	std::cout << it->second->getPosition().x << std::endl;
+	// 	std::cout << b->getPosition().x << std::endl;
+	// 	if (it->second->getPosition() == b->getPosition()) {
+	// 		std::cout << "a" << std::endl;
+	// 		(*it).first->stop();
+	// 		delete (*it).first;
+	// 		particles.erase(it);
+	// 		it--;
+	// 	}
+	// }
 }
 
 void	RenderEngine::setFireParticles(void *fire) {

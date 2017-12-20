@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/20 11:33:19 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/20 11:34:46 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -460,17 +460,17 @@ void	RenderEngine::removeBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
 	(void)b;
 	
-	// for (auto it = particles.begin(); it != particles.end(); it++) {
-	// 	std::cout << it->second->getPosition().x << std::endl;
-	// 	std::cout << b->getPosition().x << std::endl;
-	// 	if (it->second->getPosition() == b->getPosition()) {
-	// 		std::cout << "a" << std::endl;
-	// 		(*it).first->stop();
-	// 		delete (*it).first;
-	// 		particles.erase(it);
-	// 		it--;
-	// 	}
-	// }
+	for (auto it = particles.begin(); it != particles.end(); it++) {
+		// std::cout << it->second->getPosition().x << std::endl;
+		// std::cout << b->getPosition().x << std::endl;
+		if (it->second->getPosition() == b->getPosition()) {
+			// std::cout << "a" << std::endl;
+			(*it).first->stop();
+			delete (*it).first;
+			particles.erase(it);
+			it--;
+		}
+	}
 }
 
 void	RenderEngine::setFireParticles(void *fire) {

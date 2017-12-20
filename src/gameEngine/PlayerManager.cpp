@@ -114,7 +114,7 @@ void            PlayerManager::humanEndNewDirDown(void *){
 
 void            PlayerManager::humanSpawnBomb(void *){
     if (_human_player && _human_player->getBombCount() < _human_player->getMaxBombNb())
-        SEventManager::getInstance().raise(Event::SPAWN_BOMB, _human_player);
+        SEventManager::getInstance().raise(Event::PLAYER_SPAWN_BOMB, _human_player);
     _spawned_bomb = true;
 }
 void            PlayerManager::humanEndSpawnBomb(void *){

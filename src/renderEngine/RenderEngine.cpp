@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 11:22:30 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/19 19:55:49 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	// createDepthCubemap();
 
 	meteo = new WeatherSystem();
-	SEventManager::getInstance().registerEvent(Event::SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::setBombParticles));
+	SEventManager::getInstance().registerEvent(Event::PLAYER_SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::setBombParticles));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(RenderEngine::setFireParticles));
 	SEventManager::getInstance().registerEvent(Event::AIPTR, MEMBER_CALLBACK(RenderEngine::setAiDebugPointer));
 }

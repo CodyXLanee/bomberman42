@@ -17,39 +17,58 @@ std::pair<CallbackType, void*>(std::bind(&funPtr, instancePtr, std::placeholders
 
 namespace Event {
 	enum Enum	{
-		KEYDOWN, KEYUP,
+/*		SDL_Keycode																						*/
+		KEYDOWN, 	KEYUP,
 
+/*		Player *																						*/
 		PLAYER_LEFT, PLAYER_RIGHT, PLAYER_UP, PLAYER_DOWN,
+/*		Player *																						*/
 		END_PLAYER_LEFT, END_PLAYER_RIGHT, END_PLAYER_UP, END_PLAYER_DOWN,
-		
+
+/*		nullptr																							*/
 		HUMAN_PLAYER_LEFT, HUMAN_PLAYER_RIGHT, HUMAN_PLAYER_UP, HUMAN_PLAYER_DOWN,
+/*		nullptr																							*/
 		END_HUMAN_PLAYER_LEFT, END_HUMAN_PLAYER_RIGHT, END_HUMAN_PLAYER_UP, END_HUMAN_PLAYER_DOWN,
-
+/*		nullptr											*/
 		HUMAN_SPAWN_BOMB, END_HUMAN_SPAWN_BOMB,
-		SPAWN_BOMB, SPAWN_FLAME,
+/*		Player *  		 | Flame *						*/
+		PLAYER_SPAWN_BOMB, SPAWN_FLAME,
+
+/*		Bomb *		 | Flame *							*/
 		BOMB_EXPLODES, FLAME_DISAPEAR,
-
+/*		glm::vec2 *										*/
 		BRICK_BREAKS,
-
+/*		Player *   | Enemy *							*/
 		PLAYER_DIES, ENEMY_DIES,
 
+/*		std::pair<Bonus *, Player *> * 					*/
 		BONUS_ACTIVATE,
-
+/*		UIAudio::Enum *									*/
 		UI_AUDIO,
 
+/*		nulptr 																		  | not raised|	Camera::Mode *					*/
 		CAMERA_LEFT, CAMERA_RIGHT, CAMERA_UP, CAMERA_DOWN, RESET_CAMERA, FOLLOW_PLAYER, DEBUG_MODE, CAMERA_MODE_UPDATE,
-		GUI_TOGGLE, GUI_BASE_MENU,
+/*		Menu::Enum *| not raised																									*/
+		GUI_TOGGLE	, GUI_BASE_MENU,
+/*		float *				| float *			 | float *																	    	*/
 		MASTER_VOLUME_UPDATE, MUSIC_VOLUME_UPDATE, EFFECTS_VOLUME_UPDATE,
+/*		Screen::Format  *	| std::map<Event::Enum, SDL_Keycode>  *																	*/
 		SCREEN_FORMAT_UPDATE, KEY_MAP_UPDATE,
 
+/*		Save::Enum *									*/
 		LOAD_SLOT,
-		NEW_GAME, LOAD_GAME, QUIT_GAME,
+/*		GameParams * | nullptr  | nullptr				*/
+		NEW_GAME,      QUIT_GAME, RESTART_GAME,
+/*		nullptr | nullptr								*/
 		GAME_WIN, GAME_FINISH,
-		
+
+/*		Player *   | Enemy *							*/
 		PLAYER_MOVE, ENEMY_MOVE,
 
+/*		Enemy *											*/
 		ENEMY_COLLIDES,
 
+/* 		std::vector<glm::vec2> * 						*/
 		AIPTR
 	};
 }

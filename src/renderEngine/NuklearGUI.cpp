@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 18:38:03 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 19:08:04 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -368,8 +368,8 @@ void    NuklearGUI::renderMenu() {
         hover(2);
         if (nk_button_label(ctx, "Restart level"))
         {
-            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
-            event.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));
+            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
+            event.raise(Event::RESTART_GAME, nullptr);
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);
@@ -529,9 +529,6 @@ void    NuklearGUI::renderStartMenu() {
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Brawl"))
         {
-         //   GameMode::Enum  gm = GameMode::BRAWL;
-          //  event.raise(Event::NEW_GAME, &gm);
-
             Menu::Enum  me = Menu::NEW_BRAWL;
             event.raise(Event::GUI_TOGGLE, &me);
         }

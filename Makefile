@@ -9,6 +9,7 @@ SRC_PATH = ./src/
 SRC_NAME =	\
 			Sdl_gl_win.cpp \
 			gameEngine/GameEngine.cpp \
+			gameEngine/GameParams.cpp \
 			gameEngine/AGameEntity.cpp \
 			gameEngine/Loader.cpp \
 			gameEngine/PlayerManager.cpp \

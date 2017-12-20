@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/17 18:14:51 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 11:50:29 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "SoundManager.hpp"
 # include "Camera.hpp"
 # include "Slot.hpp"
+# include "GameParams.hpp"
 
 class SGameManager {
 public:

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 19:27:23 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/19 15:46:34 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include "WinManager.hpp"
 # include "Map.hpp"
 # include "Loader.hpp"
+# include "GameParams.hpp"
 # include <glm/glm.hpp>
 # include <vector>
 # include <math.h>
@@ -30,7 +31,7 @@
 class GameEngine {
 	
 	public:
-		GameEngine(GameMode::Enum);
+		GameEngine(GameParams &gp);
 		~GameEngine();
 		
 		void								compute();
@@ -41,6 +42,9 @@ class GameEngine {
 	private:
 		GameEngine();		// not implemented;
 		void								loadMap(const char *path);
+		glm::vec2							placeBrawlAI(Player *human, int i);
+		void								placeBrawlPlayers(void);
+		
 		Map * 						_map;
 		Loader						_loader;
 		std::vector<IGameEntity *>	*_entityList;
@@ -49,7 +53,7 @@ class GameEngine {
 		CollisionsManager			_collisionsManager;
 		BombManager					*_bombManager;
 		PlayerManager				*_playerManager;
-		GameMode::Enum				_gameMode;
+		GameParams					_gameParams;
 		WinManager					*_winManager;
 
 };

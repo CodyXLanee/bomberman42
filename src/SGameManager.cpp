@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/18 15:10:34 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/19 18:32:24 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,8 @@ void        SGameManager::manage(void) {
             
             _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
             _renderer.render(_game->getMap(), _game->getEntityList());
-            _gui.renderHUD();
         }
-		_gui.render();
+		_gui.render(_game_is_active);
 		_window.initGL();
 		SDL_GL_SwapWindow(_window.getWin());
 	}
@@ -99,9 +98,9 @@ void            SGameManager::quit_game(void *){
 }
 
 void            SGameManager::new_game(void *p){
-    GameMode::Enum *gm = static_cast<GameMode::Enum *>(p);
+    GameParams *gp = static_cast<GameParams *>(p);
     delete _game;
-    _game = new GameEngine(*gm);
+    _game = new GameEngine(*gp);
     _game_is_active = true;
     _new_game = false;
 }

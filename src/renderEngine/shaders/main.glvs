@@ -23,7 +23,6 @@ uniform vec3 materialColor;
 uniform mat4 jointTransforms[MAX_JOINTS];
 uniform bool isAnimated;
 
-out vec3 fragColor;
 out vec3 fragPos;
 out vec3 normal;
 out vec2 UV;
@@ -33,7 +32,6 @@ out vec4 fragPosLightSpace;
 
 void main()
 {
-    fragColor = materialColor;
     UV = textCoords;
 
     mat4 transformModelMat;

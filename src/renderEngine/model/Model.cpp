@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 13:21:13 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/20 10:44:29 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,6 +260,15 @@ void	Model::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 	shader.use();
 	shader.setInt("hasBumpMap", hasBumpMap);
 	shader.setInt("hasSpecularMap", hasSpecularMap);
+	
+	/////////////
+	if (path == "assets/models/obj/player.fbx") {
+		material.ambient = glm::vec3(1.f);
+		material.diffuse = glm::vec3(1.f);
+		material.specular = glm::vec3(1.f);
+	}
+	///////////////
+
 	shader.setVec3("materialAmbient", material.ambient.x, material.ambient.y, material.ambient.z);
 	shader.setVec3("materialDiffuse", material.diffuse.x, material.diffuse.y, material.diffuse.z);
 	shader.setVec3("materialSpecular", material.specular.x, material.specular.y, material.specular.z);

@@ -6,7 +6,11 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2017/12/19 19:55:49 by egaborea         ###   ########.fr       */
+=======
+/*   Updated: 2017/12/20 10:21:56 by tpierron         ###   ########.fr       */
+>>>>>>> 0c2c7769838ae9b5bb4765d045b97a6bfe9d692f
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +24,12 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	// createDepthCubemap();
 
 	meteo = new WeatherSystem();
+<<<<<<< HEAD
 	SEventManager::getInstance().registerEvent(Event::PLAYER_SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::setBombParticles));
+=======
+	SEventManager::getInstance().registerEvent(Event::SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::addBombParticles));
+	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(RenderEngine::removeBombParticles));
+>>>>>>> 0c2c7769838ae9b5bb4765d045b97a6bfe9d692f
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(RenderEngine::setFireParticles));
 	SEventManager::getInstance().registerEvent(Event::AIPTR, MEMBER_CALLBACK(RenderEngine::setAiDebugPointer));
 }
@@ -32,7 +41,6 @@ RenderEngine::~RenderEngine() {
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
 	SDL_GetWindowSize(win, &w, &h);
 	setFireLights(entities);
-	// recordNewEntities(entities);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shaderManager.setCamera(camera.getMatrix());
@@ -88,8 +96,8 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderEnemies(shader, entities);
 	renderScenery(shader);
 	// meteo->getSun().render(shaderManager.getMainShader(), camera);
-
 	renderPlayer(shader, entities);
+
 
 	// renderAiDebug(shader);
 }
@@ -110,11 +118,7 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 	static float fakeTime = 0.f;
 	int numAnim = 0;
     std::vector<glm::mat4> data;
-	glm::vec3 camPos = camera.getPosition();
 	Model &model = modelManager.getModel(ModelManager::PLAYER);
-
-	shader.use();
-	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
@@ -418,28 +422,65 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 void	RenderEngine::renderParticles() {
 	for (auto it = particles.begin(); it != particles.end(); it++) {
 		(*it).first->draw(shaderManager.getParticlesShader());
-		(*it).second--;
-		if ((*it).second == 0) {
-			delete (*it).first;
-			particles.erase(it);
-			it--;
-		}
+		// (*it).second--;
+		// std::chrono::milliseconds life;
+		// if ((*it).second->getType() == Type::BOMB)
+		// 	life = static_cast<Bomb *>((*it).second)->get_ms_before_explode();
+		// else if ((*it).second->getType() == Type::FLAME)
+		// 	life = static_cast<Flame *>((*it).second)->get_ms_before_explode();
+			
+		// if (life <= static_cast<std::chrono::milliseconds>(10)) {
+		// 	delete (*it).first;
+		// 	particles.erase(it);
+		// 	it--;
+		// }
+		// try {
+		// 	(*it).second->getType();
+		// } catch (const std::bad_alloc &) {
+		// 	delete (*it).first;
+		// 	particles.erase(it);
+		// 	it--;
+		// }
+		// if ((*it).second == nullptr) {
+		// }
+			
 	}
 }
 
-void	RenderEngine::setBombParticles(void *bomb) {
-	glm::vec2 pos = static_cast<IGameEntity *>(bomb)->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, int>(
+void	RenderEngine::addBombParticles(void *bomb) {
+	Bomb *b = static_cast<Bomb *>(bomb);
+	
+	glm::vec2 pos = b->getPosition();
+	particles.push_back(std::pair<ParticleSystem *, Bomb *>(
 		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::type::BOMB),
-		100));
+		b));
 	particles.back().first->start();
 }
 
-void	RenderEngine::setFireParticles(void *Fire) {
-	glm::vec2 pos = static_cast<IGameEntity *>(Fire)->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, int>(
+void	RenderEngine::removeBombParticles(void *bomb) {
+	Bomb *b = static_cast<Bomb *>(bomb);
+	(void)b;
+	
+	// for (auto it = particles.begin(); it != particles.end(); it++) {
+	// 	std::cout << it->second->getPosition().x << std::endl;
+	// 	std::cout << b->getPosition().x << std::endl;
+	// 	if (it->second->getPosition() == b->getPosition()) {
+	// 		std::cout << "a" << std::endl;
+	// 		(*it).first->stop();
+	// 		delete (*it).first;
+	// 		particles.erase(it);
+	// 		it--;
+	// 	}
+	// }
+}
+
+void	RenderEngine::setFireParticles(void *fire) {
+	Flame *f = static_cast<Flame *>(fire);
+	
+	glm::vec2 pos = f->getPosition();
+	particles.push_back(std::pair<ParticleSystem *, Flame *>(
 		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::type::FIRE),
-		100));
+		f));
 	particles.back().first->start();
 }
 

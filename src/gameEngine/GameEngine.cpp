@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 18:25:21 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/20 10:49:19 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ _gameParams(gp),
 _winManager(nullptr) {
 	loadMap("maps/brawl_0.json");
 	if (_gameParams.get_game_mode() == GameMode::BRAWL){
-		std::cout << "fdsa" << std::endl;
 		placeBrawlPlayers();
 	}
 

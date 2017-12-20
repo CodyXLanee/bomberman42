@@ -6,11 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2017/12/19 19:55:49 by egaborea         ###   ########.fr       */
-=======
-/*   Updated: 2017/12/20 10:21:56 by tpierron         ###   ########.fr       */
->>>>>>> 0c2c7769838ae9b5bb4765d045b97a6bfe9d692f
+/*   Updated: 2017/12/20 10:48:28 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +20,8 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	// createDepthCubemap();
 
 	meteo = new WeatherSystem();
-<<<<<<< HEAD
-	SEventManager::getInstance().registerEvent(Event::PLAYER_SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::setBombParticles));
-=======
-	SEventManager::getInstance().registerEvent(Event::SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::addBombParticles));
+	SEventManager::getInstance().registerEvent(Event::PLAYER_SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::addBombParticles));
 	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(RenderEngine::removeBombParticles));
->>>>>>> 0c2c7769838ae9b5bb4765d045b97a6bfe9d692f
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(RenderEngine::setFireParticles));
 	SEventManager::getInstance().registerEvent(Event::AIPTR, MEMBER_CALLBACK(RenderEngine::setAiDebugPointer));
 }

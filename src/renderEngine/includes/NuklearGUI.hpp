@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 18:32:19 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 12:14:30 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include "SEventManager.hpp"
 # include "Sdl_gl_win.hpp"
 # include "GameParams.hpp"
+# include "Player.hpp"
+# include "Bonus.hpp"
 # include <stb_image.h>
 
 
@@ -61,6 +63,9 @@ class NuklearGUI
         std::stack<Menu::Enum>              _active_menu;
         std::map<Event::Enum, SDL_Keycode>  _keysMap;
         SDL_Keycode                       * _keyToChange;
+
+        PlayerColor::Enum                   _human_player_color;
+        glm::ivec3                          _human_player_bonus;
         
         void        setupFont();
         void        handleKey(void *);
@@ -84,6 +89,7 @@ class NuklearGUI
         void        setEffectsVolume(void * v);
         void        setMusicVolume(void * v);
         void        updateScreenFormat(void *f);
+        void        updateHumanPlayerBonus(void *p);
 
         struct nk_image         loadImage(std::string const, GLint);        
 

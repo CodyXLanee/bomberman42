@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 18:32:19 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 16:19:11 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,16 @@ class NuklearGUI
         SEventManager           &event;
         struct nk_context       *ctx;
         struct nk_font_atlas    *atlas;
+        struct nk_font          *bigFont;
+        struct nk_font          *mediumFont;
+        struct nk_font          *smallFont;
         
         float                   menuWidth;
         float                   menuHeight;
         int                     windowWidth;
         int                     windowHeight;
         float                   optionHeight;
+        bool                    screenFormatUpdate;
         
         float                   _masterVolume;
         float                   _effectsVolume;
@@ -62,6 +66,7 @@ class NuklearGUI
         std::map<Event::Enum, SDL_Keycode>  _keysMap;
         SDL_Keycode                       * _keyToChange;
         
+        void        setupProportions();
         void        setupFont();
         void        handleKey(void *);
         void        toggle(void *);

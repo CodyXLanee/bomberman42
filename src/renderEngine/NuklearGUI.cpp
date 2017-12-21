@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 19:08:04 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 16:57:10 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,20 @@
 # define NK_SDL_GL3_IMPLEMENTATION
 #include "NuklearGUI.hpp"
 
-# include "../../libs/style.c"
+#include "../../libs/style.c"
 
 # define MAX_VERTEX_MEMORY 512 * 1024
 # define MAX_ELEMENT_MEMORY 128 * 1024
 
 NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     win(sgw), camera(camera), event(SEventManager::getInstance()),
-    _masterVolume(0.f), _effectsVolume(0.f), _musicVolume(0.f),
+    atlas(NULL), screenFormatUpdate(false),
+    _masterVolume(0), _effectsVolume(0), _musicVolume(0),
     _active_menu(){
     ctx = nk_sdl_init(win.getWin());
 
-    SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);    
-    setupFont();
-
     set_style(ctx, THEME_WHITE);
+    setupProportions();
 
     event.registerEvent(Event::KEYDOWN, MEMBER_CALLBACK(NuklearGUI::handleKey));
     event.registerEvent(Event::GUI_TOGGLE, MEMBER_CALLBACK(NuklearGUI::toggle));
@@ -52,6 +51,14 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     fps = 0.f;
     
     _keyToChange = nullptr;
+
+   // struct nk_color white =  nk_rgba(232, 233, 217, 255);
+    struct nk_color black =  nk_rgba(35, 33, 44, 255);
+
+    ctx->style.button.rounding = 0;
+    ctx->style.button.border = 0;
+    ctx->style.button.text_hover = black;
+
 }
 
 NuklearGUI::~NuklearGUI() {
@@ -75,12 +82,34 @@ void    NuklearGUI::toggle(void *p) {
     }
 }
 
+void    NuklearGUI::setupProportions() {
+    float spacingY =  ctx->style.window.spacing.y;
+    float paddingY =  ctx->style.window.padding.y;
+
+    SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);   
+    menuWidth = windowWidth / 3;
+    optionHeight = static_cast<float>(windowHeight) / 10.f;
+    menuHeight = optionHeight * 7.f + spacingY * 7.f + paddingY * 2.f;
+    setupFont();
+    screenFormatUpdate = false;  
+}
+
 void    NuklearGUI::setupFont() {
+    if (atlas) nk_font_atlas_cleanup(atlas);   
+    
     nk_sdl_font_stash_begin(&atlas);
-    struct nk_font *future = nk_font_atlas_add_from_file(atlas, "assets/fonts/kenvector_future_thin.ttf", windowWidth / 100, 0);
-    nk_style_set_font(ctx, &future->handle);
+    bigFont = nk_font_atlas_add_from_file(atlas, "assets/fonts/kenvector_future_thin.ttf", optionHeight, 0);
     nk_sdl_font_stash_end();
-    ctx->style.button.rounding = windowWidth / 50;
+    
+    nk_sdl_font_stash_begin(&atlas);
+    mediumFont = nk_font_atlas_add_from_file(atlas, "assets/fonts/kenvector_future_thin.ttf", optionHeight / 2.f, 0);
+    nk_sdl_font_stash_end();
+    
+    nk_sdl_font_stash_begin(&atlas);
+    smallFont = nk_font_atlas_add_from_file(atlas, "assets/fonts/kenvector_future_thin.ttf", optionHeight / 4.f, 0);
+    nk_sdl_font_stash_end();
+    
+    nk_style_set_font(ctx, &smallFont->handle);    
 }
 
 void    NuklearGUI::handleKey(void * p) {
@@ -92,15 +121,10 @@ void    NuklearGUI::handleKey(void * p) {
 }
 
 void    NuklearGUI::render(bool game_is_active) {
-
-   float spacingY =  ctx->style.window.spacing.y; // between items
-   float paddingY =  ctx->style.window.padding.y; // = nk_vec2(0,0); // above / under items
     
-   SDL_GetWindowSize(win.getWin(), &windowWidth, &windowHeight);   
-   menuWidth = windowWidth / 3;
-   optionHeight = windowHeight / 10;
-   menuHeight = optionHeight * 7 + spacingY * 7 + paddingY * 2;
-   setupFont();
+    if (screenFormatUpdate) {
+        setupProportions();
+    }
 
     if (game_is_active) {
         renderHUD();
@@ -109,8 +133,6 @@ void    NuklearGUI::render(bool game_is_active) {
         renderBackgroundImage();
     }
     if (!_active_menu.empty()) {
-     //   if (_active_menu.top() != Menu::NONE && _active_menu.top() != Menu::DEBUG)
-      //      renderBackgroundImage();
         switch (_active_menu.top()){
             case Menu::NONE:                break;
             case Menu::DEBUG:               renderDebug(); break;
@@ -155,7 +177,7 @@ void    NuklearGUI::renderKeyBindings() {
     std::string down =  SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_DOWN]);
     std::string drop =  SDL_GetKeyName(displayedKeysMap[Event::HUMAN_SPAWN_BOMB]);
 
-    if (nk_begin(ctx, "KEY BINDINGS", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+    if (nk_begin(ctx, "KEY BINDINGS", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Move up", NK_TEXT_CENTERED);
@@ -221,52 +243,36 @@ void    NuklearGUI::renderKeyBindings() {
 }
 
 void    NuklearGUI::renderBackgroundImage() {
-
-    static struct nk_image image = loadImage("assets/textures/bomb_background.png", GL_RGBA);
-    static struct nk_image bomb = loadImage("assets/textures/bg_bomb.png", GL_RGBA);
-    static struct nk_image bomberman = loadImage("assets/textures/bg_bomberman.png", GL_RGBA);
-    static float offsetX = 0;
-    static float direction = 1.f;
-    offsetX += direction;
-    if (offsetX < -100 || offsetX > 100)
-        direction = -direction;
-
+    static struct nk_image image = loadImage("assets/textures/minimal_bomberman_BG.png", GL_RGBA);
     struct nk_style_item tmp = ctx->style.window.fixed_background;
     ctx->style.window.fixed_background = nk_style_item_image(image);
 
-    if (nk_begin(ctx, "BACKGROUND", nk_rect(0, 0, windowWidth, windowHeight),
+    if (nk_begin(ctx, "BACKGROUND", nk_rect(1, 1, windowWidth - 1, windowHeight - 1),
     NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_NOT_INTERACTIVE)) {
-
-        nk_layout_space_begin(ctx, NK_STATIC, windowHeight, 10);
-        nk_layout_space_push(ctx, nk_rect(offsetX,0,654,525));
-        nk_image(ctx, bomb);
-        nk_layout_space_push(ctx, nk_rect(windowWidth / 2 - offsetX,0,611,843));
-        nk_image(ctx, bomberman);
-        
-      
+        nk_end(ctx); 
     }    
-    nk_end(ctx); 
-
     ctx->style.window.fixed_background = tmp;
-    
 }
 
 
 void    NuklearGUI::renderOptions() {
-    SEventManager & event = SEventManager::getInstance();
 
     static Screen::Format                       displayedFormat = screenFormat;  
-    static std::vector<SDL_DisplayMode> const & modes = win.getDisplayModes();  
+    static std::vector<SDL_DisplayMode> const & modes = win.getDisplayModes(); 
+    
+    static unsigned long master = static_cast<unsigned long>(_masterVolume) * 100;
+    static unsigned long music = static_cast<unsigned long>(_musicVolume);
+    static unsigned long effects = static_cast<unsigned long>(_effectsVolume);
     
     std::string screenResString = toString(displayedFormat.displayMode);
     std::string screenModeString = toString(displayedFormat.windowMode);
 
-    if (nk_begin(ctx, "OPTIONS", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+    if (nk_begin(ctx, "OPTIONS", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Screen resolution", NK_TEXT_CENTERED);
-        if (nk_menu_begin_label(ctx, screenResString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth / 2, menuHeight))) {
+        if (nk_menu_begin_label(ctx, screenResString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth, menuHeight))) {
             nk_layout_row_dynamic(ctx, optionHeight, 1);
 
             for (size_t i = 0; i < modes.size(); ++i) {
@@ -280,7 +286,7 @@ void    NuklearGUI::renderOptions() {
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Screen mode", NK_TEXT_CENTERED);     
-        if (nk_menu_begin_label(ctx, screenModeString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth / 2, menuHeight))) {
+        if (nk_menu_begin_label(ctx, screenModeString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth, menuHeight))) {
 
             nk_layout_row_dynamic(ctx, optionHeight, 1);
             if (nk_menu_item_label(ctx, "WINDOWED", NK_TEXT_CENTERED)) {
@@ -296,24 +302,21 @@ void    NuklearGUI::renderOptions() {
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Master volume", NK_TEXT_CENTERED);             
-        if (nk_slider_float(ctx, 0, &_masterVolume, 1.f, 0.01f)) {
-            event.raise(Event::MASTER_VOLUME_UPDATE, &_masterVolume);
-            /* Master */
+        nk_label(ctx, "Master volume", NK_TEXT_CENTERED);    
+        if (nk_progress(ctx, &master, 100, NK_MODIFIABLE)) {
+
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Music volume", NK_TEXT_CENTERED);             
-        if (nk_slider_float(ctx, 0, &_musicVolume, MIX_MAX_VOLUME, 1)) {
-            event.raise(Event::MUSIC_VOLUME_UPDATE, &_musicVolume);
-            /* Music */
+        if (nk_progress(ctx, &music, MIX_MAX_VOLUME, NK_MODIFIABLE)) {
+
         }
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Effects volume", NK_TEXT_CENTERED);             
-        if (nk_slider_float(ctx, 0, &_effectsVolume, MIX_MAX_VOLUME, 1)) {
-            event.raise(Event::EFFECTS_VOLUME_UPDATE, &_effectsVolume);
-            /* Effects */
+        if (nk_progress(ctx, &effects, MIX_MAX_VOLUME, NK_MODIFIABLE)) {
+
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
@@ -335,6 +338,22 @@ void    NuklearGUI::renderOptions() {
                     screenFormat = displayedFormat;
                     event.raise(Event::SCREEN_FORMAT_UPDATE, &displayedFormat);  
             }
+            
+            if (static_cast<float>(master) != _masterVolume) {
+                float   v = static_cast<float>(master) / 100;
+                event.raise(Event::MASTER_VOLUME_UPDATE, &v);
+            }
+
+            if (static_cast<float>(music) != _musicVolume) {
+                float   v = static_cast<float>(music);
+                event.raise(Event::MUSIC_VOLUME_UPDATE, &v);
+            }
+
+            if (static_cast<float>(effects) != _effectsVolume) {
+                float   v = static_cast<float>(effects);
+                event.raise(Event::EFFECTS_VOLUME_UPDATE, &v);
+            }
+
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));  
         }
@@ -343,7 +362,10 @@ void    NuklearGUI::renderOptions() {
         {
             displayedFormat = screenFormat;
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
-            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));  
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS)); 
+            master = static_cast<unsigned long>(_masterVolume * 100);
+            music = static_cast<unsigned long>(_musicVolume);
+            effects = static_cast<unsigned long>(_effectsVolume);
         }
         
     }
@@ -416,7 +438,6 @@ void    NuklearGUI::renderMenu() {
 }
 
 void    NuklearGUI::renderLevelSelection() {
-//    SEventManager & event = SEventManager::getInstance();
 
     static struct nk_image  levelImage = loadImage("assets/textures/level1.png", GL_RGBA);
     static Level::Enum      level = Level::ONE;
@@ -425,7 +446,7 @@ void    NuklearGUI::renderLevelSelection() {
     struct nk_vec2 padding = ctx->style.window.padding;
     float   imageSize = (menuHeight - optionHeight) - padding.y * 2 - spacing.y * 2;
 
-    if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+    if (nk_begin(ctx, "LEVEL SELECTION", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
     NK_WINDOW_BORDER |NK_WINDOW_NO_SCROLLBAR ))
     {
         nk_layout_row_dynamic(ctx, imageSize, 1);
@@ -468,10 +489,10 @@ void    NuklearGUI::renderNewBrawlMenu() {
     static struct nk_image  playerImage = loadImage("assets/textures/white.png", GL_RGBA);    
 
 
-    if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+    if (nk_begin(ctx, "NEW BRAWL", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
 
-        nk_layout_row_dynamic(ctx, optionHeight * 2, 1);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
         nk_image(ctx, levelImage);
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
@@ -515,7 +536,9 @@ void    NuklearGUI::renderNewBrawlMenu() {
 }
 
 void    NuklearGUI::renderStartMenu() {
-    SEventManager & event = SEventManager::getInstance();
+    
+    nk_style_set_font(ctx, &mediumFont->handle);
+    
     if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
@@ -533,9 +556,19 @@ void    NuklearGUI::renderStartMenu() {
             event.raise(Event::GUI_TOGGLE, &me);
         }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "How to play"))
+        {
+            /* how to play */
+        }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Options"))
         {
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));  
+        }
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "Statistics"))
+        {
+            /* stats */
         }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Slot selection"))
@@ -565,7 +598,6 @@ void    NuklearGUI::update_fps(void){
 void    NuklearGUI::renderHUD() {
 
     static struct nk_image portrait = loadImage("assets/textures/white_HUD.png", GL_RGBA);
-    static struct nk_image portrait2 = loadImage("assets/textures/yellow_HUD.png", GL_RGBA);
 
     static struct nk_vec2 spacing =  ctx->style.window.spacing; // between items
    // static struct nk_vec2 padding =  ctx->style.window.padding; // = nk_vec2(0,0); // above / under items 
@@ -574,13 +606,13 @@ void    NuklearGUI::renderHUD() {
     float   avatar_h = avatar_w;
     float   avatar_x = 50;
     float   avatar_y = 50;
-    struct nk_style_item tmp = ctx->style.window.fixed_background;
-    ctx->style.window.fixed_background = nk_style_item_image(portrait);
     float w = avatar_w + 8 * spacing.x;
     float h = avatar_h + 2 * spacing.y;
-
+    
     float barHeight = avatar_h * 0.22f;
     
+    struct nk_style_item tmp = ctx->style.window.fixed_background;
+    ctx->style.window.fixed_background = nk_style_item_image(portrait);
     if (nk_begin(ctx, "TOP_LEFT_HUD", nk_rect(avatar_x, avatar_y, w, h),
     NK_WINDOW_NO_SCROLLBAR)) {   
         nk_layout_row_dynamic(ctx, avatar_h - barHeight, 1);                
@@ -595,24 +627,6 @@ void    NuklearGUI::renderHUD() {
         nk_spacing(ctx, 1);
     }    
     nk_end(ctx); 
-
-    ctx->style.window.fixed_background = nk_style_item_image(portrait2);    
-
-    if (nk_begin(ctx, "TOP_RIGHT_HUD", nk_rect(windowWidth - w - avatar_x, avatar_y, w, h),
-    NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, avatar_h - barHeight, 1);                
-        nk_layout_row_static(ctx, barHeight, avatar_w / 8, 8);
-        nk_spacing(ctx, 1);
-        nk_spacing(ctx, 1);
-        nk_label(ctx, "2", NK_TEXT_LEFT);
-        nk_spacing(ctx, 1);
-        nk_label(ctx, "4", NK_TEXT_LEFT);
-        nk_spacing(ctx, 1);
-        nk_label(ctx, "5", NK_TEXT_LEFT);
-        nk_spacing(ctx, 1);
-    }    
-    nk_end(ctx); 
-    
     ctx->style.window.fixed_background = tmp;
     
 }
@@ -626,8 +640,6 @@ void    NuklearGUI::renderDebug() {
 
     update_fps();
     std::string FPSString = std::to_string(fps);
-    
-    SEventManager & event = SEventManager::getInstance();
     
      if (nk_begin(ctx, "DEBUG MODE", nk_rect(50, 50, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_MINIMIZABLE))
@@ -664,74 +676,116 @@ void    NuklearGUI::renderDebug() {
 }
 
 void            NuklearGUI::renderSelectSlot(void){
-    SEventManager & event = SEventManager::getInstance();
+   float slotWidth = windowWidth * 0.25f;
+   ctx->style.window.fixed_background = nk_style_item_hide();
 
-    static struct nk_vec2 spacing =  ctx->style.window.spacing;
-    static struct nk_vec2 padding =  ctx->style.window.padding; 
+    if (nk_begin(ctx, "S1", nk_rect(windowWidth * 0.2f - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
+    NK_WINDOW_NO_SCROLLBAR)) {
+        nk_style_set_font(ctx, &bigFont->handle);
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "SLOT 1")) {
+            Save::Enum  slot = Save::SLOT1;
+            event.raise(Event::LOAD_SLOT, &slot);
 
-    static float groupHeight = menuHeight - 2 * padding.y - spacing.y; 
-
-    if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
-        NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
-    {
-        nk_layout_row_dynamic(ctx, groupHeight, 3);  
-        nk_group_begin(ctx, "SLOT 1", NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR);
-        {
-            nk_layout_row_dynamic(ctx, optionHeight, 1);  
-            if (nk_button_label(ctx, "SLOT 1"))
-            {
-                Save::Enum  slot = Save::SLOT1;
-                event.raise(Event::LOAD_SLOT, &slot);
-    
-                Menu::Enum  me = Menu::START;
-                event.raise(Event::GUI_TOGGLE, &me);
-            }
-            nk_label(ctx, "Stuff", NK_TEXT_CENTERED);
-            nk_label(ctx, "describing", NK_TEXT_CENTERED);
-            nk_label(ctx, "the save", NK_TEXT_CENTERED);
-            nk_label(ctx, "...", NK_TEXT_CENTERED);            
-            nk_button_color(ctx, nk_rgb(0,0,255));            
-            
-            nk_group_end(ctx);            
+            Menu::Enum  me = Menu::START;
+            event.raise(Event::GUI_TOGGLE, &me);
         }
-        nk_group_begin(ctx, "SLOT 2", NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR);
-        {
-            nk_layout_row_dynamic(ctx, optionHeight, 1);  
-            if (nk_button_label(ctx, "SLOT 2"))
-            {
-                Save::Enum  slot = Save::SLOT2;
-                event.raise(Event::LOAD_SLOT, &slot);
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);                  
+        
+        nk_style_set_font(ctx, &smallFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
+        nk_label(ctx, "Progression", NK_TEXT_CENTERED);
 
-                Menu::Enum  me = Menu::START;
-                event.raise(Event::GUI_TOGGLE, &me);
-            }
-            nk_label(ctx, "Stuff", NK_TEXT_CENTERED);
-            nk_label(ctx, "describing", NK_TEXT_CENTERED);
-            nk_label(ctx, "the save", NK_TEXT_CENTERED);
-            nk_label(ctx, "...", NK_TEXT_CENTERED);
-            nk_button_color(ctx, nk_rgb(255,0,0));            
-            nk_group_end(ctx);            
-        }
-        nk_group_begin(ctx, "SLOT 3", NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR);
-        {
-            nk_layout_row_dynamic(ctx, optionHeight, 1);  
-            if (nk_button_label(ctx, "SLOT 3"))
-            {
-                Save::Enum  slot = Save::SLOT3;
-                event.raise(Event::LOAD_SLOT, &slot);
+        nk_style_set_font(ctx, &mediumFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
+        nk_label(ctx, "34 %", NK_TEXT_CENTERED);
 
-                Menu::Enum  me = Menu::START;
-                event.raise(Event::GUI_TOGGLE, &me);
-            }
-            nk_label(ctx, "Stuff", NK_TEXT_CENTERED);
-            nk_label(ctx, "describing", NK_TEXT_CENTERED);
-            nk_label(ctx, "the save", NK_TEXT_CENTERED);
-            nk_label(ctx, "...", NK_TEXT_CENTERED);
-            nk_button_color(ctx, nk_rgb(0,255,0));            
-            nk_group_end(ctx);
-        }    
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);          
+        
+        nk_style_set_font(ctx, &smallFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
+        nk_label(ctx, "Last save", NK_TEXT_CENTERED);
+
+        nk_style_set_font(ctx, &mediumFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
+        nk_label(ctx, "10 / 12 / 2017", NK_TEXT_CENTERED);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
+        nk_label(ctx, "19:43:53", NK_TEXT_CENTERED);        
+
+        nk_end(ctx);      
     }
-    nk_end(ctx);
+
+    if (nk_begin(ctx, "S2", nk_rect(windowWidth * 0.5f - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
+    NK_WINDOW_NO_SCROLLBAR)) {
+        nk_style_set_font(ctx, &bigFont->handle);
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "SLOT 2")) {
+            Save::Enum  slot = Save::SLOT1;
+            event.raise(Event::LOAD_SLOT, &slot);
+
+            Menu::Enum  me = Menu::START;
+            event.raise(Event::GUI_TOGGLE, &me);
+        }
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);                  
+        
+        nk_style_set_font(ctx, &smallFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
+        nk_label(ctx, "Progression", NK_TEXT_CENTERED);
+
+        nk_style_set_font(ctx, &mediumFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
+        nk_label(ctx, "34 %", NK_TEXT_CENTERED);
+
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);          
+        
+        nk_style_set_font(ctx, &smallFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
+        nk_label(ctx, "Last save", NK_TEXT_CENTERED);
+
+        nk_style_set_font(ctx, &mediumFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
+        nk_label(ctx, "10 / 12 / 2017", NK_TEXT_CENTERED);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
+        nk_label(ctx, "19:43:53", NK_TEXT_CENTERED);        
+
+        nk_end(ctx);      
+    }
+
+    if (nk_begin(ctx, "S3", nk_rect(windowWidth * 0.8f - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
+    NK_WINDOW_NO_SCROLLBAR)) {
+        nk_style_set_font(ctx, &bigFont->handle);
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        if (nk_button_label(ctx, "SLOT 3")) {
+            Save::Enum  slot = Save::SLOT1;
+            event.raise(Event::LOAD_SLOT, &slot);
+
+            Menu::Enum  me = Menu::START;
+            event.raise(Event::GUI_TOGGLE, &me);
+        }
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);                  
+        
+        nk_style_set_font(ctx, &smallFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
+        nk_label(ctx, "Progression", NK_TEXT_CENTERED);
+
+        nk_style_set_font(ctx, &mediumFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
+        nk_label(ctx, "34 %", NK_TEXT_CENTERED);
+
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);          
+        
+        nk_style_set_font(ctx, &smallFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
+        nk_label(ctx, "Last save", NK_TEXT_CENTERED);
+
+        nk_style_set_font(ctx, &mediumFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
+        nk_label(ctx, "10 / 12 / 2017", NK_TEXT_CENTERED);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
+        nk_label(ctx, "19:43:53", NK_TEXT_CENTERED);        
+
+        nk_end(ctx);      
+    }
 }
 
 void            NuklearGUI::hover(int id) const {
@@ -739,7 +793,7 @@ void            NuklearGUI::hover(int id) const {
     if (nk_widget_is_hovered(ctx) && hovered != id) {
         event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::HOVER));
         hovered = id;
-    } 
+    }
 }
 
 struct nk_image  NuklearGUI::loadImage(std::string const filename, GLint format)
@@ -821,4 +875,5 @@ void    NuklearGUI::updateScreenFormat(void *f) {
     Screen::Format  *format = static_cast<Screen::Format*>(f);
     screenFormat.displayMode = format->displayMode;
     screenFormat.windowMode = format->windowMode;
+    screenFormatUpdate = true;
 }

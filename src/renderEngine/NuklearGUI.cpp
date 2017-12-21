@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/21 17:04:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/21 17:14:30 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -501,7 +501,7 @@ void    NuklearGUI::renderNewBrawlMenu() {
     if (nk_begin(ctx, "NEW BRAWL", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
 
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
+        nk_layout_row_dynamic(ctx, optionHeight * 2, 1);
         nk_image(ctx, levelImage);
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);
@@ -643,6 +643,7 @@ void    NuklearGUI::renderHUD() {
 
     struct nk_style_item tmp = ctx->style.window.fixed_background;
     ctx->style.window.fixed_background = nk_style_item_image(portrait);
+    nk_style_set_font(ctx, &smallFont->handle);
 
     if (nk_begin(ctx, "TOP_LEFT_HUD", nk_rect(avatar_x, avatar_y, w, h),
     NK_WINDOW_NO_SCROLLBAR)) {
@@ -660,7 +661,7 @@ void    NuklearGUI::renderHUD() {
     nk_end(ctx);
     
     ctx->style.window.fixed_background = tmp;
-    
+    nk_style_set_font(ctx, &mediumFont->handle);    
 }
 
 void    NuklearGUI::renderDebug() {
@@ -709,6 +710,8 @@ void    NuklearGUI::renderDebug() {
 
 void            NuklearGUI::renderSelectSlot(void){
    float slotWidth = windowWidth * 0.25f;
+
+   struct nk_style_item tmp = ctx->style.window.fixed_background;
    ctx->style.window.fixed_background = nk_style_item_hide();
 
     if (nk_begin(ctx, "S1", nk_rect(windowWidth * 0.2f - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
@@ -818,6 +821,7 @@ void            NuklearGUI::renderSelectSlot(void){
 
         nk_end(ctx);      
     }
+    ctx->style.window.fixed_background = tmp;
 }
 
 void            NuklearGUI::hover(int id) const {

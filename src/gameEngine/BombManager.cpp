@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/19 19:55:51 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 09:56:34 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void              BombManager::spawn_bomb(void *p){
     if (player->getBombCount() >= player->getMaxBombNb())
         return;
     player->addBombToCount();
+    SEventManager::getInstance().raise(Event::SPAWN_BOMB, this);
     _entityList->push_back(new Bomb(
         glm::round(player->getPosition()), static_cast<Player *>(p)
         ));

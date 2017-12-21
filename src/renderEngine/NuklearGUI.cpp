@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 19:08:04 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 13:44:11 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     event.registerEvent(Event::EFFECTS_VOLUME_UPDATE, MEMBER_CALLBACK(NuklearGUI::setEffectsVolume));
 
     event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(NuklearGUI::updateScreenFormat));
+    event.registerEvent(Event::BONUS_ACTIVATE, MEMBER_CALLBACK(NuklearGUI::updateHumanPlayerBonus));
 
     start_time = std::chrono::steady_clock::now();
     frames = 0;
@@ -460,12 +461,20 @@ void    NuklearGUI::renderLevelSelection() {
     nk_end(ctx);       
 }
 
+static std::string     color_to_image(PlayerColor::Enum color){
+    switch (color) {
+        case PlayerColor::WHITE :   return ("assets/textures/white.png");
+        case PlayerColor::BLACK :   return ("assets/textures/black.png");
+        case PlayerColor::RED :   return ("assets/textures/red.png");
+        case PlayerColor::YELLOW :   return ("assets/textures/yellow.png");
+    }
+}
 void    NuklearGUI::renderNewBrawlMenu() {
 
     static GameParams game_params(GameMode::BRAWL, Level::ONE, PlayerColor::WHITE, 1, Difficulty::EASY);
     static struct nk_image  levelImage = loadImage("assets/textures/level" + std::to_string(game_params.get_level() + 1) + ".png", GL_RGBA);
 
-    static struct nk_image  playerImage = loadImage("assets/textures/white.png", GL_RGBA);    
+    static struct nk_image  playerImage = loadImage(color_to_image(game_params.get_color()).c_str(), GL_RGBA);    
 
 
     if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
@@ -485,7 +494,7 @@ void    NuklearGUI::renderNewBrawlMenu() {
         nk_label(ctx, "Player", NK_TEXT_CENTERED);
         if (nk_button_image_label(ctx, playerImage, toString(game_params.get_color()).c_str(), NK_TEXT_CENTERED)) {
             game_params.set_color(game_params.get_color() == PlayerColor::YELLOW ? PlayerColor::WHITE : static_cast<PlayerColor::Enum>(game_params.get_color() + 1));
-            // change playerImage here
+            playerImage = loadImage(color_to_image(game_params.get_color()).c_str(), GL_RGBA);
         }        
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);
@@ -506,7 +515,9 @@ void    NuklearGUI::renderNewBrawlMenu() {
         }    
         if (nk_button_label(ctx, "Go !")) {
             Menu::Enum  menu = Menu::NONE;
-            event.raise(Event::GUI_TOGGLE, &menu);  
+            event.raise(Event::GUI_TOGGLE, &menu);
+            _human_player_color = game_params.get_color();
+            _human_player_bonus = glm::ivec3(1, 1, 1);
             event.raise(Event::NEW_GAME, &game_params);
         }   
 
@@ -562,13 +573,31 @@ void    NuklearGUI::update_fps(void){
     }
 }
 
+static std::string     color_to_HUD_image(PlayerColor::Enum color){
+    switch (color) {
+        case PlayerColor::WHITE :   return ("assets/textures/white_HUD.png");
+        case PlayerColor::BLACK :   return ("assets/textures/black_HUD.png");
+        case PlayerColor::RED :   return ("assets/textures/red_HUD.png");
+        case PlayerColor::YELLOW :   return ("assets/textures/yellow_HUD.png");
+    }
+}
+
+void    NuklearGUI::updateHumanPlayerBonus(void *p){
+    std::pair<Bonus *, Player *> *pair = static_cast<std::pair<Bonus *, Player *> *>(p);
+    if (pair->second->getColor() == _human_player_color){
+        switch (pair->first->getBonusType()){
+            case BonusType::BOMB_UP:   _human_player_bonus.x += 1; break;
+            case BonusType::FLAME_UP:  _human_player_bonus.y += 1; break;
+            case BonusType::SPEED_UP:  _human_player_bonus.z += 1; break;
+        }
+    }
+}
+
 void    NuklearGUI::renderHUD() {
 
-    static struct nk_image portrait = loadImage("assets/textures/white_HUD.png", GL_RGBA);
-    static struct nk_image portrait2 = loadImage("assets/textures/yellow_HUD.png", GL_RGBA);
+    static struct nk_image portrait = loadImage(color_to_HUD_image(_human_player_color), GL_RGBA);
 
     static struct nk_vec2 spacing =  ctx->style.window.spacing; // between items
-   // static struct nk_vec2 padding =  ctx->style.window.padding; // = nk_vec2(0,0); // above / under items 
 
     float   avatar_w = windowWidth * 0.1f;
     float   avatar_h = avatar_w;
@@ -580,38 +609,21 @@ void    NuklearGUI::renderHUD() {
     float h = avatar_h + 2 * spacing.y;
 
     float barHeight = avatar_h * 0.22f;
-    
+
     if (nk_begin(ctx, "TOP_LEFT_HUD", nk_rect(avatar_x, avatar_y, w, h),
-    NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, avatar_h - barHeight, 1);                
+    NK_WINDOW_NO_SCROLLBAR)) {
+        nk_layout_row_dynamic(ctx, avatar_h - barHeight, 1);
         nk_layout_row_static(ctx, barHeight, avatar_w / 8, 8);
         nk_spacing(ctx, 1);
         nk_spacing(ctx, 1);
-        nk_label(ctx, "3", NK_TEXT_LEFT);
+        nk_label(ctx, std::to_string(_human_player_bonus.x).c_str(), NK_TEXT_LEFT);
         nk_spacing(ctx, 1);
-        nk_label(ctx, "1", NK_TEXT_LEFT);
+        nk_label(ctx, std::to_string(_human_player_bonus.y).c_str(), NK_TEXT_LEFT);
         nk_spacing(ctx, 1);
-        nk_label(ctx, "6", NK_TEXT_LEFT);
+        nk_label(ctx, std::to_string(_human_player_bonus.z).c_str(), NK_TEXT_LEFT);
         nk_spacing(ctx, 1);
-    }    
-    nk_end(ctx); 
-
-    ctx->style.window.fixed_background = nk_style_item_image(portrait2);    
-
-    if (nk_begin(ctx, "TOP_RIGHT_HUD", nk_rect(windowWidth - w - avatar_x, avatar_y, w, h),
-    NK_WINDOW_NO_SCROLLBAR)) {   
-        nk_layout_row_dynamic(ctx, avatar_h - barHeight, 1);                
-        nk_layout_row_static(ctx, barHeight, avatar_w / 8, 8);
-        nk_spacing(ctx, 1);
-        nk_spacing(ctx, 1);
-        nk_label(ctx, "2", NK_TEXT_LEFT);
-        nk_spacing(ctx, 1);
-        nk_label(ctx, "4", NK_TEXT_LEFT);
-        nk_spacing(ctx, 1);
-        nk_label(ctx, "5", NK_TEXT_LEFT);
-        nk_spacing(ctx, 1);
-    }    
-    nk_end(ctx); 
+    }
+    nk_end(ctx);
     
     ctx->style.window.fixed_background = tmp;
     

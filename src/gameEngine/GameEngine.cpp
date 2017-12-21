@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/20 10:49:19 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 12:25:43 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ _gameParams(gp),
 _winManager(nullptr) {
 	loadMap("maps/brawl_0.json");
 	if (_gameParams.get_game_mode() == GameMode::BRAWL){
-		placeBrawlPlayers();
+		placeBrawlPlayers(_gameParams.get_color());
 	}
 
 }
@@ -79,13 +79,14 @@ glm::vec2				GameEngine::placeBrawlAI(Player *human, int i){
 	return v;
 }
 
-void					GameEngine::placeBrawlPlayers(void){
+void					GameEngine::placeBrawlPlayers(PlayerColor::Enum _color){
 	// Set the Human Player at a random corner
-	Player *human = new Player(glm::vec2((rand() % 2) * (_map->getSize().x - 1), (rand() % 2) * (_map->getSize().y - 1)), 0);
+	Player *human = new Player(glm::vec2((rand() % 2) * (_map->getSize().x - 1), (rand() % 2) * (_map->getSize().y - 1)), 0, _color);
 	this->_entityList->push_back(human);
 	_playerManager->setHumanPlayer(human);
 	for (int i = 0; i < _gameParams.get_brawl_enemy_nb(); i++){
-		Player *p = new Player(placeBrawlAI(human, i), i + 1);
+		_color = _color == PlayerColor::YELLOW ? PlayerColor::WHITE : static_cast<PlayerColor::Enum>(_color + 1);
+		Player *p = new Player(placeBrawlAI(human, i), i + 1, _color);
 		_playerManager->addPlayer(p);
 		this->_entityList->push_back(p);
 	}

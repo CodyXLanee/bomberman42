@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/20 11:34:46 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/21 14:01:25 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,38 +108,39 @@ void	RenderEngine::renderScenery(Shader &shader) const {
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	static float fakeTime = 0.f;
-	int numAnim = 0;
-    std::vector<glm::mat4> data;
-	Model &model = modelManager.getModel(ModelManager::PLAYER);
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
 			continue;
-		if ((*i)->getState() == State::MOVING)
-			numAnim = 1;
-		glm::mat4 transform = glm::mat4();
-		transform = glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
-		// transform = glm::scale(transform, glm::vec3(1.f, 1.f, 1.f));
-		// transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
 
-		glm::vec2	graphicalDir = dynamic_cast<Player*>(*i)->getGraphicalDirection();
-		if (graphicalDir.x < (*i)->getDirection().x)
+		Player * player = dynamic_cast<Player*>(*i);
+		int numAnim = 0;
+		if (player->getState() == State::MOVING)
+			numAnim = 1;
+			
+    	std::vector<glm::mat4> data;
+		glm::mat4 transform = glm::mat4();
+		transform = glm::translate(transform, glm::vec3(player->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
+
+		glm::vec2	graphicalDir = player->getGraphicalDirection();
+		if (graphicalDir.x < player->getDirection().x)
 			graphicalDir.x += 0.1;
-		if (graphicalDir.x > (*i)->getDirection().x)
+		if (graphicalDir.x > player->getDirection().x)
 			graphicalDir.x -= 0.1;
-		if (graphicalDir.y < (*i)->getDirection().y)
+		if (graphicalDir.y < player->getDirection().y)
 			graphicalDir.y += 0.1;
-		if (graphicalDir.y > (*i)->getDirection().y)
+		if (graphicalDir.y > player->getDirection().y)
 			graphicalDir.y -= 0.1;
-		dynamic_cast<Player*>(*i)->setGraphicalDirection(graphicalDir);
+		player->setGraphicalDirection(graphicalDir);
 
 		int sign = (graphicalDir.x < 0) ? -1 : 1;
 		transform = glm::rotate(transform, sign * angle(glm::vec2(0.f, -1.f), graphicalDir), glm::vec3(0.f, 0.f, 1.f));
 
 		data.push_back(transform);
+		Model &model = modelManager.getPlayerModel(player->getPlayerNb());
+		model.setAnimation(numAnim, fakeTime);
+		model.draw(shader, data);
 	}
-	model.setAnimation(numAnim, fakeTime);
-    model.draw(shader, data);
 	fakeTime += 0.01;
 }
 
@@ -412,37 +413,18 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 }
 
 void	RenderEngine::renderParticles() {
-	// std::cout << particles.size() << std::endl;
-	for (auto it = particles.begin(); it != particles.end(); it++) {
-		(*it).first->draw(shaderManager.getParticlesShader());
-		if (it->first->getType() == ParticleSystem::Type::FIRE && it->first->isRunning() == false) {
-			// std::cout << "ERASE" << std::endl;
-			delete it->first;
-			particles.erase(it);
-			it--;
-		}
-		// (*it).second--;
-		// std::chrono::milliseconds life;
-		// if ((*it).second->getType() == Type::BOMB)
-		// 	life = static_cast<Bomb *>((*it).second)->get_ms_before_explode();
-		// else if ((*it).second->getType() == Type::FLAME)
-		// 	life = static_cast<Flame *>((*it).second)->get_ms_before_explode();
-			
-		// if (life <= static_cast<std::chrono::milliseconds>(10)) {
-		// 	delete (*it).first;
-		// 	particles.erase(it);
-		// 	it--;
-		// }
-		// try {
-		// 	(*it).second->getType();
-		// } catch (const std::bad_alloc &) {
-		// 	delete (*it).first;
-		// 	particles.erase(it);
-		// 	it--;
-		// }
-		// if ((*it).second == nullptr) {
-		// }
-			
+	std::vector<unsigned int> tmp;
+
+	for (unsigned int it = 0; it < particles.size(); it++) {
+		particles[it].first->draw(shaderManager.getParticlesShader());
+		if (particles[it].first->isRunning() == false) {
+			delete particles[it].first;
+			tmp.insert(tmp.begin(), it);
+		}			
+	}
+
+	for (auto it = tmp.begin(); it != tmp.end(); it++) {
+		particles.erase(particles.begin() + *it);
 	}
 }
 
@@ -450,25 +432,18 @@ void	RenderEngine::addBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
 	
 	glm::vec2 pos = b->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, Bomb *>(
+	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
 		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::Type::BOMB),
-		b));
+		pos));
 	particles.back().first->start();
 }
 
 void	RenderEngine::removeBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
-	(void)b;
 	
 	for (auto it = particles.begin(); it != particles.end(); it++) {
-		// std::cout << it->second->getPosition().x << std::endl;
-		// std::cout << b->getPosition().x << std::endl;
-		if (it->second->getPosition() == b->getPosition()) {
-			// std::cout << "a" << std::endl;
-			(*it).first->stop();
-			delete (*it).first;
-			particles.erase(it);
-			it--;
+		if (it->second == b->getPosition()) {
+			it->first->stop();
 		}
 	}
 }
@@ -477,9 +452,9 @@ void	RenderEngine::setFireParticles(void *fire) {
 	Flame *f = static_cast<Flame *>(fire);
 	
 	glm::vec2 pos = f->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, Flame *>(
+	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
 		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::Type::FIRE),
-		f));
+		pos));
 	particles.back().first->start();
 }
 

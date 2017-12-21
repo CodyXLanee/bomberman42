@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 16:33:17 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/21 15:07:30 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 ModelManager::ModelManager() {
 	directory = "assets/models/obj/";
 
-	playerModel = new Model(directory + "player.fbx");
-	// playerModel = new Model(directory + "player.dae");
-	// playerModel = new Model(directory + "cowboy.dae");
+	int i = 0;
+	while(i < 4) {
+		playerModel[i] = new Model(directory + "player.fbx");
+		playerModel[i]->setUnique();
+		i++;
+	}
 
 	wallModel = new Model(directory + "wall.obj");
 	groundModel = new Model(directory + "groundTile1.obj");
@@ -40,17 +43,25 @@ ModelManager::ModelManager() {
 ModelManager::~ModelManager() {
 	delete groundModel;
 	delete wallModel;
-	delete playerModel;
 	delete brickModel;
 	delete bombModel;
 	delete flameModel;
 	delete aiDebug;
 	delete sceneryModel;
+	for (unsigned int i = 0; i < 4; i++) {
+		delete playerModel[i];
+	}
+}
+
+Model	&ModelManager::getPlayerModel(unsigned int n) const {
+	if (n > 3)
+		n = 3;
+	return *playerModel[n];
 }
 
 Model	&ModelManager::getModel(enum model m) const {
 	switch(m) {
-		case PLAYER: return *playerModel; break;
+		case PLAYER: return *playerModel[0]; break;
 		case GROUND: return *groundModel; break;
 		case WALL: return *wallModel; break;
 		case BRICK: return *brickModel; break;

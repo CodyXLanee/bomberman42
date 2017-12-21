@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 15:06:32 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/21 13:39:09 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class RenderEngine {
 
 		WeatherSystem	*meteo;
 
-		std::vector<std::pair<ParticleSystem *, IGameEntity *>>	particles;
+		std::vector<std::pair<ParticleSystem *, glm::vec2>>	particles;
 		std::vector<IGameEntity *>		entitiesRecorded;
 		std::vector<glm::vec3>			fireLights;
 		void	addBombParticles(void *);

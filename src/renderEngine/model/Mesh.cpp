@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 14:32:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/21 15:28:10 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 	setupMesh();
 	bonesNbr = 0;
 	animationSelected = 0;
+	isUnique = false;
 
 	this->scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_FlipUVs);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -140,7 +141,13 @@ void	Mesh::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 	if (textures.size() == 0)
 		glUniform3f(glGetUniformLocation(shader.getProgramID(), "materialColor"), this->color.r, this->color.g, this->color.b);
 
-	setInstanceBuffer(transforms);
+	if (isUnique) {
+		glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), &transforms[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	} else
+		setInstanceBuffer(transforms);
+		
 	if(scene->HasAnimations()) {
 		std::vector<glm::mat4> bonesTransforms = getBonesTransforms(animationTime);
 
@@ -246,4 +253,34 @@ const aiNodeAnim *Mesh::findNodeAnim(const aiAnimation *animation, const std::st
 void	Mesh::setAnimation(unsigned int animation, float timeInSeconds) {
 	animationTime = timeInSeconds;
 	animationSelected = animation;
+}
+
+void	Mesh::setUnique() {
+	isUnique = true;
+
+	glBindVertexArray(this->vao);
+	glGenBuffers(1, &this->ibo);
+	glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), glm::value_ptr(uniqueMat), GL_STATIC_DRAW);
+	// glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4) * 4, (GLvoid*)(0));
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4) * 4, (GLvoid*)(sizeof(glm::vec4)));
+	glEnableVertexAttribArray(7);
+	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4) * 4, (GLvoid*)(2 * sizeof(glm::vec4)));
+	glEnableVertexAttribArray(8);
+	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4) * 4, (GLvoid*)(3 * sizeof(glm::vec4)));
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);	
+	glVertexAttribDivisor(5, 1); 
+	glVertexAttribDivisor(6, 1); 
+	glVertexAttribDivisor(7, 1); 
+	glVertexAttribDivisor(8, 1); 
+	glBindVertexArray(0);
+	
+	// glDeleteBuffers(1, &this->ibo);
 }

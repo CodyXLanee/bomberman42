@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 13:40:03 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/21 14:01:25 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,38 +108,39 @@ void	RenderEngine::renderScenery(Shader &shader) const {
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	static float fakeTime = 0.f;
-	int numAnim = 0;
-    std::vector<glm::mat4> data;
-	Model &model = modelManager.getModel(ModelManager::PLAYER);
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
 			continue;
-		if ((*i)->getState() == State::MOVING)
-			numAnim = 1;
-		glm::mat4 transform = glm::mat4();
-		transform = glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
-		// transform = glm::scale(transform, glm::vec3(1.f, 1.f, 1.f));
-		// transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
 
-		glm::vec2	graphicalDir = dynamic_cast<Player*>(*i)->getGraphicalDirection();
-		if (graphicalDir.x < (*i)->getDirection().x)
+		Player * player = dynamic_cast<Player*>(*i);
+		int numAnim = 0;
+		if (player->getState() == State::MOVING)
+			numAnim = 1;
+			
+    	std::vector<glm::mat4> data;
+		glm::mat4 transform = glm::mat4();
+		transform = glm::translate(transform, glm::vec3(player->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
+
+		glm::vec2	graphicalDir = player->getGraphicalDirection();
+		if (graphicalDir.x < player->getDirection().x)
 			graphicalDir.x += 0.1;
-		if (graphicalDir.x > (*i)->getDirection().x)
+		if (graphicalDir.x > player->getDirection().x)
 			graphicalDir.x -= 0.1;
-		if (graphicalDir.y < (*i)->getDirection().y)
+		if (graphicalDir.y < player->getDirection().y)
 			graphicalDir.y += 0.1;
-		if (graphicalDir.y > (*i)->getDirection().y)
+		if (graphicalDir.y > player->getDirection().y)
 			graphicalDir.y -= 0.1;
-		dynamic_cast<Player*>(*i)->setGraphicalDirection(graphicalDir);
+		player->setGraphicalDirection(graphicalDir);
 
 		int sign = (graphicalDir.x < 0) ? -1 : 1;
 		transform = glm::rotate(transform, sign * angle(glm::vec2(0.f, -1.f), graphicalDir), glm::vec3(0.f, 0.f, 1.f));
 
 		data.push_back(transform);
+		Model &model = modelManager.getPlayerModel(player->getPlayerNb());
+		model.setAnimation(numAnim, fakeTime);
+		model.draw(shader, data);
 	}
-	model.setAnimation(numAnim, fakeTime);
-    model.draw(shader, data);
 	fakeTime += 0.01;
 }
 

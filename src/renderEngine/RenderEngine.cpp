@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/20 11:34:46 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/21 13:40:03 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -412,37 +412,18 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 }
 
 void	RenderEngine::renderParticles() {
-	// std::cout << particles.size() << std::endl;
-	for (auto it = particles.begin(); it != particles.end(); it++) {
-		(*it).first->draw(shaderManager.getParticlesShader());
-		if (it->first->getType() == ParticleSystem::Type::FIRE && it->first->isRunning() == false) {
-			// std::cout << "ERASE" << std::endl;
-			delete it->first;
-			particles.erase(it);
-			it--;
-		}
-		// (*it).second--;
-		// std::chrono::milliseconds life;
-		// if ((*it).second->getType() == Type::BOMB)
-		// 	life = static_cast<Bomb *>((*it).second)->get_ms_before_explode();
-		// else if ((*it).second->getType() == Type::FLAME)
-		// 	life = static_cast<Flame *>((*it).second)->get_ms_before_explode();
-			
-		// if (life <= static_cast<std::chrono::milliseconds>(10)) {
-		// 	delete (*it).first;
-		// 	particles.erase(it);
-		// 	it--;
-		// }
-		// try {
-		// 	(*it).second->getType();
-		// } catch (const std::bad_alloc &) {
-		// 	delete (*it).first;
-		// 	particles.erase(it);
-		// 	it--;
-		// }
-		// if ((*it).second == nullptr) {
-		// }
-			
+	std::vector<unsigned int> tmp;
+
+	for (unsigned int it = 0; it < particles.size(); it++) {
+		particles[it].first->draw(shaderManager.getParticlesShader());
+		if (particles[it].first->isRunning() == false) {
+			delete particles[it].first;
+			tmp.insert(tmp.begin(), it);
+		}			
+	}
+
+	for (auto it = tmp.begin(); it != tmp.end(); it++) {
+		particles.erase(particles.begin() + *it);
 	}
 }
 
@@ -450,25 +431,18 @@ void	RenderEngine::addBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
 	
 	glm::vec2 pos = b->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, Bomb *>(
+	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
 		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::Type::BOMB),
-		b));
+		pos));
 	particles.back().first->start();
 }
 
 void	RenderEngine::removeBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
-	(void)b;
 	
 	for (auto it = particles.begin(); it != particles.end(); it++) {
-		// std::cout << it->second->getPosition().x << std::endl;
-		// std::cout << b->getPosition().x << std::endl;
-		if (it->second->getPosition() == b->getPosition()) {
-			// std::cout << "a" << std::endl;
-			(*it).first->stop();
-			delete (*it).first;
-			particles.erase(it);
-			it--;
+		if (it->second == b->getPosition()) {
+			it->first->stop();
 		}
 	}
 }
@@ -477,9 +451,9 @@ void	RenderEngine::setFireParticles(void *fire) {
 	Flame *f = static_cast<Flame *>(fire);
 	
 	glm::vec2 pos = f->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, Flame *>(
+	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
 		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::Type::FIRE),
-		f));
+		pos));
 	particles.back().first->start();
 }
 

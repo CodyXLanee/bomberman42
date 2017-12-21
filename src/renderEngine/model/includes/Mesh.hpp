@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/13 15:22:26 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/21 15:05:43 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ class Mesh {
         void                    setInstanceBuffer(std::vector<glm::mat4> const &);
         std::vector<glm::mat4>	getBonesTransforms(float timeInSeconds);
         void                    setAnimation(unsigned int animation, float timeInSeconds);
+        void                    setUnique();
 
     private:
         Mesh();
@@ -76,6 +77,8 @@ class Mesh {
         std::vector<unsigned int>   indices;
         std::vector<Texture>        textures;
         aiColor3D                   color;
+        bool                        isUnique;
+        glm::mat4                   uniqueMat;
 
         std::map<std::string, unsigned int> bonesMap;
         std::vector<glm::mat4>              offsetMatrices;

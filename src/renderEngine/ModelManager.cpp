@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 13:55:29 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/21 15:07:30 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ ModelManager::ModelManager() {
 	int i = 0;
 	while(i < 4) {
 		playerModel[i] = new Model(directory + "player.fbx");
+		playerModel[i]->setUnique();
 		i++;
 	}
 

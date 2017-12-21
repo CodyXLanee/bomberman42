@@ -28,6 +28,9 @@ class CollisionsManager {
 		void		gestionSlipBidirection(glm::vec2 & pos, IGameEntity const * entity, Map const & map);
 		static bool	collidesWithEntity(glm::vec2 &v, IGameEntity const * entity, std::vector<IGameEntity *> const &entityList);
 		void		computeEntityMovement(Map const & map, std::vector<IGameEntity *> &entityList, IGameEntity *player);
+		
+    	std::chrono::time_point<std::chrono::steady_clock>      _last_frame_time_point;
+		std::chrono::milliseconds   							_time_since_last_frame;
 };
 
 #endif

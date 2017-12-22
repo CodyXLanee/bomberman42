@@ -26,12 +26,15 @@ public:
     ~Enemy();
 
 
+    glm::vec2				getGraphicalDirection() const;
+    void					setGraphicalDirection(glm::vec2 dir);
     EnemyType::Enum         getEnemyType(void);
     void                    player_move_callback(void *player);
     void	                spawn_flame_callback(void *flame);
 
 private:
     EnemyType::Enum _type;
+	glm::vec2		_graphicalDirection;
 };
 
 #endif

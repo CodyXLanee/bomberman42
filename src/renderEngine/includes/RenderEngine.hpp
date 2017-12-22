@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 13:39:09 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 15:17:18 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@
 # include "ShaderManager.hpp"
 # include "Camera.hpp"
 # include "Light.hpp"
-# include "ParticleSystem.hpp"
+# include "FireParticles.hpp"
+# include "BombParticles.hpp"
 # include "WeatherSystem.hpp"
 # include "NuklearGUI.hpp"
 # include "Map.hpp"
@@ -54,13 +55,13 @@ class RenderEngine {
 		
 		ModelManager	modelManager;
 		ShaderManager	shaderManager;
-		Camera  	&camera;
-		Light		*light;
+		Camera  		&camera;
 
 		WeatherSystem	*meteo;
 
-		std::vector<std::pair<ParticleSystem *, glm::vec2>>	particles;
-		std::vector<IGameEntity *>		entitiesRecorded;
+		FireParticles			fireParticles;
+		BombParticles			bombParticles;
+
 		std::vector<glm::vec3>			fireLights;
 		void	addBombParticles(void *);
 		void	removeBombParticles(void *);
@@ -82,18 +83,16 @@ class RenderEngine {
 		void	renderFlames(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderEnemies(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderScenery(Shader &shader) const;
-		void	renderParticles();
 
 		void	setFireLights(std::vector<IGameEntity *> const & entities);
-		// void	recordNewEntities(std::vector<IGameEntity *> & entities);
 		void	shadowPass(Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	normalPass(Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	blendedPass(std::vector<IGameEntity *> &entities);
 
 		void	createShadowBuffer();
 		void	createDepthCubemap();
-		void	getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const;
-		void	getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const;
+		void	getDirectionalShadowMap() const;
+		// void	getOmnidirectionalShadowMap() const;
 
 		std::vector<glm::vec2>	*aiDebugInfo;
 		void	setAiDebugPointer(void* ptr);

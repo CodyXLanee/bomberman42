@@ -1,0 +1,15 @@
+{
+    "grid":[[ 0, 0,-1, 0, 0],
+            [ 0,-2, 0,-2, 0],
+            [-1, 0, 0, 0,-1],
+            [ 0,-2,10,-2, 0],
+            [ 0, 0, 1, 0, 0]],
+    "models":{
+    "bricks": "assets/models/bricks.obj",
+    "undestroyable": "assets/models/undestroyable.obj"},
+    "sun":{
+        "pos":[20.0, 20.0, 20.0],
+        "color":[0.682, 0.356, 0.803]
+    },
+    "stars":[1,2,3]
+}

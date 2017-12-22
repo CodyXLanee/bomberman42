@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 14:01:25 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 15:30:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,11 @@ void	RenderEngine::shadowPass(Map const & map, std::vector<IGameEntity *> &entit
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	getDirectionalShadowMap(map, entities);
-	// getOmnidirectionalShadowMap(map, entities);
+	getDirectionalShadowMap();
+	// getOmnidirectionalShadowMap();
+	renderScene(shaderManager.getDirectionalShadowShader(), map, entities);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void	RenderEngine::normalPass(Map const & map, std::vector<IGameEntity *> &entities) const {
@@ -69,7 +72,10 @@ void	RenderEngine::blendedPass(std::vector<IGameEntity *> &entities){
 	glEnable(GL_BLEND);
 	renderFlames(shaderManager.getFlamesShader(), entities);
 	meteo->renderRain(shaderManager.getParticlesShader());
-	renderParticles();
+	if (fireParticles.isRunning())
+		fireParticles.draw(shaderManager.getParticlesShader());
+	if (bombParticles.isRunning())
+		bombParticles.draw(shaderManager.getParticlesShader());
 }
 
 
@@ -89,9 +95,6 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderScenery(shader);
 	// meteo->getSun().render(shaderManager.getMainShader(), camera);
 	renderPlayer(shader, entities);
-
-
-	// renderAiDebug(shader);
 }
 
 void	RenderEngine::renderScenery(Shader &shader) const {
@@ -248,6 +251,21 @@ void	RenderEngine::renderEnemies(Shader &shader, std::vector<IGameEntity *> cons
 				if (j.first == static_cast<Enemy *>(*i)->getEnemyType()){
 					glm::mat4 transform = glm::mat4();
 					transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f)));
+
+					glm::vec2	graphicalDir = dynamic_cast<Enemy*>(*i)->getGraphicalDirection();
+					if (graphicalDir.x < (*i)->getDirection().x)
+						graphicalDir.x += 0.1;
+					if (graphicalDir.x > (*i)->getDirection().x)
+						graphicalDir.x -= 0.1;
+					if (graphicalDir.y < (*i)->getDirection().y)
+						graphicalDir.y += 0.1;
+					if (graphicalDir.y > (*i)->getDirection().y)
+						graphicalDir.y -= 0.1;
+					dynamic_cast<Enemy*>(*i)->setGraphicalDirection(graphicalDir);
+
+					int sign = (graphicalDir.x < 0) ? -1 : 1;
+					transform = glm::rotate(transform, sign * angle(glm::vec2(0.f, -1.f), graphicalDir), glm::vec3(0.f, 0.f, 1.f));
+
 					j.second.second.push_back(transform);
 				}
 			}
@@ -361,7 +379,7 @@ void	RenderEngine::createDepthCubemap() {
 }
 
 
-void		RenderEngine::getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const {
+void		RenderEngine::getDirectionalShadowMap() const {
 	glm::mat4 lightSpaceMatrix = meteo->getSun().getDirectionalLightSpaceMatrix();
 	
 	shaderManager.getDirectionalShadowShader().use();
@@ -372,31 +390,24 @@ void		RenderEngine::getDirectionalShadowMap(Map const & map, std::vector<IGameEn
 						1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 	
 	shaderManager.getDirectionalShadowShader().use();
-	renderScene(shaderManager.getDirectionalShadowShader(), map, entities);
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const {
-	std::vector<glm::mat4> shadowTransforms = light->getOmnidirectionalLightSpaceMatrix();
+// void	RenderEngine::getOmnidirectionalShadowMap() const {
+// 	std::vector<glm::mat4> shadowTransforms = light->getOmnidirectionalLightSpaceMatrix();
 
-	shaderManager.getPointShadowShader().use();
-	for (unsigned int i = 0; i < 6; ++i)
-		shaderManager.getPointShadowShader().setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-	shaderManager.getPointShadowShader().setFloat("far_plane", 25.f);
-	glm::vec3 lightPos = light->getPosition();
-	shaderManager.getPointShadowShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+// 	shaderManager.getPointShadowShader().use();
+// 	for (unsigned int i = 0; i < 6; ++i)
+// 		shaderManager.getPointShadowShader().setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+// 	shaderManager.getPointShadowShader().setFloat("far_plane", 25.f);
+// 	glm::vec3 lightPos = light->getPosition();
+// 	shaderManager.getPointShadowShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
 	
-	shaderManager.getMainShader().use();
-	shaderManager.getMainShader().setFloat("far_plane", 25.f);
-	shaderManager.getMainShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+// 	shaderManager.getMainShader().use();
+// 	shaderManager.getMainShader().setFloat("far_plane", 25.f);
+// 	shaderManager.getMainShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
 
-    shaderManager.getPointShadowShader().use();
-			
-	renderScene(shaderManager.getPointShadowShader(), map, entities);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
+//     shaderManager.getPointShadowShader().use();
+// }
 
 void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 	fireLights.clear();
@@ -412,50 +423,19 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 									fireLights[i].x, fireLights[i].y, fireLights[i].z);
 }
 
-void	RenderEngine::renderParticles() {
-	std::vector<unsigned int> tmp;
-
-	for (unsigned int it = 0; it < particles.size(); it++) {
-		particles[it].first->draw(shaderManager.getParticlesShader());
-		if (particles[it].first->isRunning() == false) {
-			delete particles[it].first;
-			tmp.insert(tmp.begin(), it);
-		}			
-	}
-
-	for (auto it = tmp.begin(); it != tmp.end(); it++) {
-		particles.erase(particles.begin() + *it);
-	}
-}
-
 void	RenderEngine::addBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
-	
-	glm::vec2 pos = b->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::Type::BOMB),
-		pos));
-	particles.back().first->start();
+	bombParticles.addBombPlace(b->getPosition());
 }
 
 void	RenderEngine::removeBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
-	
-	for (auto it = particles.begin(); it != particles.end(); it++) {
-		if (it->second == b->getPosition()) {
-			it->first->stop();
-		}
-	}
+	bombParticles.removeBombPlace(b->getPosition());
 }
 
 void	RenderEngine::setFireParticles(void *fire) {
 	Flame *f = static_cast<Flame *>(fire);
-	
-	glm::vec2 pos = f->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::Type::FIRE),
-		pos));
-	particles.back().first->start();
+	fireParticles.addFirePlace(f->getPosition());
 }
 
 void	RenderEngine::setAiDebugPointer(void* ptr) {

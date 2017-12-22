@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:24 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/07 10:50:20 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 13:58:37 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define WEATHERSYSTEM_HPP
 
 # include <glm/vec3.hpp>
-# include "ParticleSystem.hpp"
+// # include "ParticleSystem.hpp"
 # include "Model.hpp"
 # include "Shader.hpp"
 # include "Light.hpp"
@@ -51,7 +51,7 @@ class WeatherSystem {
 		glm::vec3				lightingValues; //ambiant, diffuse, specular
 		Light					*sun;
 		Model					*cloudModel;
-		ParticleSystem			*rain;
+		// ParticleSystem			*rain;
 		std::vector<glm::vec3>	cloudsPosition;
 		// std::vector<glm::vec3>	cloudsVelocity;
 		// glm::vec3		wind;

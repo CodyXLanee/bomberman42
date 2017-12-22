@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:34 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 15:05:43 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 11:05:21 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,13 @@ class Mesh {
     
 
 		void	                draw(Shader &shader, std::vector<glm::mat4> const & transforms);
-        void                    setInstanceBuffer(std::vector<glm::mat4> const &);
-        std::vector<glm::mat4>	getBonesTransforms(float timeInSeconds);
+        void                    getBonesTransforms();
         void                    setAnimation(unsigned int animation, float timeInSeconds);
-        void                    setUnique();
 
     private:
         Mesh();
 		void	            setupMesh();
+        void                setInstanceBuffer();
         void                setupBones();
         void                addBoneData(unsigned int vertexID, unsigned int boneID, float weight);
         void	            readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform);
@@ -77,7 +76,6 @@ class Mesh {
         std::vector<unsigned int>   indices;
         std::vector<Texture>        textures;
         aiColor3D                   color;
-        bool                        isUnique;
         glm::mat4                   uniqueMat;
 
         std::map<std::string, unsigned int> bonesMap;

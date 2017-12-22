@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 15:10:31 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 11:02:25 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	Model::i = 0;
 Model::Model(std::string path) : path(path) {
 	hasBumpMap = false;
 	hasSpecularMap = false;
-	isUnique = false;
 	loadModel(path);
 	Model::i++;
 	return;
@@ -275,6 +274,8 @@ void	Model::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 	shader.setVec3("materialSpecular", material.specular.x, material.specular.y, material.specular.z);
 
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {
+		if (shader.isUsedForFirstPass() && animated)
+			meshes[i]->getBonesTransforms();
 		meshes[i]->draw(shader, transforms);
 	}
 }
@@ -288,12 +289,5 @@ void	Model::setAnimation(unsigned int animation, float timeInSeconds) {
 		for (unsigned int i = 0; i < meshes.size(); i++) {
 			meshes[i]->setAnimation(animation, timeInSeconds);
 		}
-	}
-}
-
-void	Model::setUnique() {
-	isUnique = true;
-	for(unsigned int i = 0; i < this->meshes.size(); i++) {
-		meshes[i]->setUnique();
 	}
 }

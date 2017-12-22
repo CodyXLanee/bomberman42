@@ -451,7 +451,8 @@ void    NuklearGUI::renderLevelSelection() {
     NK_WINDOW_BORDER |NK_WINDOW_NO_SCROLLBAR ))
     {
         nk_layout_row_dynamic(ctx, imageSize, 1);
-        nk_button_image(ctx, levelImage);
+        if (nk_button_image(ctx, levelImage))
+            std::cout << "clic image" << std::endl;
 
         nk_layout_row_dynamic(ctx, optionHeight, 6);
         if (nk_button_label(ctx, "Back")) 
@@ -469,7 +470,7 @@ void    NuklearGUI::renderLevelSelection() {
         }
         if (nk_button_label(ctx, "Next"))
         {
-            if (level < Level::THREE)
+            if (level < Level::FOUR)
             {
                 level = static_cast<Level::Enum>(level + 1);
                 levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);

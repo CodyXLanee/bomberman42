@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 14:59:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 10:14:07 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ class Model {
 		~Model();
 
 		void						draw(Shader &shader, std::vector<glm::mat4> const & transforms);
+		void						drawShadow(Shader &shader, std::vector<glm::mat4> const & transforms);
 		std::vector<glm::mat4>		getBonesTransforms(float timeInSeconds) const;
 		bool						isAnimated() const;
 		void						setAnimation(unsigned int animation, float timeInSeconds);
-		void						setUnique();
 		
 	private:
 		Model();
@@ -62,7 +62,6 @@ class Model {
 		bool						animated;
 		bool						hasBumpMap;
 		bool						hasSpecularMap;
-		bool						isUnique;
 
 		static int i;
 };

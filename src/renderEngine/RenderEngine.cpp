@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 10:20:55 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 15:30:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,10 @@ void	RenderEngine::blendedPass(std::vector<IGameEntity *> &entities){
 	glEnable(GL_BLEND);
 	renderFlames(shaderManager.getFlamesShader(), entities);
 	meteo->renderRain(shaderManager.getParticlesShader());
-	renderParticles();
+	if (fireParticles.isRunning())
+		fireParticles.draw(shaderManager.getParticlesShader());
+	if (bombParticles.isRunning())
+		bombParticles.draw(shaderManager.getParticlesShader());
 }
 
 
@@ -389,22 +392,22 @@ void		RenderEngine::getDirectionalShadowMap() const {
 	shaderManager.getDirectionalShadowShader().use();
 }
 
-void	RenderEngine::getOmnidirectionalShadowMap() const {
-	std::vector<glm::mat4> shadowTransforms = light->getOmnidirectionalLightSpaceMatrix();
+// void	RenderEngine::getOmnidirectionalShadowMap() const {
+// 	std::vector<glm::mat4> shadowTransforms = light->getOmnidirectionalLightSpaceMatrix();
 
-	shaderManager.getPointShadowShader().use();
-	for (unsigned int i = 0; i < 6; ++i)
-		shaderManager.getPointShadowShader().setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-	shaderManager.getPointShadowShader().setFloat("far_plane", 25.f);
-	glm::vec3 lightPos = light->getPosition();
-	shaderManager.getPointShadowShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+// 	shaderManager.getPointShadowShader().use();
+// 	for (unsigned int i = 0; i < 6; ++i)
+// 		shaderManager.getPointShadowShader().setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+// 	shaderManager.getPointShadowShader().setFloat("far_plane", 25.f);
+// 	glm::vec3 lightPos = light->getPosition();
+// 	shaderManager.getPointShadowShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
 	
-	shaderManager.getMainShader().use();
-	shaderManager.getMainShader().setFloat("far_plane", 25.f);
-	shaderManager.getMainShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+// 	shaderManager.getMainShader().use();
+// 	shaderManager.getMainShader().setFloat("far_plane", 25.f);
+// 	shaderManager.getMainShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
 
-    shaderManager.getPointShadowShader().use();
-}
+//     shaderManager.getPointShadowShader().use();
+// }
 
 void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 	fireLights.clear();
@@ -420,50 +423,19 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 									fireLights[i].x, fireLights[i].y, fireLights[i].z);
 }
 
-void	RenderEngine::renderParticles() {
-	std::vector<unsigned int> tmp;
-
-	for (unsigned int it = 0; it < particles.size(); it++) {
-		particles[it].first->draw(shaderManager.getParticlesShader());
-		if (particles[it].first->isRunning() == false) {
-			delete particles[it].first;
-			tmp.insert(tmp.begin(), it);
-		}			
-	}
-
-	for (auto it = tmp.begin(); it != tmp.end(); it++) {
-		particles.erase(particles.begin() + *it);
-	}
-}
-
 void	RenderEngine::addBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
-	
-	glm::vec2 pos = b->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::Type::BOMB),
-		pos));
-	particles.back().first->start();
+	bombParticles.addBombPlace(b->getPosition());
 }
 
 void	RenderEngine::removeBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
-	
-	for (auto it = particles.begin(); it != particles.end(); it++) {
-		if (it->second == b->getPosition()) {
-			it->first->stop();
-		}
-	}
+	bombParticles.removeBombPlace(b->getPosition());
 }
 
 void	RenderEngine::setFireParticles(void *fire) {
 	Flame *f = static_cast<Flame *>(fire);
-	
-	glm::vec2 pos = f->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::Type::FIRE),
-		pos));
-	particles.back().first->start();
+	fireParticles.addFirePlace(f->getPosition());
 }
 
 void	RenderEngine::setAiDebugPointer(void* ptr) {

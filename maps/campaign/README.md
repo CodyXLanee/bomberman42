@@ -2,7 +2,7 @@ Campaign map's editor
 ===================
 
 
-It's JSON files with the following values:
+It's JSON files. The **name of the file** determine the **level**. The JSON need following values:
 
 ----------
 
@@ -11,7 +11,6 @@ grid
 -------------
 
 > It's a **2D** array of int. Each int represent a **type of occupation**:
-
 > - **0**: empty
 > - **-1**: destructible block
 > - **-2**: indestructible block
@@ -42,7 +41,6 @@ model
 -------------
 
 > It's the **design of blocks:**
-
 > - **bricks**: destructible blocks design
 > - **undestroyable**: indestructible blocks design
 
@@ -59,7 +57,6 @@ sun
 -------------
 
 > It's **sun parameters:**
-
 > - **pos**: position of the sun
 > - **color**: the RGB color (0 to 1)
 

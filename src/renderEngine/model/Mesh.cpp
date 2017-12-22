@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 09:58:25 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 10:39:41 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,38 @@ void	Mesh::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 		// std::string name = this->textures[i].type;
 		// std::string nbr = (name == "texture_diffuse") ? std::to_string(diffuseNbr++) : std::to_string(normalNbr++);
 		// glUniform1i(glGetUniformLocation(shader.getProgramID(), ("material." + name + nbr).c_str()), i);
+		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	}
+	glActiveTexture(GL_TEXTURE0);
+
+	if (textures.size() == 0)
+		glUniform3f(glGetUniformLocation(shader.getProgramID(), "materialColor"), this->color.r, this->color.g, this->color.b);
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * transforms.size(), &transforms[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+		
+	if(scene->HasAnimations()) {
+		// std::vector<glm::mat4> bonesTransforms = getBonesTransforms(animationTime);
+
+		for (unsigned int i = 0; i < finalTransform.size(); ++i) {
+			shader.setMat4("jointTransforms[" + std::to_string(i) + "]", finalTransform[i]);
+		}
+		shader.setBool("isAnimated", 1);
+	} else
+		shader.setBool("isAnimated", 0);
+		
+	glBindVertexArray(this->vao);
+	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, transforms.size());
+	glBindVertexArray(0);
+	
+	return;
+}
+
+void	Mesh::drawShadow(Shader &shader, std::vector<glm::mat4> const & transforms) {
+
+	for(unsigned int i = 0; i < textures.size(); i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 	glActiveTexture(GL_TEXTURE0);

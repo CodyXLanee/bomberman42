@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:44:33 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 09:54:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 10:30:46 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Shader::Shader(std::string vertexSrc, std::string fragmentSrc)
     this->fragmentID = this->load(GL_FRAGMENT_SHADER, this->fragmentSrc);
     this->geometryID = 0;
     this->compile();
+    forShadowPass = false;
     return;
 }
 
@@ -182,6 +183,14 @@ void    Shader::setVec3(const std::string &name, float x, float y, float z) cons
 
 GLuint  Shader::getProgramID() const {
     return this->programID;
+}
+
+void    Shader::setForShadowPass() {
+    forShadowPass = true;
+}
+
+bool    Shader::isUsedForShadowPass() const {
+    return forShadowPass;
 }
 
 glm::mat4 Shader::camera = glm::lookAt(

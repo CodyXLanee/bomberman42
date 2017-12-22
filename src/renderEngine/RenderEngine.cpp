@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 14:01:25 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 10:20:55 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,11 @@ void	RenderEngine::shadowPass(Map const & map, std::vector<IGameEntity *> &entit
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	getDirectionalShadowMap(map, entities);
-	// getOmnidirectionalShadowMap(map, entities);
+	getDirectionalShadowMap();
+	// getOmnidirectionalShadowMap();
+	renderScene(shaderManager.getDirectionalShadowShader(), map, entities);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void	RenderEngine::normalPass(Map const & map, std::vector<IGameEntity *> &entities) const {
@@ -89,9 +92,6 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderScenery(shader);
 	// meteo->getSun().render(shaderManager.getMainShader(), camera);
 	renderPlayer(shader, entities);
-
-
-	// renderAiDebug(shader);
 }
 
 void	RenderEngine::renderScenery(Shader &shader) const {
@@ -361,7 +361,7 @@ void	RenderEngine::createDepthCubemap() {
 }
 
 
-void		RenderEngine::getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const {
+void		RenderEngine::getDirectionalShadowMap() const {
 	glm::mat4 lightSpaceMatrix = meteo->getSun().getDirectionalLightSpaceMatrix();
 	
 	shaderManager.getDirectionalShadowShader().use();
@@ -372,12 +372,9 @@ void		RenderEngine::getDirectionalShadowMap(Map const & map, std::vector<IGameEn
 						1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 	
 	shaderManager.getDirectionalShadowShader().use();
-	renderScene(shaderManager.getDirectionalShadowShader(), map, entities);
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const {
+void	RenderEngine::getOmnidirectionalShadowMap() const {
 	std::vector<glm::mat4> shadowTransforms = light->getOmnidirectionalLightSpaceMatrix();
 
 	shaderManager.getPointShadowShader().use();
@@ -392,10 +389,6 @@ void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGam
 	shaderManager.getMainShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
 
     shaderManager.getPointShadowShader().use();
-			
-	renderScene(shaderManager.getPointShadowShader(), map, entities);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {

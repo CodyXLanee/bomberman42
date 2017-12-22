@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 09:58:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 10:40:41 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,10 @@ void	Model::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 	shader.setVec3("materialSpecular", material.specular.x, material.specular.y, material.specular.z);
 
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {
-		meshes[i]->draw(shader, transforms);
+		if (shader.isUsedForShadowPass())
+			meshes[i]->drawShadow(shader, transforms);
+		else
+			meshes[i]->draw(shader, transforms);
 	}
 }
 

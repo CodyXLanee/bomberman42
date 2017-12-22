@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:16:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 10:31:54 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 10:29:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@ ShaderManager::ShaderManager() {
 								 directory + "flames.glfs");
 	directionalShadowShader = new Shader( directory + "directionalShadowDepth.glvs",
 								 directory + "empty.glfs");
-	pointShadowShader = new Shader( directory + "pointShadowDepth.glvs",
-								 directory + "pointShadowDepth.glgs",
-								 directory + "pointShadowDepth.glfs");
+	directionalShadowShader->setForShadowPass();
+	// pointShadowShader = new Shader( directory + "pointShadowDepth.glvs",
+	// 							 directory + "pointShadowDepth.glgs",
+	// 							 directory + "pointShadowDepth.glfs");
+	// pointShadowShader->setForShadowPass();
 	particlesShader = new Shader( directory + "particles.glvs",
 								 directory + "particles.glfs");	
 

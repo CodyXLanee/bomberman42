@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 11:28:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 15:29:17 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/22 19:06:39 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,10 @@ class AI {
         bool    aimClosestSafeSpace(glm::ivec2 *obj);
         bool    aimFarthestSafeSpace(glm::ivec2 *obj);
         
-        void    markBombRangeAsUnsafe(glm::ivec2 pos, glm::ivec2 dir, int range);
+        void    markBombRangeOneDir(glm::ivec2 pos, glm::ivec2 dir, int range, Bomb *bomb);
+        void    markBombRange(Bomb *bomb, Bomb *in_range_of);
+        void    markDeadlySpots(void);
+        
         void    updateMapWithEntity(IGameEntity *entity);
         
         void    updateMap(Map const & map, std::vector<IGameEntity *> & entities);

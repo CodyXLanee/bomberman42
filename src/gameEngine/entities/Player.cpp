@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/21 12:29:16 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/22 12:18:05 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ _speed_mult(1.f),
 _bomb_count(0),
 left(false), right(false), up(false), down(false),
 _graphicalDirection(glm::vec2(0,0)),
-_color(color){
+_color(color),
+_creation_time(std::chrono::steady_clock::now()){
 	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Player::bomb_explodes_callback));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Player::spawn_flame_callback));
 	SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Player::enemy_move_callback));
@@ -129,4 +130,8 @@ float        Player::getSpeedMult(void) const {
 
 int         Player::getFlameNb(void) const {
 	return _flame_nb;
+}
+
+std::chrono::time_point<std::chrono::steady_clock>	Player::getCreationTime(void) const {
+	return _creation_time;
 }

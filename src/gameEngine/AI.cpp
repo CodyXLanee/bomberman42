@@ -8,11 +8,15 @@ class Spot {
     public:
         bool                _free;
         bool                _safe;
+        bool                _deadly;
         bool                _has_bonus;
         int                 _dist;
-        
-        Spot() : _free(false) {};
-        Spot(bool f, bool s) : _free(f), _safe(s), _has_bonus(false), _dist(-1) {};
+        Bomb                *_in_range_of;
+        Bomb                *_bomb;
+
+        Spot() {};
+        Spot(bool f, bool s) : _free(f), _safe(s), _deadly(false), _has_bonus(false), _dist(-1),
+        _in_range_of(nullptr), _bomb(nullptr) {};
         ~Spot() {};
 };
 
@@ -117,12 +121,16 @@ bool      AI::can_place_bomb(void){
 
 /////////////////////////       OBJECTIVE UPDATE        ////////////////////////////////
 
+static bool is_safe_spot(Spot &s){
+    return (s._dist != -1 && s._free && s._safe && !s._deadly);
+}
+
 bool    AI::aimClosestSafeSpace(glm::ivec2 *obj){
     bool ret = false;
     resetMapDist();
     updateMapDistRec(glm::round(_player->getPosition()), 0);
     for (auto i : _map){
-        if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist < _map[*obj]._dist || _map[*obj]._dist == -1 || !_map[*obj]._safe)){
+        if (is_safe_spot(i.second) && (i.second._dist < _map[*obj]._dist || !is_safe_spot(_map[*obj]))){
             *obj = i.first;
             _going_safely = false;
             ret = true;
@@ -133,7 +141,7 @@ bool    AI::aimClosestSafeSpace(glm::ivec2 *obj){
 
 
 static bool is_good_bonus_spot(Spot &s){
-    return (s._dist != -1 && s._free && s._safe && s._has_bonus);
+    return (s._dist != -1 && s._free && s._safe && !s._deadly && s._has_bonus);
 }
 
 bool    AI::lookForBonus(glm::ivec2 *obj){
@@ -158,7 +166,7 @@ bool    AI::aimFarthestSafeSpace(glm::ivec2 *obj){
     resetMapDist();
     SAFEupdateMapDistRec(glm::round(_player->getPosition()), 0);
     for (auto i : _map){
-        if (i.second._dist != -1 && i.second._free && i.second._safe && (i.second._dist > _map[*obj]._dist || _map[*obj]._dist == -1 || !_map[*obj]._safe)){
+        if (is_safe_spot(i.second) && (i.second._dist > _map[*obj]._dist || !is_safe_spot(_map[*obj]))){
             *obj = i.first;
             _going_safely = true;
             ret = true;
@@ -181,7 +189,7 @@ void    AI::resetMapDist(void){
 void    AI::updateMapDistRec(glm::ivec2 pos, int rec){
     auto it = _map.find(pos);
     if (it != _map.end()){
-        if (it->second._free && (it->second._dist == -1 || rec < it->second._dist)){
+        if (it->second._free && !it->second._deadly && (it->second._dist == -1 || rec < it->second._dist)){
             it->second._dist = rec;
             updateMapDistRec(glm::ivec2(pos.x + 1, pos.y), rec + 1);
             updateMapDistRec(glm::ivec2(pos.x, pos.y + 1), rec + 1);
@@ -195,7 +203,7 @@ void    AI::updateMapDistRec(glm::ivec2 pos, int rec){
 void    AI::SAFEupdateMapDistRec(glm::ivec2 pos, int rec){
     auto it = _map.find(pos);
     if (it != _map.end()){
-        if (it->second._free && it->second._safe && (it->second._dist == -1 || rec < it->second._dist)){
+        if (it->second._free && !it->second._deadly && it->second._safe && (it->second._dist == -1 || rec < it->second._dist)){
             it->second._dist = rec;
             SAFEupdateMapDistRec(glm::ivec2(pos.x + 1, pos.y), rec + 1);
             SAFEupdateMapDistRec(glm::ivec2(pos.x, pos.y + 1), rec + 1);
@@ -205,35 +213,56 @@ void    AI::SAFEupdateMapDistRec(glm::ivec2 pos, int rec){
     }
 }
 
-void    AI::markBombRangeAsUnsafe(glm::ivec2 pos, glm::ivec2 dir, int range){
+void    AI::markBombRangeOneDir(glm::ivec2 pos, glm::ivec2 dir, int range, Bomb *bomb){
     if (_map[pos]._free == false)
         return;
     _map[pos]._safe = false;
+    // Propagate the bomb "range" if it has another more recent bomb in range.
+    if (_map[pos]._bomb != nullptr && _map[pos]._bomb->get_ms_before_explode() > bomb->get_ms_before_explode() && _map[pos]._in_range_of != bomb)
+        markBombRange(_map[pos]._bomb, bomb);
+    // Mark the spot as in range of the bomb
+    if (_map[pos]._in_range_of == nullptr || _map[pos]._in_range_of->get_ms_before_explode() > bomb->get_ms_before_explode())
+        _map[pos]._in_range_of = bomb;
+
     if (range > 0){
-        markBombRangeAsUnsafe(pos + dir, dir, range - 1);
+        markBombRangeOneDir(pos + dir, dir, range - 1, bomb);
     }
+}
+
+void    AI::markBombRange(Bomb *bomb, Bomb *in_range_of){
+    glm::ivec2 pos(bomb->getPosition());
+    if (pos != glm::ivec2(glm::round(_player->getPosition())))
+        _map[pos]._free = false;
+    _map[pos]._safe = false;
+    Bomb    *b = bomb;
+    if (in_range_of && bomb->get_ms_before_explode() > in_range_of->get_ms_before_explode())
+        b = in_range_of;
+    _map[pos]._bomb = bomb;
+    markBombRangeOneDir(pos + glm::ivec2(-1, 0), glm::ivec2(-1, 0), bomb->getFlameNb() - 1, b);
+    markBombRangeOneDir(pos + glm::ivec2(1, 0), glm::ivec2(1, 0), bomb->getFlameNb() - 1, b);
+    markBombRangeOneDir(pos + glm::ivec2(0, -1), glm::ivec2(0, -1), bomb->getFlameNb() - 1, b);
+    markBombRangeOneDir(pos + glm::ivec2(0, 1), glm::ivec2(0, 1), bomb->getFlameNb() - 1, b);
 }
 
 void    AI::updateMapWithEntity(IGameEntity *entity){
     glm::ivec2 pos(entity->getPosition());
     if (entity->getType() == Type::BOMB){
-        if (pos != glm::ivec2(glm::round(_player->getPosition())))
-            _map[pos]._free = false;
-        _map[pos]._safe = false;
-        markBombRangeAsUnsafe(pos + glm::ivec2(-1, 0), glm::ivec2(-1, 0), static_cast<Bomb *>(entity)->getFlameNb());
-        markBombRangeAsUnsafe(pos + glm::ivec2(1, 0), glm::ivec2(1, 0), static_cast<Bomb *>(entity)->getFlameNb());
-        markBombRangeAsUnsafe(pos + glm::ivec2(0, -1), glm::ivec2(0, -1), static_cast<Bomb *>(entity)->getFlameNb());
-        markBombRangeAsUnsafe(pos + glm::ivec2(0, 1), glm::ivec2(0, 1), static_cast<Bomb *>(entity)->getFlameNb());
+        markBombRange(static_cast<Bomb *>(entity), _map[pos]._in_range_of);
     }
     else if (entity->getType() == Type::FLAME){
          _map[pos]._safe = false;
-         _map[pos]._free = false;
+         _map[pos]._deadly = true;
     }
     else if (entity->getType() == Type::BONUS){
          _map[pos]._has_bonus = true;
     }
 }
 
+void    AI::markDeadlySpots(void){
+    // for (auto &&i : _map){
+        // check if a bomb is about to explode here (relative to the _dist) and mark spot as deadly accordingly.
+    // }
+}
 
 void    AI::updateMap(Map const & map, std::vector<IGameEntity *> & entities){
     glm::vec2 mapSize = map.getSize();
@@ -247,6 +276,8 @@ void    AI::updateMap(Map const & map, std::vector<IGameEntity *> & entities){
     for (auto i : entities){
         updateMapWithEntity(i);
     }
+    updateMapDistRec(glm::round(_player->getPosition()), 0);
+    markDeadlySpots();
 }
 
 
@@ -330,9 +361,13 @@ void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
     updateMap(map, entities);
     if (can_place_bomb()){
         if (would_be_blocked_by_bomb()){
+            updateMap(map, entities);
             aimFarthestSafeSpace(&_objective);
         } else {
-            SEventManager::getInstance().raise(Event::PLAYER_SPAWN_BOMB, _player);
+            updateMap(map, entities);
+            if (_map[glm::round(_player->getPosition())]._safe){
+                SEventManager::getInstance().raise(Event::PLAYER_SPAWN_BOMB, _player);
+            }
             aimClosestSafeSpace(&_objective);
         }
     } else {
@@ -349,7 +384,7 @@ void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
 ///////////////////////////      DEBUG       //////////////////////////////
 
 bool    AI::shouldAppearInDebug(glm::ivec2 pos){
-    return _map[pos]._has_bonus;
+    return _map[pos]._in_range_of != nullptr;
 }
 
 void    AI::updateDebugCubes(Map const & map, std::vector<IGameEntity *> & entities) {
@@ -363,10 +398,11 @@ void    AI::updateDebugCubes(Map const & map, std::vector<IGameEntity *> & entit
 
 
 
-    // for (auto i : _map) {
-    //     if (shouldAppearInDebug(i.first))
-    //         _debug_cubes->push_back(i.first);
-    // }
-    _debug_cubes->push_back(_objective);
+    for (auto i : _map) {
+        if (shouldAppearInDebug(i.first)){
+            _debug_cubes->push_back(i.first);
+        }
+    }
+    // _debug_cubes->push_back(_objective);
     
 }

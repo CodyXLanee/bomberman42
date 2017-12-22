@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 16:21:29 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 18:22:15 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderScenery(shader);
 	// meteo->getSun().render(shaderManager.getMainShader(), camera);
 	renderPlayer(shader, entities);
+	renderAiDebug(shader);
+	
 }
 
 void	RenderEngine::renderScenery(Shader &shader) const {

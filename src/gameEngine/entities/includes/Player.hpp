@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:45:55 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/21 12:27:09 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/22 12:18:37 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ public:
     void		spawn_flame_callback(void *flame);
     void    	enemy_move_callback(void *enemy);
 
+    std::chrono::time_point<std::chrono::steady_clock>	getCreationTime(void) const;
+
 private:
     int         _player_number;
     int         _max_bomb;
@@ -64,6 +66,7 @@ private:
     bool        left, right, up, down;
 	glm::vec2	_graphicalDirection;
     PlayerColor::Enum   _color;
+    std::chrono::time_point<std::chrono::steady_clock>      _creation_time;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:44:27 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 10:28:47 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 10:55:56 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ class Shader {
         glm::mat4       getViewMatrix();
         void            setOrthoView(float, float);
 
-        void            setForShadowPass();
-        bool            isUsedForShadowPass() const;
+        void            setForFirstPass();
+        bool            isUsedForFirstPass() const;
         
         static glm::mat4    perspective;
         
@@ -63,7 +63,7 @@ class Shader {
         std::string         vertexSrc;
         std::string         fragmentSrc;
         std::string         geometrySrc;
-        bool                forShadowPass;
+        bool                forFirstPass;
 };
 
 #endif

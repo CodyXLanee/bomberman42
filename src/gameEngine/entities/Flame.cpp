@@ -6,14 +6,15 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:24:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/15 15:28:44 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/22 16:17:20 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Flame.hpp"
 
-Flame::Flame(const glm::vec2 & pos) : 
-AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::FLAME){
+Flame::Flame(const glm::vec2 & pos, bool b) : 
+AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::FLAME),
+_center(b){
     creation_time = std::chrono::steady_clock::now();
     ms_before_explode = std::chrono::milliseconds(1000);
     SEventManager::getInstance().registerEvent(Event::PLAYER_MOVE, MEMBER_CALLBACK(Flame::player_move_callback));
@@ -48,4 +49,9 @@ void                Flame::player_move_callback(void *player){
 void                Flame::enemy_move_callback(void *enemy){
     if (glm::round(static_cast<IGameEntity *>(enemy)->getPosition()) == getPosition())
         SEventManager::getInstance().raise(Event::ENEMY_DIES, enemy);
+}
+
+
+bool                                                            is_centered(void) const{
+    return _center;
 }

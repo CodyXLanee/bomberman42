@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/21 10:03:42 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/22 16:15:49 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ std::vector<IGameEntity *>	*BombManager::explodeOneDir(int flames, glm::vec2 pos
 
     if (_map->hasBloc(pos)){
         if (_map->removeDestructibleBlocs(pos)){
-            ret->push_back(new Flame(pos));
+            ret->push_back(new Flame(pos, false));
         }
     }
     else {
@@ -81,7 +81,7 @@ std::vector<IGameEntity *>	*BombManager::explode(Bomb const *bomb){
     std::vector<IGameEntity *>	*ret = new std::vector<IGameEntity *>();
     std::vector<IGameEntity *>	*tmp = NULL;
 
-    ret->push_back(new Flame(bomb->getPosition()));
+    ret->push_back(new Flame(bomb->getPosition(), true));
     // Four directions : Right, Up, Left, Down
     std::array<glm::vec2, 4> dir = {{ glm::vec2(1, 0), glm::vec2(0, 1), glm::vec2(-1, 0), glm::vec2(0, -1) }};
 

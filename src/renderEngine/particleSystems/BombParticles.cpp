@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/22 14:55:51 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 15:28:49 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 15:34:12 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void    BombParticles::update() {
 		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * data.size(), &data[0], GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
-	std::cout << running << " : " << particleNbr << " : " << bombPlaces.size() << std::endl;
 }
 
 void    BombParticles::addBombPlace(glm::vec2 pos) {

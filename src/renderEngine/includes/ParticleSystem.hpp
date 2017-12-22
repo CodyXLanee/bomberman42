@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 13:37:11 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/20 11:27:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 09:57:53 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class ParticleSystem {
 		void	updateFire(Shader &shader);
 		void	updateBomb(Shader &shader);
 		void	updateRain(Shader &shader);
-		void	setInstanceBuffer(std::vector<glm::mat4> const & data);
+		void	setInstanceBuffer();
 
 		bool			running;
 		unsigned int particleNbr;

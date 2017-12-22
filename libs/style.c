@@ -3,24 +3,28 @@ enum theme {THEME_BLACK, THEME_WHITE, THEME_RED, THEME_BLUE, THEME_DARK};
 void
 set_style(struct nk_context *ctx, enum theme theme)
 {
+    struct nk_color white =  nk_rgba(232, 233, 217, 255);
+    struct nk_color black =  nk_rgba(35, 33, 44, 255);
+    struct nk_color black_hover =  nk_rgba(55, 52, 69, 255);
+
     struct nk_color table[NK_COLOR_COUNT];
     if (theme == THEME_WHITE) {
-        table[NK_COLOR_TEXT] = nk_rgba(70, 70, 70, 255);
-        table[NK_COLOR_WINDOW] = nk_rgba(175, 175, 175, 255);
-        table[NK_COLOR_HEADER] = nk_rgba(175, 175, 175, 255);
-        table[NK_COLOR_BORDER] = nk_rgba(0, 0, 0, 255);
-        table[NK_COLOR_BUTTON] = nk_rgba(185, 185, 185, 255);
-        table[NK_COLOR_BUTTON_HOVER] = nk_rgba(170, 170, 170, 255);
-        table[NK_COLOR_BUTTON_ACTIVE] = nk_rgba(160, 160, 160, 255);
-        table[NK_COLOR_TOGGLE] = nk_rgba(150, 150, 150, 255);
-        table[NK_COLOR_TOGGLE_HOVER] = nk_rgba(120, 120, 120, 255);
+        table[NK_COLOR_TEXT] = white;
+        table[NK_COLOR_WINDOW] = black;
+        table[NK_COLOR_HEADER] = white;
+        table[NK_COLOR_BORDER] = white;
+        table[NK_COLOR_BUTTON] = black;
+        table[NK_COLOR_BUTTON_HOVER] = white;
+        table[NK_COLOR_BUTTON_ACTIVE] = white;
+        table[NK_COLOR_TOGGLE] = nk_rgba(150, 0, 0, 255);
+        table[NK_COLOR_TOGGLE_HOVER] = nk_rgba(0, 120, 0, 255);
         table[NK_COLOR_TOGGLE_CURSOR] = nk_rgba(175, 175, 175, 255);
         table[NK_COLOR_SELECT] = nk_rgba(190, 190, 190, 255);
         table[NK_COLOR_SELECT_ACTIVE] = nk_rgba(175, 175, 175, 255);
-        table[NK_COLOR_SLIDER] = nk_rgba(190, 190, 190, 255);
-        table[NK_COLOR_SLIDER_CURSOR] = nk_rgba(80, 80, 80, 255);
-        table[NK_COLOR_SLIDER_CURSOR_HOVER] = nk_rgba(70, 70, 70, 255);
-        table[NK_COLOR_SLIDER_CURSOR_ACTIVE] = nk_rgba(60, 60, 60, 255);
+        table[NK_COLOR_SLIDER] = white;
+        table[NK_COLOR_SLIDER_CURSOR] = black;
+        table[NK_COLOR_SLIDER_CURSOR_HOVER] = black_hover;
+        table[NK_COLOR_SLIDER_CURSOR_ACTIVE] = black_hover;
         table[NK_COLOR_PROPERTY] = nk_rgba(175, 175, 175, 255);
         table[NK_COLOR_EDIT] = nk_rgba(150, 150, 150, 255);
         table[NK_COLOR_EDIT_CURSOR] = nk_rgba(0, 0, 0, 255);

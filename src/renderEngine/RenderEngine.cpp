@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 11:22:30 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 10:20:55 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ RenderEngine::RenderEngine(SDL_Window *win, Camera & camera) : win(win), camera(
 	// createDepthCubemap();
 
 	meteo = new WeatherSystem();
-	SEventManager::getInstance().registerEvent(Event::SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::setBombParticles));
+	SEventManager::getInstance().registerEvent(Event::SPAWN_BOMB, MEMBER_CALLBACK(RenderEngine::addBombParticles));
+	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(RenderEngine::removeBombParticles));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(RenderEngine::setFireParticles));
 	SEventManager::getInstance().registerEvent(Event::AIPTR, MEMBER_CALLBACK(RenderEngine::setAiDebugPointer));
 }
@@ -32,7 +33,6 @@ RenderEngine::~RenderEngine() {
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
 	SDL_GetWindowSize(win, &w, &h);
 	setFireLights(entities);
-	// recordNewEntities(entities);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shaderManager.setCamera(camera.getMatrix());
@@ -52,8 +52,11 @@ void	RenderEngine::shadowPass(Map const & map, std::vector<IGameEntity *> &entit
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	getDirectionalShadowMap(map, entities);
-	// getOmnidirectionalShadowMap(map, entities);
+	getDirectionalShadowMap();
+	// getOmnidirectionalShadowMap();
+	renderScene(shaderManager.getDirectionalShadowShader(), map, entities);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void	RenderEngine::normalPass(Map const & map, std::vector<IGameEntity *> &entities) const {
@@ -88,10 +91,7 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderEnemies(shader, entities);
 	renderScenery(shader);
 	// meteo->getSun().render(shaderManager.getMainShader(), camera);
-
 	renderPlayer(shader, entities);
-
-	// renderAiDebug(shader);
 }
 
 void	RenderEngine::renderScenery(Shader &shader) const {
@@ -108,42 +108,39 @@ void	RenderEngine::renderScenery(Shader &shader) const {
 
 void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const & entities) const {
 	static float fakeTime = 0.f;
-	int numAnim = 0;
-    std::vector<glm::mat4> data;
-	glm::vec3 camPos = camera.getPosition();
-	Model &model = modelManager.getModel(ModelManager::PLAYER);
-
-	shader.use();
-	shader.setVec3("viewPos", camPos.x, camPos.y, camPos.z);
 	
 	for (auto i = entities.begin(); i != entities.end(); i++ ){
 		if ((*i)->getType() != Type::PLAYER)
 			continue;
-		if ((*i)->getState() == State::MOVING)
-			numAnim = 1;
-		glm::mat4 transform = glm::mat4();
-		transform = glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
-		// transform = glm::scale(transform, glm::vec3(1.f, 1.f, 1.f));
-		// transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
 
-		glm::vec2	graphicalDir = dynamic_cast<Player*>(*i)->getGraphicalDirection();
-		if (graphicalDir.x < (*i)->getDirection().x)
+		Player * player = dynamic_cast<Player*>(*i);
+		int numAnim = 0;
+		if (player->getState() == State::MOVING)
+			numAnim = 1;
+			
+    	std::vector<glm::mat4> data;
+		glm::mat4 transform = glm::mat4();
+		transform = glm::translate(transform, glm::vec3(player->getPosition() + glm::vec2(0.5f, 0.5f), 0.f));
+
+		glm::vec2	graphicalDir = player->getGraphicalDirection();
+		if (graphicalDir.x < player->getDirection().x)
 			graphicalDir.x += 0.1;
-		if (graphicalDir.x > (*i)->getDirection().x)
+		if (graphicalDir.x > player->getDirection().x)
 			graphicalDir.x -= 0.1;
-		if (graphicalDir.y < (*i)->getDirection().y)
+		if (graphicalDir.y < player->getDirection().y)
 			graphicalDir.y += 0.1;
-		if (graphicalDir.y > (*i)->getDirection().y)
+		if (graphicalDir.y > player->getDirection().y)
 			graphicalDir.y -= 0.1;
-		dynamic_cast<Player*>(*i)->setGraphicalDirection(graphicalDir);
+		player->setGraphicalDirection(graphicalDir);
 
 		int sign = (graphicalDir.x < 0) ? -1 : 1;
 		transform = glm::rotate(transform, sign * angle(glm::vec2(0.f, -1.f), graphicalDir), glm::vec3(0.f, 0.f, 1.f));
 
 		data.push_back(transform);
+		Model &model = modelManager.getPlayerModel(player->getPlayerNb());
+		model.setAnimation(numAnim, fakeTime);
+		model.draw(shader, data);
 	}
-	model.setAnimation(numAnim, fakeTime);
-    model.draw(shader, data);
 	fakeTime += 0.01;
 }
 
@@ -379,7 +376,7 @@ void	RenderEngine::createDepthCubemap() {
 }
 
 
-void		RenderEngine::getDirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const {
+void		RenderEngine::getDirectionalShadowMap() const {
 	glm::mat4 lightSpaceMatrix = meteo->getSun().getDirectionalLightSpaceMatrix();
 	
 	shaderManager.getDirectionalShadowShader().use();
@@ -390,12 +387,9 @@ void		RenderEngine::getDirectionalShadowMap(Map const & map, std::vector<IGameEn
 						1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 	
 	shaderManager.getDirectionalShadowShader().use();
-	renderScene(shaderManager.getDirectionalShadowShader(), map, entities);
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGameEntity *> &entities) const {
+void	RenderEngine::getOmnidirectionalShadowMap() const {
 	std::vector<glm::mat4> shadowTransforms = light->getOmnidirectionalLightSpaceMatrix();
 
 	shaderManager.getPointShadowShader().use();
@@ -410,10 +404,6 @@ void	RenderEngine::getOmnidirectionalShadowMap(Map const & map, std::vector<IGam
 	shaderManager.getMainShader().setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
 
     shaderManager.getPointShadowShader().use();
-			
-	renderScene(shaderManager.getPointShadowShader(), map, entities);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
@@ -431,30 +421,48 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 }
 
 void	RenderEngine::renderParticles() {
+	std::vector<unsigned int> tmp;
+
+	for (unsigned int it = 0; it < particles.size(); it++) {
+		particles[it].first->draw(shaderManager.getParticlesShader());
+		if (particles[it].first->isRunning() == false) {
+			delete particles[it].first;
+			tmp.insert(tmp.begin(), it);
+		}			
+	}
+
+	for (auto it = tmp.begin(); it != tmp.end(); it++) {
+		particles.erase(particles.begin() + *it);
+	}
+}
+
+void	RenderEngine::addBombParticles(void *bomb) {
+	Bomb *b = static_cast<Bomb *>(bomb);
+	
+	glm::vec2 pos = b->getPosition();
+	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
+		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::Type::BOMB),
+		pos));
+	particles.back().first->start();
+}
+
+void	RenderEngine::removeBombParticles(void *bomb) {
+	Bomb *b = static_cast<Bomb *>(bomb);
+	
 	for (auto it = particles.begin(); it != particles.end(); it++) {
-		(*it).first->draw(shaderManager.getParticlesShader());
-		(*it).second--;
-		if ((*it).second == 0) {
-			delete (*it).first;
-			particles.erase(it);
-			it--;
+		if (it->second == b->getPosition()) {
+			it->first->stop();
 		}
 	}
 }
 
-void	RenderEngine::setBombParticles(void *bomb) {
-	glm::vec2 pos = static_cast<IGameEntity *>(bomb)->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, int>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::type::BOMB),
-		100));
-	particles.back().first->start();
-}
-
-void	RenderEngine::setFireParticles(void *Fire) {
-	glm::vec2 pos = static_cast<IGameEntity *>(Fire)->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, int>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::type::FIRE),
-		100));
+void	RenderEngine::setFireParticles(void *fire) {
+	Flame *f = static_cast<Flame *>(fire);
+	
+	glm::vec2 pos = f->getPosition();
+	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
+		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::Type::FIRE),
+		pos));
 	particles.back().first->start();
 }
 

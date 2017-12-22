@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:43:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 13:21:18 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 10:14:07 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class Model {
 		~Model();
 
 		void						draw(Shader &shader, std::vector<glm::mat4> const & transforms);
+		void						drawShadow(Shader &shader, std::vector<glm::mat4> const & transforms);
 		std::vector<glm::mat4>		getBonesTransforms(float timeInSeconds) const;
 		bool						isAnimated() const;
 		void						setAnimation(unsigned int animation, float timeInSeconds);

@@ -6,13 +6,13 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/14 22:40:26 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 12:29:16 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Player.hpp"
 
-Player::Player(const glm::vec2 & pos, int nb) : 
+Player::Player(const glm::vec2 & pos, int nb, PlayerColor::Enum color) : 
 AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::PLAYER),
 _player_number(nb),
 _max_bomb(1),
@@ -20,7 +20,8 @@ _flame_nb(1),
 _speed_mult(1.f),
 _bomb_count(0),
 left(false), right(false), up(false), down(false),
-_graphicalDirection(glm::vec2(0,0)){
+_graphicalDirection(glm::vec2(0,0)),
+_color(color){
 	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Player::bomb_explodes_callback));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Player::spawn_flame_callback));
 	SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Player::enemy_move_callback));
@@ -38,6 +39,10 @@ void		Player::setGraphicalDirection(glm::vec2 dir)
 
 int         Player::getPlayerNb(void){
 	return _player_number;
+}
+
+PlayerColor::Enum    Player::getColor(void){
+	return _color;
 }
 
 

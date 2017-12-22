@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:35 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 11:52:07 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 09:56:37 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,3 @@ std::chrono::time_point<std::chrono::steady_clock> const       &Bomb::get_creati
 const Player                                                   *Bomb::getPlayer(void) const {
     return player;
 }
-
-
-// gameEngine/entities/Bomb.cpp\
-
-
-// if (find(actions.begin(), actions.end(), Action::SPAWN_BOMB) != actions.end()){
-//     _entityList.push_back(new Bomb(p->getPosition()));
-// }

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 14:32:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 11:04:49 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 			std::vector<Texture> textures, aiColor3D color, const aiMesh *pMesh, const aiScene *scene, std::string path)
 : vertices(vertices), indices(indices), textures(textures), color(color), pMesh(pMesh), path(path) {
 	setupMesh();
+	setInstanceBuffer();
 	bonesNbr = 0;
 	animationSelected = 0;
 
@@ -52,7 +53,6 @@ Mesh::~Mesh() {
 	for (unsigned int i = 0; i < this->textures.size(); i++) {
 		glDeleteTextures(1, &textures[i].id);
 	}
-	// delete this->rootJoint;
 	Mesh::i--;
 	return;
 }
@@ -94,13 +94,13 @@ void	Mesh::setupMesh() {
 	return;
 }
 
-void	Mesh::setInstanceBuffer(std::vector<glm::mat4> const & data) {
+void	Mesh::setInstanceBuffer() {
 
 	glBindVertexArray(this->vao);
 	glGenBuffers(1, &this->ibo);
 	glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * data.size(), &data[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * 200, &data[0], GL_STATIC_DRAW);
+	// glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
@@ -119,8 +119,6 @@ void	Mesh::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 	glVertexAttribDivisor(7, 1); 
 	glVertexAttribDivisor(8, 1); 
 	glBindVertexArray(0);
-	
-	glDeleteBuffers(1, &this->ibo);
 }
 
 void	Mesh::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
@@ -140,12 +138,15 @@ void	Mesh::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 	if (textures.size() == 0)
 		glUniform3f(glGetUniformLocation(shader.getProgramID(), "materialColor"), this->color.r, this->color.g, this->color.b);
 
-	setInstanceBuffer(transforms);
+	glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * transforms.size(), &transforms[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+		
 	if(scene->HasAnimations()) {
-		std::vector<glm::mat4> bonesTransforms = getBonesTransforms(animationTime);
+		// std::vector<glm::mat4> bonesTransforms = getBonesTransforms(animationTime);
 
-		for (unsigned int i = 0; i < bonesTransforms.size(); ++i) {
-			shader.setMat4("jointTransforms[" + std::to_string(i) + "]", bonesTransforms[i]);
+		for (unsigned int i = 0; i < finalTransform.size(); ++i) {
+			shader.setMat4("jointTransforms[" + std::to_string(i) + "]", finalTransform[i]);
 		}
 		shader.setBool("isAnimated", 1);
 	} else
@@ -157,6 +158,7 @@ void	Mesh::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 	
 	return;
 }
+
 
 void		Mesh::setupBones() {
 	for(unsigned int i = 0; i < pMesh->mNumBones; i++) {
@@ -190,14 +192,13 @@ void	Mesh::addBoneData(unsigned int vertexID, unsigned int boneID, float weight)
 	}
 }
 
-std::vector<glm::mat4>	Mesh::getBonesTransforms(float timeInSeconds) {
+void	Mesh::getBonesTransforms() {
 	glm::mat4 identityMat = glm::mat4(1.0f);
 	
 	float ticksPerSecond = scene->mAnimations[animationSelected]->mTicksPerSecond;
-	float timeInTicks = timeInSeconds * ticksPerSecond;
-	float animationTime = fmod(timeInTicks, scene->mAnimations[animationSelected]->mDuration);
-	readNodeHierarchy(animationTime, scene->mRootNode, identityMat);
-	return finalTransform;
+	float timeInTicks = animationTime * ticksPerSecond;
+	float animTime = fmod(timeInTicks, scene->mAnimations[animationSelected]->mDuration);
+	readNodeHierarchy(animTime, scene->mRootNode, identityMat);
 }
 
 void	Mesh::readNodeHierarchy(float animationTime, const aiNode *node, const glm::mat4 parentTransform) {

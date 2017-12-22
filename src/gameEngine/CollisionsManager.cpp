@@ -1,13 +1,15 @@
 
 #include "CollisionsManager.hpp"
 
-CollisionsManager::CollisionsManager() {}
+CollisionsManager::CollisionsManager() :
+_last_frame_time_point(std::chrono::steady_clock::now()){
+}
 
 CollisionsManager::~CollisionsManager() {}
 
 void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &entityList)
 {
-
+    _time_since_last_frame = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _last_frame_time_point);
 	for (std::vector<IGameEntity *>::iterator i = entityList.begin(); i != entityList.end(); i++) {
 		switch((*i)->getType()){
 			case Type::PLAYER:
@@ -21,11 +23,12 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &ent
 				break;
 		}
 	}
+	_last_frame_time_point = std::chrono::steady_clock::now();
 }
 
 void		CollisionsManager::computeEntityMovement(Map const & map, std::vector<IGameEntity *> &entityList, IGameEntity *entity){
 	if (entity->getState() == State::MOVING){
-		glm::vec2	newPos = entity->getPosition() + (entity->getDirection() * entity->getSpeed());
+		glm::vec2	newPos = entity->getPosition() + (entity->getDirection() * entity->getSpeed() * static_cast<float>(_time_since_last_frame.count()) * 0.001f);
 		
 		gestionBorderMap(newPos, map);
 		
@@ -62,7 +65,7 @@ void	CollisionsManager::compute_player(Player *p){
 	if (!std::isnan(v.x) && !std::isnan(v.y)){ // glm::isnan wouldn't compile for some reason...
 		p->setState(State::MOVING);
 		p->setDirection(v);
-		p->setSpeed(0.1f * p->getSpeedMult());
+		p->setSpeed(5.f * p->getSpeedMult());
 	}
 	else
 	{

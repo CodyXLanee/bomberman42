@@ -332,7 +332,7 @@ void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
         if (would_be_blocked_by_bomb()){
             aimFarthestSafeSpace(&_objective);
         } else {
-            SEventManager::getInstance().raise(Event::SPAWN_BOMB, _player);
+            SEventManager::getInstance().raise(Event::PLAYER_SPAWN_BOMB, _player);
             aimClosestSafeSpace(&_objective);
         }
     } else {

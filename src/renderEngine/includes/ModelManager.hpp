@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:17:58 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/14 17:59:20 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 13:52:11 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,14 @@ class ModelManager {
 		~ModelManager();
 
 		Model	&getModel(model m) const;
+		Model	&getPlayerModel(unsigned int n) const;
 		
 	private:
 
 		std::string	directory;
 		
-		Model		*playerModel;
+		// Model		*playerModel;
+		Model		*playerModel[4];
 		Model		*groundModel;
 		Model		*wallModel;
 		Model		*brickModel;

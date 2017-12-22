@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/19 14:31:46 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/21 17:00:33 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 # include "Camera.hpp"
 # include "SEventManager.hpp"
 # include "Sdl_gl_win.hpp"
+# include "GameParams.hpp"
+# include "Player.hpp"
+# include "Bonus.hpp"
 # include <stb_image.h>
 
 
@@ -39,12 +42,16 @@ class NuklearGUI
         SEventManager           &event;
         struct nk_context       *ctx;
         struct nk_font_atlas    *atlas;
+        struct nk_font          *bigFont;
+        struct nk_font          *mediumFont;
+        struct nk_font          *smallFont;
         
         float                   menuWidth;
         float                   menuHeight;
         int                     windowWidth;
         int                     windowHeight;
         float                   optionHeight;
+        bool                    screenFormatUpdate;
         
         float                   _masterVolume;
         float                   _effectsVolume;
@@ -60,7 +67,11 @@ class NuklearGUI
         std::stack<Menu::Enum>              _active_menu;
         std::map<Event::Enum, SDL_Keycode>  _keysMap;
         SDL_Keycode                       * _keyToChange;
+
+        PlayerColor::Enum                   _human_player_color;
+        glm::ivec3                          _human_player_bonus;
         
+        void        setupProportions();
         void        setupFont();
         void        handleKey(void *);
         void        toggle(void *);
@@ -83,6 +94,7 @@ class NuklearGUI
         void        setEffectsVolume(void * v);
         void        setMusicVolume(void * v);
         void        updateScreenFormat(void *f);
+        void        updateHumanPlayerBonus(void *p);
 
         struct nk_image         loadImage(std::string const, GLint);        
 

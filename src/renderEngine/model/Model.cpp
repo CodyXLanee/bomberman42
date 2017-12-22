@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/15 13:21:13 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 11:02:25 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,11 +260,22 @@ void	Model::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 	shader.use();
 	shader.setInt("hasBumpMap", hasBumpMap);
 	shader.setInt("hasSpecularMap", hasSpecularMap);
+	
+	/////////////
+	if (path == "assets/models/obj/player.fbx") {
+		material.ambient = glm::vec3(1.f);
+		material.diffuse = glm::vec3(1.f);
+		material.specular = glm::vec3(1.f);
+	}
+	///////////////
+
 	shader.setVec3("materialAmbient", material.ambient.x, material.ambient.y, material.ambient.z);
 	shader.setVec3("materialDiffuse", material.diffuse.x, material.diffuse.y, material.diffuse.z);
 	shader.setVec3("materialSpecular", material.specular.x, material.specular.y, material.specular.z);
 
 	for(unsigned int i = 0; i < this->meshes.size(); i++) {
+		if (shader.isUsedForFirstPass() && animated)
+			meshes[i]->getBonesTransforms();
 		meshes[i]->draw(shader, transforms);
 	}
 }

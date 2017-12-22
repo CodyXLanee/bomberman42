@@ -6,20 +6,20 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 11:26:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/19 11:20:33 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 09:52:21 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParticleSystem.hpp"
 
-ParticleSystem::ParticleSystem(glm::vec3 position, enum type t)
+ParticleSystem::ParticleSystem(glm::vec3 position, enum Type t)
 	: running(false), type(t), oriPos(position) {
 	createBuffers();
 	if(running)
 		init();
 }
 
-ParticleSystem::ParticleSystem(bool active, glm::vec3 position, enum type t)
+ParticleSystem::ParticleSystem(bool active, glm::vec3 position, enum Type t)
 	: running(active), type(t), oriPos(position) {
 	createBuffers();
 	if(running)
@@ -57,16 +57,15 @@ void	ParticleSystem::createBuffers() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindVertexArray(0);
+
+	setInstanceBuffer();
 }
 
-void	ParticleSystem::setInstanceBuffer(std::vector<glm::mat4> const & data) {
+void	ParticleSystem::setInstanceBuffer() {
 
 	glBindVertexArray(this->vao);
 	glGenBuffers(1, &this->ibo);
 	glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * data.size(), &data[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
 	glEnableVertexAttribArray(5);
@@ -84,8 +83,6 @@ void	ParticleSystem::setInstanceBuffer(std::vector<glm::mat4> const & data) {
 	glVertexAttribDivisor(7, 1); 
 	glVertexAttribDivisor(8, 1); 
 	glBindVertexArray(0);
-	
-	glDeleteBuffers(1, &this->ibo);
 }
 
 void	ParticleSystem::init() {
@@ -135,6 +132,9 @@ void	ParticleSystem::draw(Shader &shader) {
 }
 
 void	ParticleSystem::updateFire(Shader &shader) {
+	if (positions.size() <= 1)
+		stop();
+
     std::vector<glm::mat4> data;
 	for (auto i = positions.begin(); i != positions.end(); i++){
         float r = static_cast<float>((rand() % 5)) - 2.5f;
@@ -157,8 +157,11 @@ void	ParticleSystem::updateFire(Shader &shader) {
         transform = glm::scale(transform, glm::vec3(0.02f, 0.02f, 0.02f));
         data.push_back(transform);
     }
-    if (data.size() != 0)
-        setInstanceBuffer(data);
+    if (data.size() != 0) {
+		glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * data.size(), &data[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 }
 
 void	ParticleSystem::updateBomb(Shader &shader) {
@@ -175,8 +178,11 @@ void	ParticleSystem::updateBomb(Shader &shader) {
         transform = glm::scale(transform, glm::vec3(0.01f, 0.1f, 1.f));
         data.push_back(transform);
     }
-    if (data.size() != 0)
-        setInstanceBuffer(data);
+    if (data.size() != 0) {
+		glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * data.size(), &data[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 }
 
 void	ParticleSystem::updateRain(Shader &shader) {
@@ -210,8 +216,11 @@ void	ParticleSystem::updateRain(Shader &shader) {
         transform = glm::scale(transform, glm::vec3(0.01f, 0.5f, 1.f));
         data.push_back(transform);
     }
-    if (data.size() != 0)
-        setInstanceBuffer(data);
+    if (data.size() != 0) {
+		glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * data.size(), &data[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 }
 
 void	ParticleSystem::start() {
@@ -221,4 +230,12 @@ void	ParticleSystem::start() {
 
 void	ParticleSystem::stop() {
 	running = false;
+}
+
+bool	ParticleSystem::isRunning() const {
+	return running;
+}
+
+ParticleSystem::Type	ParticleSystem::getType() const {
+	return type;
 }

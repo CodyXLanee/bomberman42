@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/09 18:48:14 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/21 10:03:42 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 BombManager::BombManager(Map *map, std::vector<IGameEntity *> *entityList) : 
 _map(map), _entityList(entityList), _flames_to_add(new std::vector<IGameEntity *>()) {
     SEventManager &em = SEventManager::getInstance();
-    em.registerEvent(Event::SPAWN_BOMB, MEMBER_CALLBACK(BombManager::spawn_bomb));
+    em.registerEvent(Event::PLAYER_SPAWN_BOMB, MEMBER_CALLBACK(BombManager::spawn_bomb));
     em.registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(BombManager::spawn_flame));
     em.registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(BombManager::bomb_explodes));
     em.registerEvent(Event::FLAME_DISAPEAR, MEMBER_CALLBACK(BombManager::flames_disapear));
@@ -34,9 +34,9 @@ void              BombManager::spawn_bomb(void *p){
     if (player->getBombCount() >= player->getMaxBombNb())
         return;
     player->addBombToCount();
-    _entityList->push_back(new Bomb(
-        glm::round(player->getPosition()), static_cast<Player *>(p)
-        ));
+    Bomb *b = new Bomb(glm::round(player->getPosition()), static_cast<Player *>(p));
+    _entityList->push_back(b);
+    SEventManager::getInstance().raise(Event::SPAWN_BOMB, b);
 }
 
 // Creates flames and stuffs

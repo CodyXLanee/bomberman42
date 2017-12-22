@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/20 11:29:51 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 13:59:40 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ WeatherSystem::WeatherSystem(enum time t, bool cloudy, bool rainy)
 
 WeatherSystem::~WeatherSystem() {
 	delete cloudModel;
-	delete rain;
+	// delete rain;
 	delete sun;
 }
 
 void	WeatherSystem::init() {
 	cloudModel = new Model("assets/models/obj/cloud.obj");
-	rain = new ParticleSystem(rainy, glm::vec3(-2.f, -2.f, 10.f), ParticleSystem::Type::RAIN);
+	// rain = new ParticleSystem(rainy, glm::vec3(-2.f, -2.f, 10.f), ParticleSystem::Type::RAIN);
 
 	float ambiant, diffuse, specular;
 	glm::vec3 sunPos, sunColor;
@@ -98,12 +98,12 @@ void	WeatherSystem::stopCloud(void*) {
 
 void	WeatherSystem::startRain(void*) {
 	rainy = true;
-	rain->start();
+	// rain->start();
 }
 
 void	WeatherSystem::stopRain(void*) {
 	rainy = false;
-	rain->stop();
+	// rain->stop();
 }
 
 glm::vec3 const &WeatherSystem::getLightingValues() const {
@@ -136,7 +136,8 @@ void	WeatherSystem::renderCloud(Shader &shader) {
 }
 
 void	WeatherSystem::renderRain(Shader &shader) const {
-	rain->draw(shader);
+	(void)shader;
+	// rain->draw(shader);
 }
 
 void	WeatherSystem::initClouds() {

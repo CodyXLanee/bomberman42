@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParticleSystem.hpp                                 :+:      :+:    :+:   */
+/*   AParticleSystem.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 13:37:11 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 09:57:53 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 14:18:35 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,35 +18,26 @@
 # include <vector>
 # include "Shader.hpp"
 
-class ParticleSystem {
+class AParticleSystem {
 	public:
 		enum Type { FIRE, BOMB, RAIN };
 		
-		ParticleSystem(glm::vec3 position, Type t);
-		ParticleSystem(bool active, glm::vec3 position, Type t);
-		~ParticleSystem();
 
-		void	draw(Shader &shader);
-		void	start();
-		void	stop();
+		virtual void	draw(Shader &shader);
 		bool	isRunning() const;
 		Type 	getType() const;
 		
-	private:
-		ParticleSystem();
+	protected:
+		AParticleSystem();
+		virtual ~AParticleSystem();
 
-		void	init();
+		virtual void update(Shader &shader) = 0;
 		void	createBuffers();
-		void	updateFire(Shader &shader);
-		void	updateBomb(Shader &shader);
-		void	updateRain(Shader &shader);
 		void	setInstanceBuffer();
 
-		bool			running;
-		unsigned int particleNbr;
-		std::vector<glm::vec3>	positions;
+		bool					running;
+		unsigned int 			particleNbr;
 		Type					type;
-		glm::vec3				oriPos;
 		// glm::vec3	velocity;
 		// glm::vec4	color;
 		// float life;

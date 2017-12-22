@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 10:17:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 14:43:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@
 # include "ShaderManager.hpp"
 # include "Camera.hpp"
 # include "Light.hpp"
-# include "ParticleSystem.hpp"
+# include "FireParticles.hpp"
+// # include "ParticleSystem.hpp"
 # include "WeatherSystem.hpp"
 # include "NuklearGUI.hpp"
 # include "Map.hpp"
@@ -59,8 +60,8 @@ class RenderEngine {
 
 		WeatherSystem	*meteo;
 
-		std::vector<std::pair<ParticleSystem *, glm::vec2>>	particles;
-		std::vector<IGameEntity *>		entitiesRecorded;
+		FireParticles			fireParticles;
+
 		std::vector<glm::vec3>			fireLights;
 		void	addBombParticles(void *);
 		void	removeBombParticles(void *);
@@ -82,7 +83,6 @@ class RenderEngine {
 		void	renderFlames(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderEnemies(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderScenery(Shader &shader) const;
-		void	renderParticles();
 
 		void	setFireLights(std::vector<IGameEntity *> const & entities);
 		// void	recordNewEntities(std::vector<IGameEntity *> & entities);

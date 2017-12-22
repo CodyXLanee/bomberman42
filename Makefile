@@ -34,10 +34,11 @@ SRC_NAME =	\
 			renderEngine/model/Model.cpp \
 			renderEngine/model/Mesh.cpp \
 			renderEngine/model/mathTools.cpp \
+			renderEngine/particleSystems/AParticleSystem.cpp \
+			renderEngine/particleSystems/FireParticles.cpp \
 			renderEngine/Shader.cpp \
 			renderEngine/Camera.cpp \
 			renderEngine/Light.cpp \
-			renderEngine/ParticleSystem.cpp \
 			renderEngine/WeatherSystem.cpp \
 			renderEngine/ModelManager.cpp \
 			renderEngine/ShaderManager.cpp \
@@ -54,6 +55,7 @@ INC_PATH = src/includes/ \
 			src/gameEngine/entities/includes\
 			src/renderEngine/includes \
 			src/renderEngine/model/includes \
+			src/renderEngine/particleSystems/includes \
 			libs
 
 PACKAGES = sdl2 sdl2_mixer freetype2 glm rapidjson
@@ -79,6 +81,7 @@ $(OBJ_PATH)%.o: %.cpp
 	@mkdir $(OBJ_PATH)/src/gameEngine/entities 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src/renderEngine 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src/renderEngine/model 2> /dev/null || echo "" > /dev/null
+	@mkdir $(OBJ_PATH)/src/renderEngine/particleSystems 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/libs 2> /dev/null || echo "" > /dev/null
 	$(CC) $(CFLAGS) -o $@ -c $(INC) -Isrc $(PATHS) $(ASSIMP_PATH) $< -std=c++11
 

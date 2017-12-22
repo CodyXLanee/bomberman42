@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 10:20:55 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 14:42:49 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,9 @@ void	RenderEngine::blendedPass(std::vector<IGameEntity *> &entities){
 	glEnable(GL_BLEND);
 	renderFlames(shaderManager.getFlamesShader(), entities);
 	meteo->renderRain(shaderManager.getParticlesShader());
-	renderParticles();
+	if (fireParticles.isRunning())
+		fireParticles.draw(shaderManager.getParticlesShader());
+	// renderFlamesParticles();
 }
 
 
@@ -405,50 +407,31 @@ void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 									fireLights[i].x, fireLights[i].y, fireLights[i].z);
 }
 
-void	RenderEngine::renderParticles() {
-	std::vector<unsigned int> tmp;
-
-	for (unsigned int it = 0; it < particles.size(); it++) {
-		particles[it].first->draw(shaderManager.getParticlesShader());
-		if (particles[it].first->isRunning() == false) {
-			delete particles[it].first;
-			tmp.insert(tmp.begin(), it);
-		}			
-	}
-
-	for (auto it = tmp.begin(); it != tmp.end(); it++) {
-		particles.erase(particles.begin() + *it);
-	}
-}
-
 void	RenderEngine::addBombParticles(void *bomb) {
 	Bomb *b = static_cast<Bomb *>(bomb);
+	(void)b;
 	
-	glm::vec2 pos = b->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::Type::BOMB),
-		pos));
-	particles.back().first->start();
+	// glm::vec2 pos = b->getPosition();
+	// particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
+	// 	new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.5f), ParticleSystem::Type::BOMB),
+	// 	pos));
+	// particles.back().first->start();
 }
 
 void	RenderEngine::removeBombParticles(void *bomb) {
-	Bomb *b = static_cast<Bomb *>(bomb);
+	(void)bomb;
+	// Bomb *b = static_cast<Bomb *>(bomb);
 	
-	for (auto it = particles.begin(); it != particles.end(); it++) {
-		if (it->second == b->getPosition()) {
-			it->first->stop();
-		}
-	}
+	// for (auto it = particles.begin(); it != particles.end(); it++) {
+	// 	if (it->second == b->getPosition()) {
+	// 		it->first->stop();
+	// 	}
+	// }
 }
 
 void	RenderEngine::setFireParticles(void *fire) {
 	Flame *f = static_cast<Flame *>(fire);
-	
-	glm::vec2 pos = f->getPosition();
-	particles.push_back(std::pair<ParticleSystem *, glm::vec2>(
-		new ParticleSystem(glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f), ParticleSystem::Type::FIRE),
-		pos));
-	particles.back().first->start();
+	fireParticles.addFirePlace(f->getPosition());
 }
 
 void	RenderEngine::setAiDebugPointer(void* ptr) {

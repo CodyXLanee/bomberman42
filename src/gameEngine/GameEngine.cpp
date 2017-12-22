@@ -25,9 +25,14 @@ _bombManager(new BombManager(_map, _entityList)),
 _playerManager(new PlayerManager()),
 _gameParams(gp),
 _winManager(nullptr) {
-	loadMap("maps/brawl_0.json");
+	
 	if (_gameParams.get_game_mode() == GameMode::BRAWL){
+		loadMap("maps/brawl_0.json");
 		placeBrawlPlayers(_gameParams.get_color());
+	}
+	else if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
+	{
+		loadMap(std::string("maps/campaign/" + std::to_string(_gameParams.get_level() + 1) + ".json").c_str());
 	}
 
 }

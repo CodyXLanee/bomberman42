@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Flame.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:24:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/22 16:17:20 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/22 16:19:44 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,6 @@ void                Flame::enemy_move_callback(void *enemy){
 }
 
 
-bool                                                            is_centered(void) const{
+bool                Flame::is_centered(void) const{
     return _center;
 }

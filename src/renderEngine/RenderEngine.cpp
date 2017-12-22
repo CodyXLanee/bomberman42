@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 15:30:05 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 16:21:29 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -412,8 +412,11 @@ void		RenderEngine::getDirectionalShadowMap() const {
 void	RenderEngine::setFireLights(std::vector<IGameEntity *> const & entities) {
 	fireLights.clear();
 	for (auto it = entities.begin(); it != entities.end(); it++) {
-		if((*it)->getType() == Type::FLAME)
-			fireLights.push_back(glm::vec3((*it)->getPosition(), 1.f));
+		if((*it)->getType() == Type::FLAME) {
+			Flame *f = static_cast<Flame *>(*it);
+			if (f->is_centered())
+				fireLights.push_back(glm::vec3((*it)->getPosition(), 1.f));
+		}
 	}
 	shaderManager.getMainShader().use();
 	shaderManager.getMainShader().setFloat("fireShininess", sin(rand() % 10));

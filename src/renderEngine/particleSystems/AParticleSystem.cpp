@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 11:26:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 14:18:50 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 15:30:51 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,8 @@ AParticleSystem::AParticleSystem()
 	: running(false), particleNbr(0) {
 	createBuffers();
 	setInstanceBuffer();
-	// if(running)
-	// 	init();
 }
 
-// AParticleSystem::AParticleSystem(bool active, glm::vec3 position)
-// 	: running(active), oriPos(position) {
-// 	createBuffers();
-// 	if(running)
-// 		init();
-// }
 
 AParticleSystem::~AParticleSystem() {
     glDeleteBuffers(1, &this->vbo);
@@ -116,11 +108,10 @@ void	AParticleSystem::setInstanceBuffer() {
 // }
 
 void	AParticleSystem::draw(Shader &shader) {
-    // if (positions.size() == 0)
-    //     return;
-        
+    this->shader = &shader;
     shader.use();
-	update(shader);
+	this->shader->setInt("type", type);
+	update();
 
 	glBindVertexArray(this->vao);
 	glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, particleNbr);
@@ -128,59 +119,8 @@ void	AParticleSystem::draw(Shader &shader) {
 	return;
 }
 
-// void	ParticleSystem::updateFire(Shader &shader) {
-// 	if (positions.size() <= 1)
-// 		stop();
 
-//     std::vector<glm::mat4> data;
-// 	for (auto i = positions.begin(); i != positions.end(); i++){
-//         float r = static_cast<float>((rand() % 5)) - 2.5f;
 
-//         glm::vec3 dir = glm::vec3(r / 100.f, r / 100.f, 0.02f);
-//         *i += dir;
-
-//         float dist = glm::distance(oriPos, *i);
-//         if (dist > 2) {
-//             positions.erase(i);
-//             i--;
-//             break;
-// 		}
-//         shader.setFloat("dist", glm::distance(oriPos, *i));
-//         shader.setInt("type", type);
-
-//         glm::mat4 transform = glm::mat4();
-//         transform = glm::translate(transform, *i);
-//         transform = glm::rotate(transform,glm::radians(-90.0f), glm::vec3(1.f, 0.f, 0.f));
-//         transform = glm::scale(transform, glm::vec3(0.02f, 0.02f, 0.02f));
-//         data.push_back(transform);
-//     }
-//     if (data.size() != 0) {
-// 		glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
-// 		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * data.size(), &data[0], GL_STATIC_DRAW);
-// 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-// 	}
-// }
-
-// void	ParticleSystem::updateBomb(Shader &shader) {
-//     std::vector<glm::mat4> data;
-// 	shader.setInt("type", type);
-	
-// 	for (auto i = positions.begin(); i != positions.end(); i++){
-//         float r = static_cast<float>((rand() % 90)) - 45.f;
-
-//         glm::mat4 transform = glm::mat4();
-//         transform = glm::translate(transform, *i);
-//         transform = glm::rotate(transform,glm::radians(-90.0f), glm::vec3(1.f, 0.f, 0.f));
-//         transform = glm::rotate(transform,glm::radians(r), glm::vec3(0.f, 0.f, 1.f));
-//         transform = glm::scale(transform, glm::vec3(0.01f, 0.1f, 1.f));
-//         data.push_back(transform);
-//     }
-//     if (data.size() != 0) {
-// 		glBindBuffer(GL_ARRAY_BUFFER, this->ibo);
-// 		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * data.size(), &data[0], GL_STATIC_DRAW);
-// 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-// 	}
-// }
 
 // void	ParticleSystem::updateRain(Shader &shader) {
 //     std::vector<glm::mat4> data;

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 14:43:05 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 15:17:18 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include "Camera.hpp"
 # include "Light.hpp"
 # include "FireParticles.hpp"
-// # include "ParticleSystem.hpp"
+# include "BombParticles.hpp"
 # include "WeatherSystem.hpp"
 # include "NuklearGUI.hpp"
 # include "Map.hpp"
@@ -55,12 +55,12 @@ class RenderEngine {
 		
 		ModelManager	modelManager;
 		ShaderManager	shaderManager;
-		Camera  	&camera;
-		Light		*light;
+		Camera  		&camera;
 
 		WeatherSystem	*meteo;
 
 		FireParticles			fireParticles;
+		BombParticles			bombParticles;
 
 		std::vector<glm::vec3>			fireLights;
 		void	addBombParticles(void *);
@@ -85,7 +85,6 @@ class RenderEngine {
 		void	renderScenery(Shader &shader) const;
 
 		void	setFireLights(std::vector<IGameEntity *> const & entities);
-		// void	recordNewEntities(std::vector<IGameEntity *> & entities);
 		void	shadowPass(Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	normalPass(Map const & map, std::vector<IGameEntity *> &entities) const;
 		void	blendedPass(std::vector<IGameEntity *> &entities);
@@ -93,7 +92,7 @@ class RenderEngine {
 		void	createShadowBuffer();
 		void	createDepthCubemap();
 		void	getDirectionalShadowMap() const;
-		void	getOmnidirectionalShadowMap() const;
+		// void	getOmnidirectionalShadowMap() const;
 
 		std::vector<glm::vec2>	*aiDebugInfo;
 		void	setAiDebugPointer(void* ptr);

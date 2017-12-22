@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 13:37:11 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 14:18:35 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 15:14:03 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,14 @@ class AParticleSystem {
 		AParticleSystem();
 		virtual ~AParticleSystem();
 
-		virtual void update(Shader &shader) = 0;
+		virtual void update() = 0;
 		void	createBuffers();
 		void	setInstanceBuffer();
 
 		bool					running;
 		unsigned int 			particleNbr;
 		Type					type;
+		Shader					*shader;
 		// glm::vec3	velocity;
 		// glm::vec4	color;
 		// float life;

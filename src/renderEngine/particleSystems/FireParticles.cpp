@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/22 11:52:27 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 14:45:19 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/12/22 15:27:49 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,7 @@ FireParticles::~FireParticles() {
 	glDeleteVertexArrays(1, &this->vao);
 }
 
-void    FireParticles::update(Shader &shader) {
-
-
+void    FireParticles::update() {
     std::vector<glm::mat4> data;
 	for (auto i = firePlaces.begin(); i != firePlaces.end(); i++) {
 		if (i->second.size() == 0) {
@@ -51,8 +49,7 @@ void    FireParticles::update(Shader &shader) {
 				it--;
 				continue;
 			}
-			shader.setFloat("dist", dist);
-			shader.setInt("type", type);
+			this->shader->setFloat("dist", dist);
 
 			glm::mat4 transform = glm::mat4();
 			transform = glm::translate(transform, *it);
@@ -74,11 +71,11 @@ void    FireParticles::update(Shader &shader) {
 }
 
 void    FireParticles::addFirePlace(glm::vec2 pos) {
-    particleNbr += 10;
+    particleNbr += PARTICLES_BY_FIREPLACE;
 	
 	std::vector<glm::vec3> particles;
 	glm::vec3 ori = glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 0.f);
-	for(unsigned int i = 0; i < 10; i++) {
+	for(unsigned int i = 0; i < PARTICLES_BY_FIREPLACE; i++) {
 		float r1 = static_cast<float>((rand() % 10)) - 5.f;
 		float r2 = static_cast<float>((rand() % 10)) - 5.f;
 		particles.push_back(ori + glm::vec3(r1 / 10.f, r2 / 10.f, 0.5f));

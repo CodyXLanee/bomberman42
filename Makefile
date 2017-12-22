@@ -36,6 +36,7 @@ SRC_NAME =	\
 			renderEngine/model/mathTools.cpp \
 			renderEngine/particleSystems/AParticleSystem.cpp \
 			renderEngine/particleSystems/FireParticles.cpp \
+			renderEngine/particleSystems/BombParticles.cpp \
 			renderEngine/Shader.cpp \
 			renderEngine/Camera.cpp \
 			renderEngine/Light.cpp \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BombManager.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/22 16:15:49 by egaborea         ###   ########.fr       */
+/*   Updated: 2017/12/22 16:19:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ std::vector<IGameEntity *>	*BombManager::explodeOneDir(int flames, glm::vec2 pos
         }
     }
     else {
-        ret->push_back(new Flame(pos));
+        ret->push_back(new Flame(pos, false));
         if (flames > 0){
             std::vector<IGameEntity *>	*tmp = explodeOneDir(--flames, pos + dir, dir);
             if (tmp->size() > 0)

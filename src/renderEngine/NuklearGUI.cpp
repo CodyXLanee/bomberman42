@@ -452,7 +452,13 @@ void    NuklearGUI::renderLevelSelection() {
     {
         nk_layout_row_dynamic(ctx, imageSize, 1);
         if (nk_button_image(ctx, levelImage))
-            std::cout << "clic image" << std::endl;
+        {
+            Menu::Enum  menu = Menu::NONE;
+            event.raise(Event::GUI_TOGGLE, &menu);
+            _human_player_color = PlayerColor::BLACK;
+            _human_player_bonus = glm::ivec3(1, 1, 1);
+            event.raise(Event::NEW_CAMPAIGN, &level);
+        }
 
         nk_layout_row_dynamic(ctx, optionHeight, 6);
         if (nk_button_label(ctx, "Back")) 

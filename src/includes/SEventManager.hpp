@@ -61,6 +61,9 @@ namespace Event {
 		NEW_GAME,      QUIT_GAME, RESTART_GAME,
 /*		nullptr | nullptr								*/
 		GAME_WIN, GAME_FINISH,
+		
+/*		Level::Enum *									*/
+		NEW_CAMPAIGN,
 
 /*		Player *   | Enemy *							*/
 		PLAYER_MOVE, ENEMY_MOVE,

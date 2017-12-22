@@ -13,8 +13,8 @@
 #include "Enemy.hpp"
 
 Enemy::Enemy(const glm::vec2 & pos, EnemyType::Enum type) :
-    AGameEntity(pos, glm::vec2(0., -1.), State::MOVING, 0.05f, Type::ENEMY),
-    _type(type){
+    AGameEntity(pos, glm::vec2(0., -1.), State::MOVING, 0.01f, Type::ENEMY),
+    _type(type), _graphicalDirection(glm::vec2(0,0)){
 
     SEventManager::getInstance().registerEvent(Event::PLAYER_MOVE, MEMBER_CALLBACK(Enemy::player_move_callback));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Enemy::spawn_flame_callback));
@@ -24,6 +24,16 @@ Enemy::~Enemy(){
 	SEventManager::getInstance().unRegisterEvent(Event::SPAWN_FLAME, this);
 }
 
+
+glm::vec2   Enemy::getGraphicalDirection() const
+{
+    return _graphicalDirection;
+}
+
+void        Enemy::setGraphicalDirection(glm::vec2 dir)
+{
+    _graphicalDirection = dir;
+}
 
 EnemyType::Enum         Enemy::getEnemyType(void){
     return _type;

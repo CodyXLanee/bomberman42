@@ -251,6 +251,21 @@ void	RenderEngine::renderEnemies(Shader &shader, std::vector<IGameEntity *> cons
 				if (j.first == static_cast<Enemy *>(*i)->getEnemyType()){
 					glm::mat4 transform = glm::mat4();
 					transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f)));
+
+					glm::vec2	graphicalDir = dynamic_cast<Enemy*>(*i)->getGraphicalDirection();
+					if (graphicalDir.x < (*i)->getDirection().x)
+						graphicalDir.x += 0.1;
+					if (graphicalDir.x > (*i)->getDirection().x)
+						graphicalDir.x -= 0.1;
+					if (graphicalDir.y < (*i)->getDirection().y)
+						graphicalDir.y += 0.1;
+					if (graphicalDir.y > (*i)->getDirection().y)
+						graphicalDir.y -= 0.1;
+					dynamic_cast<Enemy*>(*i)->setGraphicalDirection(graphicalDir);
+
+					int sign = (graphicalDir.x < 0) ? -1 : 1;
+					transform = glm::rotate(transform, sign * angle(glm::vec2(0.f, -1.f), graphicalDir), glm::vec3(0.f, 0.f, 1.f));
+
 					j.second.second.push_back(transform);
 				}
 			}

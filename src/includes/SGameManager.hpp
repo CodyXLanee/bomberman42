@@ -38,8 +38,6 @@ public:
     void            new_game(void *);
     // GameMode::Enum  getGameMode(void);
 
-    void            new_campaign(void *);
-
     // Load / Save Config params
 
 private:

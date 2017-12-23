@@ -18,12 +18,13 @@
 # include "SEventManager.hpp"
 # include "Bonus.hpp"
 # include "Player.hpp"
+# include "GameParams.hpp"
 # include <random>
 
 class BonusManager {
 	
 	public:
-		BonusManager(std::vector<IGameEntity *> *entityList);
+		BonusManager(std::vector<IGameEntity *> *entityList, GameParams &gp);
 		~BonusManager();
 
 		void			update(void);
@@ -33,6 +34,7 @@ class BonusManager {
 
 		std::vector<IGameEntity *>	*_entity_list;
 		std::vector<Bonus *>		*_bonus_queue;
+		GameParams					&_gameParams;
 };
 
 #endif

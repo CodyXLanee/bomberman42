@@ -12,9 +12,10 @@
 
 #include "BonusManager.hpp"
 
-BonusManager::BonusManager(std::vector<IGameEntity *> *entityList) :
+BonusManager::BonusManager(std::vector<IGameEntity *> *entityList, GameParams &gp) :
 _entity_list(entityList),
-_bonus_queue(new std::vector<Bonus *>()){
+_bonus_queue(new std::vector<Bonus *>()),
+_gameParams(gp){
     SEventManager::getInstance().registerEvent(Event::BRICK_BREAKS, MEMBER_CALLBACK(BonusManager::brickBreaksCallback));
     SEventManager::getInstance().registerEvent(Event::BONUS_ACTIVATE, MEMBER_CALLBACK(BonusManager::bonusActivateCallback));
 }
@@ -50,7 +51,7 @@ void            BonusManager::brickBreaksCallback(void *p){
     glm::vec2 *pos = static_cast<glm::vec2 *>(p);
     int r = (rand() % 100);
     Bonus   *b = nullptr;
-    if (r < 60){
+    if (r < 60 && _gameParams.get_game_mode() == GameMode::BRAWL){
         if (r < 20)
             b = new Bonus(*pos, BonusType::SPEED_UP);
         else if (r < 40)

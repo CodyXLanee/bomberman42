@@ -19,7 +19,7 @@
 
 GameEngine::GameEngine(GameParams &gp) : _map(new Map()), 
 _entityList(new std::vector<IGameEntity *>()), 
-_bonusManager(new BonusManager(_entityList)),
+_bonusManager(new BonusManager(_entityList, gp)),
 _enemyManager(new EnemyManager(_entityList)),
 _bombManager(new BombManager(_map, _entityList)), 
 _playerManager(new PlayerManager()),
@@ -101,6 +101,11 @@ void					GameEngine::loadMap(const char *path){
     rapidjson::Value * grid;
     rapidjson::Value * sun;
 
+	Player *	player;
+	Enemy *		enemy;
+	Bonus *		bonus;
+	glm::vec2	vec;
+
 	this->_loader.setPath(path);
 	if (this->_loader.load() != 1)
 	{
@@ -146,10 +151,6 @@ void					GameEngine::loadMap(const char *path){
 	}
 	else if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
 	{
-		Player *	player;
-		Enemy *		enemy;
-		Bonus *		bonus;
-		glm::vec2	vec;
 
 	    for (unsigned int i = 0 ; i < grid[0].Size() ; i++)
 	    {

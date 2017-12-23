@@ -440,6 +440,7 @@ void    NuklearGUI::renderMenu() {
 
 void    NuklearGUI::renderLevelSelection() {
 
+    static GameParams game_params(GameMode::CAMPAIGN, Level::ONE, PlayerColor::WHITE, 1, Difficulty::EASY);
     static struct nk_image  levelImage = loadImage("assets/textures/level1.png", GL_RGBA);
     static Level::Enum      level = Level::ONE;
 
@@ -457,7 +458,7 @@ void    NuklearGUI::renderLevelSelection() {
             event.raise(Event::GUI_TOGGLE, &menu);
             _human_player_color = PlayerColor::BLACK;
             _human_player_bonus = glm::ivec3(1, 1, 1);
-            event.raise(Event::NEW_CAMPAIGN, &level);
+            event.raise(Event::NEW_GAME, &game_params);
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 6);
@@ -471,6 +472,7 @@ void    NuklearGUI::renderLevelSelection() {
             if (level > Level::ONE)
             {
                 level = static_cast<Level::Enum>(level - 1);
+                game_params.set_level(level);
                 levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
             }
         }
@@ -479,6 +481,7 @@ void    NuklearGUI::renderLevelSelection() {
             if (level < Level::FOUR)
             {
                 level = static_cast<Level::Enum>(level + 1);
+                game_params.set_level(level);
                 levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
             }
         }

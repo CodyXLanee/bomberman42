@@ -55,8 +55,6 @@ SGameManager::SGameManager() :
     em.registerEvent(Event::GAME_FINISH, MEMBER_CALLBACK(SGameManager::game_finish));
 
     em.registerEvent(Event::LOAD_SLOT, MEMBER_CALLBACK(SGameManager::loadSlot));
-
-    em.registerEvent(Event::NEW_CAMPAIGN, MEMBER_CALLBACK(SGameManager::new_campaign));
 }
 
 SGameManager::~SGameManager() {
@@ -101,14 +99,6 @@ void            SGameManager::quit_game(void *){
 
 void            SGameManager::new_game(void *p){
     GameParams *gp = static_cast<GameParams *>(p);
-    delete _game;
-    _game = new GameEngine(*gp);
-    _game_is_active = true;
-    _new_game = false;
-}
-
-void            SGameManager::new_campaign(void *p){
-    GameParams  *gp = new GameParams(GameMode::CAMPAIGN, *static_cast<Level::Enum *>(p), PlayerColor::BLACK, 0, Difficulty::EASY);
     delete _game;
     _game = new GameEngine(*gp);
     _game_is_active = true;

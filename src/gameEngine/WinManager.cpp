@@ -39,6 +39,8 @@ void        WinManager::checkWinBlocks(Map &map){
 }
 
 void        WinManager::checkWinEnemies(std::vector<IGameEntity *> &entityList){
+    if (entityList.empty())
+        return ;
     for (auto it = entityList.begin(); it != entityList.end(); it++){
         if ((*it)->getType() == Type::ENEMY){
             return ;

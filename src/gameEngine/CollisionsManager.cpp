@@ -127,6 +127,8 @@ int				CollisionsManager::gestionNoSlipMove(glm::vec2 & pos, IGameEntity const *
 }
 
 bool			CollisionsManager::collidesWithEntity(glm::vec2 &v, IGameEntity const * entity, std::vector<IGameEntity *> const &entityList){
+	if (entityList.empty())
+		return false;
 	for (auto i = entityList.begin(); i != entityList.end(); i++){
 		if ((*i) != entity){
 			switch((*i)->getType()){

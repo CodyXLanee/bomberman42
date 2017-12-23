@@ -111,34 +111,128 @@ void					GameEngine::loadMap(const char *path){
     	return ;
 
 	// MAP
-    for (unsigned int i = 0 ; i < grid[0].Size() ; i++)
-    {
-    	if (!grid[0][i].IsArray())
-    		return ;
-    	for (unsigned int j = 0 ; j < grid[0][i].Size() ; j ++) {
-    		if (i == 0)
-    			this->_map->setSize(glm::vec2(grid[0][i].Size(), grid[0].Size()));
-    		if (!grid[0][i][j].IsInt())
-    			return ;
-			
-    		int entityType = grid[0][i][j].GetInt();
+	if (_gameParams.get_game_mode() == GameMode::BRAWL)
+	{
+	    for (unsigned int i = 0 ; i < grid[0].Size() ; i++)
+	    {
+	    	if (!grid[0][i].IsArray())
+	    		return ;
+	    	for (unsigned int j = 0 ; j < grid[0][i].Size() ; j ++) {
+	    		if (i == 0)
+	    			this->_map->setSize(glm::vec2(grid[0][i].Size(), grid[0].Size()));
+	    		if (!grid[0][i][j].IsInt())
+	    			return ;
+				
+	    		int entityType = grid[0][i][j].GetInt();
 
-    		if (entityType == -2) // undestroyable bloc
-    			this->_map->addIndestructibleBlocs(IndestructibleBloc(glm::vec2(j,i)));
-    		if (entityType == 0 && ((rand() % 10) < 6)) // destroyable bloc
-    			this->_map->addDestructibleBlocs(DestructibleBloc(glm::vec2(j,i)));
-    		// if (entityType == 0) // case vide
-    		// 	break;
-			
-    		// if (entityType >=1 && entityType <=5) {// players (1 is human, the rest is an AI)
-    		// 	glm::vec2		vec(static_cast<float>(j), static_cast<float>(i));
-    		// 	Player *	player = new Player(vec, entityType - 1);
-			// 	if (player->getPlayerNb() == 0)
-			// 		_playerManager->setHumanPlayer(player);
-			// 	else
-			// 		_playerManager->addPlayer(player);
-    		// 	this->_entityList->push_back(player);
-    		// }
+	    		if (entityType == -2) // undestroyable bloc
+	    			this->_map->addIndestructibleBlocs(IndestructibleBloc(glm::vec2(j,i)));
+	    		if (entityType == 0 && ((rand() % 10) < 6)) // destroyable bloc
+	    			this->_map->addDestructibleBlocs(DestructibleBloc(glm::vec2(j,i)));
+	    		// if (entityType == 0) // case vide
+	    		// 	break;
+				
+	    		// if (entityType >=1 && entityType <=5) {// players (1 is human, the rest is an AI)
+	    		// 	glm::vec2		vec(static_cast<float>(j), static_cast<float>(i));
+	    		// 	Player *	player = new Player(vec, entityType - 1);
+				// 	if (player->getPlayerNb() == 0)
+				// 		_playerManager->setHumanPlayer(player);
+				// 	else
+				// 		_playerManager->addPlayer(player);
+	    		// 	this->_entityList->push_back(player);
+	    		// }
+			}
+		}
+	}
+	else if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
+	{
+		Player *	player;
+		Enemy *		enemy;
+		Bonus *		bonus;
+		glm::vec2	vec;
+
+	    for (unsigned int i = 0 ; i < grid[0].Size() ; i++)
+	    {
+	    	if (!grid[0][i].IsArray())
+	    		return ;
+	    	for (unsigned int j = 0 ; j < grid[0][i].Size() ; j ++) {
+	    		if (i == 0)
+	    			this->_map->setSize(glm::vec2(grid[0][i].Size(), grid[0].Size()));
+	    		if (!grid[0][i][j].IsInt())
+	    			return ;
+				
+	    		int entityType = grid[0][i][j].GetInt();
+
+	    		switch (entityType)
+	    		{
+	    		case -2: // undestroyable bloc
+	    			this->_map->addIndestructibleBlocs(IndestructibleBloc(glm::vec2(j,i)));
+	    			break;
+	    		case -1: // destroyable bloc
+	    			this->_map->addDestructibleBlocs(DestructibleBloc(glm::vec2(j,i)));
+	    			break;
+	    		case 0: // case vide
+	    		 	break;
+
+	    		case 1: // players (1 is human, the rest is an AI)
+	    			vec = glm::vec2(static_cast<float>(j), static_cast<float>(i));
+	    			player = new Player(vec, 0, _gameParams.get_color());
+					// _playerManager->addPlayer(player);
+	    			this->_entityList->push_back(player);
+					_playerManager->setHumanPlayer(player);
+	    			break;
+	    		case 2:
+	    			vec = glm::vec2(static_cast<float>(j), static_cast<float>(i));
+	    			enemy = new Enemy(vec, EnemyType::BALOON);
+	    			this->_entityList->push_back(enemy);
+	    			break;
+	    		case 3:
+	    		case 4:
+	    		case 5:
+	    		case 6:
+	    		case 7:
+	    		case 8:
+	    		case 9:
+	    			break;
+	    		case 10: // power-bomb +1
+	    			vec = glm::vec2(static_cast<float>(j), static_cast<float>(i));
+	    			bonus = new Bonus(vec, BonusType::FLAME_UP);
+	    			this->_entityList->push_back(bonus);
+	    			break;
+	    		case 11: // power-bomb -1
+	    			// vec = glm::vec2(static_cast<float>(j), static_cast<float>(i));
+	    			// bonus = new Bonus(vec, BonusType::FLAME_DOWN);
+	    			// this->_entityList->push_back(bonus);
+	    			break;
+	    		case 12: // nb-bomb +1
+	    			vec = glm::vec2(static_cast<float>(j), static_cast<float>(i));
+	    			bonus = new Bonus(vec, BonusType::BOMB_UP);
+	    			this->_entityList->push_back(bonus);
+	    			break;
+	    		case 13: // nb-bomb -1
+	    			// vec = glm::vec2(static_cast<float>(j), static_cast<float>(i));
+	    			// bonus = new Bonus(vec, BonusType::BOMB_DOWN);
+	    			// this->_entityList->push_back(bonus);
+	    			break;
+	    		case 14: // speed +1
+	    			vec = glm::vec2(static_cast<float>(j), static_cast<float>(i));
+	    			bonus = new Bonus(vec, BonusType::SPEED_UP);
+	    			this->_entityList->push_back(bonus);
+	    			break;
+	    		case 15: // speed -1
+	    			// vec = glm::vec2(static_cast<float>(j), static_cast<float>(i));
+	    			// bonus = new Bonus(vec, BonusType::SPEED_DOWN);
+	    			// this->_entityList->push_back(bonus);
+	    			break;
+	    		case 16:
+	    		case 17:
+	    		case 18:
+	    		case 19:
+	    			break;
+
+	    		}
+
+			}
 		}
 	}
 	// OTHER ATTRIBUTES

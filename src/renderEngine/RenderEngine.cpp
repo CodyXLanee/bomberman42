@@ -276,7 +276,7 @@ void	RenderEngine::renderEnemies(Shader &shader, std::vector<IGameEntity *> cons
 	for (auto &&j : map){
 		// j.second.first.draw(shader, j.second.second);
 
-		model.setAnimation(1, fakeTime);
+		model.setAnimation(3, fakeTime);
 	    model.draw(shader, j.second.second);
 	}
 	fakeTime += 0.01;

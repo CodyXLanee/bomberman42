@@ -40,6 +40,7 @@ class GameEngine {
 		glm::vec2 const 					*getPlayerPos(void) const;
 		int 								getStarsCampaign(void);
 		GameParams 							getGameParams(void) const;
+		bool								getWin(void) const;
 
 		void								gameWin(void *ptr);
 
@@ -59,6 +60,7 @@ class GameEngine {
 		PlayerManager				*_playerManager;
 		GameParams					_gameParams;
 		WinManager					*_winManager;
+		bool						_win;
 
 };
 

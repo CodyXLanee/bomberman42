@@ -89,10 +89,11 @@ void        SGameManager::manage(void) {
     		SDL_GL_SwapWindow(_window.getWin());
         }
 
-        if (_game->getGameParams().get_game_mode() == GameMode::CAMPAIGN)
+        if (_game && _game->getWin() && _game->getGameParams().get_game_mode() == GameMode::CAMPAIGN)
         {
             int stars = _game->getStarsCampaign();
-            _slot->set_stars_campaign(_game->getGameParams().get_level(), stars);
+            if (stars != -1 && stars > _slot->get_stars_campaign(_game->getGameParams().get_level()))
+                _slot->set_stars_campaign(_game->getGameParams().get_level(), stars);
         }
         // _gui.render(true);
         // em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::NONE));

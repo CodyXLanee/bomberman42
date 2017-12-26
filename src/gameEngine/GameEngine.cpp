@@ -24,7 +24,8 @@ _enemyManager(new EnemyManager(_entityList)),
 _bombManager(new BombManager(_map, _entityList)), 
 _playerManager(new PlayerManager()),
 _gameParams(gp),
-_winManager(new WinManager((gp.get_game_mode() == GameMode::CAMPAIGN) ? WinCondition::NO_MORE_BLOCKS : WinCondition::NO_MORE_ENEMIES, glm::vec2(0,0))) {
+_winManager(new WinManager((gp.get_game_mode() == GameMode::CAMPAIGN) ? WinCondition::NO_MORE_BLOCKS : WinCondition::NO_MORE_ENEMIES, glm::vec2(0,0))),
+_win(false) {
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(GameEngine::gameWin));
 	
@@ -274,6 +275,7 @@ void			GameEngine::gameWin(void *)
 	rapidjson::Value *	stars;
 	int					star_result = 0;
 
+	_win = true;
 	if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
 	{
 
@@ -325,4 +327,9 @@ int 			GameEngine::getStarsCampaign(void)
 		}
 	}
 	return -1;
+}
+
+bool		GameEngine::getWin(void) const
+{
+	return _win;
 }

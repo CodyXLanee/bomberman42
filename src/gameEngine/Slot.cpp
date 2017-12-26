@@ -22,8 +22,18 @@ std::string     Slot::save_to_path(Save::Enum save){
 
 void            Slot::load_campaign_max_level(rapidjson::Value *val){
     if (!val || !val[0].IsInt())
-		throw std::runtime_error("Slot loading fail.");
+        throw std::runtime_error("Slot loading fail.");
     _campaignMaxLevel = val[0].GetInt();
+}
+
+void            Slot::load_stars_campaign(rapidjson::Value *val){
+    if (!val || !val[0].IsArray())
+        throw std::runtime_error("Slot loading fail.");
+    for (unsigned int i = 0 ; i < val[0].Size() ; i++)
+    {
+        if (val[0][i].IsInt())
+            set_stars_campaign(i, val[0][i].GetInt());
+    }
 }
 
 void            Slot::load_float_val(rapidjson::Value *val, float *float_val){
@@ -60,6 +70,7 @@ Slot::Slot(Save::Enum save) : _save(save){
         if (_loader.load() != 1){
             throw std::runtime_error(save_to_path(save).c_str());
         }
+        load_stars_campaign(_loader.getValue("stars_campaign"));
         load_campaign_max_level(_loader.getValue("campaign_max_level"));
         load_float_val(_loader.getValue("master_volume"), &_masterVolume);
         load_float_val(_loader.getValue("music_volume"), &_musicVolume);
@@ -89,6 +100,13 @@ void                                Slot::save(){
     rapidjson::Document d;
 
     d.SetObject();
+
+    rapidjson::Value stars(rapidjson::kArrayType);
+    for (unsigned int i = 0 ; i < _stars_campaign.size() ; i++){
+        stars.PushBack(rapidjson::Value(static_cast<int>(_stars_campaign[i])), d.GetAllocator());
+    }
+    d.AddMember("stars_campaign", stars, d.GetAllocator());
+
     d.AddMember("campaign_max_level", rapidjson::Value(_campaignMaxLevel), d.GetAllocator());
     d.AddMember("master_volume", rapidjson::Value(_masterVolume), d.GetAllocator());
     d.AddMember("music_volume", rapidjson::Value(_musicVolume), d.GetAllocator());
@@ -136,6 +154,16 @@ void    Slot::setMusicVolume(void * v) {
     _musicVolume = *static_cast<float*>(v);
 }
 
+void    Slot::set_stars_campaign(unsigned int level, int stars)
+{
+    unsigned int size = _stars_campaign.size();
+
+    if (level == size)
+        _stars_campaign.push_back(stars);
+    if (level < size)
+        _stars_campaign[level] = stars;
+}
+
 float                               Slot::get_master_volume() const {
     return _masterVolume;
 }
@@ -144,6 +172,11 @@ float                               Slot::get_music_volume() const{
 }
 float                               Slot::get_effects_volume() const{
     return _effectsVolume;
+}
+int                                 Slot::get_stars_campaign(unsigned int level) const{
+    if (level < _stars_campaign.size())
+        return _stars_campaign[level];
+    return -1;
 }
 
 Screen::Format const                &Slot::get_screenFormat() const{

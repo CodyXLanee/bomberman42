@@ -42,7 +42,8 @@ void        SGameManager::loadSlot(void *s){
 }
 
 SGameManager::SGameManager() : 
-    _window(1600, 900), 
+    _window(1600, 900),
+    _game(nullptr),
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
     _gui(_window, _camera), 
     _renderer(_window.getWin(), _camera),
@@ -104,7 +105,8 @@ void            SGameManager::quit_game(void *){
 
 void            SGameManager::new_game(void *p){
     GameParams *gp = static_cast<GameParams *>(p);
-    delete _game;
+    if (_game != nullptr)
+        delete _game;
     _game = new GameEngine(*gp);
     _game_is_active = true;
     _new_game = false;

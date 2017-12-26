@@ -297,3 +297,32 @@ void			GameEngine::gameWin(void *)
     	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
 	}
 }
+
+GameParams		GameEngine::getGameParams(void) const
+{
+	return _gameParams;
+}
+
+int 			GameEngine::getStarsCampaign(void)
+{
+	rapidjson::Value *	stars;
+	int					star_result = 0;
+
+	for (auto i = _entityList->begin(); i != _entityList->end(); i++){
+		if ((*i)->getType() == Type::PLAYER){
+			stars = this->_loader.getValue("stars");
+			if (stars && stars[0].IsArray() && stars[0].Size() == 3)
+			{
+				if (stars[0][0].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][0].GetInt())
+					star_result = 3;
+				else if (stars[0][1].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][1].GetInt())
+					star_result = 2;
+				else if (stars[0][2].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][2].GetInt())
+					star_result = 1;
+			}
+
+			return star_result;
+		}
+	}
+	return -1;
+}

@@ -271,12 +271,29 @@ void					GameEngine::loadMap(const char *path){
 
 void			GameEngine::gameWin(void *)
 {
+	rapidjson::Value *	stars;
+	int					star_result = 0;
+
 	if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
 	{
+
+
 		for (auto i = _entityList->begin(); i != _entityList->end(); i++){
 			if ((*i)->getType() == Type::PLAYER){
-				std::cout << "win with " << static_cast<Player*>(*i)->getTotalBombCount() << " bomb(s)" << std::endl;
+				stars = this->_loader.getValue("stars");
+				if (stars && stars[0].IsArray() && stars[0].Size() == 3)
+				{
+					if (stars[0][0].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][0].GetInt())
+						star_result = 3;
+					else if (stars[0][1].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][1].GetInt())
+						star_result = 2;
+					else if (stars[0][2].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][2].GetInt())
+						star_result = 1;
+				}
+
+				std::cout << "win with " << star_result << " star(s)" << std::endl;
 			}
 		}
+    	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
 	}
 }

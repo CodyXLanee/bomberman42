@@ -68,23 +68,28 @@ void        SGameManager::manage(void) {
     if (!_dev_mode)
         em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::SELECT_SLOT));
     else
-        em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));    
-	while(!_quit_game) {
-        if (_new_game)
-            new_game(new GameMode::Enum(GameMode::CAMPAIGN));
-            
-		_window.eventManager(_gui.getContext());
+        em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));
+//	while(1) {
+        while (!_quit_game)
+        {
+            if (_new_game)
+                new_game(new GameMode::Enum(GameMode::CAMPAIGN));
+                
+    		_window.eventManager(_gui.getContext());
 
-        if (_game_is_active){
-            _game->compute();
-            
-            _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
-            _renderer.render(_game->getMap(), _game->getEntityList());
+            if (_game_is_active){
+                _game->compute();
+                
+                _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
+                _renderer.render(_game->getMap(), _game->getEntityList());
+            }
+    		_gui.render(_game_is_active);
+    		_window.initGL();
+    		SDL_GL_SwapWindow(_window.getWin());
         }
-		_gui.render(_game_is_active);
-		_window.initGL();
-		SDL_GL_SwapWindow(_window.getWin());
-	}
+        // _gui.render(true);
+        // em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::NONE));
+//	}
 }
 
 
@@ -106,7 +111,7 @@ void            SGameManager::new_game(void *p){
 }
 
 void            SGameManager::game_finish(void *){
-    _new_game = true;
+    _quit_game = true;
 }
 
 void            SGameManager::newGame(GameMode::Enum gm){

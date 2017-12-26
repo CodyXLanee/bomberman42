@@ -19,6 +19,7 @@ _max_bomb(1),
 _flame_nb(1),
 _speed_mult(1.f),
 _bomb_count(0),
+_total_bomb_count(0),
 left(false), right(false), up(false), down(false),
 _graphicalDirection(glm::vec2(0,0)),
 _color(color),
@@ -111,6 +112,11 @@ int			Player::getMaxBombNb(void) const {
 
 void		Player::addBombToCount(void) {
 	_bomb_count++;
+	_total_bomb_count++;
+}
+
+int			Player::getTotalBombCount(void) const {
+	return _total_bomb_count;
 }
 
 void        Player::bombUp(void){

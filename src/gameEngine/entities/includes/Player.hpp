@@ -44,6 +44,8 @@ public:
     int			getMaxBombNb(void) const;
     void		addBombToCount(void);
 
+    int         getTotalBombCount(void) const;
+
     void        bombUp(void);
     void        flameUp(void);
     void        speedUp(void);
@@ -63,6 +65,7 @@ private:
     int         _flame_nb;
     float       _speed_mult;
     int         _bomb_count;
+    int         _total_bomb_count;
     bool        left, right, up, down;
 	glm::vec2	_graphicalDirection;
     PlayerColor::Enum   _color;

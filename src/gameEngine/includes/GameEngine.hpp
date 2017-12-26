@@ -39,6 +39,8 @@ class GameEngine {
 		std::vector<IGameEntity *> &		getEntityList();
 		glm::vec2 const 					*getPlayerPos(void) const;
 
+		void								gameWin(void *ptr);
+
 	private:
 		GameEngine();		// not implemented;
 		void								loadMap(const char *path);

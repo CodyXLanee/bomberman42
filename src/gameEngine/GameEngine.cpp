@@ -24,7 +24,9 @@ _enemyManager(new EnemyManager(_entityList)),
 _bombManager(new BombManager(_map, _entityList)), 
 _playerManager(new PlayerManager()),
 _gameParams(gp),
-_winManager(nullptr) {
+_winManager(new WinManager((gp.get_game_mode() == GameMode::CAMPAIGN) ? WinCondition::NO_MORE_BLOCKS : WinCondition::NO_MORE_ENEMIES, glm::vec2(0,0))) {
+    SEventManager &em = SEventManager::getInstance();
+    em.registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(GameEngine::gameWin));
 	
 	if (_gameParams.get_game_mode() == GameMode::BRAWL){
 		loadMap("maps/brawl_0.json");
@@ -265,4 +267,16 @@ void					GameEngine::loadMap(const char *path){
 		_entityList->push_back(new Enemy(glm::vec2(enemies[0][i]["pos"][0].GetInt(), enemies[0][i]["pos"][1].GetInt()), static_cast<EnemyType::Enum>(enemies[0][i]["type"].GetInt())));
 	}
 
+}
+
+void			GameEngine::gameWin(void *)
+{
+	if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
+	{
+		for (auto i = _entityList->begin(); i != _entityList->end(); i++){
+			if ((*i)->getType() == Type::PLAYER){
+				std::cout << "win with " << static_cast<Player*>(*i)->getTotalBombCount() << " bomb(s)" << std::endl;
+			}
+		}
+	}
 }

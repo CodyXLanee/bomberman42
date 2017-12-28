@@ -29,6 +29,8 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &ent
 void		CollisionsManager::computeEntityMovement(Map const & map, std::vector<IGameEntity *> &entityList, IGameEntity *entity){
 	if (entity->getState() == State::MOVING){
 		glm::vec2	newPos = entity->getPosition() + (entity->getDirection() * entity->getSpeed() * static_cast<float>(_time_since_last_frame.count()) * 0.001f);
+		if (entity->getType() == Type::ENEMY)
+			newPos = entity->getPosition() + (entity->getDirection() * entity->getSpeed() * static_cast<float>(_time_since_last_frame.count()) * 0.05f);
 		
 		gestionBorderMap(newPos, map);
 		
@@ -89,37 +91,38 @@ void			CollisionsManager::gestionBorderMap(glm::vec2 & pos, Map const & map)
 int				CollisionsManager::gestionNoSlipMove(glm::vec2 & pos, IGameEntity const * entity, Map const & map, std::vector<IGameEntity *> &entityList)
 {
 	int	isBlocked = 0;
+	float rayon = (entity->getType() == Type::PLAYER) ? RPLAYER : 0.5f;
 
 	if (entity->getDirection().x > 0)
 	{
-		if (hasObstacle(map, glm::vec2(round(pos.x + RPLAYER), round(pos.y)), entityList, entity))
+		if (hasObstacle(map, glm::vec2(round(pos.x + rayon), round(pos.y)), entityList, entity))
 		{
 			isBlocked = 1;
-			pos.x = round(pos.x + RPLAYER) - RPLAYER - 0.5;
+			pos.x = round(pos.x + rayon) - rayon - 0.5;
 		}
 	}
 	if (entity->getDirection().x < 0)
 	{
-		if (hasObstacle(map, glm::vec2(round(pos.x - RPLAYER), round(pos.y)), entityList, entity))
+		if (hasObstacle(map, glm::vec2(round(pos.x - rayon), round(pos.y)), entityList, entity))
 		{
 			isBlocked = 1;
-			pos.x = round(pos.x - RPLAYER) + RPLAYER + 0.5;
+			pos.x = round(pos.x - rayon) + rayon + 0.5;
 		}
 	}
 	if (entity->getDirection().y > 0)
 	{
-		if (hasObstacle(map, glm::vec2(round(pos.x), round(pos.y + RPLAYER)), entityList, entity))
+		if (hasObstacle(map, glm::vec2(round(pos.x), round(pos.y + rayon)), entityList, entity))
 		{
 			isBlocked = 1;
-			pos.y = round(pos.y + RPLAYER) - RPLAYER - 0.5;
+			pos.y = round(pos.y + rayon) - rayon - 0.5;
 		}
 	}
 	if (entity->getDirection().y < 0)
 	{
-		if (hasObstacle(map, glm::vec2(round(pos.x), round(pos.y - RPLAYER)), entityList, entity))
+		if (hasObstacle(map, glm::vec2(round(pos.x), round(pos.y - rayon)), entityList, entity))
 		{
 			isBlocked = 1;
-			pos.y = round(pos.y - RPLAYER) + RPLAYER + 0.5;
+			pos.y = round(pos.y - rayon) + rayon + 0.5;
 		}
 	}
 

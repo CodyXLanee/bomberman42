@@ -473,6 +473,7 @@ void    NuklearGUI::renderLevelSelection() {
             {
                 level = static_cast<Level::Enum>(level - 1);
                 game_params.set_level(level);
+                std::cout << _starsCampaign[level] << " stars" << std::endl;
                 levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
             }
         }
@@ -482,6 +483,7 @@ void    NuklearGUI::renderLevelSelection() {
             {
                 level = static_cast<Level::Enum>(level + 1);
                 game_params.set_level(level);
+                std::cout << _starsCampaign[level] << " stars" << std::endl;
                 levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
             }
         }
@@ -915,6 +917,11 @@ void    NuklearGUI::setEffectsVolume(void * v) {
 
 void    NuklearGUI::setMusicVolume(void * v) {
     _musicVolume = *static_cast<float*>(v);
+}
+
+void    NuklearGUI::setStarsCampaign(std::vector<int> starsCampaign)
+{
+    _starsCampaign = starsCampaign;
 }
 
 void    NuklearGUI::updateScreenFormat(void *f) {

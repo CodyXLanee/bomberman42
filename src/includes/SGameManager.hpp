@@ -47,7 +47,7 @@ private:
     
     
     void            game_finish(void *p);
-    void            useSlot(void) const;
+    void            useSlot(void);
     void            loadSlot(void *s);
 
     Sdl_gl_win          _window;

@@ -41,6 +41,7 @@ class Slot {
         void                                set_campaign_max_level(int i);
 
         int                                 get_stars_campaign(unsigned int level) const ;
+        std::vector<int>                    get_all_stars_campaign() const ;
         void                                set_stars_campaign(unsigned int level, int stars);
         
         float                               get_master_volume() const ;

@@ -178,6 +178,9 @@ int                                 Slot::get_stars_campaign(unsigned int level)
         return _stars_campaign[level];
     return -1;
 }
+std::vector<int>                    Slot::get_all_stars_campaign() const{
+    return _stars_campaign;
+}
 
 Screen::Format const                &Slot::get_screenFormat() const{
     return _screenFormat;

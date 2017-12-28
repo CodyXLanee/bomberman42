@@ -36,6 +36,8 @@ class NuklearGUI
         struct nk_context *     getContext() const;
         void                    render(bool);
         
+        void        setStarsCampaign(std::vector<int> starsCampaign);
+        
     private:
         Sdl_gl_win              &win;
         Camera                  &camera;
@@ -56,6 +58,7 @@ class NuklearGUI
         float                   _masterVolume;
         float                   _effectsVolume;
         float                   _musicVolume;
+        std::vector<int>        _starsCampaign;
         
         std::chrono::time_point<std::chrono::steady_clock>          start_time;
         float                                                       fps;

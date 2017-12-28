@@ -13,7 +13,7 @@
 #include "SGameManager.hpp"
 #include "SEventManager.hpp"
 
-void            SGameManager::useSlot(void) const {
+void            SGameManager::useSlot(void) {
     SEventManager &em = SEventManager::getInstance();
     Screen::Format  *sf = new Screen::Format(_slot->get_screenFormat());
     std::map<Event::Enum, SDL_Keycode>  *km = new std::map<Event::Enum, SDL_Keycode>(_slot->getKeyMap());
@@ -33,6 +33,8 @@ void            SGameManager::useSlot(void) const {
     
     f = _slot->get_effects_volume();
     em.raise(Event::EFFECTS_VOLUME_UPDATE, &f);
+
+    _gui.setStarsCampaign(_slot->get_all_stars_campaign());
 }
 
 void        SGameManager::loadSlot(void *s){

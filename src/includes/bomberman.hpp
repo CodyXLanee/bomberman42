@@ -47,7 +47,7 @@ namespace PlayerColor {
 }
 
 namespace Level {
-	enum Enum {ONE, TWO, THREE, FOUR}; // Levels should be renamed properly accordingly to their 'style' ?
+	enum Enum {ONE, TWO, THREE, FOUR, FIVE}; // Levels should be renamed properly accordingly to their 'style' ?
 }
 
 namespace Save {

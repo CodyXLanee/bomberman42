@@ -502,7 +502,7 @@ void    NuklearGUI::renderLevelSelection() {
         }
         if (nk_button_label(ctx, "Next"))
         {
-            if (level < Level::FOUR)
+            if (level < Level::FIVE)
             {
                 level = static_cast<Level::Enum>(level + 1);
                 game_params.set_level(level);

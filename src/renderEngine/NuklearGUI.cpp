@@ -442,7 +442,17 @@ void    NuklearGUI::renderLevelSelection() {
 
     static GameParams game_params(GameMode::CAMPAIGN, Level::ONE, PlayerColor::WHITE, 1, Difficulty::EASY);
     static struct nk_image  levelImage = loadImage("assets/textures/level1.png", GL_RGBA);
+    static struct nk_image  firstStar = loadImage("assets/textures/star_empty.png", GL_RGBA);
+    static struct nk_image  secondStar = loadImage("assets/textures/star_empty.png", GL_RGBA);
+    static struct nk_image  thirdStar = loadImage("assets/textures/star_empty.png", GL_RGBA);
     static Level::Enum      level = Level::ONE;
+
+    if (_starsCampaign[level] >= 1)
+        firstStar = loadImage("assets/textures/star_full.png", GL_RGBA);
+    if (_starsCampaign[level] >= 2)
+        secondStar = loadImage("assets/textures/star_full.png", GL_RGBA);
+    if (_starsCampaign[level] >= 3)
+        thirdStar = loadImage("assets/textures/star_full.png", GL_RGBA);
 
     struct nk_vec2 spacing = ctx->style.window.spacing;
     struct nk_vec2 padding = ctx->style.window.padding;
@@ -473,7 +483,20 @@ void    NuklearGUI::renderLevelSelection() {
             {
                 level = static_cast<Level::Enum>(level - 1);
                 game_params.set_level(level);
-                std::cout << _starsCampaign[level] << " stars" << std::endl;
+
+                if (_starsCampaign[level] >= 1)
+                    firstStar = loadImage("assets/textures/star_full.png", GL_RGBA);
+                else
+                    firstStar = loadImage("assets/textures/star_empty.png", GL_RGBA);
+                if (_starsCampaign[level] >= 2)
+                    secondStar = loadImage("assets/textures/star_full.png", GL_RGBA);
+                else
+                    secondStar = loadImage("assets/textures/star_empty.png", GL_RGBA);
+                if (_starsCampaign[level] >= 3)
+                    thirdStar = loadImage("assets/textures/star_full.png", GL_RGBA);
+                else
+                    thirdStar = loadImage("assets/textures/star_empty.png", GL_RGBA);
+
                 levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
             }
         }
@@ -483,7 +506,20 @@ void    NuklearGUI::renderLevelSelection() {
             {
                 level = static_cast<Level::Enum>(level + 1);
                 game_params.set_level(level);
-                std::cout << _starsCampaign[level] << " stars" << std::endl;
+
+                if (_starsCampaign[level] >= 1)
+                    firstStar = loadImage("assets/textures/star_full.png", GL_RGBA);
+                else
+                    firstStar = loadImage("assets/textures/star_empty.png", GL_RGBA);
+                if (_starsCampaign[level] >= 2)
+                    secondStar = loadImage("assets/textures/star_full.png", GL_RGBA);
+                else
+                    secondStar = loadImage("assets/textures/star_empty.png", GL_RGBA);
+                if (_starsCampaign[level] >= 3)
+                    thirdStar = loadImage("assets/textures/star_full.png", GL_RGBA);
+                else
+                    thirdStar = loadImage("assets/textures/star_empty.png", GL_RGBA);
+
                 levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
             }
         }
@@ -491,7 +527,17 @@ void    NuklearGUI::renderLevelSelection() {
         nk_label(ctx, std::string("Level " + std::to_string(level + 1)).c_str(), NK_TEXT_CENTERED);
 
     }
-    nk_end(ctx);       
+    nk_end(ctx);
+    if (nk_begin(ctx, "STARS LEVEL SELECTION", nk_rect(windowWidth / 2 - optionHeight * 1.5, windowHeight / 2 - menuHeight / 2 - optionHeight - 6, optionHeight * 3, optionHeight),
+    NK_WINDOW_NOT_INTERACTIVE|NK_WINDOW_NO_SCROLLBAR ))
+    {
+        nk_layout_row_dynamic(ctx, optionHeight, 3);
+        nk_button_image(ctx, firstStar);
+        nk_button_image(ctx, secondStar);
+        nk_button_image(ctx, thirdStar);
+
+    }
+    nk_end(ctx); 
 }
 
 static std::string     color_to_image(PlayerColor::Enum color){

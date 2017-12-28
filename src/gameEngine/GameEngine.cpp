@@ -292,8 +292,6 @@ void			GameEngine::gameWin(void *)
 					else if (stars[0][2].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][2].GetInt())
 						star_result = 1;
 				}
-
-				std::cout << "win with " << star_result << " star(s)" << std::endl;
 			}
 		}
     	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);

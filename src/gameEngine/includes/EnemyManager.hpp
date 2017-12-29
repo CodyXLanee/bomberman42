@@ -17,20 +17,26 @@
 # include "bomberman.hpp"
 # include "SEventManager.hpp"
 # include "Enemy.hpp"
+# include "Map.hpp"
 
 class EnemyManager {
 	
 	public:
-		EnemyManager(std::vector<IGameEntity *> *entityList);
+		EnemyManager(std::vector<IGameEntity *> *entityList, Map *map);
 		~EnemyManager();
+
+		void			setMap(Map *map);
+		Map				*getMap() const;
 
 		void			update(void);
 	private:
 		void            enemyCollidesCallback(void *entity);
+		void            enemyMoveCallback(void *entity);
 		void            enemyDiesCallback(void *enemy);
-		glm::vec2       updateDirectionBaloon(glm::vec2 direction);
+		glm::vec2       updateDirectionBaloon(glm::vec2 direction, glm::vec2 position);
 		
 		std::vector<IGameEntity *>	*_entity_list;
+		Map							*_map;
 };
 
 #endif

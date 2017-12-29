@@ -20,7 +20,7 @@
 GameEngine::GameEngine(GameParams &gp) : _map(new Map()), 
 _entityList(new std::vector<IGameEntity *>()), 
 _bonusManager(new BonusManager(_entityList, gp)),
-_enemyManager(new EnemyManager(_entityList)),
+_enemyManager(new EnemyManager(_entityList, _map)),
 _bombManager(new BombManager(_map, _entityList)), 
 _playerManager(new PlayerManager()),
 _gameParams(gp),

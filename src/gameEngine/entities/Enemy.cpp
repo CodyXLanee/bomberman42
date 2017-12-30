@@ -14,7 +14,7 @@
 
 Enemy::Enemy(const glm::vec2 & pos, EnemyType::Enum type) :
     AGameEntity(pos, glm::vec2(0., -1.), State::MOVING, 0.01f, Type::ENEMY),
-    _type(type), _graphicalDirection(glm::vec2(0,0)){
+    _type(type), _graphicalDirection(glm::vec2(0,0)), _counter_dying(200) {
 
     SEventManager::getInstance().registerEvent(Event::PLAYER_MOVE, MEMBER_CALLBACK(Enemy::player_move_callback));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Enemy::spawn_flame_callback));
@@ -33,6 +33,16 @@ glm::vec2   Enemy::getGraphicalDirection() const
 void        Enemy::setGraphicalDirection(glm::vec2 dir)
 {
     _graphicalDirection = dir;
+}
+
+int        Enemy::getCounterDying() const
+{
+    return _counter_dying;
+}
+
+void        Enemy::setCounterDying(int counter)
+{
+    _counter_dying = counter;
 }
 
 EnemyType::Enum         Enemy::getEnemyType(void){

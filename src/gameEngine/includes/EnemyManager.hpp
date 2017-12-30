@@ -18,6 +18,7 @@
 # include "SEventManager.hpp"
 # include "Enemy.hpp"
 # include "Map.hpp"
+# include "Bomb.hpp"
 
 class EnemyManager {
 	

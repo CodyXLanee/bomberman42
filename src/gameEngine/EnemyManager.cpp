@@ -24,9 +24,18 @@ EnemyManager::~EnemyManager(){
 
 void			EnemyManager::update(void){
     for (auto &&i : *_entity_list){
-        if (i->getType() == Type::ENEMY && i->getState() == State::DYING){
-            delete i;
-            i = nullptr;
+        if (i->getType() == Type::ENEMY)
+        {
+            if (i->getState() == State::DYING)
+                dynamic_cast<Enemy*>(i)->setCounterDying(dynamic_cast<Enemy*>(i)->getCounterDying() - 1);
+            if (dynamic_cast<Enemy*>(i)->getCounterDying() <= 0)
+            {
+                glm::vec2   pos(round(i->getPosition().x), round(i->getPosition().y));
+                SEventManager::getInstance().raise(Event::SPAWN_BOMB, new Bomb(pos));
+
+                delete i;
+                i = nullptr;
+            }
         }
     }
     _entity_list->erase( std::remove(_entity_list->begin(), _entity_list->end(), nullptr), _entity_list->end());

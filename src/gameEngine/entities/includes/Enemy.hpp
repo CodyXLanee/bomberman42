@@ -28,6 +28,10 @@ public:
 
     glm::vec2				getGraphicalDirection() const;
     void					setGraphicalDirection(glm::vec2 dir);
+
+    int                     getCounterDying() const;
+    void                    setCounterDying(int counter);
+
     EnemyType::Enum         getEnemyType(void);
     void                    player_move_callback(void *player);
     void	                spawn_flame_callback(void *flame);
@@ -35,6 +39,7 @@ public:
 private:
     EnemyType::Enum _type;
 	glm::vec2		_graphicalDirection;
+    int             _counter_dying;
 };
 
 #endif

@@ -20,12 +20,19 @@ AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), player(p)
     SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Bomb::explode_if_touched));
 }
 
+Bomb::Bomb(const glm::vec2 & pos) : 
+AGameEntity(pos, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), player(nullptr){
+    explode();
+}
+
 Bomb::~Bomb(){
     SEventManager::getInstance().unRegisterEvent(Event::SPAWN_FLAME, this);
 }
 
 int     Bomb::getFlameNb(void) const {
-    return player->getFlameNb();
+    if (player != nullptr)
+        return player->getFlameNb();
+    return 1;
 }
 
 void    Bomb::update(void){

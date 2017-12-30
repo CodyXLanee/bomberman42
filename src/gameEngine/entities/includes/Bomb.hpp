@@ -23,6 +23,7 @@ class Player;
 class Bomb : public AGameEntity {
 public:
     Bomb(const glm::vec2 & pos, Player *p);
+    Bomb(const glm::vec2 & pos);
     ~Bomb();
     virtual void    update(void);
 

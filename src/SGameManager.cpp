@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/19 18:32:24 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 14:18:55 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void            SGameManager::new_game(void *p){
 }
 
 void            SGameManager::game_finish(void *){
-    _quit_game = true;
+    _game_is_active = false;
 }
 
 void            SGameManager::newGame(GameMode::Enum gm){

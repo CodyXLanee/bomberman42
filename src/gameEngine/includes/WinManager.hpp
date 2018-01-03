@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 17:16:53 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/05 18:34:28 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 14:28:45 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class WinManager {
 
 		void			update(Map & map, std::vector<IGameEntity *> &entityList);
 	private:
-        void            win(void *);
+        void            win(void);
 		WinManager();
         void             checkWinBlocks(Map &);
         void             checkWinEnemies(std::vector<IGameEntity *> &);

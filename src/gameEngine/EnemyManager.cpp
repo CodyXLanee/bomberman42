@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 19:20:30 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/14 22:45:17 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 16:01:48 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ EnemyManager::EnemyManager(std::vector<IGameEntity *> *entityList, Map *map) : _
 }
 
 EnemyManager::~EnemyManager(){
+	SEventManager::getInstance().unRegisterEvent(Event::ENEMY_COLLIDES, this);
+    SEventManager::getInstance().unRegisterEvent(Event::ENEMY_MOVE, this);
+	SEventManager::getInstance().unRegisterEvent(Event::ENEMY_DIES, this);
 }
 
 void			EnemyManager::update(void){

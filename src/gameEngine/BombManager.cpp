@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BombManager.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/22 16:19:54 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/03 16:00:57 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,13 @@ _map(map), _entityList(entityList), _flames_to_add(new std::vector<IGameEntity *
     em.registerEvent(Event::FLAME_DISAPEAR, MEMBER_CALLBACK(BombManager::flames_disapear));
 }
 
-BombManager::~BombManager() {}
+BombManager::~BombManager() {
+    SEventManager &em = SEventManager::getInstance();
+    em.unRegisterEvent(Event::PLAYER_SPAWN_BOMB, this);
+    em.unRegisterEvent(Event::SPAWN_FLAME, this);
+    em.unRegisterEvent(Event::BOMB_EXPLODES, this);
+    em.unRegisterEvent(Event::FLAME_DISAPEAR, this);
+}
 
 void              BombManager::spawn_bomb(void *p){
     Player *player = static_cast<Player *>(p);

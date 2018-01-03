@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 14:46:47 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 15:17:18 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/03 14:54:01 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ class RenderEngine {
 		void	renderBonus(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderFlames(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderEnemies(Shader &shader, std::vector<IGameEntity *> const & entities) const;
+		void	renderWinSpot(Shader &shader, std::vector<IGameEntity *> const & entities) const;
 		void	renderScenery(Shader &shader) const;
 
 		void	setFireLights(std::vector<IGameEntity *> const & entities);

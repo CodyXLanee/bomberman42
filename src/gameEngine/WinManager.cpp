@@ -6,14 +6,13 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 17:35:04 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/05 18:31:10 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 14:30:00 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "WinManager.hpp"
 
 WinManager::WinManager(WinCondition::Enum condition, glm::vec2 spot) : _win_condition(condition), _win_spot(spot), _won(false){
-    SEventManager::getInstance().registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(WinManager::win));
 }
 
 WinManager::~WinManager(){
@@ -35,7 +34,7 @@ void	WinManager::update(Map & map, std::vector<IGameEntity *> &entityList){
 
 void        WinManager::checkWinBlocks(Map &map){
     if (map.getDestructibleBlocs().size() == 0)
-        SEventManager::getInstance().raise(Event::GAME_WIN, nullptr);
+        win();
 }
 
 void        WinManager::checkWinEnemies(std::vector<IGameEntity *> &entityList){
@@ -46,12 +45,11 @@ void        WinManager::checkWinEnemies(std::vector<IGameEntity *> &entityList){
             return ;
         }
     }
-    SEventManager::getInstance().raise(Event::GAME_WIN, nullptr);
+    win();
 }
 
 
 
-void    WinManager::win(void *p){
-    (void)p;
+void    WinManager::win(void){
     _won = true;
 }

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 18:22:15 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 14:54:41 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ void	RenderEngine::renderScene(Shader &shader, Map const & map, std::vector<IGam
 	renderBombs(shader, entities);
 	renderBonus(shader, entities);
 	renderEnemies(shader, entities);
+	renderWinSpot(shader, entities);
 	renderScenery(shader);
 	// meteo->getSun().render(shaderManager.getMainShader(), camera);
 	renderPlayer(shader, entities);
@@ -295,6 +296,19 @@ void	RenderEngine::renderBombs(Shader &shader, std::vector<IGameEntity *> const 
 		if ((*i)->getType() == Type::BOMB){
 			glm::mat4 transform = glm::mat4();
 			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f))) * glm::scale(glm::vec3(bombs_animation_scale(static_cast<Bomb const *>(*i))));
+			data.push_back(transform);
+		}
+	}  
+    model.draw(shader, data);
+}
+
+void	RenderEngine::renderWinSpot(Shader &shader, std::vector<IGameEntity *> const & entities) const {
+	std::vector<glm::mat4> data;
+	Model &model = modelManager.getModel(ModelManager::WIN_SPOT);
+	for (auto i = entities.begin(); i != entities.end(); i++ ){
+		if ((*i)->getType() == Type::WIN_SPOT){
+			glm::mat4 transform = glm::mat4();
+			transform = glm::mat4(glm::translate(transform, glm::vec3((*i)->getPosition() + glm::vec2(0.5f, 0.5f) , 0.f)));
 			data.push_back(transform);
 		}
 	}  

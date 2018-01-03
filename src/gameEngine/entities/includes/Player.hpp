@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:45:55 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/22 12:18:37 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 16:07:42 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class Bomb;
 class Player : public AGameEntity {
 public:
     Player(const glm::vec2 & pos, int nb, PlayerColor::Enum color);
+    ~Player();
 
     glm::vec2	getGraphicalDirection() const;
     void		setGraphicalDirection(glm::vec2 dir);

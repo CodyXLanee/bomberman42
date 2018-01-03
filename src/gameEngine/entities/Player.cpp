@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/22 12:18:05 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 16:07:53 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@ _creation_time(std::chrono::steady_clock::now()){
 	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Player::bomb_explodes_callback));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Player::spawn_flame_callback));
 	SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Player::enemy_move_callback));
+}
+
+Player::~Player(){
+	SEventManager::getInstance().unRegisterEvent(Event::BOMB_EXPLODES, this);
+	SEventManager::getInstance().unRegisterEvent(Event::SPAWN_FLAME, this);
+	SEventManager::getInstance().unRegisterEvent(Event::ENEMY_MOVE, this);
 }
 
 glm::vec2	Player::getGraphicalDirection() const

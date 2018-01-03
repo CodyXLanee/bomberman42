@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 12:25:43 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 15:58:25 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,18 @@ _win(false) {
 
 }
 
-GameEngine::~GameEngine() {}
+GameEngine::~GameEngine() {
+    SEventManager::getInstance().unRegisterEvent(Event::GAME_WIN, this);
+	delete _playerManager;
+	delete _bombManager;
+	delete _bonusManager;
+	delete _enemyManager;
+	delete _winManager;
+    for (auto &&i : *_entityList){
+		delete i;
+	}
+	delete _entityList;
+}
 
 void	GameEngine::compute() {
 	// auto start = std::chrono::system_clock::now();
@@ -294,6 +305,8 @@ void			GameEngine::gameWin(void *)
 				}
 			}
 		}
+		Menu::Enum menu = Menu::LEVEL_SELECTION;
+		SEventManager::getInstance().raise(Event::GUI_TOGGLE, &menu);
     	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
 	}
 }

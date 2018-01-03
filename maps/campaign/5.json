@@ -14,7 +14,7 @@
     "stars":[2,3,4],
     "win":{
         "condition": 0,
-        "spot": [5.0, 0.0]
+        "spot": [2.0, 2.0]
     },
     "enemies": []
 }

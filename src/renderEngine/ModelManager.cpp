@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 09:57:28 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/03 14:55:22 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ ModelManager::ModelManager() {
 	baloonModel = new Model(directory + "mob.fbx");
 	
 	aiDebug = new Model(directory + "aiDebug.obj");
+	winSpot = new Model(directory + "winSpot.obj");
 }
 
 ModelManager::~ModelManager() {
@@ -47,6 +48,7 @@ ModelManager::~ModelManager() {
 	delete flameModel;
 	delete aiDebug;
 	delete sceneryModel;
+	delete winSpot;
 	for (unsigned int i = 0; i < 4; i++) {
 		delete playerModel[i];
 	}
@@ -72,5 +74,6 @@ Model	&ModelManager::getModel(enum model m) const {
 		case SPEED_UP:	return *speedUpModel; break;
 		case BALOON:	return *baloonModel; break;
 		case SCENERY: return *sceneryModel; break;
+		case WIN_SPOT: return *winSpot; break;
 	}
 }

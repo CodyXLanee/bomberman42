@@ -26,7 +26,29 @@ PlayerManager::PlayerManager() : _human_player(nullptr), _spawned_bomb(false){
 	em.registerEvent(Event::PLAYER_DIES, MEMBER_CALLBACK(PlayerManager::playerDies));
 }
 
-PlayerManager::~PlayerManager(){
+PlayerManager::~PlayerManager(){    SEventManager & em = SEventManager::getInstance();
+	em.unRegisterEvent(Event::PLAYER_LEFT, this);
+	em.unRegisterEvent(Event::PLAYER_RIGHT, this);
+	em.unRegisterEvent(Event::PLAYER_UP, this);
+	em.unRegisterEvent(Event::PLAYER_DOWN, this);
+	em.unRegisterEvent(Event::END_PLAYER_LEFT, this);
+	em.unRegisterEvent(Event::END_PLAYER_RIGHT, this);
+	em.unRegisterEvent(Event::END_PLAYER_UP, this);
+	em.unRegisterEvent(Event::END_PLAYER_DOWN, this);
+
+    em.unRegisterEvent(Event::HUMAN_PLAYER_LEFT, this);
+	em.unRegisterEvent(Event::HUMAN_PLAYER_RIGHT, this);
+	em.unRegisterEvent(Event::HUMAN_PLAYER_UP, this);
+	em.unRegisterEvent(Event::HUMAN_PLAYER_DOWN, this);
+	em.unRegisterEvent(Event::END_HUMAN_PLAYER_LEFT, this);
+	em.unRegisterEvent(Event::END_HUMAN_PLAYER_RIGHT, this);
+	em.unRegisterEvent(Event::END_HUMAN_PLAYER_UP, this);
+	em.unRegisterEvent(Event::END_HUMAN_PLAYER_DOWN, this);
+
+	em.unRegisterEvent(Event::HUMAN_SPAWN_BOMB, this);
+	em.unRegisterEvent(Event::END_HUMAN_SPAWN_BOMB, this);
+
+	em.unRegisterEvent(Event::PLAYER_DIES, this);
 }
 
 

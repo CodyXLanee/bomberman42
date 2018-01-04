@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:27:21 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 12:34:10 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/04 15:27:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 
 Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
     position(position), front(glm::normalize(position - lookAt)), up(0.f, 0.f, 1.f),
-    mode(Camera::Mode::FIXED),
+    mode(Camera::Mode::FOLLOW_PLAYER),
     initialPosition(position),
     speed(0.5f), sensitivity(0.5f), 
-    wiggle_duration(200), wiggle_start(std::chrono::steady_clock::now()) {
+    wiggle_duration(500), wiggle_start(std::chrono::steady_clock::now()) {
 
         float rotx = atan2( front.y, front.z );
         float roty = atan2( front.x * cos(rotx), front.z );
@@ -108,6 +108,7 @@ void    Camera::update(int const mouseOffsetX, int const mouseOffsetY, glm::vec2
         case FIXED:         break;
         case FREE:          updateRotation(mouseOffsetX, mouseOffsetY); break;
         case FOLLOW_PLAYER:
+            wiggle();
             updateFront();
             glm::vec3   rel_cam_pos(front * -10.f);
             position += (glm::vec3(*playerPos, 0.) + rel_cam_pos - position) / 10.f;

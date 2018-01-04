@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BombParticles.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/22 14:55:51 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 15:34:12 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/04 14:40:28 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ void    BombParticles::removeBombPlace(glm::vec2 pos) {
     for (auto i = bombPlaces.begin(); i != bombPlaces.end(); i++) {
         if (i->first == ori) {
             bombPlaces.erase(i);
+    		particleNbr -= PARTICLES_BY_BOMB;
             break;
         }
     }
-    particleNbr -= PARTICLES_BY_BOMB;
 }

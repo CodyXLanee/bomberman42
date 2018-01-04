@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 19:20:30 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/03 16:01:48 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/04 14:31:40 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ void			EnemyManager::update(void){
             if (dynamic_cast<Enemy*>(i)->getCounterDying() <= 0)
             {
                 glm::vec2   pos(round(i->getPosition().x), round(i->getPosition().y));
-                SEventManager::getInstance().raise(Event::SPAWN_BOMB, new Bomb(pos));
-
+                Bomb    *b = new Bomb(pos);
+                delete b;
                 delete i;
                 i = nullptr;
             }

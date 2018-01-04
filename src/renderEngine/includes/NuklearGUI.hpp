@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/21 17:00:33 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/04 12:14:20 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ class NuklearGUI
         float                   _effectsVolume;
         float                   _musicVolume;
         std::vector<int>        _starsCampaign;
+
+        bool                    _reset_options_display;
+        bool                    _reset_key_bindings_display;
         
         std::chrono::time_point<std::chrono::steady_clock>          start_time;
         float                                                       fps;

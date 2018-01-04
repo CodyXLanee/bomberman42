@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/03 14:18:55 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 17:25:43 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ void            SGameManager::useSlot(void) {
 }
 
 void        SGameManager::loadSlot(void *s){
+    if (_slot != nullptr){
+        _slot->save();
+        delete _slot;
+        _slot = nullptr;
+    }
     Save::Enum slot = *static_cast<Save::Enum *>(s);
     _slot = new Slot(slot);
     useSlot();

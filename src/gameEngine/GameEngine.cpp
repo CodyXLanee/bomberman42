@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/03 15:58:25 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/03 16:39:10 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,7 +305,9 @@ void			GameEngine::gameWin(void *)
 				}
 			}
 		}
-		Menu::Enum menu = Menu::LEVEL_SELECTION;
+		Menu::Enum menu = Menu::START;
+		SEventManager::getInstance().raise(Event::GUI_TOGGLE, &menu);
+		menu = Menu::LEVEL_SELECTION;
 		SEventManager::getInstance().raise(Event::GUI_TOGGLE, &menu);
     	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
 	}

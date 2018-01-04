@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Slot.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/18 13:31:47 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/03 17:51:36 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,15 @@ Slot::Slot(Save::Enum save) : _save(save){
 }
 
 Slot::~Slot(){
+    SEventManager &event = SEventManager::getInstance();
+
+    event.unRegisterEvent(Event::MASTER_VOLUME_UPDATE, this);
+    event.unRegisterEvent(Event::MUSIC_VOLUME_UPDATE, this);
+    event.unRegisterEvent(Event::EFFECTS_VOLUME_UPDATE, this);
+
+    event.unRegisterEvent(Event::SCREEN_FORMAT_UPDATE, this);
+
+    event.unRegisterEvent(Event::KEY_MAP_UPDATE, this);
 }
 
 void                                Slot::save(){

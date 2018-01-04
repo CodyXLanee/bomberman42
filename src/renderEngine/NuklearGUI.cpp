@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/21 17:14:30 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/04 12:17:32 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     win(sgw), camera(camera), event(SEventManager::getInstance()),
     atlas(NULL), screenFormatUpdate(false),
     _masterVolume(0), _effectsVolume(0), _musicVolume(0),
+    _reset_options_display(false), _reset_key_bindings_display(false),
     _active_menu(){
     ctx = nk_sdl_init(win.getWin());
 
@@ -70,6 +71,10 @@ struct nk_context * NuklearGUI::getContext () const { return ctx; }
 
 void    NuklearGUI::toggle(void *p) {
     Menu::Enum *m = static_cast<Menu::Enum *>(p);
+    if (*m == Menu::OPTIONS)
+        _reset_options_display = true;
+    if (*m == Menu::KEY_BINDINGS)
+        _reset_key_bindings_display = true; 
     if (*m == Menu::NONE){
         while (!_active_menu.empty()){
             _active_menu.pop();
@@ -144,7 +149,7 @@ void    NuklearGUI::render(bool game_is_active) {
             case Menu::LEVEL_SELECTION:     renderLevelSelection(); break;
             case Menu::SELECT_SLOT:         renderSelectSlot(); break;
             case Menu::NEW_BRAWL:           renderNewBrawlMenu(); break;
-        }  
+        }
     }
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
 }
@@ -172,6 +177,11 @@ void    NuklearGUI::renderKeyBindings() {
     
     static std::map<Event::Enum, SDL_Keycode>  displayedKeysMap = win.getKeyMap();
     
+    if (_reset_key_bindings_display){
+        displayedKeysMap = win.getKeyMap();
+        _reset_key_bindings_display = false;
+    }
+
     std::string left =  SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_LEFT]);
     std::string right = SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_RIGHT]);
     std::string up =    SDL_GetKeyName(displayedKeysMap[Event::HUMAN_PLAYER_UP]);
@@ -259,11 +269,20 @@ void    NuklearGUI::renderBackgroundImage() {
 void    NuklearGUI::renderOptions() {
 
     static Screen::Format                       displayedFormat = screenFormat;  
-    static std::vector<SDL_DisplayMode> const & modes = win.getDisplayModes(); 
+    static std::vector<SDL_DisplayMode>         modes(win.getDisplayModes()); 
     
-    static unsigned long master = static_cast<unsigned long>(_masterVolume) * 100;
+    static unsigned long master = static_cast<unsigned long>(_masterVolume * 100.f);
     static unsigned long music = static_cast<unsigned long>(_musicVolume);
     static unsigned long effects = static_cast<unsigned long>(_effectsVolume);
+
+    if (_reset_options_display == true){
+        displayedFormat = screenFormat; 
+        modes = std::vector<SDL_DisplayMode>(win.getDisplayModes()); 
+        master = static_cast<unsigned long>(_masterVolume * 100.f);
+        music = static_cast<unsigned long>(_musicVolume);
+        effects = static_cast<unsigned long>(_effectsVolume);
+        _reset_options_display = false;
+    }
     
     std::string screenResString = toString(displayedFormat.displayMode);
     std::string screenModeString = toString(displayedFormat.windowMode);
@@ -813,7 +832,7 @@ void            NuklearGUI::renderSelectSlot(void){
         nk_style_set_font(ctx, &bigFont->handle);
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "SLOT 2")) {
-            Save::Enum  slot = Save::SLOT1;
+            Save::Enum  slot = Save::SLOT2;
             event.raise(Event::LOAD_SLOT, &slot);
 
             Menu::Enum  me = Menu::START;
@@ -849,7 +868,7 @@ void            NuklearGUI::renderSelectSlot(void){
         nk_style_set_font(ctx, &bigFont->handle);
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "SLOT 3")) {
-            Save::Enum  slot = Save::SLOT1;
+            Save::Enum  slot = Save::SLOT3;
             event.raise(Event::LOAD_SLOT, &slot);
 
             Menu::Enum  me = Menu::START;

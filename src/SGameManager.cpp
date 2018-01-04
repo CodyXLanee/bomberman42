@@ -95,13 +95,6 @@ void        SGameManager::manage(void) {
     		_window.initGL();
     		SDL_GL_SwapWindow(_window.getWin());
         }
-
-        if (_game && _game->getWin() && _game->getGameParams().get_game_mode() == GameMode::CAMPAIGN)
-        {
-            int stars = _game->getStarsCampaign();
-            if (stars != -1 && stars > _slot->get_stars_campaign(_game->getGameParams().get_level()))
-                _slot->set_stars_campaign(_game->getGameParams().get_level(), stars);
-        }
         // _gui.render(true);
         // em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::NONE));
 //	}
@@ -128,6 +121,16 @@ void            SGameManager::new_game(void *p){
 
 void            SGameManager::game_finish(void *){
     _game_is_active = false;
+
+    if (_game->getGameParams().get_game_mode() == GameMode::CAMPAIGN)
+    {
+        int stars = _game->getStarsCampaign();
+        if (stars != -1 && stars > _slot->get_stars_campaign(_game->getGameParams().get_level()))
+        {
+            _slot->set_stars_campaign(_game->getGameParams().get_level(), stars);
+            _gui.setStarsCampaign(_slot->get_all_stars_campaign());
+        }
+    }
 }
 
 void            SGameManager::newGame(GameMode::Enum gm){

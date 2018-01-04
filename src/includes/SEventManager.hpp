@@ -20,6 +20,9 @@ namespace Event {
 /*		SDL_Keycode																						*/
 		KEYDOWN, 	KEYUP,
 
+/*		Animation::Enum *																				*/
+		START_ANIMATION, END_ANIMATION, 
+
 /*		Player *																						*/
 		PLAYER_LEFT, PLAYER_RIGHT, PLAYER_UP, PLAYER_DOWN,
 /*		Player *																						*/

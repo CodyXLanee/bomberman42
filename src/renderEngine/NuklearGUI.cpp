@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/04 12:17:32 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/04 18:27:02 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
 
     event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(NuklearGUI::updateScreenFormat));
     event.registerEvent(Event::BONUS_ACTIVATE, MEMBER_CALLBACK(NuklearGUI::updateHumanPlayerBonus));
+
+    event.registerEvent(Event::START_ANIMATION, MEMBER_CALLBACK(NuklearGUI::startAnimation));
 
     start_time = std::chrono::steady_clock::now();
     frames = 0;
@@ -133,6 +135,7 @@ void    NuklearGUI::render(bool game_is_active) {
     }
 
     if (game_is_active) {
+        renderCountDown();
         renderHUD();
     }
     else {
@@ -703,6 +706,53 @@ void    NuklearGUI::updateHumanPlayerBonus(void *p){
     }
 }
 
+void    NuklearGUI::initRenderCountDown(){
+    count_down_start_time = std::chrono::steady_clock::now();
+}
+
+void    NuklearGUI::renderCountDown(){
+    static struct nk_image count_3 = loadImage("assets/textures/3.png", GL_RGBA);
+    static struct nk_image count_2 = loadImage("assets/textures/2.png", GL_RGBA);
+    static struct nk_image count_1 = loadImage("assets/textures/1.png", GL_RGBA);
+
+    static struct nk_image count_go = loadImage("assets/textures/GO!.png", GL_RGBA);
+
+    struct nk_image *ptr = nullptr;
+
+
+
+    std::chrono::milliseconds   dur = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - count_down_start_time);
+
+    if (dur.count() < 1000){
+        ptr = &count_3;        
+    }
+    else if (dur.count() < 2000){
+        ptr = &count_2;        
+    }
+    else if (dur.count() < 3000){
+        ptr = &count_1;        
+    }
+    else if (dur.count() < 4000){
+        ptr = &count_go;        
+    }
+
+    if (ptr){
+        struct nk_style_item tmp = ctx->style.window.fixed_background;
+        ctx->style.window.fixed_background = nk_style_item_image(*ptr);
+        nk_style_set_font(ctx, &smallFont->handle);
+
+        if (nk_begin(ctx, "COUNTDOWN", nk_rect(1, 1, windowWidth - 1, windowHeight - 1),
+        NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_NOT_INTERACTIVE)) {
+            nk_end(ctx); 
+        }    
+        
+        ctx->style.window.fixed_background = tmp;
+        nk_style_set_font(ctx, &mediumFont->handle); 
+    }
+
+}
+
+
 void    NuklearGUI::renderHUD() {
 
     static struct nk_image portrait = loadImage(color_to_HUD_image(_human_player_color), GL_RGBA);
@@ -994,4 +1044,11 @@ void    NuklearGUI::updateScreenFormat(void *f) {
     screenFormat.displayMode = format->displayMode;
     screenFormat.windowMode = format->windowMode;
     screenFormatUpdate = true;
+}
+
+void    NuklearGUI::startAnimation(void *a){
+    Animation::Enum *anim = static_cast<Animation::Enum *>(a);
+    if (*anim == Animation::START){
+        initRenderCountDown();
+    }
 }

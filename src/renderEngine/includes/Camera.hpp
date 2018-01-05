@@ -51,8 +51,10 @@ class Camera {
 		void				reset();
 		void				wiggle(void);
 		void				initWiggle(void*);
-		void				firstAnimation(void);
-		void				initFirstAnimation(void*);
+		void				firstAnimation(glm::vec2 playerPos);
+		void				initFirstAnimation();
+
+		void				animations(void *);
 		
 		glm::mat4			matrix;
 		glm::vec3			position;

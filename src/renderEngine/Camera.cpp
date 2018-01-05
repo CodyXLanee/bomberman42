@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:27:21 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/08 12:34:10 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/04 15:27:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
     mode(Camera::Mode::FOLLOW_PLAYER),
     initialPosition(position),
     speed(0.5f), sensitivity(0.5f), 
-    wiggle_duration(200), wiggle_start(std::chrono::steady_clock::now()) {
+    wiggle_duration(500), wiggle_start(std::chrono::steady_clock::now()) {
 
         float rotx = atan2( front.y, front.z );
         float roty = atan2( front.x * cos(rotx), front.z );
@@ -45,6 +45,8 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
         event.registerEvent(Event::CAMERA_RIGHT, MEMBER_CALLBACK(Camera::moveRight));
         event.registerEvent(Event::CAMERA_UP, MEMBER_CALLBACK(Camera::moveUp));
         event.registerEvent(Event::CAMERA_DOWN, MEMBER_CALLBACK(Camera::moveDown));
+
+        event.registerEvent(Event::START_ANIMATION, MEMBER_CALLBACK(Camera::animations));
 
 }
 
@@ -105,7 +107,7 @@ void    Camera::wiggle(void){
     }
 }
 
-void    Camera::initFirstAnimation(void *){
+void    Camera::initFirstAnimation(){
     is_first_animation = true;
     first_animation_start = std::chrono::steady_clock::now();
     first_animation_init_pos = position;
@@ -116,8 +118,10 @@ void    Camera::initFirstAnimation(void *){
     pitch -= 45.f;
 }
 
-void    Camera::firstAnimation(void){
-    if (position.z - first_animation_init_pos.z < 0.01f)
+void    Camera::firstAnimation(glm::vec2 playerPos){
+    if (mode == FOLLOW_PLAYER)
+        first_animation_init_pos = glm::vec3(playerPos.x + 0.5f, playerPos.y + 0.5f, 0.f) + front * -4.f;
+    if (position.z - first_animation_init_pos.z < 0.002f)
     {
         position = first_animation_init_pos;
         yaw = first_animation_init_yaw;
@@ -126,15 +130,24 @@ void    Camera::firstAnimation(void){
     if (position == first_animation_init_pos)
         is_first_animation = false;
     if (is_first_animation) {
-        position = position - (position - first_animation_init_pos) * 0.02f;
-        yaw = yaw - (yaw - first_animation_init_yaw) * 0.02f;
-        pitch = pitch - (pitch - first_animation_init_pitch) * 0.02f;
+        position = position - (position - first_animation_init_pos) * 0.06f;
+        yaw = yaw - (yaw - first_animation_init_yaw) * 0.06f;
+        pitch = pitch - (pitch - first_animation_init_pitch) * 0.06f;
         updateFront();
     }
 }
 
+void    Camera::animations(void *anim) {
+    Animation::Enum *animation = static_cast<Animation::Enum *>(anim);
+
+    switch (*animation) {
+        case Animation::Enum::START:          initFirstAnimation(); break;
+        default: break;
+    }
+}
+
 void    Camera::update(int const mouseOffsetX, int const mouseOffsetY, glm::vec2 const *playerPos) {
-    firstAnimation();
+    firstAnimation(*playerPos);
 
     if (!is_first_animation)
     {
@@ -142,9 +155,10 @@ void    Camera::update(int const mouseOffsetX, int const mouseOffsetY, glm::vec2
             case FIXED:         break;
             case FREE:          updateRotation(mouseOffsetX, mouseOffsetY); break;
             case FOLLOW_PLAYER:
+                wiggle();
                 updateFront();
                 glm::vec3   rel_cam_pos(front * -10.f);
-                position += (glm::vec3(*playerPos, 0.) + rel_cam_pos - position) / 10.f;
+                position += (glm::vec3(*playerPos + 0.5f, 0.) + rel_cam_pos - position) / 10.f;
                 break;
         }
     }

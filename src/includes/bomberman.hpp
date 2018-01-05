@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/18 16:24:15 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/04 16:40:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,10 @@ namespace UIAudio {
 
 namespace WinCondition {
 	enum Enum {NO_MORE_BLOCKS, NO_MORE_ENEMIES};
+};
+
+namespace Animation {
+	enum Enum {START, WIN, GAME_OVER};
 };
 
 #endif

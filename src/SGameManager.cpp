@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/03 17:25:43 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/04 18:13:26 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ SGameManager::SGameManager() :
     _renderer(_window.getWin(), _camera),
     _slot(nullptr),
     _dev_mode(false),                                                   // <---- DEV MODE !
-    _game_is_active(false), _quit_game(false), _new_game(false){
+    _game_is_active(false), _quit_game(false){
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::QUIT_GAME, MEMBER_CALLBACK(SGameManager::quit_game));
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
@@ -79,10 +79,7 @@ void        SGameManager::manage(void) {
         em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));
 //	while(1) {
         while (!_quit_game)
-        {
-            if (_new_game)
-                new_game(new GameMode::Enum(GameMode::CAMPAIGN));
-                
+        {                
     		_window.eventManager(_gui.getContext());
 
             if (_game_is_active){
@@ -116,7 +113,9 @@ void            SGameManager::new_game(void *p){
         delete _game;
     _game = new GameEngine(*gp);
     _game_is_active = true;
-    _new_game = false;
+
+    Animation::Enum a = Animation::START;
+    SEventManager::getInstance().raise(Event::START_ANIMATION, &a);
 }
 
 void            SGameManager::game_finish(void *){

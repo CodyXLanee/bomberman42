@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/04 12:14:20 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/04 17:57:25 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ class NuklearGUI
         bool                    _reset_options_display;
         bool                    _reset_key_bindings_display;
         
+        std::chrono::time_point<std::chrono::steady_clock>          count_down_start_time;
+
         std::chrono::time_point<std::chrono::steady_clock>          start_time;
         float                                                       fps;
         int                                                         frames;
@@ -85,7 +87,9 @@ class NuklearGUI
         void        hover(int) const;
         
         void        renderBackgroundImage();
-        void        renderHUD();        
+        void        renderHUD();           
+        void        initRenderCountDown();
+        void        renderCountDown();
         void        renderDebug();
         void        renderMenu();
         void        renderOptions();
@@ -101,8 +105,9 @@ class NuklearGUI
         void        setMusicVolume(void * v);
         void        updateScreenFormat(void *f);
         void        updateHumanPlayerBonus(void *p);
+        void        startAnimation(void *a);     
 
-        struct nk_image         loadImage(std::string const, GLint);        
+        struct nk_image         loadImage(std::string const, GLint);
 
         std::string             toString(SDL_DisplayMode const &) const;
         std::string             toString(Screen::WindowMode) const;

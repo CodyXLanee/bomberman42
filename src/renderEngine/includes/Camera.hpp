@@ -51,11 +51,14 @@ class Camera {
 		void				reset();
 		void				wiggle(void);
 		void				initWiggle(void*);
+		void				firstAnimation(void);
+		void				initFirstAnimation(void*);
 		
 		glm::mat4			matrix;
 		glm::vec3			position;
 		glm::vec3			front;
 		glm::vec3			const up;
+		glm::vec3			_lookAt;
 
 		Camera::Mode		mode;
 
@@ -74,6 +77,13 @@ class Camera {
 
 		std::chrono::milliseconds								wiggle_duration;
 		std::chrono::time_point<std::chrono::steady_clock>		wiggle_start;
+		
+		bool						is_first_animation;
+		float						first_animation_init_yaw;
+		float						first_animation_init_pitch;
+		glm::vec3					first_animation_init_pos;
+
+		std::chrono::time_point<std::chrono::steady_clock>		first_animation_start;
 };
 
 #endif

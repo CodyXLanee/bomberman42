@@ -15,7 +15,8 @@
 
 Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
     position(position), front(glm::normalize(position - lookAt)), up(0.f, 0.f, 1.f),
-    mode(Camera::Mode::FIXED),
+    _lookAt(lookAt),
+    mode(Camera::Mode::FOLLOW_PLAYER),
     initialPosition(position),
     speed(0.5f), sensitivity(0.5f), 
     wiggle_duration(200), wiggle_start(std::chrono::steady_clock::now()) {
@@ -44,6 +45,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
         event.registerEvent(Event::CAMERA_RIGHT, MEMBER_CALLBACK(Camera::moveRight));
         event.registerEvent(Event::CAMERA_UP, MEMBER_CALLBACK(Camera::moveUp));
         event.registerEvent(Event::CAMERA_DOWN, MEMBER_CALLBACK(Camera::moveDown));
+
 }
 
 void    Camera::moveLeft(void *) {
@@ -103,15 +105,48 @@ void    Camera::wiggle(void){
     }
 }
 
+void    Camera::initFirstAnimation(void *){
+    is_first_animation = true;
+    first_animation_start = std::chrono::steady_clock::now();
+    first_animation_init_pos = position;
+    position = position + glm::vec3(0.f, 30.f, 10.f);
+    first_animation_init_yaw = yaw;
+    yaw += 180.f;
+    first_animation_init_pitch = pitch;
+    pitch -= 45.f;
+}
+
+void    Camera::firstAnimation(void){
+    if (position.z - first_animation_init_pos.z < 0.01f)
+    {
+        position = first_animation_init_pos;
+        yaw = first_animation_init_yaw;
+        pitch = first_animation_init_pitch;
+    }
+    if (position == first_animation_init_pos)
+        is_first_animation = false;
+    if (is_first_animation) {
+        position = position - (position - first_animation_init_pos) * 0.02f;
+        yaw = yaw - (yaw - first_animation_init_yaw) * 0.02f;
+        pitch = pitch - (pitch - first_animation_init_pitch) * 0.02f;
+        updateFront();
+    }
+}
+
 void    Camera::update(int const mouseOffsetX, int const mouseOffsetY, glm::vec2 const *playerPos) {
-    switch (mode) {
-        case FIXED:         break;
-        case FREE:          updateRotation(mouseOffsetX, mouseOffsetY); break;
-        case FOLLOW_PLAYER:
-            updateFront();
-            glm::vec3   rel_cam_pos(front * -10.f);
-            position += (glm::vec3(*playerPos, 0.) + rel_cam_pos - position) / 10.f;
-            break;
+    firstAnimation();
+
+    if (!is_first_animation)
+    {
+        switch (mode) {
+            case FIXED:         break;
+            case FREE:          updateRotation(mouseOffsetX, mouseOffsetY); break;
+            case FOLLOW_PLAYER:
+                updateFront();
+                glm::vec3   rel_cam_pos(front * -10.f);
+                position += (glm::vec3(*playerPos, 0.) + rel_cam_pos - position) / 10.f;
+                break;
+        }
     }
     setup();
 }

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/03 17:51:36 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 16:26:31 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,24 @@ void                                Slot::save(){
     
     fclose(fp);
 }
+
+void                                Slot::use(){
+    SEventManager &em = SEventManager::getInstance();
+
+    em.raise(Event::SCREEN_FORMAT_UPDATE, &_screenFormat);
+
+    em.raise(Event::KEY_MAP_UPDATE, &_keyMap);
+
+    em.raise(Event::MASTER_VOLUME_UPDATE, &_masterVolume);
+
+    em.raise(Event::MUSIC_VOLUME_UPDATE, &_musicVolume);
+    
+    em.raise(Event::EFFECTS_VOLUME_UPDATE, &_effectsVolume);
+
+    em.raise(Event::UPDATE_ALL_CAMPAIGN_STARS, &_stars_campaign);
+}
+
+
 void    Slot::setMasterVolume(void * v) {
     _masterVolume = *static_cast<float*>(v);
 }
@@ -211,4 +229,8 @@ void                                Slot::updateKeyMap(void *k){
     for (auto &&i : *km){
         _keyMap[i.first] = i.second;
     }
+}
+
+Save::Enum                          Slot::get_save(){
+    return _save;
 }

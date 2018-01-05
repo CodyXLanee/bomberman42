@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/04 16:01:05 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 16:06:40 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ private:
     NuklearGUI          _gui;
     RenderEngine        _renderer;
     SoundManager        _sound;
-    Slot                *_slot;
+    Slot                *_slots[3];
+    Slot                *_current_slot;
 
     bool                _dev_mode;
     bool                _game_is_active;

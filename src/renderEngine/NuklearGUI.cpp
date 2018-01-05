@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/04 18:30:43 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 16:27:28 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     event.registerEvent(Event::MASTER_VOLUME_UPDATE, MEMBER_CALLBACK(NuklearGUI::setMasterVolume));
     event.registerEvent(Event::MUSIC_VOLUME_UPDATE, MEMBER_CALLBACK(NuklearGUI::setMusicVolume));
     event.registerEvent(Event::EFFECTS_VOLUME_UPDATE, MEMBER_CALLBACK(NuklearGUI::setEffectsVolume));
+    event.registerEvent(Event::UPDATE_ALL_CAMPAIGN_STARS, MEMBER_CALLBACK(NuklearGUI::setStarsCampaign));
 
     event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(NuklearGUI::updateScreenFormat));
     event.registerEvent(Event::BONUS_ACTIVATE, MEMBER_CALLBACK(NuklearGUI::updateHumanPlayerBonus));
@@ -488,7 +489,7 @@ void    NuklearGUI::renderLevelSelection() {
         {
             Menu::Enum  menu = Menu::NONE;
             event.raise(Event::GUI_TOGGLE, &menu);
-            _human_player_color = PlayerColor::BLACK;
+            _human_player_color = PlayerColor::WHITE;
             _human_player_bonus = glm::ivec3(1, 1, 1);
             event.raise(Event::NEW_GAME, &game_params);
         }
@@ -1034,9 +1035,9 @@ void    NuklearGUI::setMusicVolume(void * v) {
     _musicVolume = *static_cast<float*>(v);
 }
 
-void    NuklearGUI::setStarsCampaign(std::vector<int> starsCampaign)
+void    NuklearGUI::setStarsCampaign(void *starsCampaign)
 {
-    _starsCampaign = starsCampaign;
+    _starsCampaign = std::vector<int>(*static_cast<std::vector<int> *>(starsCampaign));
 }
 
 void    NuklearGUI::updateScreenFormat(void *f) {

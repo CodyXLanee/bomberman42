@@ -57,6 +57,8 @@ namespace Event {
 		MASTER_VOLUME_UPDATE, MUSIC_VOLUME_UPDATE, EFFECTS_VOLUME_UPDATE,
 /*		Screen::Format  *	| std::map<Event::Enum, SDL_Keycode>  *																	*/
 		SCREEN_FORMAT_UPDATE, KEY_MAP_UPDATE,
+/*		std::vector<int> *																											*/
+		UPDATE_ALL_CAMPAIGN_STARS,
 
 /*		Save::Enum *									*/
 		LOAD_SLOT,

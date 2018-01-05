@@ -6,46 +6,22 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/04 18:13:26 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 16:36:02 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SGameManager.hpp"
 #include "SEventManager.hpp"
 
-void            SGameManager::useSlot(void) {
-    SEventManager &em = SEventManager::getInstance();
-    Screen::Format  *sf = new Screen::Format(_slot->get_screenFormat());
-    std::map<Event::Enum, SDL_Keycode>  *km = new std::map<Event::Enum, SDL_Keycode>(_slot->getKeyMap());
-
-    em.raise(Event::SCREEN_FORMAT_UPDATE, sf);
-    delete sf;
-
-    em.raise(Event::KEY_MAP_UPDATE, km);
-    delete km;
-
-    float   f;
-    f = _slot->get_master_volume();
-    em.raise(Event::MASTER_VOLUME_UPDATE, &f);
-
-    f = _slot->get_music_volume();
-    em.raise(Event::MUSIC_VOLUME_UPDATE, &f);
-    
-    f = _slot->get_effects_volume();
-    em.raise(Event::EFFECTS_VOLUME_UPDATE, &f);
-
-    _gui.setStarsCampaign(_slot->get_all_stars_campaign());
-}
-
 void        SGameManager::loadSlot(void *s){
-    if (_slot != nullptr){
-        _slot->save();
-        delete _slot;
-        _slot = nullptr;
+    if (_current_slot != nullptr){
+        _current_slot->save();
     }
-    Save::Enum slot = *static_cast<Save::Enum *>(s);
-    _slot = new Slot(slot);
-    useSlot();
+    for (auto &&i : _slots){
+        if (i->get_save() == *static_cast<Save::Enum*>(s))
+            _current_slot = i;
+    }
+    _current_slot->use();
 }
 
 SGameManager::SGameManager() : 
@@ -54,9 +30,13 @@ SGameManager::SGameManager() :
     _camera(glm::vec3(5.f, -5.f, 10.f), glm::vec3(5.f, 5.f, 0.f)), 
     _gui(_window, _camera), 
     _renderer(_window.getWin(), _camera),
-    _slot(nullptr),
+    _current_slot(nullptr),
     _dev_mode(false),                                                   // <---- DEV MODE !
     _game_is_active(false), _quit_game(false){
+    _slots[0] = new Slot(Save::SLOT1);
+    _slots[1] = new Slot(Save::SLOT2);
+    _slots[2] = new Slot(Save::SLOT3);
+
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::QUIT_GAME, MEMBER_CALLBACK(SGameManager::quit_game));
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
@@ -66,8 +46,8 @@ SGameManager::SGameManager() :
 }
 
 SGameManager::~SGameManager() {
-    if (_slot){
-        _slot->save();
+    if (_current_slot){
+        _current_slot->save();
     }
 }
 
@@ -124,10 +104,11 @@ void            SGameManager::game_finish(void *){
     if (_game->getGameParams().get_game_mode() == GameMode::CAMPAIGN)
     {
         int stars = _game->getStarsCampaign();
-        if (stars != -1 && stars > _slot->get_stars_campaign(_game->getGameParams().get_level()))
+        if (stars != -1 && stars > _current_slot->get_stars_campaign(_game->getGameParams().get_level()))
         {
-            _slot->set_stars_campaign(_game->getGameParams().get_level(), stars);
-            _gui.setStarsCampaign(_slot->get_all_stars_campaign());
+            _current_slot->set_stars_campaign(_game->getGameParams().get_level(), stars);
+            std::vector<int> ugly_tmp = _current_slot->get_all_stars_campaign();
+            SEventManager::getInstance().raise(Event::UPDATE_ALL_CAMPAIGN_STARS, &ugly_tmp);
         }
     }
 }

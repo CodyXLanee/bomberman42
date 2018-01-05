@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 14:59:59 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/17 16:43:34 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 16:25:54 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class Slot {
         void                                load_key_map(rapidjson::Value *val);
         
         void                                save();
+        void                                use();
 
         int                                 get_campaign_max_level() const ;
         void                                set_campaign_max_level(int i);
@@ -59,6 +60,8 @@ class Slot {
         void                                set_screenFormat(Screen::Format const &sf);
 
         std::map<Event::Enum, SDL_Keycode> const                &getKeyMap() const;
+
+        Save::Enum                          get_save();
 
     private:
 		Loader						        _loader;

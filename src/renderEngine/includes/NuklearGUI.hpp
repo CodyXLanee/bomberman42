@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/04 17:57:25 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 16:21:18 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ class NuklearGUI
         struct nk_context *     getContext() const;
         void                    render(bool);
         
-        void        setStarsCampaign(std::vector<int> starsCampaign);
         
     private:
         Sdl_gl_win              &win;
@@ -105,6 +104,7 @@ class NuklearGUI
         void        setMusicVolume(void * v);
         void        updateScreenFormat(void *f);
         void        updateHumanPlayerBonus(void *p);
+        void        setStarsCampaign(void * starsCampaign);
         void        startAnimation(void *a);     
 
         struct nk_image         loadImage(std::string const, GLint);

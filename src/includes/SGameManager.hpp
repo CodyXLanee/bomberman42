@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/04 16:01:05 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 16:59:51 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ public:
     void            loadGame(Save::Enum);
     void            saveGame(Save::Enum);
 
+    Slot &          getSlot(int) const;
+
     void            quit_game(void *);
     void            new_game(void *);
     // GameMode::Enum  getGameMode(void);
@@ -56,7 +58,8 @@ private:
     NuklearGUI          _gui;
     RenderEngine        _renderer;
     SoundManager        _sound;
-    Slot                *_slot;
+    Slot                *_slots[3];
+    Slot                *_current_slot;
 
     bool                _dev_mode;
     bool                _game_is_active;

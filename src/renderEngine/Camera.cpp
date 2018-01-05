@@ -15,6 +15,7 @@
 
 Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
     position(position), front(glm::normalize(position - lookAt)), up(0.f, 0.f, 1.f),
+    _lookAt(lookAt),
     mode(Camera::Mode::FOLLOW_PLAYER),
     initialPosition(position),
     speed(0.5f), sensitivity(0.5f), 
@@ -44,6 +45,9 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
         event.registerEvent(Event::CAMERA_RIGHT, MEMBER_CALLBACK(Camera::moveRight));
         event.registerEvent(Event::CAMERA_UP, MEMBER_CALLBACK(Camera::moveUp));
         event.registerEvent(Event::CAMERA_DOWN, MEMBER_CALLBACK(Camera::moveDown));
+
+        event.registerEvent(Event::START_ANIMATION, MEMBER_CALLBACK(Camera::animations));
+
 }
 
 void    Camera::moveLeft(void *) {
@@ -103,16 +107,60 @@ void    Camera::wiggle(void){
     }
 }
 
+void    Camera::initFirstAnimation(){
+    is_first_animation = true;
+    first_animation_start = std::chrono::steady_clock::now();
+    first_animation_init_pos = position;
+    position = position + glm::vec3(0.f, 30.f, 10.f);
+    first_animation_init_yaw = yaw;
+    yaw += 180.f;
+    first_animation_init_pitch = pitch;
+    pitch -= 45.f;
+}
+
+void    Camera::firstAnimation(glm::vec2 playerPos){
+    if (mode == FOLLOW_PLAYER)
+        first_animation_init_pos = glm::vec3(playerPos.x + 0.5f, playerPos.y + 0.5f, 0.f) + front * -4.f;
+    if (position.z - first_animation_init_pos.z < 0.002f)
+    {
+        position = first_animation_init_pos;
+        yaw = first_animation_init_yaw;
+        pitch = first_animation_init_pitch;
+    }
+    if (position == first_animation_init_pos)
+        is_first_animation = false;
+    if (is_first_animation) {
+        position = position - (position - first_animation_init_pos) * 0.06f;
+        yaw = yaw - (yaw - first_animation_init_yaw) * 0.06f;
+        pitch = pitch - (pitch - first_animation_init_pitch) * 0.06f;
+        updateFront();
+    }
+}
+
+void    Camera::animations(void *anim) {
+    Animation::Enum *animation = static_cast<Animation::Enum *>(anim);
+
+    switch (*animation) {
+        case Animation::Enum::START:          initFirstAnimation(); break;
+        default: break;
+    }
+}
+
 void    Camera::update(int const mouseOffsetX, int const mouseOffsetY, glm::vec2 const *playerPos) {
-    switch (mode) {
-        case FIXED:         break;
-        case FREE:          updateRotation(mouseOffsetX, mouseOffsetY); break;
-        case FOLLOW_PLAYER:
-            wiggle();
-            updateFront();
-            glm::vec3   rel_cam_pos(front * -10.f);
-            position += (glm::vec3(*playerPos, 0.) + rel_cam_pos - position) / 10.f;
-            break;
+    firstAnimation(*playerPos);
+
+    if (!is_first_animation)
+    {
+        switch (mode) {
+            case FIXED:         break;
+            case FREE:          updateRotation(mouseOffsetX, mouseOffsetY); break;
+            case FOLLOW_PLAYER:
+                wiggle();
+                updateFront();
+                glm::vec3   rel_cam_pos(front * -10.f);
+                position += (glm::vec3(*playerPos + 0.5f, 0.) + rel_cam_pos - position) / 10.f;
+                break;
+        }
     }
     setup();
 }

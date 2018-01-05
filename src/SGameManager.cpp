@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/05 16:36:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 17:27:19 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,4 +121,11 @@ void            SGameManager::loadGame(Save::Enum s) {
 }
 void            SGameManager::saveGame(Save::Enum s) {
     (void)s;
+}
+
+Slot &          SGameManager::getSlot(int index) const {
+    if (index >= 0 && index <= 2)
+        return *(_slots[index]);
+    else
+        throw std::out_of_range("SGameManager::getSlot(): wrong index");
 }

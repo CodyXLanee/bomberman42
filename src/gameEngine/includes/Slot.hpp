@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Slot.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 14:59:59 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/05 16:25:54 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 17:35:02 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Slot {
         ~Slot();
 
         std::string                         save_to_path(Save::Enum save);
+        void                                load_last_save(rapidjson::Value *val);
         void                                load_campaign_max_level(rapidjson::Value *val);
         void                                load_stars_campaign(rapidjson::Value *val);
         void                                load_float_val(rapidjson::Value *val, float *float_val);
@@ -40,6 +41,8 @@ class Slot {
 
         int                                 get_campaign_max_level() const ;
         void                                set_campaign_max_level(int i);
+
+        std::string                         get_last_save_string() const;
 
         int                                 get_stars_campaign(unsigned int level) const ;
         std::vector<int>                    get_all_stars_campaign() const ;
@@ -73,6 +76,7 @@ class Slot {
         Save::Enum                          _save;
 		std::map<Event::Enum, SDL_Keycode>	_keyMap;
         std::vector<int>                    _stars_campaign;
+        std::string                         _last_save;
 };
 
 #endif

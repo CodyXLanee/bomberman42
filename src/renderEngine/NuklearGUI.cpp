@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/05 16:27:28 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 17:58:43 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # define NK_IMPLEMENTATION
 # define NK_SDL_GL3_IMPLEMENTATION
 #include "NuklearGUI.hpp"
+#include "SGameManager.hpp"
 
 #include "../../libs/style.c"
 
@@ -836,11 +837,50 @@ void    NuklearGUI::renderDebug() {
     nk_end(ctx);
 }
 
-void            NuklearGUI::renderSelectSlot(void){
-   float slotWidth = windowWidth * 0.25f;
+static long map(long x, long in_min, long in_max, long out_min, long out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 
-   struct nk_style_item tmp = ctx->style.window.fixed_background;
-   ctx->style.window.fixed_background = nk_style_item_hide();
+void            NuklearGUI::renderSelectSlot(void){
+    SGameManager & gm = SGameManager::getInstance();
+
+    std::string s1_date = gm.getSlot(0).get_last_save_string().substr(0, 10);
+    std::string s1_time = gm.getSlot(0).get_last_save_string().substr(11, 8);
+
+    std::string s2_date = gm.getSlot(1).get_last_save_string().substr(0, 10);
+    std::string s2_time = gm.getSlot(1).get_last_save_string().substr(11, 8);
+
+    std::string s3_date = gm.getSlot(2).get_last_save_string().substr(0, 10);
+    std::string s3_time = gm.getSlot(2).get_last_save_string().substr(11, 8);
+
+    int s1_stars = 0;
+    int s2_stars = 0;
+    int s3_stars = 0;
+
+    std::vector<int>    v1 = gm.getSlot(0).get_all_stars_campaign();
+    std::for_each(v1.begin(), v1.end(), [&] (int n) {
+        s1_stars += n;
+    });
+
+    std::vector<int>    v2 = gm.getSlot(1).get_all_stars_campaign();
+    std::for_each(v1.begin(), v1.end(), [&] (int n) {
+        s2_stars += n;
+    });
+
+    std::vector<int>    v3 = gm.getSlot(2).get_all_stars_campaign();
+    std::for_each(v1.begin(), v1.end(), [&] (int n) {
+        s3_stars += n;
+    });
+
+    int s1_progress = map(s1_stars, 0, 15, 0, 100);
+    int s2_progress = map(s2_stars, 0, 15, 0, 100);
+    int s3_progress = map(s3_stars, 0, 15, 0, 100);
+
+    float slotWidth = windowWidth * 0.25f;
+
+    struct nk_style_item tmp = ctx->style.window.fixed_background;
+    ctx->style.window.fixed_background = nk_style_item_hide();
 
     if (nk_begin(ctx, "S1", nk_rect(windowWidth * 0.2f - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
     NK_WINDOW_NO_SCROLLBAR)) {
@@ -861,7 +901,7 @@ void            NuklearGUI::renderSelectSlot(void){
 
         nk_style_set_font(ctx, &mediumFont->handle);        
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, "34 %", NK_TEXT_CENTERED);
+        nk_label(ctx, std::to_string(s1_progress).c_str(), NK_TEXT_CENTERED);
 
         nk_layout_row_dynamic(ctx, optionHeight / 4, 1);          
         
@@ -871,9 +911,9 @@ void            NuklearGUI::renderSelectSlot(void){
 
         nk_style_set_font(ctx, &mediumFont->handle);        
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, "10 / 12 / 2017", NK_TEXT_CENTERED);
+        nk_label(ctx, s1_date.c_str(), NK_TEXT_CENTERED);
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, "19:43:53", NK_TEXT_CENTERED);        
+        nk_label(ctx, s1_time.c_str(), NK_TEXT_CENTERED);        
 
         nk_end(ctx);      
     }
@@ -897,7 +937,7 @@ void            NuklearGUI::renderSelectSlot(void){
 
         nk_style_set_font(ctx, &mediumFont->handle);        
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, "34 %", NK_TEXT_CENTERED);
+        nk_label(ctx, std::to_string(s2_progress).c_str(), NK_TEXT_CENTERED);
 
         nk_layout_row_dynamic(ctx, optionHeight / 4, 1);          
         
@@ -907,9 +947,9 @@ void            NuklearGUI::renderSelectSlot(void){
 
         nk_style_set_font(ctx, &mediumFont->handle);        
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, "10 / 12 / 2017", NK_TEXT_CENTERED);
+        nk_label(ctx, s2_date.c_str(), NK_TEXT_CENTERED);
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, "19:43:53", NK_TEXT_CENTERED);        
+        nk_label(ctx, s2_time.c_str(), NK_TEXT_CENTERED);        
 
         nk_end(ctx);      
     }
@@ -933,7 +973,7 @@ void            NuklearGUI::renderSelectSlot(void){
 
         nk_style_set_font(ctx, &mediumFont->handle);        
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, "34 %", NK_TEXT_CENTERED);
+        nk_label(ctx, std::to_string(s3_progress).c_str(), NK_TEXT_CENTERED);
 
         nk_layout_row_dynamic(ctx, optionHeight / 4, 1);          
         
@@ -943,9 +983,9 @@ void            NuklearGUI::renderSelectSlot(void){
 
         nk_style_set_font(ctx, &mediumFont->handle);        
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, "10 / 12 / 2017", NK_TEXT_CENTERED);
+        nk_label(ctx, s3_date.c_str(), NK_TEXT_CENTERED);
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, "19:43:53", NK_TEXT_CENTERED);        
+        nk_label(ctx, s3_time.c_str(), NK_TEXT_CENTERED);        
 
         nk_end(ctx);      
     }

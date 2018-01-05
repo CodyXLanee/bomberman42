@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/05 16:06:40 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 16:59:51 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ public:
     void            newGame(GameMode::Enum); 
     void            loadGame(Save::Enum);
     void            saveGame(Save::Enum);
+
+    Slot &          getSlot(int) const;
 
     void            quit_game(void *);
     void            new_game(void *);

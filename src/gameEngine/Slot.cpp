@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Slot.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/05 16:26:31 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/05 17:35:13 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,12 @@ std::string     Slot::save_to_path(Save::Enum save){
         case Save::SLOT2:   return std::string("saves/slot2.json");
         case Save::SLOT3:   return std::string("saves/slot3.json");
     }
+}
+
+void            Slot::load_last_save(rapidjson::Value *val){
+    if (!val || !val[0].IsString())
+        throw std::runtime_error("Slot loading fail.");
+    _last_save = val[0].GetString();
 }
 
 void            Slot::load_campaign_max_level(rapidjson::Value *val){
@@ -70,6 +76,7 @@ Slot::Slot(Save::Enum save) : _save(save){
         if (_loader.load() != 1){
             throw std::runtime_error(save_to_path(save).c_str());
         }
+        load_last_save(_loader.getValue("last_save"));
         load_stars_campaign(_loader.getValue("stars_campaign"));
         load_campaign_max_level(_loader.getValue("campaign_max_level"));
         load_float_val(_loader.getValue("master_volume"), &_masterVolume);
@@ -103,6 +110,19 @@ Slot::~Slot(){
     event.unRegisterEvent(Event::SCREEN_FORMAT_UPDATE, this);
 
     event.unRegisterEvent(Event::KEY_MAP_UPDATE, this);
+}
+
+static std::string  getDateTimeString() {
+  time_t rawtime;
+  struct tm * timeinfo;
+  char buffer[80];
+
+  time (&rawtime);
+  timeinfo = localtime(&rawtime);
+
+  strftime(buffer,sizeof(buffer),"%d-%m-%Y %H:%M:%S",timeinfo);
+
+  return std::string(buffer);
 }
 
 void                                Slot::save(){
@@ -140,7 +160,10 @@ void                                Slot::save(){
     keyMap.AddMember("key", key, d.GetAllocator());
     d.AddMember("keyMap", keyMap, d.GetAllocator());
 
-
+    rapidjson::Value ls;
+    _last_save = getDateTimeString();
+    ls = rapidjson::StringRef(_last_save.c_str());
+    d.AddMember("last_save", ls, d.GetAllocator());
 
     FILE* fp = fopen(save_to_path(_save).c_str(), "w");
 
@@ -207,6 +230,10 @@ int                                 Slot::get_stars_campaign(unsigned int level)
 }
 std::vector<int>                    Slot::get_all_stars_campaign() const{
     return _stars_campaign;
+}
+
+std::string                         Slot::get_last_save_string() const {
+    return _last_save;
 }
 
 Screen::Format const                &Slot::get_screenFormat() const{

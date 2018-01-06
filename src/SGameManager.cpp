@@ -105,7 +105,7 @@ void            SGameManager::new_game(void *p){
 
 void            SGameManager::game_finish(void *){
     _game_is_active = false;
-    _counter = 5000;
+    _counter = 1000;
 
     if (_game->getGameParams().get_game_mode() == GameMode::CAMPAIGN)
     {

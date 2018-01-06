@@ -48,6 +48,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
         event.registerEvent(Event::CAMERA_DOWN, MEMBER_CALLBACK(Camera::moveDown));
 
         event.registerEvent(Event::START_ANIMATION, MEMBER_CALLBACK(Camera::animations));
+        event.registerEvent(Event::END_ANIMATION, MEMBER_CALLBACK(Camera::animationsEnd));
 
 }
 
@@ -204,6 +205,17 @@ void    Camera::animations(void *anim) {
         case Animation::Enum::START:          initFirstAnimation(); break;
         case Animation::Enum::GAME_OVER:
         case Animation::Enum::WIN:          initStandingAnimation(); break;
+        default: break;
+    }
+}
+
+void    Camera::animationsEnd(void *anim) {
+    Animation::Enum *animation = static_cast<Animation::Enum *>(anim);
+
+    switch (*animation) {
+        case Animation::Enum::START:          is_first_animation = false; break;
+        case Animation::Enum::GAME_OVER:
+        case Animation::Enum::WIN:            is_standing_animation = false; break;
         default: break;
     }
 }

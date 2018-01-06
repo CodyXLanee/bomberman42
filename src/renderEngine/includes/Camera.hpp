@@ -57,6 +57,7 @@ class Camera {
 		void				initStandingAnimation();
 
 		void				animations(void *);
+		void				animationsEnd(void *);
 		
 		glm::mat4			matrix;
 		glm::vec3			position;

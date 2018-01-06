@@ -19,7 +19,8 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
     mode(Camera::Mode::FOLLOW_PLAYER),
     initialPosition(position),
     speed(0.5f), sensitivity(0.5f), 
-    wiggle_duration(500), wiggle_start(std::chrono::steady_clock::now()) {
+    wiggle_duration(500), wiggle_start(std::chrono::steady_clock::now()),
+    is_standing_animation(false) {
 
         float rotx = atan2( front.y, front.z );
         float roty = atan2( front.x * cos(rotx), front.z );
@@ -137,19 +138,81 @@ void    Camera::firstAnimation(glm::vec2 playerPos){
     }
 }
 
+void    Camera::initStandingAnimation(){
+    is_standing_animation = true;
+    counter_standing_animation = 250;
+    standing_animation_init_yaw = yaw;
+    standing_animation_init_front = front;
+}
+
+void    Camera::standingAnimation(glm::vec2 playerPos){
+    if (!is_standing_animation)
+        return;
+    if (counter_standing_animation == 250)
+    {
+        front = standing_animation_init_front;
+        switch (rand() % 4)
+        {
+        case 0:
+            position = glm::vec3(playerPos.x + 0.5f, playerPos.y + 0.5f, 0.f) + front * -5.f;
+            yaw = standing_animation_init_yaw;
+            break;
+        case 1:
+            position = glm::vec3(playerPos.x + 0.5f + front.x * -5.f, playerPos.y + 0.5f - front.y * -5.f, 0.f + front.z * -5.f);
+            yaw = standing_animation_init_yaw - 180.f;
+            break;
+        case 2:
+            position = glm::vec3(playerPos.x + 0.5f + front.y * -5.f, playerPos.y + 0.5f + front.x * -5.f, 0.f + front.z * -5.f);
+            yaw = standing_animation_init_yaw - 90.f;
+            break;
+        case 3:
+            position = glm::vec3(playerPos.x + 0.5f - front.y * -5.f, playerPos.y + 0.5f + front.x * -5.f, 0.f + front.z * -5.f);
+            yaw = standing_animation_init_yaw + 90.f;
+            break;
+        }
+        switch (rand() % 4)
+        {
+        case 0:
+            standing_animation_add_pos = glm::vec3(0.f, 0.02f, 0.f);
+            break;
+        case 1:
+            standing_animation_add_pos = glm::vec3(0.f, -0.02f, 0.f);
+            break;
+        case 2:
+            standing_animation_add_pos = glm::vec3(0.02f, 0.f, 0.f);
+            break;
+        case 3:
+            standing_animation_add_pos = glm::vec3(-0.02f, 0.f, 0.f);
+            break;
+        }
+        updateFront();
+    }
+    counter_standing_animation--;
+    if (counter_standing_animation <= 0)
+    {
+        counter_standing_animation = 250;
+    }
+    if (is_standing_animation) {
+        position += standing_animation_add_pos;
+    }
+}
+
 void    Camera::animations(void *anim) {
     Animation::Enum *animation = static_cast<Animation::Enum *>(anim);
 
     switch (*animation) {
         case Animation::Enum::START:          initFirstAnimation(); break;
+        case Animation::Enum::GAME_OVER:
+        case Animation::Enum::WIN:          initStandingAnimation(); break;
         default: break;
     }
 }
 
 void    Camera::update(int const mouseOffsetX, int const mouseOffsetY, glm::vec2 const *playerPos) {
     firstAnimation(*playerPos);
+    standingAnimation(*playerPos);
 
-    if (!is_first_animation)
+    if (!is_first_animation && !is_standing_animation)
     {
         switch (mode) {
             case FIXED:         break;

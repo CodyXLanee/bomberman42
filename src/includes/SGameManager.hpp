@@ -64,6 +64,8 @@ private:
     bool                _dev_mode;
     bool                _game_is_active;
     bool                _quit_game;
+    
+    int                 _counter;
 
 };
 

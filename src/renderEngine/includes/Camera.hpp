@@ -53,6 +53,8 @@ class Camera {
 		void				initWiggle(void*);
 		void				firstAnimation(glm::vec2 playerPos);
 		void				initFirstAnimation();
+		void				standingAnimation(glm::vec2 playerPos);
+		void				initStandingAnimation();
 
 		void				animations(void *);
 		
@@ -84,6 +86,12 @@ class Camera {
 		float						first_animation_init_yaw;
 		float						first_animation_init_pitch;
 		glm::vec3					first_animation_init_pos;
+		
+		bool						is_standing_animation;
+		int							counter_standing_animation;
+		float						standing_animation_init_yaw;
+		glm::vec3					standing_animation_init_front;
+		glm::vec3					standing_animation_add_pos;
 
 		std::chrono::time_point<std::chrono::steady_clock>		first_animation_start;
 };

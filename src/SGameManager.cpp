@@ -57,24 +57,29 @@ void        SGameManager::manage(void) {
         em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::SELECT_SLOT));
     else
         em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));
-//	while(1) {
-        while (!_quit_game)
-        {                
-    		_window.eventManager(_gui.getContext());
 
-            if (_game_is_active){
-                _game->compute();
-                
-                _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
-                _renderer.render(_game->getMap(), _game->getEntityList());
-            }
-    		_gui.render(_game_is_active);
-    		_window.initGL();
-    		SDL_GL_SwapWindow(_window.getWin());
+    while (!_quit_game)
+    {
+		_window.eventManager(_gui.getContext());
+
+        if (!_game_is_active)
+            _counter--;
+
+        if (_game_is_active || _counter > 0){
+            _game->compute();
+            
+            _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
+            _renderer.render(_game->getMap(), _game->getEntityList());
         }
-        // _gui.render(true);
-        // em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::NONE));
-//	}
+        else
+        {
+            Animation::Enum anim = Animation::Enum::WIN;
+            SEventManager::getInstance().raise(Event::END_ANIMATION, &anim);
+        }
+		_gui.render(_game_is_active || _counter > 0);
+		_window.initGL();
+		SDL_GL_SwapWindow(_window.getWin());
+    }
 }
 
 
@@ -100,6 +105,7 @@ void            SGameManager::new_game(void *p){
 
 void            SGameManager::game_finish(void *){
     _game_is_active = false;
+    _counter = 5000;
 
     if (_game->getGameParams().get_game_mode() == GameMode::CAMPAIGN)
     {
@@ -111,6 +117,8 @@ void            SGameManager::game_finish(void *){
             SEventManager::getInstance().raise(Event::UPDATE_ALL_CAMPAIGN_STARS, &ugly_tmp);
         }
     }
+    Animation::Enum anim = Animation::Enum::WIN;
+    SEventManager::getInstance().raise(Event::START_ANIMATION, &anim);
 }
 
 void            SGameManager::newGame(GameMode::Enum gm){

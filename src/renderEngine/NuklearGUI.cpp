@@ -154,6 +154,7 @@ void    NuklearGUI::render(bool game_is_active) {
             case Menu::LEVEL_SELECTION:     renderLevelSelection(); break;
             case Menu::SELECT_SLOT:         renderSelectSlot(); break;
             case Menu::NEW_BRAWL:           renderNewBrawlMenu(); break;
+            case Menu::HOW_TO_PLAY:         renderHowToPlayMenu(); break;
         }
     }
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
@@ -628,6 +629,46 @@ void    NuklearGUI::renderNewBrawlMenu() {
     }
 }
 
+void    NuklearGUI::renderHowToPlayMenu() {
+
+    if (nk_begin(ctx, "HOW TO PLAY", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
+    NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
+
+        nk_style_set_font(ctx, &mediumFont->handle);
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        nk_label(ctx, "How to play", NK_TEXT_CENTERED);
+
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
+        nk_label(ctx, "     campaign mode", NK_TEXT_LEFT); 
+        
+        nk_style_set_font(ctx, &smallFont->handle);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
+        nk_label(ctx, "              To finish a level, you just need to explose all destructible blocs.", NK_TEXT_LEFT);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
+        nk_label(ctx, "              The less bomb you used, the more stars you win!", NK_TEXT_LEFT);
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        
+        nk_style_set_font(ctx, &mediumFont->handle);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
+        nk_label(ctx, "     brawl mode", NK_TEXT_LEFT);
+            
+        nk_style_set_font(ctx, &smallFont->handle);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
+        nk_label(ctx, "              Be the last alive!", NK_TEXT_LEFT);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
+        nk_label(ctx, "              Use bonus at your avantage...", NK_TEXT_LEFT);
+        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        
+        nk_style_set_font(ctx, &mediumFont->handle);
+        nk_layout_row_dynamic(ctx, optionHeight, 4);
+        if (nk_button_label(ctx, "Back")) {
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::HOW_TO_PLAY));  
+        }  
+
+        nk_end(ctx);
+    }
+}
+
 void    NuklearGUI::renderStartMenu() {
     
     nk_style_set_font(ctx, &mediumFont->handle);
@@ -651,7 +692,8 @@ void    NuklearGUI::renderStartMenu() {
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "How to play"))
         {
-            /* how to play */
+            Menu::Enum  me = Menu::HOW_TO_PLAY;
+            event.raise(Event::GUI_TOGGLE, &me);
         }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Options"))

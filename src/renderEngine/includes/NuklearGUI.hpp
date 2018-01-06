@@ -97,6 +97,7 @@ class NuklearGUI
         void        renderGameModeSelectionMenu();
         void        renderNewBrawlMenu();
         void        renderStartMenu();
+        void        renderHowToPlayMenu();
         void        renderSelectSlot(void);
 
         void        setMasterVolume(void * v);

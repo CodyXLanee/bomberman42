@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/05 16:21:18 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/08 16:22:04 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ class NuklearGUI
         void        renderStartMenu();
         void        renderHowToPlayMenu();
         void        renderSelectSlot(void);
+        void        renderSlot(int, int, std::string, std::string);
 
         void        setMasterVolume(void * v);
         void        setEffectsVolume(void * v);

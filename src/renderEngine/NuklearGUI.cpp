@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/05 17:58:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/08 16:27:45 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,15 @@
 
 # define MAX_VERTEX_MEMORY 512 * 1024
 # define MAX_ELEMENT_MEMORY 128 * 1024
+
+/* -- Tools -- */
+
+static long map(long x, long in_min, long in_max, long out_min, long out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+/* ----------- */
 
 NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     win(sgw), camera(camera), event(SEventManager::getInstance()),
@@ -879,56 +888,44 @@ void    NuklearGUI::renderDebug() {
     nk_end(ctx);
 }
 
-static long map(long x, long in_min, long in_max, long out_min, long out_max)
-{
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
 void            NuklearGUI::renderSelectSlot(void){
     SGameManager & gm = SGameManager::getInstance();
 
-    std::string s1_date = gm.getSlot(0).get_last_save_string().substr(0, 10);
-    std::string s1_time = gm.getSlot(0).get_last_save_string().substr(11, 8);
+    std::string dates[3];
+    std::string times[3];
+    int         progress[3];
 
-    std::string s2_date = gm.getSlot(1).get_last_save_string().substr(0, 10);
-    std::string s2_time = gm.getSlot(1).get_last_save_string().substr(11, 8);
+    for (int i = 0; i < 3; ++i)
+    {
+        std::string lss = gm.getSlot(i).get_last_save_string();
+        dates[i] = lss.substr(0, 10);
+        times[i] = lss.substr(11, 8);
 
-    std::string s3_date = gm.getSlot(2).get_last_save_string().substr(0, 10);
-    std::string s3_time = gm.getSlot(2).get_last_save_string().substr(11, 8);
+        int                 total = 0;
+        std::vector<int>    v = gm.getSlot(i).get_all_stars_campaign();
+        std::for_each(v.begin(), v.end(), [&] (int n) {
+            total += n;
+        });
+        progress[i] = map(total, 0, 18, 0, 100); // This 18 is hardcoded: 3 * number of levels
 
-    int s1_stars = 0;
-    int s2_stars = 0;
-    int s3_stars = 0;
+        renderSlot(i, progress[i], dates[i], times[i]);
+    }
+}
 
-    std::vector<int>    v1 = gm.getSlot(0).get_all_stars_campaign();
-    std::for_each(v1.begin(), v1.end(), [&] (int n) {
-        s1_stars += n;
-    });
-
-    std::vector<int>    v2 = gm.getSlot(1).get_all_stars_campaign();
-    std::for_each(v1.begin(), v1.end(), [&] (int n) {
-        s2_stars += n;
-    });
-
-    std::vector<int>    v3 = gm.getSlot(2).get_all_stars_campaign();
-    std::for_each(v1.begin(), v1.end(), [&] (int n) {
-        s3_stars += n;
-    });
-
-    int s1_progress = map(s1_stars, 0, 15, 0, 100);
-    int s2_progress = map(s2_stars, 0, 15, 0, 100);
-    int s3_progress = map(s3_stars, 0, 15, 0, 100);
-
+void    NuklearGUI::renderSlot(int n, int progress, std::string date, std::string time) {
     float slotWidth = windowWidth * 0.25f;
 
     struct nk_style_item tmp = ctx->style.window.fixed_background;
     ctx->style.window.fixed_background = nk_style_item_hide();
 
-    if (nk_begin(ctx, "S1", nk_rect(windowWidth * 0.2f - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
+    std::string s = "SLOT " + std::to_string(n);
+    float       xOffset[3] = { 0.2f, 0.5f, 0.8f };
+
+    if (nk_begin(ctx, s.c_str(), nk_rect(windowWidth * xOffset[n] - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
     NK_WINDOW_NO_SCROLLBAR)) {
         nk_style_set_font(ctx, &bigFont->handle);
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "SLOT 1")) {
+        if (nk_button_label(ctx, s.c_str())) {
             Save::Enum  slot = Save::SLOT1;
             event.raise(Event::LOAD_SLOT, &slot);
 
@@ -943,7 +940,7 @@ void            NuklearGUI::renderSelectSlot(void){
 
         nk_style_set_font(ctx, &mediumFont->handle);        
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, std::to_string(s1_progress).c_str(), NK_TEXT_CENTERED);
+        nk_label(ctx, std::string(std::to_string(progress) + " %").c_str(), NK_TEXT_CENTERED);
 
         nk_layout_row_dynamic(ctx, optionHeight / 4, 1);          
         
@@ -953,85 +950,13 @@ void            NuklearGUI::renderSelectSlot(void){
 
         nk_style_set_font(ctx, &mediumFont->handle);        
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, s1_date.c_str(), NK_TEXT_CENTERED);
+        nk_label(ctx, date.c_str(), NK_TEXT_CENTERED);
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, s1_time.c_str(), NK_TEXT_CENTERED);        
+        nk_label(ctx, time.c_str(), NK_TEXT_CENTERED);        
 
         nk_end(ctx);      
     }
-
-    if (nk_begin(ctx, "S2", nk_rect(windowWidth * 0.5f - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
-    NK_WINDOW_NO_SCROLLBAR)) {
-        nk_style_set_font(ctx, &bigFont->handle);
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "SLOT 2")) {
-            Save::Enum  slot = Save::SLOT2;
-            event.raise(Event::LOAD_SLOT, &slot);
-
-            Menu::Enum  me = Menu::START;
-            event.raise(Event::GUI_TOGGLE, &me);
-        }
-        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);                  
-        
-        nk_style_set_font(ctx, &smallFont->handle);        
-        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
-        nk_label(ctx, "Progression", NK_TEXT_CENTERED);
-
-        nk_style_set_font(ctx, &mediumFont->handle);        
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, std::to_string(s2_progress).c_str(), NK_TEXT_CENTERED);
-
-        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);          
-        
-        nk_style_set_font(ctx, &smallFont->handle);        
-        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
-        nk_label(ctx, "Last save", NK_TEXT_CENTERED);
-
-        nk_style_set_font(ctx, &mediumFont->handle);        
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, s2_date.c_str(), NK_TEXT_CENTERED);
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, s2_time.c_str(), NK_TEXT_CENTERED);        
-
-        nk_end(ctx);      
-    }
-
-    if (nk_begin(ctx, "S3", nk_rect(windowWidth * 0.8f - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
-    NK_WINDOW_NO_SCROLLBAR)) {
-        nk_style_set_font(ctx, &bigFont->handle);
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "SLOT 3")) {
-            Save::Enum  slot = Save::SLOT3;
-            event.raise(Event::LOAD_SLOT, &slot);
-
-            Menu::Enum  me = Menu::START;
-            event.raise(Event::GUI_TOGGLE, &me);
-        }
-        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);                  
-        
-        nk_style_set_font(ctx, &smallFont->handle);        
-        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
-        nk_label(ctx, "Progression", NK_TEXT_CENTERED);
-
-        nk_style_set_font(ctx, &mediumFont->handle);        
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, std::to_string(s3_progress).c_str(), NK_TEXT_CENTERED);
-
-        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);          
-        
-        nk_style_set_font(ctx, &smallFont->handle);        
-        nk_layout_row_dynamic(ctx, optionHeight / 4, 1);  
-        nk_label(ctx, "Last save", NK_TEXT_CENTERED);
-
-        nk_style_set_font(ctx, &mediumFont->handle);        
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, s3_date.c_str(), NK_TEXT_CENTERED);
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);  
-        nk_label(ctx, s3_time.c_str(), NK_TEXT_CENTERED);        
-
-        nk_end(ctx);      
-    }
-    ctx->style.window.fixed_background = tmp;
+    ctx->style.window.fixed_background = tmp;    
 }
 
 void            NuklearGUI::hover(int id) const {

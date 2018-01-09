@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/05 17:27:19 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/09 16:10:16 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ SGameManager::SGameManager() :
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::QUIT_GAME, MEMBER_CALLBACK(SGameManager::quit_game));
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
+    em.registerEvent(Event::RESTART_GAME, MEMBER_CALLBACK(SGameManager::restart_game));
     em.registerEvent(Event::GAME_FINISH, MEMBER_CALLBACK(SGameManager::game_finish));
 
     em.registerEvent(Event::LOAD_SLOT, MEMBER_CALLBACK(SGameManager::loadSlot));
@@ -98,6 +99,16 @@ void            SGameManager::new_game(void *p){
         delete _game;
     _game = new GameEngine(*gp);
     _game_is_active = true;
+    _current_game_params = gp;
+
+    Animation::Enum a = Animation::START;
+    SEventManager::getInstance().raise(Event::START_ANIMATION, &a);
+}
+
+void            SGameManager::restart_game(void *){
+    if (_game != nullptr)
+        delete _game;
+    _game = new GameEngine(*_current_game_params);
 
     Animation::Enum a = Animation::START;
     SEventManager::getInstance().raise(Event::START_ANIMATION, &a);
@@ -121,15 +132,15 @@ void            SGameManager::game_finish(void *){
     SEventManager::getInstance().raise(Event::START_ANIMATION, &anim);
 }
 
-void            SGameManager::newGame(GameMode::Enum gm){
-    (void)gm;
-}
-void            SGameManager::loadGame(Save::Enum s) {
-    (void)s;
-}
-void            SGameManager::saveGame(Save::Enum s) {
-    (void)s;
-}
+// void            SGameManager::newGame(GameMode::Enum gm){
+//     (void)gm;
+// }
+// void            SGameManager::loadGame(Save::Enum s) {
+//     (void)s;
+// }
+// void            SGameManager::saveGame(Save::Enum s) {
+//     (void)s;
+// }
 
 Slot &          SGameManager::getSlot(int index) const {
     if (index >= 0 && index <= 2)

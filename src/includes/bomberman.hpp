@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bomberman.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/04 16:40:44 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/09 14:59:07 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ namespace Screen {
 }
 
 namespace Menu {
-	enum Enum {NONE, DEBUG, BASE, OPTIONS, KEY_BINDINGS, START, LEVEL_SELECTION, SELECT_SLOT, NEW_BRAWL, HOW_TO_PLAY};
+	enum Enum {NONE, DEBUG, BASE, OPTIONS, KEY_BINDINGS, START, LEVEL_SELECTION, SELECT_SLOT, NEW_BRAWL, HOW_TO_PLAY, GAME_OVER};
 }
 
 namespace GameMode {

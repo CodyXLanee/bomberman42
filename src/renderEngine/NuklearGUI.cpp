@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/09 16:19:53 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/09 17:31:13 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -660,33 +660,54 @@ void    NuklearGUI::renderGameOverMenu() {
 
 void    NuklearGUI::renderHowToPlayMenu() {
 
+    static  struct nk_image bomb = loadImage("./assets/textures/Bombupsprite.png", GL_RGB);
+    static  struct nk_image flame = loadImage("./assets/textures/Fireupsprite.png", GL_RGB);
+    static  struct nk_image speed = loadImage("./assets/textures/Skatesprite.png", GL_RGB);
+
     if (nk_begin(ctx, "HOW TO PLAY", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
 
-        nk_style_set_font(ctx, &mediumFont->handle);
+        nk_style_set_font(ctx, &bigFont->handle);
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         nk_label(ctx, "How to play", NK_TEXT_CENTERED);
 
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
-        nk_label(ctx, "     campaign mode", NK_TEXT_LEFT); 
+        nk_style_set_font(ctx, &mediumFont->handle);        
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        nk_label(ctx, "Campaign", NK_TEXT_CENTERED); 
         
         nk_style_set_font(ctx, &smallFont->handle);
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
-        nk_label(ctx, "              To finish a level, you just need to explose all destructible blocs.", NK_TEXT_LEFT);
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
-        nk_label(ctx, "              The less bomb you used, the more stars you win!", NK_TEXT_LEFT);
-        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        nk_label(ctx, "Destroy all breakable blocks using your bombs as little as possible !", NK_TEXT_CENTERED);
         
         nk_style_set_font(ctx, &mediumFont->handle);
-        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
-        nk_label(ctx, "     brawl mode", NK_TEXT_LEFT);
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        nk_label(ctx, "Brawl", NK_TEXT_CENTERED);
             
         nk_style_set_font(ctx, &smallFont->handle);
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
-        nk_label(ctx, "              Be the last alive!", NK_TEXT_LEFT);
+        nk_label(ctx, "Destroy all your enemies, the last player to be alive wins !", NK_TEXT_CENTERED);
         nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
-        nk_label(ctx, "              Use bonus at your avantage...", NK_TEXT_LEFT);
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        nk_label(ctx, "Use bonuses at your advantage...", NK_TEXT_CENTERED);
+        nk_layout_row_dynamic(ctx, optionHeight / 2, 1);
+
+        nk_layout_row_dynamic(ctx, optionHeight, 9);
+        nk_spacing(ctx, 2);
+
+        if (nk_widget_is_hovered(ctx))
+            nk_tooltip(ctx, "Drop more bombs !");
+        nk_image(ctx, bomb);
+
+        nk_spacing(ctx, 1);
+
+        if (nk_widget_is_hovered(ctx))
+            nk_tooltip(ctx, "Your bombs have more range !");
+        nk_image(ctx, flame);
+
+        nk_spacing(ctx, 1);
+
+        if (nk_widget_is_hovered(ctx))
+            nk_tooltip(ctx, "Run faster !");
+        nk_image(ctx, speed);
         
         nk_style_set_font(ctx, &mediumFont->handle);
         nk_layout_row_dynamic(ctx, optionHeight, 4);

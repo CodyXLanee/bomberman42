@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/11 15:01:11 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/11 16:12:22 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ NuklearGUI::~NuklearGUI() {
 
 struct nk_context * NuklearGUI::getContext () const { return ctx; }
 
-void    NuklearGUI::toggle(void *p) {
+void    NuklearGUI::toggle(void *p) {  
     Menu::Enum *m = static_cast<Menu::Enum *>(p);
     if (*m == Menu::OPTIONS)
         _reset_options_display = true;
@@ -922,26 +922,30 @@ void    NuklearGUI::renderDebug() {
     std::string camModeString = toString(camera.getMode());
 
     update_fps();
-    std::string FPSString = std::to_string(fps);
+    std::string FPSString = std::to_string(static_cast<int>(fps));
     
-     if (nk_begin(ctx, "DEBUG MODE", nk_rect(50, 50, menuWidth, menuHeight),
-        NK_WINDOW_BORDER|NK_WINDOW_MINIMIZABLE))
+    nk_style_set_font(ctx, &smallFont->handle);
+     if (nk_begin(ctx, "DEBUG MODE", nk_rect(50, 50, menuWidth, (optionHeight / 3.f) * 7.f),
+        NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Camera position", NK_TEXT_LEFT);
+        nk_layout_row_dynamic(ctx, optionHeight / 3, 1);  
+        nk_label(ctx, "Camera position", NK_TEXT_CENTERED);
+        nk_layout_row_dynamic(ctx, optionHeight / 3, 1);  
         nk_label(ctx, camPosString.c_str(), NK_TEXT_CENTERED);
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Camera front", NK_TEXT_LEFT);
+        
+        nk_layout_row_dynamic(ctx, optionHeight / 3, 1);  
+        nk_label(ctx, "Camera front", NK_TEXT_CENTERED);
+        nk_layout_row_dynamic(ctx, optionHeight / 3, 1);          
         nk_label(ctx, camFrontString.c_str(), NK_TEXT_CENTERED);
 
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_layout_row_dynamic(ctx, optionHeight / 3, 2);  
         nk_label(ctx, "FPS : ", NK_TEXT_LEFT);
         nk_label(ctx, FPSString.c_str(), NK_TEXT_CENTERED);
         
-        nk_layout_row_dynamic(ctx, optionHeight, 2);
+        nk_layout_row_dynamic(ctx, optionHeight / 3, 2);
         nk_label(ctx, "Camera mode", NK_TEXT_LEFT);
         if (nk_menu_begin_label(ctx, camModeString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth / 2, menuHeight))) {
-            nk_layout_row_dynamic(ctx, optionHeight, 1);
+            nk_layout_row_dynamic(ctx, optionHeight / 3, 1);
             
             if (nk_menu_item_label(ctx, "FIXED", NK_TEXT_CENTERED)) {
                 event.raise(Event::CAMERA_MODE_UPDATE, new Camera::Mode(Camera::Mode::FIXED));

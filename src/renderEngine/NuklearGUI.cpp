@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/09 17:31:13 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/11 15:01:11 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,7 +256,12 @@ void    NuklearGUI::renderKeyBindings() {
         nk_spacing(ctx, 1);       
         if (nk_button_label(ctx, "Reset to default"))
         {
-            /* reset key bindings */
+            displayedKeysMap[Event::HUMAN_PLAYER_UP] = SDLK_w;
+            displayedKeysMap[Event::HUMAN_PLAYER_DOWN] = SDLK_s;
+            displayedKeysMap[Event::HUMAN_PLAYER_LEFT] = SDLK_a;
+            displayedKeysMap[Event::HUMAN_PLAYER_RIGHT] = SDLK_d;
+            displayedKeysMap[Event::HUMAN_SPAWN_BOMB] = SDLK_SPACE;
+            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
@@ -721,9 +726,13 @@ void    NuklearGUI::renderHowToPlayMenu() {
 
 void    NuklearGUI::renderStartMenu() {
     
+    static bool confirmationPopup = false;
+    static struct nk_vec2 spacing = ctx->style.window.spacing;
+    static struct nk_vec2 padding = ctx->style.window.padding;
+    
     nk_style_set_font(ctx, &mediumFont->handle);
     
-    if (nk_begin(ctx, "", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
+    if (nk_begin(ctx, "START MENU", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
         nk_layout_row_dynamic(ctx, optionHeight, 1);
@@ -751,9 +760,29 @@ void    NuklearGUI::renderStartMenu() {
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::OPTIONS));  
         }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
-        if (nk_button_label(ctx, "Statistics"))
+        if (nk_button_label(ctx, "Reset progression"))
         {
-            /* stats */
+            confirmationPopup = true;
+        }
+        if (confirmationPopup)
+        {
+            if (nk_popup_begin(ctx, NK_POPUP_STATIC, "CONFIRMATION", NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_BORDER,
+            nk_rect(0, menuHeight / 4.f, menuWidth, optionHeight * 2.f)))
+            {
+                nk_layout_row_dynamic(ctx, optionHeight - spacing.y - padding.y, 1);
+                nk_label(ctx, "Are you sure ?", NK_TEXT_CENTERED);
+                nk_layout_row_dynamic(ctx, optionHeight - spacing.y - padding.y, 2);
+                if (nk_button_label(ctx, "Yes")) {
+                    SGameManager::getInstance().getCurrentSlot().reset_stars_campaign();            
+                    confirmationPopup = 0;
+                    nk_popup_close(ctx);
+                }
+                if (nk_button_label(ctx, "No")) {
+                    confirmationPopup = 0;
+                    nk_popup_close(ctx);
+                }
+                nk_popup_end(ctx);
+            } else confirmationPopup = nk_false;
         }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, "Slot selection"))

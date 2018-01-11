@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/05 17:35:13 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/11 15:01:43 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,12 @@ void                                Slot::save(){
     d.Accept(writer);
     
     fclose(fp);
+}
+
+void                                Slot::reset_stars_campaign() {
+    for (int i = 0; i < 6; ++i)
+        set_stars_campaign(i, 0);
+    save();
 }
 
 void                                Slot::use(){

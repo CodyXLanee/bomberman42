@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/09 16:10:16 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/11 14:28:11 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,9 @@ void            SGameManager::game_finish(void *){
 // void            SGameManager::saveGame(Save::Enum s) {
 //     (void)s;
 // }
+Slot &          SGameManager::getCurrentSlot() const {
+    return *_current_slot;
+}
 
 Slot &          SGameManager::getSlot(int index) const {
     if (index >= 0 && index <= 2)

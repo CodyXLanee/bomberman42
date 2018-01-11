@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/09 16:03:32 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/11 14:28:22 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ public:
     // void            saveGame(Save::Enum);
 
     Slot &          getSlot(int) const;
+    Slot &          getCurrentSlot() const;
 
     void            quit_game(void *);
     void            new_game(void *);

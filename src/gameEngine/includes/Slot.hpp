@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 14:59:59 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/05 17:35:02 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/11 14:34:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,10 @@ class Slot {
         
         void                                save();
         void                                use();
-
+        
         int                                 get_campaign_max_level() const ;
         void                                set_campaign_max_level(int i);
+        void                                reset_stars_campaign();
 
         std::string                         get_last_save_string() const;
 

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 14:59:59 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/11 14:34:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/12 15:36:26 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,9 @@ class Slot {
 		std::map<Event::Enum, SDL_Keycode>	_keyMap;
         std::vector<int>                    _stars_campaign;
         std::string                         _last_save;
+
+        void                                registerToEvents();
+        void                                unregisterToEvents();
 };
 
 #endif

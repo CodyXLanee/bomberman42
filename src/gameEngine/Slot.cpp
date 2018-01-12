@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/11 15:01:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/12 16:11:17 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,14 @@ void            Slot::load_screen_format(rapidjson::Value *val){
 
 
 void            Slot::load_key_map(rapidjson::Value *val){
-    if (!val || !val->HasMember("events") || !val->HasMember("key") || !val[0]["events"].IsArray() || !val[0]["key"].IsArray() || val[0]["key"].Size() != val[0]["events"].Size())
-		throw std::runtime_error("Slot loading fail.");
-    for (rapidjson::SizeType i = 0; i < val[0]["key"].Size(); i++){
-        if (!val[0]["key"][i].IsInt() || !val[0]["events"][i].IsInt())
-		    throw std::runtime_error("Slot loading fail.");
-        _keyMap[static_cast<Event::Enum>(val[0]["events"][i].GetInt())] = static_cast<SDL_Keycode>(val[0]["key"][i].GetInt());
-    }
+    if (!val)
+	 	throw std::runtime_error("Slot loading fail.");
+
+    _keyMap[Event::HUMAN_PLAYER_LEFT] = (val[0]["left"].IsInt()) ? val[0]["left"].GetInt() : throw std::runtime_error("Slot loading fail.");
+    _keyMap[Event::HUMAN_PLAYER_RIGHT] = (val[0]["right"].IsInt()) ? val[0]["right"].GetInt() : throw std::runtime_error("Slot loading fail.");
+    _keyMap[Event::HUMAN_PLAYER_UP] = (val[0]["up"].IsInt()) ? val[0]["up"].GetInt() : throw std::runtime_error("Slot loading fail.");
+    _keyMap[Event::HUMAN_PLAYER_DOWN] = (val[0]["down"].IsInt()) ? val[0]["down"].GetInt() : throw std::runtime_error("Slot loading fail.");
+    _keyMap[Event::HUMAN_SPAWN_BOMB] = (val[0]["bomb"].IsInt()) ? val[0]["bomb"].GetInt() : throw std::runtime_error("Slot loading fail.");
 }
 
 
@@ -83,33 +84,15 @@ Slot::Slot(Save::Enum save) : _save(save){
         load_float_val(_loader.getValue("music_volume"), &_musicVolume);
         load_float_val(_loader.getValue("effects_volume"), &_effectsVolume);
         load_screen_format(_loader.getValue("screen_format"));
-        load_key_map(_loader.getValue("keyMap"));
+        load_key_map(_loader.getValue("keys"));
     }
     catch (std::runtime_error &){
         std::cout << "Error while loading " << save_to_path(save) << std::endl;
     }
-
-    SEventManager &event = SEventManager::getInstance();
-
-    event.registerEvent(Event::MASTER_VOLUME_UPDATE, MEMBER_CALLBACK(Slot::setMasterVolume));
-    event.registerEvent(Event::MUSIC_VOLUME_UPDATE, MEMBER_CALLBACK(Slot::setMusicVolume));
-    event.registerEvent(Event::EFFECTS_VOLUME_UPDATE, MEMBER_CALLBACK(Slot::setEffectsVolume));
-
-    event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(Slot::updateScreenFormat));
-
-    event.registerEvent(Event::KEY_MAP_UPDATE, MEMBER_CALLBACK(Slot::updateKeyMap));
 }
 
 Slot::~Slot(){
-    SEventManager &event = SEventManager::getInstance();
-
-    event.unRegisterEvent(Event::MASTER_VOLUME_UPDATE, this);
-    event.unRegisterEvent(Event::MUSIC_VOLUME_UPDATE, this);
-    event.unRegisterEvent(Event::EFFECTS_VOLUME_UPDATE, this);
-
-    event.unRegisterEvent(Event::SCREEN_FORMAT_UPDATE, this);
-
-    event.unRegisterEvent(Event::KEY_MAP_UPDATE, this);
+    
 }
 
 static std::string  getDateTimeString() {
@@ -148,17 +131,13 @@ void                                Slot::save(){
     s.AddMember("mode", rapidjson::Value(_screenFormat.windowMode), d.GetAllocator());
     d.AddMember("screen_format", s, d.GetAllocator());
 
-    rapidjson::Value events(rapidjson::kArrayType);
-    rapidjson::Value key(rapidjson::kArrayType);
-    for (auto i : _keyMap){
-        events.PushBack(rapidjson::Value(static_cast<int>(i.first)), d.GetAllocator());
-        key.PushBack(rapidjson::Value(static_cast<int>(i.second)), d.GetAllocator());
-    }
-
-    rapidjson::Value keyMap(rapidjson::kObjectType);
-    keyMap.AddMember("events", events, d.GetAllocator());
-    keyMap.AddMember("key", key, d.GetAllocator());
-    d.AddMember("keyMap", keyMap, d.GetAllocator());
+    rapidjson::Value keys(rapidjson::kObjectType);
+    keys.AddMember("left", _keyMap[Event::HUMAN_PLAYER_LEFT], d.GetAllocator());
+    keys.AddMember("right", _keyMap[Event::HUMAN_PLAYER_RIGHT], d.GetAllocator());
+    keys.AddMember("up", _keyMap[Event::HUMAN_PLAYER_UP], d.GetAllocator());
+    keys.AddMember("down", _keyMap[Event::HUMAN_PLAYER_DOWN], d.GetAllocator());
+    keys.AddMember("bomb", _keyMap[Event::HUMAN_SPAWN_BOMB], d.GetAllocator());
+    d.AddMember("keys", keys, d.GetAllocator());
 
     rapidjson::Value ls;
     _last_save = getDateTimeString();
@@ -172,6 +151,7 @@ void                                Slot::save(){
     rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
     d.Accept(writer);
     
+    unregisterToEvents();
     fclose(fp);
 }
 
@@ -195,6 +175,8 @@ void                                Slot::use(){
     em.raise(Event::EFFECTS_VOLUME_UPDATE, &_effectsVolume);
 
     em.raise(Event::UPDATE_ALL_CAMPAIGN_STARS, &_stars_campaign);
+
+    registerToEvents();
 }
 
 
@@ -266,4 +248,24 @@ void                                Slot::updateKeyMap(void *k){
 
 Save::Enum                          Slot::get_save(){
     return _save;
+}
+
+void                                Slot::registerToEvents() {
+    SEventManager &event = SEventManager::getInstance();
+    
+    event.registerEvent(Event::MASTER_VOLUME_UPDATE, MEMBER_CALLBACK(Slot::setMasterVolume));
+    event.registerEvent(Event::MUSIC_VOLUME_UPDATE, MEMBER_CALLBACK(Slot::setMusicVolume));
+    event.registerEvent(Event::EFFECTS_VOLUME_UPDATE, MEMBER_CALLBACK(Slot::setEffectsVolume));
+    event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(Slot::updateScreenFormat));
+    event.registerEvent(Event::KEY_MAP_UPDATE, MEMBER_CALLBACK(Slot::updateKeyMap));
+}
+
+void                                Slot::unregisterToEvents() {
+    SEventManager &event = SEventManager::getInstance();
+    
+    event.unRegisterEvent(Event::MASTER_VOLUME_UPDATE, this);
+    event.unRegisterEvent(Event::MUSIC_VOLUME_UPDATE, this);
+    event.unRegisterEvent(Event::EFFECTS_VOLUME_UPDATE, this);
+    event.unRegisterEvent(Event::SCREEN_FORMAT_UPDATE, this);
+    event.unRegisterEvent(Event::KEY_MAP_UPDATE, this);
 }

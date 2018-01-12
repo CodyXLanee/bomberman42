@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/11 16:12:22 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/12 15:43:23 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1000,7 +1000,7 @@ void    NuklearGUI::renderSlot(int n, int progress, std::string date, std::strin
         nk_style_set_font(ctx, &bigFont->handle);
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
         if (nk_button_label(ctx, s.c_str())) {
-            Save::Enum  slot = Save::SLOT1;
+            Save::Enum  slot = static_cast<Save::Enum>(n);
             event.raise(Event::LOAD_SLOT, &slot);
 
             Menu::Enum  me = Menu::START;

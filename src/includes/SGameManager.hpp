@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/01 12:52:00 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/11 14:28:22 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/19 15:30:53 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ public:
 
     void            quit_game(void *);
     void            new_game(void *);
+
+    bool            is_game_active() const;
     // GameMode::Enum  getGameMode(void);
 
     // Load / Save Config params

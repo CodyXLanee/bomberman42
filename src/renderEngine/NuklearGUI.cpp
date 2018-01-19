@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/12 15:43:23 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/19 15:57:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ struct nk_context * NuklearGUI::getContext () const { return ctx; }
 
 void    NuklearGUI::toggle(void *p) {  
     Menu::Enum *m = static_cast<Menu::Enum *>(p);
+    if (*m == Menu::BASE && SGameManager::getInstance().is_game_active() == false)
+        return;
     if (*m == Menu::OPTIONS)
         _reset_options_display = true;
     if (*m == Menu::KEY_BINDINGS)
@@ -199,8 +201,6 @@ void    NuklearGUI::bindKeyToEvent(Event::Enum ev, std::map<Event::Enum, SDL_Key
 }
 
 void    NuklearGUI::renderKeyBindings() {
-    SEventManager & event = SEventManager::getInstance();
-    
     static std::map<Event::Enum, SDL_Keycode>  displayedKeysMap = win.getKeyMap();
     
     if (_reset_key_bindings_display){
@@ -321,6 +321,24 @@ void    NuklearGUI::renderOptions() {
     if (nk_begin(ctx, "OPTIONS", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_label(ctx, "Master volume", NK_TEXT_CENTERED);    
+        if (nk_progress(ctx, &master, 100, NK_MODIFIABLE)) {
+
+        }
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_label(ctx, "Music volume", NK_TEXT_CENTERED);             
+        if (nk_progress(ctx, &music, MIX_MAX_VOLUME, NK_MODIFIABLE)) {
+
+        }
+        
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_label(ctx, "Effects volume", NK_TEXT_CENTERED);             
+        if (nk_progress(ctx, &effects, MIX_MAX_VOLUME, NK_MODIFIABLE)) {
+
+        }
+
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Screen resolution", NK_TEXT_CENTERED);
         if (nk_menu_begin_label(ctx, screenResString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth, menuHeight))) {
@@ -350,24 +368,6 @@ void    NuklearGUI::renderOptions() {
                 displayedFormat.windowMode = Screen::WindowMode::FULLSCREEN;
             }
             nk_menu_end(ctx);
-        }
-
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Master volume", NK_TEXT_CENTERED);    
-        if (nk_progress(ctx, &master, 100, NK_MODIFIABLE)) {
-
-        }
-
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Music volume", NK_TEXT_CENTERED);             
-        if (nk_progress(ctx, &music, MIX_MAX_VOLUME, NK_MODIFIABLE)) {
-
-        }
-        
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Effects volume", NK_TEXT_CENTERED);             
-        if (nk_progress(ctx, &effects, MIX_MAX_VOLUME, NK_MODIFIABLE)) {
-
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
@@ -424,8 +424,6 @@ void    NuklearGUI::renderOptions() {
 }
 
 void    NuklearGUI::renderMenu() {
-    SEventManager & event = SEventManager::getInstance();
-
     if (nk_begin(ctx, "MENU", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - menuHeight / 2, menuWidth, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
@@ -451,7 +449,7 @@ void    NuklearGUI::renderMenu() {
         if (nk_button_label(ctx, "How to play"))
         {
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK)); 
-            /* how to play */
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::HOW_TO_PLAY));
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);
@@ -475,7 +473,8 @@ void    NuklearGUI::renderMenu() {
         if (nk_button_label(ctx, "Back to main menu"))
         {
             event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));            
-            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::NONE)); // Must be changed
+            event.raise(Event::GAME_FINISH, nullptr);
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::START));  
         }
    
         nk_layout_row_dynamic(ctx, optionHeight, 1);

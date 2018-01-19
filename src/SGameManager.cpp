@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/11 14:28:11 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/19 15:31:22 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,4 +150,8 @@ Slot &          SGameManager::getSlot(int index) const {
         return *(_slots[index]);
     else
         throw std::out_of_range("SGameManager::getSlot(): wrong index");
+}
+
+bool            SGameManager::is_game_active() const {
+    return _game_is_active;
 }

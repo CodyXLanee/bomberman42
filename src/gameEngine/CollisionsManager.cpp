@@ -67,7 +67,7 @@ void	CollisionsManager::compute_player(Player *p){
 	if (!std::isnan(v.x) && !std::isnan(v.y)){ // glm::isnan wouldn't compile for some reason...
 		p->setState(State::MOVING);
 		p->setDirection(v);
-		p->setSpeed(5.f * p->getSpeedMult());
+		p->setSpeed(PLAYER_BASE_SPEED * p->getSpeedMult());
 	}
 	else
 	{

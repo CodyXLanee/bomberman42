@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bomberman.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/09 14:59:07 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/22 15:14:54 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define FOV 60.f
 # define Z_NEAR 0.1f
 # define Z_FAR 4000.f
+# define PLAYER_BASE_SPEED	5.0f
 
 # include <SDL.h>
 

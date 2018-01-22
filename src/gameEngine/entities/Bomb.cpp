@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:35 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/04 14:31:28 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/22 15:42:06 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,12 @@ void    Bomb::explode(void){
 std::chrono::milliseconds const                                &Bomb::get_ms_before_explode(void) const {
     return ms_before_explode;
 }
+
+std::chrono::milliseconds const                                Bomb::get_ms_remaining_before_explode(void) const {
+    std::chrono::milliseconds   time_since_creation = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - creation_time);
+    return ms_before_explode - time_since_creation;
+}
+
 std::chrono::time_point<std::chrono::steady_clock> const       &Bomb::get_creation_time(void) const {
     return creation_time;
 }

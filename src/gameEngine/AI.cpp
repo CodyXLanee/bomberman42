@@ -11,8 +11,9 @@ class Spot {
         bool                _deadly;
         bool                _has_bonus;
         int                 _dist;
-        Bomb                *_in_range_of;
-        Bomb                *_bomb;
+        Bomb                *_in_range_of;  // the bomb that will make this spot explode, nullptr if there's none. 
+                                            //  Note : this value takes into account the fact that bombs make each other explode and is therefore propagated according to the time remaining untill a bomb explodes - See AI::markBombRange
+        Bomb                *_bomb;         // pointer to the bomb that is in this spot, nullptr is there is none.
 
         Spot() {};
         Spot(bool f, bool s) : _free(f), _safe(s), _deadly(false), _has_bonus(false), _dist(-1),
@@ -218,10 +219,10 @@ void    AI::markBombRangeOneDir(glm::ivec2 pos, glm::ivec2 dir, int range, Bomb 
         return;
     _map[pos]._safe = false;
     // Propagate the bomb "range" if it has another more recent bomb in range.
-    if (_map[pos]._bomb != nullptr && _map[pos]._bomb->get_ms_before_explode() > bomb->get_ms_before_explode() && _map[pos]._in_range_of != bomb)
+    if (_map[pos]._bomb != nullptr && _map[pos]._in_range_of->get_ms_remaining_before_explode() > bomb->get_ms_remaining_before_explode())
         markBombRange(_map[pos]._bomb, bomb);
     // Mark the spot as in range of the bomb
-    if (_map[pos]._in_range_of == nullptr || _map[pos]._in_range_of->get_ms_before_explode() > bomb->get_ms_before_explode())
+    if (_map[pos]._in_range_of == nullptr || _map[pos]._in_range_of->get_ms_remaining_before_explode() > bomb->get_ms_remaining_before_explode())
         _map[pos]._in_range_of = bomb;
 
     if (range > 0){
@@ -235,9 +236,10 @@ void    AI::markBombRange(Bomb *bomb, Bomb *in_range_of){
         _map[pos]._free = false;
     _map[pos]._safe = false;
     Bomb    *b = bomb;
-    if (in_range_of && bomb->get_ms_before_explode() > in_range_of->get_ms_before_explode())
+    if (in_range_of && bomb->get_ms_remaining_before_explode() > in_range_of->get_ms_remaining_before_explode())
         b = in_range_of;
     _map[pos]._bomb = bomb;
+    _map[pos]._in_range_of = b;
     markBombRangeOneDir(pos + glm::ivec2(-1, 0), glm::ivec2(-1, 0), bomb->getFlameNb() - 1, b);
     markBombRangeOneDir(pos + glm::ivec2(1, 0), glm::ivec2(1, 0), bomb->getFlameNb() - 1, b);
     markBombRangeOneDir(pos + glm::ivec2(0, -1), glm::ivec2(0, -1), bomb->getFlameNb() - 1, b);
@@ -259,9 +261,14 @@ void    AI::updateMapWithEntity(IGameEntity *entity){
 }
 
 void    AI::markDeadlySpots(void){
-    // for (auto &&i : _map){
-        // check if a bomb is about to explode here (relative to the _dist) and mark spot as deadly accordingly.
-    // }
+    for (auto &&i : _map){
+        if (i.second._dist != -1 && i.second._in_range_of){
+            // std::cout << i.second._in_range_of->get_ms_remaining_before_explode().count() << " X " << static_cast<int>(static_cast<float>(i.second._dist * 1000) / (PLAYER_BASE_SPEED * _player->getSpeedMult())) << std::endl;
+            if (i.second._in_range_of->get_ms_remaining_before_explode().count() < static_cast<int>(static_cast<float>((i.second._dist + 2) * 1000) / (PLAYER_BASE_SPEED * _player->getSpeedMult()))){
+                i.second._deadly = true;
+            }
+        }
+    }
 }
 
 void    AI::updateMap(Map const & map, std::vector<IGameEntity *> & entities){
@@ -384,7 +391,7 @@ void    AI::compute(Map const & map, std::vector<IGameEntity *> & entities) {
 ///////////////////////////      DEBUG       //////////////////////////////
 
 bool    AI::shouldAppearInDebug(glm::ivec2 pos){
-    return _map[pos]._in_range_of != nullptr;
+    return _map[pos]._deadly;
 }
 
 void    AI::updateDebugCubes(Map const & map, std::vector<IGameEntity *> & entities) {

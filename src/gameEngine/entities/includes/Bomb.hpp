@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:23 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 11:41:15 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/22 15:42:05 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ public:
     int             getFlameNb() const;
 
     std::chrono::milliseconds const                                &get_ms_before_explode(void) const;
+    std::chrono::milliseconds const                                get_ms_remaining_before_explode(void) const;
     std::chrono::time_point<std::chrono::steady_clock> const       &get_creation_time(void) const;
     const Player                                                   *getPlayer(void) const;
 

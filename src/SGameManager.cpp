@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/23 12:33:49 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 13:13:37 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ void        SGameManager::manage(void) {
         }
         else
         {
-            Animation::Enum anim = Animation::Enum::WIN;
-            SEventManager::getInstance().raise(Event::END_ANIMATION, &anim);
+            // Animation::Enum anim = Animation::Enum::WIN;
+            //SEventManager::getInstance().raise(Event::END_ANIMATION, &anim);
         }
 		_gui.render(_game_is_active || _counter > 0);
 		_window.initGL();
@@ -160,4 +160,6 @@ bool            SGameManager::is_game_active() const {
 void            SGameManager::end_end_animation(void *){
     _counter = 0;
     _game_is_active = false;
+    Animation::Enum anim = Animation::Enum::WIN;
+    SEventManager::getInstance().raise(Event::END_ANIMATION, &anim);
 }

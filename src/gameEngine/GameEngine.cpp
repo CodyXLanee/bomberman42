@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/23 11:52:18 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 14:33:47 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,12 +321,14 @@ void			GameEngine::gameWin(void *)
 		Menu::Enum menu = Menu::BRAWL_WIN;
 		SEventManager::getInstance().raise(Event::GUI_TOGGLE, &menu);
 	}
+	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
 	_active = false;
 }
 
 
 void			GameEngine::gameOver(void *)
 {
+	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
     SEventManager::getInstance().raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));
 	_active = false;
 }

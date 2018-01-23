@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:27:21 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/23 11:51:22 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 14:40:45 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,12 @@ void    Camera::animationsEnd(void *anim) {
     switch (*animation) {
         case Animation::Enum::START:          is_first_animation = false; break;
         case Animation::Enum::GAME_OVER:
-        case Animation::Enum::WIN:            is_standing_animation = false; break;
+        case Animation::Enum::WIN:
+            is_standing_animation = false;
+            position = first_animation_init_pos;
+            yaw = first_animation_init_yaw;
+            pitch = first_animation_init_pitch;
+            break;
         default: break;
     }
 }

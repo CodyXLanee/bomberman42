@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 10:27:21 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/04 15:27:44 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 11:51:22 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,10 @@ void    Camera::firstAnimation(glm::vec2 playerPos){
         yaw = first_animation_init_yaw;
         pitch = first_animation_init_pitch;
     }
-    if (position == first_animation_init_pos)
+    if (position == first_animation_init_pos){
         is_first_animation = false;
+        SEventManager::getInstance().raise(Event::GAME_UNPAUSE, nullptr);
+    }
     if (is_first_animation) {
         position = position - (position - first_animation_init_pos) * 0.06f;
         yaw = yaw - (yaw - first_animation_init_yaw) * 0.06f;

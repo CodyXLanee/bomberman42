@@ -64,8 +64,11 @@ namespace Event {
 		LOAD_SLOT,
 /*		GameParams * | nullptr  | nullptr				*/
 		NEW_GAME,      QUIT_GAME, RESTART_GAME,
-/*		nullptr | nullptr								*/
-		GAME_WIN, GAME_FINISH,
+/*		nullptr | nullptr  | nullptr					*/
+		GAME_WIN, GAME_OVER, GAME_FINISH,
+
+/*		nullptr, nullptr								*/
+		GAME_PAUSE, GAME_UNPAUSE,
 
 /*		Player *   | Enemy *							*/
 		PLAYER_MOVE, ENEMY_MOVE,

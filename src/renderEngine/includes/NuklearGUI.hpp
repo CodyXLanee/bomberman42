@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/09 16:17:53 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/23 10:58:49 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ class NuklearGUI
         void        renderStartMenu();
         void        renderHowToPlayMenu();
         void        renderGameOverMenu();
+        void        renderBrawlWinMenu();
         void        renderSelectSlot(void);
         void        renderSlot(int, int, std::string, std::string);
         
@@ -108,8 +109,7 @@ class NuklearGUI
         void        updateScreenFormat(void *f);
         void        updateHumanPlayerBonus(void *p);
         void        setStarsCampaign(void * starsCampaign);
-        void        startAnimation(void *a);     
-        void        playerDies(void *);
+        void        startAnimation(void *a);
 
         struct nk_image         loadImage(std::string const, GLint);
 

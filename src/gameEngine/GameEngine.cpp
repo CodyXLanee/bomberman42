@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/03 16:39:10 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 11:52:18 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,13 @@ _enemyManager(new EnemyManager(_entityList, _map)),
 _bombManager(new BombManager(_map, _entityList)), 
 _playerManager(new PlayerManager()),
 _gameParams(gp),
-_winManager(new WinManager((gp.get_game_mode() == GameMode::CAMPAIGN) ? WinCondition::NO_MORE_BLOCKS : WinCondition::NO_MORE_ENEMIES, glm::vec2(0,0))),
-_win(false) {
+_winManager(nullptr),
+_win(false), _active(false) {
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(GameEngine::gameWin));
+    em.registerEvent(Event::GAME_OVER, MEMBER_CALLBACK(GameEngine::gameOver));
+    em.registerEvent(Event::GAME_PAUSE, MEMBER_CALLBACK(GameEngine::pause));
+    em.registerEvent(Event::GAME_UNPAUSE, MEMBER_CALLBACK(GameEngine::unPause));
 	
 	if (_gameParams.get_game_mode() == GameMode::BRAWL){
 		loadMap("maps/brawl_0.json");
@@ -42,6 +45,9 @@ _win(false) {
 
 GameEngine::~GameEngine() {
     SEventManager::getInstance().unRegisterEvent(Event::GAME_WIN, this);
+    SEventManager::getInstance().unRegisterEvent(Event::GAME_OVER, this);
+    SEventManager::getInstance().unRegisterEvent(Event::GAME_PAUSE, this);
+    SEventManager::getInstance().unRegisterEvent(Event::GAME_UNPAUSE, this);
 	delete _playerManager;
 	delete _bombManager;
 	delete _bonusManager;
@@ -56,7 +62,7 @@ GameEngine::~GameEngine() {
 void	GameEngine::compute() {
 	// auto start = std::chrono::system_clock::now();
 
-    if (this->_loader.getState() == -1 || !_winManager)
+    if (this->_loader.getState() == -1 || !_winManager || !_active)
         return ;
 	_playerManager->compute(*_map, *_entityList);
 	_collisionsManager.moves(*_map, *_entityList);
@@ -255,7 +261,7 @@ void					GameEngine::loadMap(const char *path){
 	win = this->_loader.getValue("win");
 	if (!win || !win->HasMember("condition") || !win->HasMember("spot") || !win[0]["spot"].IsArray() || win[0]["spot"].Size() != 2)
 		return;
-	_winManager = new WinManager(static_cast<WinCondition::Enum>(win[0]["condition"].GetInt()), glm::ivec2(win[0]["spot"][0].GetFloat(), win[0]["spot"][1].GetFloat()));
+	_winManager = new WinManager(static_cast<WinCondition::Enum>(win[0]["condition"].GetInt()), _gameParams.get_game_mode(), glm::ivec2(win[0]["spot"][0].GetFloat(), win[0]["spot"][1].GetFloat()));
 
     sun = this->_loader.getValue("sun");
     if (!sun || !sun->HasMember("pos") || !sun[0]["pos"].IsArray() || sun[0]["pos"].Size() != 3)
@@ -311,6 +317,18 @@ void			GameEngine::gameWin(void *)
 		SEventManager::getInstance().raise(Event::GUI_TOGGLE, &menu);
     	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
 	}
+	else {
+		Menu::Enum menu = Menu::BRAWL_WIN;
+		SEventManager::getInstance().raise(Event::GUI_TOGGLE, &menu);
+	}
+	_active = false;
+}
+
+
+void			GameEngine::gameOver(void *)
+{
+    SEventManager::getInstance().raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));
+	_active = false;
 }
 
 GameParams		GameEngine::getGameParams(void) const
@@ -345,4 +363,14 @@ int 			GameEngine::getStarsCampaign(void)
 bool		GameEngine::getWin(void) const
 {
 	return _win;
+}
+
+
+void		GameEngine::pause(void *) {
+	_active = false;
+}
+
+
+void		GameEngine::unPause(void *) {
+	_active = true;
 }

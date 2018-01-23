@@ -413,3 +413,8 @@ void    AI::updateDebugCubes(Map const & map, std::vector<IGameEntity *> & entit
     // _debug_cubes->push_back(_objective);
     
 }
+
+
+Player  *AI::getPlayer(void){
+    return _player;
+}

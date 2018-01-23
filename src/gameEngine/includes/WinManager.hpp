@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 17:16:53 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/03 14:28:45 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 10:41:13 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@
 # include "Map.hpp"
 # include "SEventManager.hpp"
 # include "WinSpot.hpp"
+# include "Player.hpp"
 # include <glm/glm.hpp>
 
 class WinManager {
 	
 	public:
-		WinManager(WinCondition::Enum condition, glm::vec2 spot);
+		WinManager(WinCondition::Enum condition, GameMode::Enum game_mode, glm::vec2 spot);
 		~WinManager();
 
 		void			update(Map & map, std::vector<IGameEntity *> &entityList);
@@ -32,6 +33,8 @@ class WinManager {
 		WinManager();
         void             checkWinBlocks(Map &);
         void             checkWinEnemies(std::vector<IGameEntity *> &);
+        void             checkWinPlayers(std::vector<IGameEntity *> &entityList);
+        GameMode::Enum          _game_mode;
         WinCondition::Enum      _win_condition;
         glm::vec2               _win_spot;
         bool                    _won;

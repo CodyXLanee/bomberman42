@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/21 12:25:12 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 11:47:36 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,12 @@ class GameEngine {
 		GameParams 							getGameParams(void) const;
 		bool								getWin(void) const;
 
+		void								setActive(bool b);
+
 		void								gameWin(void *ptr);
+		void								gameOver(void *);
+		void								pause(void *);
+		void								unPause(void *);
 
 	private:
 		GameEngine();		// not implemented;
@@ -61,6 +66,7 @@ class GameEngine {
 		GameParams					_gameParams;
 		WinManager					*_winManager;
 		bool						_win;
+		bool						_active;
 
 };
 

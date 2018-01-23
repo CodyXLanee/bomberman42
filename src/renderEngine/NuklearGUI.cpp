@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/19 15:57:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/23 10:58:39 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,6 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     event.registerEvent(Event::BONUS_ACTIVATE, MEMBER_CALLBACK(NuklearGUI::updateHumanPlayerBonus));
 
     event.registerEvent(Event::START_ANIMATION, MEMBER_CALLBACK(NuklearGUI::startAnimation));
-
-    event.registerEvent(Event::PLAYER_DIES, MEMBER_CALLBACK(NuklearGUI::playerDies));
     
     start_time = std::chrono::steady_clock::now();
     frames = 0;
@@ -169,17 +167,10 @@ void    NuklearGUI::render(bool game_is_active) {
             case Menu::NEW_BRAWL:           renderNewBrawlMenu(); break;
             case Menu::HOW_TO_PLAY:         renderHowToPlayMenu(); break;
             case Menu::GAME_OVER:           renderGameOverMenu(); break;
+            case Menu::BRAWL_WIN:           renderBrawlWinMenu(); break;
         }
     }
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
-}
-
-void    NuklearGUI::playerDies(void *p) {
-    Player *player = static_cast<Player*>(p);
-
-    if (player->getPlayerNb() == 0) {
-        event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));
-    }
 }
 
 void    NuklearGUI::bindKeyToEvent(Event::Enum ev, std::map<Event::Enum, SDL_Keycode> & displayedKeysMap) {
@@ -644,6 +635,37 @@ void    NuklearGUI::renderGameOverMenu() {
         nk_style_set_font(ctx, &mediumFont->handle);               
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         if (nk_button_label(ctx, "Retry")) {
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));                
+            event.raise(Event::RESTART_GAME, nullptr);            
+        }       
+
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        if (nk_button_label(ctx, "Back to main menu")) {
+            event.raise(Event::GAME_FINISH, nullptr);
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::START));                
+        }
+        
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        if (nk_button_label(ctx, "Quit game")) {
+            event.raise(Event::QUIT_GAME, nullptr);                            
+        }  
+    }
+    nk_end(ctx);
+}
+
+void    NuklearGUI::renderBrawlWinMenu() {
+    static float    tmp_h = menuHeight / 7.0f * 5.0f;
+
+    if (nk_begin(ctx, "GAME OVER", nk_rect(windowWidth / 2 - menuWidth / 2, windowHeight / 2 - tmp_h / 2, menuWidth, tmp_h),
+    NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
+
+        nk_style_set_font(ctx, &bigFont->handle);
+        nk_layout_row_dynamic(ctx, optionHeight * 2, 1);
+        nk_label(ctx, "You Win !", NK_TEXT_CENTERED);  
+
+        nk_style_set_font(ctx, &mediumFont->handle);               
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        if (nk_button_label(ctx, "Play Again")) {
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));                
             event.raise(Event::RESTART_GAME, nullptr);            
         }       

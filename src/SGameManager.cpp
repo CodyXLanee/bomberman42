@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/23 13:13:37 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 17:13:51 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,11 @@ void            SGameManager::quit_game(void *){
 
 void            SGameManager::new_game(void *p){
     GameParams *gp = static_cast<GameParams *>(p);
-    if (_game != nullptr)
+    if (_game != nullptr){
         delete _game;
+        Animation::Enum anim = Animation::Enum::WIN;
+        SEventManager::getInstance().raise(Event::END_ANIMATION, &anim);
+    }
     _game = new GameEngine(*gp);
     _game_is_active = true;
     _current_game_params = gp;
@@ -109,6 +112,10 @@ void            SGameManager::new_game(void *p){
 void            SGameManager::restart_game(void *){
     if (_game != nullptr)
         delete _game;
+
+    _game_is_active = true;
+    Animation::Enum anim = Animation::Enum::WIN;
+    SEventManager::getInstance().raise(Event::END_ANIMATION, &anim);
     _game = new GameEngine(*_current_game_params);
 
     Animation::Enum a = Animation::START;
@@ -131,6 +138,7 @@ void            SGameManager::game_finish(void *){
     }
     Animation::Enum anim = Animation::Enum::WIN;
     SEventManager::getInstance().raise(Event::START_ANIMATION, &anim);
+    SEventManager::getInstance().raise(Event::GAME_PAUSE, nullptr);
 }
 
 // void            SGameManager::newGame(GameMode::Enum gm){

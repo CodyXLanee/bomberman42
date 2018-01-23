@@ -1,6 +1,7 @@
 # include "PlayerManager.hpp"
 
-PlayerManager::PlayerManager() : _human_player(nullptr), _spawned_bomb(false){	
+void        PlayerManager::Register(void){
+    _active = true;
     SEventManager & em = SEventManager::getInstance();
 	em.registerEvent(Event::PLAYER_LEFT, MEMBER_CALLBACK(PlayerManager::newDirLeft));
 	em.registerEvent(Event::PLAYER_RIGHT, MEMBER_CALLBACK(PlayerManager::newDirRight));
@@ -22,11 +23,12 @@ PlayerManager::PlayerManager() : _human_player(nullptr), _spawned_bomb(false){
 
 	em.registerEvent(Event::HUMAN_SPAWN_BOMB, MEMBER_CALLBACK(PlayerManager::humanSpawnBomb));
 	em.registerEvent(Event::END_HUMAN_SPAWN_BOMB, MEMBER_CALLBACK(PlayerManager::humanEndSpawnBomb));
-
-	em.registerEvent(Event::PLAYER_DIES, MEMBER_CALLBACK(PlayerManager::playerDies));
 }
 
-PlayerManager::~PlayerManager(){    SEventManager & em = SEventManager::getInstance();
+
+void        PlayerManager::unRegister(void){
+    _active = false;
+    SEventManager & em = SEventManager::getInstance();
 	em.unRegisterEvent(Event::PLAYER_LEFT, this);
 	em.unRegisterEvent(Event::PLAYER_RIGHT, this);
 	em.unRegisterEvent(Event::PLAYER_UP, this);
@@ -48,11 +50,24 @@ PlayerManager::~PlayerManager(){    SEventManager & em = SEventManager::getInsta
 	em.unRegisterEvent(Event::HUMAN_SPAWN_BOMB, this);
 	em.unRegisterEvent(Event::END_HUMAN_SPAWN_BOMB, this);
 
-	em.unRegisterEvent(Event::PLAYER_DIES, this);
+}
+
+
+PlayerManager::PlayerManager() : _human_player(nullptr), _spawned_bomb(false), _active(false){
+    // Register();
+	SEventManager::getInstance().registerEvent(Event::PLAYER_DIES, MEMBER_CALLBACK(PlayerManager::playerDies));
+}
+
+PlayerManager::~PlayerManager(){
+    unRegister();
+
+	SEventManager::getInstance().unRegisterEvent(Event::PLAYER_DIES, this);
 }
 
 
 void    PlayerManager::compute(Map const & map, std::vector<IGameEntity *> &entityList){
+    if (!_active)
+        return;
     for (auto it = _AIs.begin(); it != _AIs.end(); it++){
        (*it)->compute(map, entityList);
     }

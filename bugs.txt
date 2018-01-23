@@ -1,0 +1,3 @@
+- Sur le niveau 3 : La camera tourne super vite losqu on finit le niveau.
+
+- Le HUD ne se met pas a jour apres un Retry.

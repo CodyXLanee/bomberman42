@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/23 14:33:47 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 15:58:09 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ _bombManager(new BombManager(_map, _entityList)),
 _playerManager(new PlayerManager()),
 _gameParams(gp),
 _winManager(nullptr),
-_win(false), _active(false) {
+_win(false), _active(true) {
     SEventManager &em = SEventManager::getInstance();
     em.registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(GameEngine::gameWin));
     em.registerEvent(Event::GAME_OVER, MEMBER_CALLBACK(GameEngine::gameOver));
@@ -64,7 +64,8 @@ void	GameEngine::compute() {
 
     if (this->_loader.getState() == -1 || !_winManager || !_active)
         return ;
-	_playerManager->compute(*_map, *_entityList);
+
+    _playerManager->compute(*_map, *_entityList);
 	_collisionsManager.moves(*_map, *_entityList);
 	_bombManager->update();
 	_bonusManager->update();
@@ -322,7 +323,6 @@ void			GameEngine::gameWin(void *)
 		SEventManager::getInstance().raise(Event::GUI_TOGGLE, &menu);
 	}
 	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
-	_active = false;
 }
 
 
@@ -330,7 +330,6 @@ void			GameEngine::gameOver(void *)
 {
 	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
     SEventManager::getInstance().raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));
-	_active = false;
 }
 
 GameParams		GameEngine::getGameParams(void) const
@@ -369,10 +368,10 @@ bool		GameEngine::getWin(void) const
 
 
 void		GameEngine::pause(void *) {
-	_active = false;
+	_playerManager->unRegister();
 }
 
 
 void		GameEngine::unPause(void *) {
-	_active = true;
+	_playerManager->Register();
 }

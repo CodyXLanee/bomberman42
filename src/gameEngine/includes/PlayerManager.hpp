@@ -20,12 +20,15 @@ class PlayerManager {
         void                compute(Map const & map, std::vector<IGameEntity *> &entityList);
         void                setHumanPlayer(Player *);
         void                addPlayer(Player *);
+        void                Register(void);
+        void                unRegister(void);
 
 private:
 
     Player                  *_human_player;
     std::vector<AI *>       _AIs;
     bool					_spawned_bomb;
+    bool					_active;
 
     void                    ai(Player *p, Map const & map, std::vector<IGameEntity *> &entityList);
     void                    newDirLeft(void *p);

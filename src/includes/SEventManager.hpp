@@ -67,8 +67,8 @@ namespace Event {
 /*		nullptr | nullptr  | nullptr					*/
 		GAME_WIN, GAME_OVER, GAME_FINISH,
 
-/*		nullptr, nullptr								*/
-		GAME_PAUSE, GAME_UNPAUSE,
+/*		nullptr, nullptr		| nullptr				*/
+		GAME_PAUSE, GAME_UNPAUSE, END_END_ANIMATION,
 
 /*		Player *   | Enemy *							*/
 		PLAYER_MOVE, ENEMY_MOVE,

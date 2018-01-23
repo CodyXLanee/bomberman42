@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/23 10:58:39 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 12:35:38 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -636,18 +636,20 @@ void    NuklearGUI::renderGameOverMenu() {
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         if (nk_button_label(ctx, "Retry")) {
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));                
-            event.raise(Event::RESTART_GAME, nullptr);            
+            event.raise(Event::RESTART_GAME, nullptr);
         }       
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         if (nk_button_label(ctx, "Back to main menu")) {
             event.raise(Event::GAME_FINISH, nullptr);
-            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::START));                
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::START));
+            
+            event.raise(Event::END_END_ANIMATION, nullptr);
         }
         
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         if (nk_button_label(ctx, "Quit game")) {
-            event.raise(Event::QUIT_GAME, nullptr);                            
+            event.raise(Event::QUIT_GAME, nullptr);                     
         }  
     }
     nk_end(ctx);
@@ -667,18 +669,20 @@ void    NuklearGUI::renderBrawlWinMenu() {
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         if (nk_button_label(ctx, "Play Again")) {
             event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));                
-            event.raise(Event::RESTART_GAME, nullptr);            
+            event.raise(Event::RESTART_GAME, nullptr);
         }       
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         if (nk_button_label(ctx, "Back to main menu")) {
             event.raise(Event::GAME_FINISH, nullptr);
-            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::START));                
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::START));      
+
+            event.raise(Event::END_END_ANIMATION, nullptr);               
         }
         
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         if (nk_button_label(ctx, "Quit game")) {
-            event.raise(Event::QUIT_GAME, nullptr);                            
+            event.raise(Event::QUIT_GAME, nullptr);
         }  
     }
     nk_end(ctx);

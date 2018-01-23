@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/23 11:46:03 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/23 12:33:49 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ SGameManager::SGameManager() :
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
     em.registerEvent(Event::RESTART_GAME, MEMBER_CALLBACK(SGameManager::restart_game));
     em.registerEvent(Event::GAME_FINISH, MEMBER_CALLBACK(SGameManager::game_finish));
+    em.registerEvent(Event::END_END_ANIMATION, MEMBER_CALLBACK(SGameManager::end_end_animation));
 
     em.registerEvent(Event::LOAD_SLOT, MEMBER_CALLBACK(SGameManager::loadSlot));
 }
@@ -154,4 +155,9 @@ Slot &          SGameManager::getSlot(int index) const {
 
 bool            SGameManager::is_game_active() const {
     return _game_is_active;
+}
+
+void            SGameManager::end_end_animation(void *){
+    _counter = 0;
+    _game_is_active = false;
 }

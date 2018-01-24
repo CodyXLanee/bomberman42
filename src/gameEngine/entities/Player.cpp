@@ -24,7 +24,7 @@ left(false), right(false), up(false), down(false),
 _graphicalDirection(glm::vec2(0,0)),
 _color(color),
 _creation_time(std::chrono::steady_clock::now()),
-_frameBeforeDelete(120){
+_frameBeforeDelete(0){
 	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Player::bomb_explodes_callback));
 	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Player::spawn_flame_callback));
 	SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Player::enemy_move_callback));

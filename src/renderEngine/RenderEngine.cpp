@@ -146,7 +146,10 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 
 		data.push_back(transform);
 		Model &model = modelManager.getPlayerModel(player->getPlayerNb());
-		model.setAnimation(numAnim, fakeTime);
+		if (numAnim != 3)
+			model.setAnimation(numAnim, fakeTime);
+		else
+			model.setAnimation(numAnim, player->getFrameBeforeDelete() * 0.01f);
 		model.draw(shader, data);
 	}
 	fakeTime += 0.01;

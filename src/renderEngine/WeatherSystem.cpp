@@ -46,21 +46,21 @@ void	WeatherSystem::init() {
 			ambiant = 0.4f;
 			diffuse = 0.6f;
 			specular = 0.6f;
-			sunPos = glm::vec3(16.f, -15.f, 40.f);
+			sunPos = glm::vec3(16.f, 30.f, 40.f);
 			sunColor = glm::vec3(1.f, 0.941f, 0.713f);
 			break;
 		case TWILIGHT:
 			ambiant = 0.4f;
 			diffuse = 0.6f;
 			specular = 0.8f;
-			sunPos = glm::vec3(16.f, -15.f, 10.f);
+			sunPos = glm::vec3(16.f, 30.f, 10.f);
 			sunColor = glm::vec3(1.f, 0.941f, 0.713f);
 			break;
 		case MIDNIGHT:
 			ambiant = 0.2f;
 			diffuse = 0.2f;
 			specular = 0.2f;
-			sunPos = glm::vec3(16.f, -15.f, 40.f);
+			sunPos = glm::vec3(16.f, 30.f, 40.f);
 			sunColor = glm::vec3(1.f, 1.f, 1.f);
 			break;
 	}

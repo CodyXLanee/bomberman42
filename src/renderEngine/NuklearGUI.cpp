@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/24 11:43:24 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/24 12:57:05 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -605,7 +605,7 @@ static std::string     color_to_image(PlayerColor::Enum color){
 void    NuklearGUI::renderNewBrawlMenu() {
 
     static GameParams game_params(GameMode::BRAWL, Level::ONE, PlayerColor::WHITE, 1, Difficulty::EASY);
-    static struct nk_image  levelImage = loadImage("assets/textures/level" + std::to_string(game_params.get_level() + 1) + ".png", GL_RGBA);
+    static struct nk_image  levelImage = loadImage("assets/textures/Brawl_bombermans.png", GL_RGBA);
 
     static struct nk_image  playerImage = loadImage(color_to_image(game_params.get_color()).c_str(), GL_RGBA);    
 
@@ -613,15 +613,15 @@ void    NuklearGUI::renderNewBrawlMenu() {
     if (nk_begin(ctx, "NEW BRAWL", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
 
-        nk_layout_row_dynamic(ctx, optionHeight * 2, 1);
+        nk_layout_row_dynamic(ctx, optionHeight * 4, 1);
         nk_image(ctx, levelImage);
 
-        nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Arena", NK_TEXT_CENTERED);
-        if (nk_button_label(ctx, std::string("Arena " + std::to_string(game_params.get_level()+ 1)).c_str())) {
-            game_params.set_level(game_params.get_level() == Level::THREE ? Level::ONE : static_cast<Level::Enum>(game_params.get_level() + 1));
-            levelImage = loadImage("assets/textures/level" + std::to_string(game_params.get_level() + 1) + ".png", GL_RGBA);
-        }   
+        // nk_layout_row_dynamic(ctx, optionHeight, 2);
+        // nk_label(ctx, "Arena", NK_TEXT_CENTERED);
+        // if (nk_button_label(ctx, std::string("Arena " + std::to_string(game_params.get_level()+ 1)).c_str())) {
+        //     game_params.set_level(game_params.get_level() == Level::THREE ? Level::ONE : static_cast<Level::Enum>(game_params.get_level() + 1));
+        //     levelImage = loadImage("assets/textures/level" + std::to_string(game_params.get_level() + 1) + ".png", GL_RGBA);
+        // }   
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Player", NK_TEXT_CENTERED);
@@ -636,11 +636,11 @@ void    NuklearGUI::renderNewBrawlMenu() {
             game_params.set_brawl_enemy_nb(game_params.get_brawl_enemy_nb() + 1);
         }
             
-        nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Difficulty", NK_TEXT_CENTERED);
-        if (nk_button_label(ctx, toString(game_params.get_difficulty()).c_str())) {
-            game_params.set_difficulty(game_params.get_difficulty() == Difficulty::HARD ? Difficulty::EASY : static_cast<Difficulty::Enum>(game_params.get_difficulty() + 1));
-        }        
+        // nk_layout_row_dynamic(ctx, optionHeight, 2);
+        // nk_label(ctx, "Difficulty", NK_TEXT_CENTERED);
+        // if (nk_button_label(ctx, toString(game_params.get_difficulty()).c_str())) {
+        //     game_params.set_difficulty(game_params.get_difficulty() == Difficulty::HARD ? Difficulty::EASY : static_cast<Difficulty::Enum>(game_params.get_difficulty() + 1));
+        // }        
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);        
         if (nk_button_label(ctx, "Back")) {

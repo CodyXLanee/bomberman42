@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/23 15:59:01 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/24 16:45:29 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ BombManager::~BombManager() {
     em.unRegisterEvent(Event::SPAWN_FLAME, this);
     em.unRegisterEvent(Event::BOMB_EXPLODES, this);
     em.unRegisterEvent(Event::FLAME_DISAPEAR, this);
+
+    delete _flames_to_add;
 }
 
 void              BombManager::spawn_bomb(void *p){

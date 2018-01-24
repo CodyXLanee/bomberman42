@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/24 11:06:19 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/24 17:36:31 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,10 @@ void        SGameManager::manage(void) {
 
         if (_game_is_active || _post_game_display){
             _game->compute();
-            
-            _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
+            glm::vec2 * player_pos = _game->getPlayerPos()
+            _camera.update(_window.getMouseX(), _window.getMouseY(), player_pos);
             _renderer.render(_game->getMap(), _game->getEntityList());
+            delete player_pos;
         }
         else
         {

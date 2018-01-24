@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/11 10:59:46 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 17:14:18 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/24 17:23:55 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@ _gameParams(gp){
 BonusManager::~BonusManager(){
     SEventManager::getInstance().unRegisterEvent(Event::BRICK_BREAKS, this);
     SEventManager::getInstance().unRegisterEvent(Event::BONUS_ACTIVATE, this);
+    for (auto &&i : *_bonus_queue){
+        delete i;
+    }
+    delete _bonus_queue;
 }
 
 void			BonusManager::update(void){

@@ -62,6 +62,10 @@ PlayerManager::~PlayerManager(){
     unRegister();
 
 	SEventManager::getInstance().unRegisterEvent(Event::PLAYER_DIES, this);
+
+    for (auto &&i : _AIs){
+        delete i;
+    }
 }
 
 

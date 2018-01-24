@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/23 17:13:51 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/24 11:06:19 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,7 @@ void        SGameManager::manage(void) {
     {
 		_window.eventManager(_gui.getContext());
 
-        if (!_game_is_active)
-            _counter--;
-
-        if (_game_is_active || _counter > 0){
+        if (_game_is_active || _post_game_display){
             _game->compute();
             
             _camera.update(_window.getMouseX(), _window.getMouseY(), _game->getPlayerPos());
@@ -78,7 +75,7 @@ void        SGameManager::manage(void) {
             // Animation::Enum anim = Animation::Enum::WIN;
             //SEventManager::getInstance().raise(Event::END_ANIMATION, &anim);
         }
-		_gui.render(_game_is_active || _counter > 0);
+		_gui.render(_game_is_active || _post_game_display);
 		_window.initGL();
 		SDL_GL_SwapWindow(_window.getWin());
     }
@@ -124,7 +121,7 @@ void            SGameManager::restart_game(void *){
 
 void            SGameManager::game_finish(void *){
     _game_is_active = false;
-    _counter = 1000;
+    _post_game_display = true;
 
     if (_game->getGameParams().get_game_mode() == GameMode::CAMPAIGN)
     {
@@ -166,7 +163,7 @@ bool            SGameManager::is_game_active() const {
 }
 
 void            SGameManager::end_end_animation(void *){
-    _counter = 0;
+    _post_game_display = false;
     _game_is_active = false;
     Animation::Enum anim = Animation::Enum::WIN;
     SEventManager::getInstance().raise(Event::END_ANIMATION, &anim);

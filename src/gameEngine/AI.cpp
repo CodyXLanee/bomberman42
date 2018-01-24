@@ -27,7 +27,7 @@ AI::AI(Player *player) : _player(player), _debug_cubes(new std::vector<glm::vec2
 }  
 
 AI::~AI() {
-
+    delete _debug_cubes;
 }
 
 

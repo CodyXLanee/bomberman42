@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/23 15:58:09 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/24 11:00:40 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,8 +302,6 @@ void			GameEngine::gameWin(void *)
 	}
 	if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
 	{
-
-
 		for (auto i = _entityList->begin(); i != _entityList->end(); i++){
 			if ((*i)->getType() == Type::PLAYER){
 				(*i)->setState(State::WINNING);

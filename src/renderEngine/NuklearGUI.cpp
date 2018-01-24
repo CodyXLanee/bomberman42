@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/23 17:18:44 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/24 11:43:24 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     event.registerEvent(Event::BONUS_ACTIVATE, MEMBER_CALLBACK(NuklearGUI::updateHumanPlayerBonus));
 
     event.registerEvent(Event::START_ANIMATION, MEMBER_CALLBACK(NuklearGUI::startAnimation));
+
+    event.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(NuklearGUI::resetHumanPlayerBonus));
+    event.registerEvent(Event::RESTART_GAME, MEMBER_CALLBACK(NuklearGUI::resetHumanPlayerBonus));
     
     start_time = std::chrono::steady_clock::now();
     frames = 0;
@@ -638,8 +641,8 @@ void    NuklearGUI::renderGameOverMenu() {
         nk_style_set_font(ctx, &mediumFont->handle);               
         nk_layout_row_dynamic(ctx, optionHeight, 1);
         if (nk_button_label(ctx, "Retry")) {
-            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));                
-            event.raise(Event::RESTART_GAME, nullptr);    
+            event.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));
+            event.raise(Event::RESTART_GAME, nullptr);
         }       
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);
@@ -1161,4 +1164,8 @@ void    NuklearGUI::startAnimation(void *a){
     if (*anim == Animation::START){
         initRenderCountDown();
     }
+}
+
+void    NuklearGUI::resetHumanPlayerBonus(void *){
+    _human_player_bonus = glm::ivec3(1, 1, 1);
 }

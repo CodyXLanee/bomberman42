@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:19:12 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/23 10:58:49 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/24 11:44:11 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ class NuklearGUI
         void        setMusicVolume(void * v);
         void        updateScreenFormat(void *f);
         void        updateHumanPlayerBonus(void *p);
+        void        resetHumanPlayerBonus(void *);
         void        setStarsCampaign(void * starsCampaign);
         void        startAnimation(void *a);
 

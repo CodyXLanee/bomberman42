@@ -35,6 +35,9 @@ class NuklearGUI
 
         struct nk_context *     getContext() const;
         void                    render(bool);
+
+        Sdl_gl_win&             getSGW() const;
+        Camera&                 getCamera() const;
         
         
     private:

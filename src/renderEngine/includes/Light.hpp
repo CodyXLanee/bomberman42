@@ -25,6 +25,9 @@ class Light {
 		Light(glm::vec3 position, glm::vec3 color, type t);
 		~Light();
 
+		Light(Light const & src);
+		Light&		operator=(Light const & rhs);
+
 		glm::vec3	getPosition() const;
 		void		setPosition(glm::vec3);
 		glm::vec3	getColor() const;

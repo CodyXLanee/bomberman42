@@ -24,6 +24,9 @@ class ModelManager {
 		ModelManager();
 		~ModelManager();
 
+		ModelManager(ModelManager const & src);
+		ModelManager &	operator=(ModelManager const & rhs);
+
 		Model	&getModel(model m) const;
 		Model	&getPlayerModel(unsigned int n) const;
 		

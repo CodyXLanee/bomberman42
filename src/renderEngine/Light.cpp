@@ -22,6 +22,20 @@ Light::~Light() {
 	delete model;
 }
 
+Light::Light(Light const & src) {
+	*this = src;
+}
+
+Light&		Light::operator=(Light const & rhs) {
+	if (this != &rhs)
+	{
+		position = rhs.getPosition();
+		color = rhs.getColor();
+	}
+
+	return *this;
+}
+
 glm::vec3	Light::getPosition() const {
 	return this->position;
 }

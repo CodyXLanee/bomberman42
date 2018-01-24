@@ -38,6 +38,23 @@ ShaderManager::ShaderManager() {
 	mainShader->setInt("depthMap", 3);
 }
 
+ShaderManager::ShaderManager(ShaderManager const & src) {
+	*this = src;
+}
+
+ShaderManager&	ShaderManager::operator=(ShaderManager const & rhs) {
+	if (this != &rhs)
+	{
+		mainShader = &rhs.getMainShader();
+		flamesShader = &rhs.getFlamesShader();
+		directionalShadowShader = &rhs.getDirectionalShadowShader();
+		pointShadowShader = &rhs.getPointShadowShader();
+		particlesShader = &rhs.getParticlesShader();
+	}
+
+	return *this;
+}
+
 ShaderManager::~ShaderManager() {
 	delete mainShader;
 	delete flamesShader;

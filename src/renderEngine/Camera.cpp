@@ -52,6 +52,24 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookAt) :
 
 }
 
+Camera::~Camera() {}
+
+Camera::Camera(Camera const &src) {
+    *this = src;
+}
+
+Camera& Camera::operator=(Camera const & rhs) {
+    if (this != &rhs)
+    {
+        matrix = rhs.getMatrix();
+        position = rhs.getPosition();
+        front = rhs.getFront();
+        mode = rhs.getMode();
+    }
+
+    return *this;
+}
+
 void    Camera::moveLeft(void *) {
     switch (mode) {
         case FREE:          position -= glm::normalize(glm::cross(front, up)) * speed; break;

@@ -84,6 +84,22 @@ NuklearGUI::~NuklearGUI() {
     nk_sdl_shutdown();    
 }
 
+NuklearGUI::NuklearGUI(NuklearGUI const & src) : win(src.getSGW()), camera(src.getCamera()), event(SEventManager::getInstance()) {
+    *this = src;
+}
+
+NuklearGUI&     NuklearGUI::operator=(NuklearGUI const &) {
+    return *this;
+}
+
+Sdl_gl_win&     NuklearGUI::getSGW() const {
+    return win;
+}
+
+Camera&         NuklearGUI::getCamera() const {
+    return camera;
+}
+
 struct nk_context * NuklearGUI::getContext () const { return ctx; }
 
 void    NuklearGUI::toggle(void *p) {  

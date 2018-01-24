@@ -45,8 +45,14 @@ class RenderEngine {
 	public:
 		RenderEngine(SDL_Window	*win, Camera &);
 		~RenderEngine();
+
+		RenderEngine(RenderEngine const & src);
+		RenderEngine&	operator=(RenderEngine const & rhs);
 		
 		void	render(Map const & map, std::vector<IGameEntity *> & entities);
+
+		SDL_Window*		getWindow() const;
+		Camera&			getCamera() const;
 		
 	private:
 		

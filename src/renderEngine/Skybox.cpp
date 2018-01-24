@@ -22,6 +22,17 @@ Skybox::Skybox(std::string directory) {
 	setBuffers();
 }
 
+Skybox::Skybox(Skybox const & src) {
+	*this = src;
+}
+
+Skybox&		Skybox::operator=(Skybox const & rhs) {
+	if (this != &rhs)
+		textureID = rhs.getTextureID();
+
+	return *this;
+}
+
 Skybox::~Skybox() {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);

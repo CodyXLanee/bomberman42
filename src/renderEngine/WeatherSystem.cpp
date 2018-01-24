@@ -28,6 +28,17 @@ WeatherSystem::WeatherSystem(enum time t, bool cloudy, bool rainy)
 		initClouds();
 }
 
+WeatherSystem::WeatherSystem(WeatherSystem const & src) {
+	*this = src;
+}
+
+WeatherSystem&	WeatherSystem::operator=(WeatherSystem const & rhs) {
+	if (this != &rhs)
+		sun = &rhs.getSun();
+
+	return *this;
+}
+
 WeatherSystem::~WeatherSystem() {
 	delete cloudModel;
 	// delete rain;

@@ -30,6 +30,27 @@ RenderEngine::~RenderEngine() {
 	delete meteo;
 }
 
+RenderEngine::RenderEngine(RenderEngine const & src) : camera(src.getCamera()) {
+	*this = src;
+}
+
+RenderEngine&	RenderEngine::operator=(RenderEngine const & rhs) {
+	if (this != & rhs)
+	{
+		win = rhs.getWindow();
+	}
+
+	return *this;
+}
+
+SDL_Window*		RenderEngine::getWindow() const {
+	return win;
+}
+
+Camera&			RenderEngine::getCamera() const {
+	return camera;
+}
+
 void	RenderEngine::render(Map const & map, std::vector<IGameEntity *> & entities) {
 	SDL_GetWindowSize(win, &w, &h);
 	setFireLights(entities);

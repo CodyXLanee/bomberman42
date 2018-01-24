@@ -24,6 +24,10 @@
 class Camera {
 	public:
 		Camera(glm::vec3, glm::vec3);
+		~Camera();
+
+		Camera(Camera const & src);
+		Camera&	operator=(Camera const & rhs);
 
 		enum 		Mode { FIXED, FREE, FOLLOW_PLAYER };
 		

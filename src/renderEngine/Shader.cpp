@@ -37,6 +37,19 @@ Shader::Shader(std::string vertexSrc, std::string geometrySrc, std::string fragm
 
 }
 
+Shader::Shader(Shader const & src) {
+    *this = src;
+}
+
+Shader&     Shader::operator=(Shader const & rhs) {
+    if (this != & rhs)
+    {
+        programID = rhs.getProgramID();
+    }
+
+    return *this;
+}
+
 Shader::~Shader() {
     glDeleteShader(this->vertexID);
     glDeleteShader(this->fragmentID);

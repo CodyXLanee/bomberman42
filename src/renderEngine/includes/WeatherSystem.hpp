@@ -26,6 +26,9 @@ class WeatherSystem {
 		WeatherSystem();
 		WeatherSystem(time t, bool cloudy, bool rainy);
 		~WeatherSystem();
+
+		WeatherSystem(WeatherSystem const & src);
+		WeatherSystem&	operator=(WeatherSystem const & rhs);
 	
 		void	setTime(time t);
 		void	startCloud(void*);

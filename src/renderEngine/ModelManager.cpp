@@ -58,6 +58,14 @@ ModelManager::~ModelManager() {
 	}
 }
 
+ModelManager::ModelManager(ModelManager const & src) {
+	*this = src;
+}
+
+ModelManager &	ModelManager::operator=(ModelManager const &) {
+	return *this;
+}
+
 Model	&ModelManager::getPlayerModel(unsigned int n) const {
 	if (n > 3)
 		n = 3;

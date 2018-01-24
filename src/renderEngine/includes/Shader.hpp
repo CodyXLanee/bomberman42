@@ -27,6 +27,9 @@ class Shader {
         Shader(std::string vertexSrc, std::string fragmentSrc);
         Shader(std::string vertexSrc, std::string geometrySrc, std::string fragmentSrc);
         ~Shader();
+
+        Shader(Shader const & src);
+        Shader&     operator=(Shader const & rhs);
         
         void            use() const;
         void            setModel(glm::mat4 model) const;

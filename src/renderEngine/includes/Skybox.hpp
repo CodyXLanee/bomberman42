@@ -23,6 +23,9 @@ class Skybox {
 	public:
 		Skybox(std::string directory);
 		~Skybox();
+
+		Skybox(Skybox const & src);
+		Skybox&		operator=(Skybox const & rhs);
 		
 		void			draw();
 		unsigned int	getTextureID() const;

@@ -32,6 +32,9 @@ class GLString {
 	public:
 		GLString();
 		~GLString();
+		GLString(GLString const & src);
+		GLString&	operator=(GLString const & rhs);
+		
 		void		render();
 		void		renderText(std::string str, float x, float y, glm::vec3 color) const;
 

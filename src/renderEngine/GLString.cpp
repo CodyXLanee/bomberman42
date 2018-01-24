@@ -26,6 +26,14 @@ GLString::~GLString() {
 	delete this->shader;
 }
 
+GLString::GLString(GLString const & src) {
+	*this = src;
+}
+
+GLString&	GLString::operator=(GLString const & ) {
+	return *this;
+}
+
 void	GLString::initFont(std::string fontPath) {
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))

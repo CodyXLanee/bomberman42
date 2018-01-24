@@ -20,6 +20,9 @@ class ShaderManager {
 		ShaderManager();
 		~ShaderManager();
 
+		ShaderManager(ShaderManager const & src);
+		ShaderManager&	operator=(ShaderManager const & rhs);
+
 		Shader	&getMainShader() const;
 		Shader	&getDirectionalShadowShader() const;
 		Shader	&getPointShadowShader() const;

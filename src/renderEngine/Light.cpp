@@ -18,7 +18,9 @@ Light::Light(glm::vec3 position, glm::vec3 color, enum type t)
 	lookAt = glm::vec3(5.0f, 5.0f, 0.0f);
 }
 
-Light::~Light() {}
+Light::~Light() {
+	delete model;
+}
 
 glm::vec3	Light::getPosition() const {
 	return this->position;

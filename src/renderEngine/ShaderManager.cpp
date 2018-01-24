@@ -42,7 +42,7 @@ ShaderManager::~ShaderManager() {
 	delete mainShader;
 	delete flamesShader;
 	delete directionalShadowShader;
-	delete pointShadowShader;
+	//delete pointShadowShader;
 	delete particlesShader;
 }
 

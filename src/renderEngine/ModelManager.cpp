@@ -49,6 +49,10 @@ ModelManager::~ModelManager() {
 	delete aiDebug;
 	delete sceneryModel;
 	delete winSpot;
+	delete flameUpModel;
+	delete bombUpModel;
+	delete speedUpModel;
+	delete baloonModel;
 	for (unsigned int i = 0; i < 4; i++) {
 		delete playerModel[i];
 	}

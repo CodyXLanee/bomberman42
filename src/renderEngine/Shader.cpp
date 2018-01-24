@@ -107,6 +107,7 @@ bool        Shader::checkShaderCompilation(GLuint shaderID, GLenum type) {
     if (type == GL_GEOMETRY_SHADER)
         std::cout << "Compile failure in geometry shader" << std::endl;
     std::cout << error << std::endl;
+    delete error;
     
     return false;
 }
@@ -126,6 +127,7 @@ bool        Shader::checkProgramCompilation(GLuint program) {
     error = new char[errorSize + 1];
     glGetProgramInfoLog(program, errorSize, NULL, error);
     std::cout << error << std::endl;
+    delete error;
     
     return false;
 }

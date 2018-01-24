@@ -26,6 +26,7 @@ Skybox::~Skybox() {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 	glDeleteTextures(1, &textureID);
+	delete shader;
 	return;
 }
 

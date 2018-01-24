@@ -54,6 +54,9 @@ public:
     int         getFlameNb(void) const;
     float       getSpeedMult(void) const ;
 
+    int         getFrameBeforeDelete() const;
+    void        setFrameBeforeDelete(int frame);
+
     void        bomb_explodes_callback(void *bomb);
     void		spawn_flame_callback(void *flame);
     void    	enemy_move_callback(void *enemy);
@@ -71,6 +74,7 @@ private:
 	glm::vec2	_graphicalDirection;
     PlayerColor::Enum   _color;
     std::chrono::time_point<std::chrono::steady_clock>      _creation_time;
+    int         _frameBeforeDelete;
 };
 
 #endif

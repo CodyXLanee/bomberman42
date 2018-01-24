@@ -123,6 +123,8 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 		int numAnim = 0;
 		if (player->getState() == State::MOVING)
 			numAnim = 1;
+		if (player->getState() == State::DYING)
+			numAnim = 3;
 			
     	std::vector<glm::mat4> data;
 		glm::mat4 transform = glm::mat4();

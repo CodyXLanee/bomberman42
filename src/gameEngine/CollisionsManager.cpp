@@ -13,6 +13,16 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &ent
 	for (std::vector<IGameEntity *>::iterator i = entityList.begin(); i != entityList.end(); i++) {
 		switch((*i)->getType()){
 			case Type::PLAYER:
+				if ((*i)->getState() == State::DYING)
+				{
+					static_cast<Player*>(*i)->setFrameBeforeDelete(static_cast<Player*>(*i)->getFrameBeforeDelete() - 1);
+					if (static_cast<Player*>(*i)->getFrameBeforeDelete() <= 0)
+					{
+						entityList.erase(i);
+						i--;
+						continue;
+					}
+				}
 				compute_player(static_cast<Player *>(*i));
 				computeEntityMovement(map, entityList, (*i));
 				break;

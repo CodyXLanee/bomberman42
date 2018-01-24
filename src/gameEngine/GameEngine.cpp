@@ -294,12 +294,19 @@ void			GameEngine::gameWin(void *)
 	int					star_result = 0;
 
 	_win = true;
+	for (auto i = _entityList->begin(); i != _entityList->end(); i++){
+		if ((*i)->getType() == Type::PLAYER){
+			(*i)->setState(State::WINNING);
+			break;
+		}
+	}
 	if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
 	{
 
 
 		for (auto i = _entityList->begin(); i != _entityList->end(); i++){
 			if ((*i)->getType() == Type::PLAYER){
+				(*i)->setState(State::WINNING);
 				stars = this->_loader.getValue("stars");
 				if (stars && stars[0].IsArray() && stars[0].Size() == 3)
 				{

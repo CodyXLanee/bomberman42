@@ -71,7 +71,7 @@ void		CollisionsManager::computeEntityMovement(Map const & map, std::vector<IGam
 }
 
 void	CollisionsManager::compute_player(Player *p){
-	if (p->getState() == State::DYING)
+	if (p->getState() == State::DYING || p->getState() == State::WINNING)
 		return;
 	glm::vec2	v = p->getNewDirection();
 	if (!std::isnan(v.x) && !std::isnan(v.y)){ // glm::isnan wouldn't compile for some reason...

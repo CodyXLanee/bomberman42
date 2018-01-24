@@ -120,11 +120,13 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 			continue;
 
 		Player * player = dynamic_cast<Player*>(*i);
-		int numAnim = 0;
+		int numAnim = 4;
 		if (player->getState() == State::MOVING)
 			numAnim = 1;
 		if (player->getState() == State::DYING)
 			numAnim = 3;
+		if (player->getState() == State::WINNING)
+			numAnim = 6;
 			
     	std::vector<glm::mat4> data;
 		glm::mat4 transform = glm::mat4();

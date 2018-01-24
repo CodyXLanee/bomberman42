@@ -16,7 +16,7 @@
 # include <glm/gtc/matrix_transform.hpp>
 
 namespace State{
-	enum Enum { STANDING, MOVING, DYING };
+	enum Enum { STANDING, MOVING, DYING, WINNING };
 }
 
 namespace Type{

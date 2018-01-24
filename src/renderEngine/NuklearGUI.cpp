@@ -377,7 +377,7 @@ void    NuklearGUI::renderOptions() {
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Key bindings", NK_TEXT_CENTERED);  
-        //hover(1);   
+        hover(1);   
         if (nk_button_label(ctx, "Configure"))
         {
             UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
@@ -387,7 +387,7 @@ void    NuklearGUI::renderOptions() {
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2); 
-        //hover(2);
+        hover(2);
         if (nk_button_label(ctx, "Apply"))
         {
             if (screenFormat.displayMode.w != displayedFormat.displayMode.w
@@ -417,12 +417,12 @@ void    NuklearGUI::renderOptions() {
             Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
-        //hover(3); 
+        hover(3); 
         if (nk_button_label(ctx, "Back"))
         {
             displayedFormat = screenFormat;
-            //UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, new UIAudio::Enum(UIAudio::CLICK));
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
             master = static_cast<unsigned long>(_masterVolume * 100);

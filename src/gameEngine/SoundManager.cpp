@@ -51,7 +51,7 @@ void    SoundManager::playUISound(void *s) {
         case UIAudio::HOVER: Mix_PlayChannel(-1, hover, 0); break;
         case UIAudio::CLICK: Mix_PlayChannel(-1, click, 0); break;
     }
-    delete sound;
+    //delete sound;
 }
 
 void    SoundManager::playBoom(void *) {

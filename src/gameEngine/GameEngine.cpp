@@ -53,6 +53,7 @@ GameEngine::~GameEngine() {
 	delete _bonusManager;
 	delete _enemyManager;
 	delete _winManager;
+	delete _map;
     for (auto &&i : *_entityList){
 		delete i;
 	}
@@ -334,7 +335,8 @@ void			GameEngine::gameWin(void *)
 void			GameEngine::gameOver(void *)
 {
 	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
-    SEventManager::getInstance().raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::GAME_OVER));
+	Menu::Enum me = Menu::Enum(Menu::GAME_OVER);
+    SEventManager::getInstance().raise(Event::GUI_TOGGLE, &me);
 }
 
 GameParams		GameEngine::getGameParams(void) const

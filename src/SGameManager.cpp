@@ -56,9 +56,15 @@ SGameManager::~SGameManager() {
 void        SGameManager::manage(void) {
     SEventManager &em = SEventManager::getInstance();
     if (!_dev_mode)
-        em.raise(Event::GUI_TOGGLE, new Menu::Enum(Menu::SELECT_SLOT));
+    {
+        Menu::Enum me = Menu::Enum(Menu::SELECT_SLOT);
+        em.raise(Event::GUI_TOGGLE, &me);
+    }
     else
-        em.raise(Event::NEW_GAME, new GameMode::Enum(GameMode::CAMPAIGN));
+    {
+        GameMode::Enum gme = GameMode::Enum(GameMode::CAMPAIGN);
+        em.raise(Event::NEW_GAME, &gme);
+    }
 
     while (!_quit_game)
     {

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/11 10:59:46 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/24 17:23:55 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:35:39 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,21 @@ void            BonusManager::brickBreaksCallback(void *p){
     if (b){
         _bonus_queue->push_back(b);
     }
+}
+
+BonusManager::BonusManager(void) :
+_entity_list(new std::vector<IGameEntity *>()),
+_bonus_queue(new std::vector<Bonus *>()),
+_gameParams(){
+}
+BonusManager::BonusManager(BonusManager const &b) :
+_entity_list(b._entity_list),
+_bonus_queue(b._bonus_queue),
+_gameParams(b._gameParams){
+}
+BonusManager   &BonusManager::operator=(BonusManager const &rhs){
+    _entity_list = rhs._entity_list;
+    _bonus_queue = rhs._bonus_queue;
+    _gameParams = rhs._gameParams;
+    return *this;
 }

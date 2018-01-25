@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:11:53 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/23 11:47:36 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:26:08 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,11 @@ class GameEngine {
 		void								pause(void *);
 		void								unPause(void *);
 
+		GameEngine(GameEngine const &);
+		GameEngine   &operator=(GameEngine const &rhs);
+
 	private:
-		GameEngine();		// not implemented;
+		GameEngine();
 		void								loadMap(const char *path);
 		glm::vec2							placeBrawlAI(Player *human, int i);
 		void								placeBrawlPlayers(PlayerColor::Enum _color);

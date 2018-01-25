@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 19:10:51 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/14 22:46:19 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 11:56:28 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ class EnemyManager {
 		Map				*getMap() const;
 
 		void			update(void);
+
+		EnemyManager(void);
+		EnemyManager(EnemyManager const &);
+		EnemyManager   &operator=(EnemyManager const &rhs);
 	private:
 		void            enemyCollidesCallback(void *entity);
 		void            enemyMoveCallback(void *entity);

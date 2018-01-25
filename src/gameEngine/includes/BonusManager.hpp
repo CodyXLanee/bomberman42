@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/11 09:53:11 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 16:36:56 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:37:04 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,17 @@ class BonusManager {
 		~BonusManager();
 
 		void			update(void);
+
+		BonusManager(void);
+		BonusManager(BonusManager const &);
+		BonusManager   &operator=(BonusManager const &rhs);
 	private:
         void            bonusActivateCallback(void *);
         void            brickBreaksCallback(void *);
 
 		std::vector<IGameEntity *>	*_entity_list;
 		std::vector<Bonus *>		*_bonus_queue;
-		GameParams					&_gameParams;
+		GameParams					_gameParams;
 };
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Slot.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/12 16:11:17 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:24:15 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,4 +268,13 @@ void                                Slot::unregisterToEvents() {
     event.unRegisterEvent(Event::EFFECTS_VOLUME_UPDATE, this);
     event.unRegisterEvent(Event::SCREEN_FORMAT_UPDATE, this);
     event.unRegisterEvent(Event::KEY_MAP_UPDATE, this);
+}
+
+Slot::Slot(void) : _save(Save::SLOT1){
+}
+Slot::Slot(Slot const &s) : _save(s._save){
+}
+Slot   &Slot::operator=(Slot const &rhs){
+    _save = rhs._save;
+    return *this;
 }

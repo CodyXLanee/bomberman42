@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:28:44 by egaborea          #+#    #+#             */
-/*   Updated: 2017/11/28 14:00:39 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:27:56 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,11 @@ public:
     virtual void    	setSpeed(const float &);
 
     virtual void        update(void);
+
 protected:
+    AGameEntity(void);
+    AGameEntity(AGameEntity const &);
+    AGameEntity   &operator=(AGameEntity const &rhs);
     AGameEntity(const glm::vec2 &, const glm::vec2 &, const State::Enum &, const float &, const Type::Enum &);
     glm::vec2           _position;
     glm::vec2           _direction;

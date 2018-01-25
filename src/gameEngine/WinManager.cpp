@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 17:35:04 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/23 10:43:26 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:32:39 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,16 @@ void        WinManager::checkWinPlayers(std::vector<IGameEntity *> &entityList){
 
 void    WinManager::win(void){
     _won = true;
+}
+
+WinManager::WinManager(void) : _game_mode(GameMode::BRAWL), _win_condition(WinCondition::NO_MORE_BLOCKS), _win_spot(0., 0.), _won(false){
+}
+WinManager::WinManager(WinManager const &w) : _game_mode(w._game_mode), _win_condition(w._win_condition), _win_spot(w._win_spot), _won(w._won){
+}
+WinManager   &WinManager::operator=(WinManager const &rhs){
+    _game_mode = rhs._game_mode;
+    _win_condition = rhs._win_condition;
+    _win_spot = rhs._win_spot;
+    _won = rhs._won;
+    return *this;
 }

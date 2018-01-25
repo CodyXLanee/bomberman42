@@ -22,9 +22,24 @@ class Spot {
 };
 
 AI::AI(Player *player) : _player(player), _debug_cubes(new std::vector<glm::vec2>()), _went_far(false), _going_safely(false){
-    SEventManager & em = SEventManager::getInstance();
-    em.raise(Event::AIPTR, _debug_cubes);
-}  
+    // SEventManager & em = SEventManager::getInstance();
+    // em.raise(Event::AIPTR, _debug_cubes);
+} 
+
+AI::AI(void) : _player(nullptr), _debug_cubes(new std::vector<glm::vec2>()), _went_far(false), _going_safely(false){
+} 
+
+AI::AI(AI const &ai) : _player(ai._player), _debug_cubes(new std::vector<glm::vec2>(*ai._debug_cubes)), _went_far(ai._went_far), _going_safely(ai._going_safely){
+}
+
+AI   &AI::operator=(AI const &rhs){
+    _map = rhs._map;
+    _objective = rhs._objective;
+    _last_dir = rhs._last_dir;
+    _went_far = rhs._went_far;
+    _going_safely = rhs._going_safely;
+	return *this;
+}
 
 AI::~AI() {
     delete _debug_cubes;

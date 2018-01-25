@@ -19,25 +19,25 @@ Map::Map(glm::vec2 size) : _size(size)
 {
 }
 
-Map::Map(Map const & src)
-{
+Map::Map(Map const & src) {
 	*this = src;
 }
 
-Map::~Map() {}
-
-Map &		Map::operator=(Map const & rhs)
-{
+Map& Map::operator=(Map const & rhs) {
 	if (this != &rhs)
 	{
-		this->_size = rhs.getSize();
-		this->_destructibleBlocs = rhs.getDestructibleBlocs();
-		this->_indestructibleBlocs = rhs.getIndestructibleBlocs();
-		this->_models = rhs.getModels();
+		_size = rhs.getSize();
+		_sunPos = rhs.getSunPos();
+		_sunColor = rhs.getSunColor();
+		_destructibleBlocs = rhs.getDestructibleBlocs();
+		_indestructibleBlocs = rhs.getIndestructibleBlocs();
+		_models = rhs.getModels();
 	}
 
 	return *this;
 }
+
+Map::~Map() {}
 
 glm::vec2	Map::getSize() const
 {

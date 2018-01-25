@@ -29,11 +29,11 @@ class Map {
 	public:
 		Map();
 		Map(glm::vec2 size);
+
 		Map(Map const & src);
+		Map& operator=(Map const & rhs);
 
 		~Map();
-
-		Map &						operator=(Map const & rhs);
 
 		glm::vec2								getSize() const;
 		void									setSize(glm::vec2 size);

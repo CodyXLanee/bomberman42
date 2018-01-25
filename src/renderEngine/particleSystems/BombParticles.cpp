@@ -20,6 +20,13 @@ BombParticles::BombParticles() {
     setInstanceBuffer();
 }
 
+BombParticles::BombParticles(BombParticles const & src) {
+	*this = src;
+}
+
+BombParticles& BombParticles::operator=(BombParticles const &) {
+	return *this;
+}
 
 BombParticles::~BombParticles() {
     glDeleteBuffers(1, &this->vbo);

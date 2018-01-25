@@ -22,6 +22,9 @@ class BombParticles : public AParticleSystem {
     	BombParticles();
 		BombParticles(bool active, glm::vec3 position);
 		~BombParticles();
+
+		BombParticles(BombParticles const & src);
+		BombParticles& operator=(BombParticles const & rhs);
     
         void    addBombPlace(glm::vec2 pos);
         void    removeBombPlace(glm::vec2 pos);

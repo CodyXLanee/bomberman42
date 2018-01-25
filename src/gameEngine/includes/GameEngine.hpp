@@ -37,7 +37,7 @@ class GameEngine {
 		void								compute();
 		Map const &							getMap() const;
 		std::vector<IGameEntity *> &		getEntityList();
-		glm::vec2 const 					*getPlayerPos(void) const;
+		glm::vec2		 					*getPlayerPos(void) const;
 		int 								getStarsCampaign(void);
 		GameParams 							getGameParams(void) const;
 		bool								getWin(void) const;

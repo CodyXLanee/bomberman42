@@ -38,6 +38,23 @@ Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(heigh
     event.registerEvent(Event::KEY_MAP_UPDATE, MEMBER_CALLBACK(Sdl_gl_win::updateKeyMap));
 }
 
+Sdl_gl_win::Sdl_gl_win(Sdl_gl_win const & src) {
+    *this = src;
+}
+
+Sdl_gl_win& Sdl_gl_win::operator=(Sdl_gl_win const & rhs) {
+    if (this != &rhs)
+    {
+        mouseX = rhs.getMouseX();
+        mouseY = rhs.getMouseY();
+        win = rhs.getWin();
+        modes = rhs.getDisplayModes();
+        keyMap = rhs.getKeyMap();
+    }
+
+    return *this;
+}
+
 Sdl_gl_win::~Sdl_gl_win() {
 	SDL_GL_DeleteContext(ctx);
     SDL_DestroyWindow(win);

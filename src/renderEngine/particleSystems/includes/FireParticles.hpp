@@ -22,6 +22,9 @@ class FireParticles : public AParticleSystem {
     	FireParticles();
 		FireParticles(bool active, glm::vec3 position);
 		~FireParticles();
+
+		FireParticles(FireParticles const & src);
+		FireParticles& operator=(FireParticles const & rhs);
     
         void    addFirePlace(glm::vec2 pos);
         

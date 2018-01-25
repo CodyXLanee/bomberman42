@@ -20,6 +20,13 @@ FireParticles::FireParticles() {
     setInstanceBuffer();
 }
 
+FireParticles::FireParticles(FireParticles const & src) {
+	*this = src;
+}
+
+FireParticles& FireParticles::operator=(FireParticles const &) {
+	return *this;
+}
 
 FireParticles::~FireParticles() {
     glDeleteBuffers(1, &this->vbo);

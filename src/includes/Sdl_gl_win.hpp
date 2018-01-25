@@ -28,6 +28,9 @@ class Sdl_gl_win {
 	public:
 		Sdl_gl_win(size_t width, size_t height);
 		~Sdl_gl_win();
+
+		Sdl_gl_win(Sdl_gl_win const & src);
+		Sdl_gl_win& operator=(Sdl_gl_win const & rhs);
 		
 		void			eventManager(struct nk_context *);
 		int				getMouseX() const;

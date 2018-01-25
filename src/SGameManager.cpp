@@ -72,7 +72,7 @@ void        SGameManager::manage(void) {
 
         if (_game_is_active || _post_game_display){
             _game->compute();
-            glm::vec2 * player_pos = _game->getPlayerPos()
+            glm::vec2 * player_pos = _game->getPlayerPos();
             _camera.update(_window.getMouseX(), _window.getMouseY(), player_pos);
             _renderer.render(_game->getMap(), _game->getEntityList());
             delete player_pos;

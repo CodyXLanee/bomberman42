@@ -48,37 +48,26 @@ If you read that, that's mean you are interested in the project conception. To h
 
 This is an overview of the folders hierarchy:
 
-```mermaid
-graph LR
-A[bomberman] -- graphical elements --> B[Assets]
-A -- external library --> C((libs))
-A -- game maps --> D(maps)
-A -- all saves slots --> E((saves))
-A -- sources code --> F(src)
-B --> fonts((fonts))
-B --> models
-models --> blenderFiles((blenderFiles))
-models --> obj((obj))
-B --> sound((sound))
-B --> texture((texture))
-D --> campaign((campaign))
-F --> gameEngine(gameEngine)
-gameEngine --> entities(entities)
-entities --> entitiesI((includes))
-gameEngine --> gameI((includes))
-F --> renderEngine(renderEngine)
-renderEngine --> renderI((includes))
-renderEngine --> model(model)
-model -->modelI((includes))
-renderEngine --> particleSystems(particleSystems)
-particleSystems --> partiI((includes))
-renderEngine --> shaders((shaders))
-F --> srcI((includes))
-```
-
-```mermaid
-graph LR
-c[only folders content]
-a((only files content))
-b(files and folders content)
-```
+- Assets: `graphical elements`
+	- fonts
+	- models
+		- blenderFiles
+		- obj
+	- sound
+	- texture
+- libs: `external library`
+- maps: `game maps`
+	- campaign
+- saves: `all saves slots`
+- src: `sources code`
+	- gameEngine
+		- entities
+			- includes
+	- renderEngine
+		- includes
+		- models
+			- includes
+		- particlesSystems
+			- includes
+		- shaders
+- includes

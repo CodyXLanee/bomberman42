@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/24 12:57:05 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 15:47:08 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,16 +280,6 @@ void    NuklearGUI::renderKeyBindings() {
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
         hover(6);
-        if (nk_button_label(ctx, "Apply"))
-        {
-            // win.setKeyMap(displayedKeysMap);
-            event.raise(Event::KEY_MAP_UPDATE, &displayedKeysMap);
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
-            Menu::Enum menuEnum = Menu::Enum(Menu::KEY_BINDINGS);
-            event.raise(Event::GUI_TOGGLE, &menuEnum);
-        }
-        hover(7);
         if (nk_button_label(ctx, "Back"))
         {
             displayedKeysMap = win.getKeyMap();
@@ -298,6 +288,16 @@ void    NuklearGUI::renderKeyBindings() {
             Menu::Enum menuEnum = Menu::Enum(Menu::KEY_BINDINGS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
+        hover(7);
+        if (nk_button_label(ctx, "Apply"))
+        {
+            event.raise(Event::KEY_MAP_UPDATE, &displayedKeysMap);
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
+            Menu::Enum menuEnum = Menu::Enum(Menu::KEY_BINDINGS);
+            event.raise(Event::GUI_TOGGLE, &menuEnum);
+        }
+        
     }
     nk_end(ctx);
 }
@@ -404,6 +404,18 @@ void    NuklearGUI::renderOptions() {
 
         nk_layout_row_dynamic(ctx, optionHeight, 2); 
         hover(2);
+        if (nk_button_label(ctx, "Back"))
+        {
+            displayedFormat = screenFormat;
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
+            Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
+            event.raise(Event::GUI_TOGGLE, &menuEnum);
+            master = static_cast<unsigned long>(_masterVolume * 100);
+            music = static_cast<unsigned long>(_musicVolume);
+            effects = static_cast<unsigned long>(_effectsVolume);
+        }
+        hover(3); 
         if (nk_button_label(ctx, "Apply"))
         {
             if (screenFormat.displayMode.w != displayedFormat.displayMode.w
@@ -433,19 +445,6 @@ void    NuklearGUI::renderOptions() {
             Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
-        hover(3); 
-        if (nk_button_label(ctx, "Back"))
-        {
-            displayedFormat = screenFormat;
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
-            Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
-            event.raise(Event::GUI_TOGGLE, &menuEnum);
-            master = static_cast<unsigned long>(_masterVolume * 100);
-            music = static_cast<unsigned long>(_musicVolume);
-            effects = static_cast<unsigned long>(_effectsVolume);
-        }
-        
     }
     nk_end(ctx);
 }

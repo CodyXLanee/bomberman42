@@ -15,9 +15,9 @@ The effectif JSON file is **brawl_0.json**
 ### grid
 The grid element is a 2D integers array. Each integers make reference of a type of occupation:
 
-> **0**: Is randomly empty (4/10) or fill with a destructible bloc (6/10)
-> **-1**: Is forced to be an empty case
-> **-2**: indestructible bloc
+> - **0**: Is randomly empty (4/10) or fill with a destructible bloc (6/10)
+> - **-1**: Is forced to be an empty case
+> - **-2**: indestructible bloc
 
 Keep in mind some elements:
  - the array size make the map size.

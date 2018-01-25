@@ -121,4 +121,5 @@ This give the possibility to add enemies on the map. Not used for the brawl mode
       ...  
     }
     ```
-- go to the root folder and re-build
+- For each JSON in saves folder, add a **0** in the **"stars_campaign"**
+- go to the root folder and **re-build**

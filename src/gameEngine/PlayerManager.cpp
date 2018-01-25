@@ -188,3 +188,12 @@ void            PlayerManager::setHumanPlayer(Player *p){
 void            PlayerManager::addPlayer(Player *p){
     _AIs.push_back(new AI(p));
 }
+
+PlayerManager::PlayerManager(PlayerManager const &p) : _human_player(p._human_player), _spawned_bomb(p._spawned_bomb), _active(p._active){
+}
+PlayerManager   &PlayerManager::operator=(PlayerManager const &rhs){
+    _human_player = rhs._human_player;
+    _spawned_bomb = rhs._spawned_bomb;
+    _active = rhs._active;
+    return *this;
+}

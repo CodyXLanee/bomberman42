@@ -20,6 +20,9 @@ class CollisionsManager {
 		void			moves(Map const & map, std::vector<IGameEntity *> &entityList);
 		static bool		hasObstacle(Map const & map, glm::vec2 v, std::vector<IGameEntity *> const &entityList,  IGameEntity const * entity);
 
+		CollisionsManager(CollisionsManager const &);
+		CollisionsManager   &operator=(CollisionsManager const &rhs);
+
 	private:
 		void		compute_player(Player *p);
 		void		gestionBorderMap(glm::vec2 & pos, Map const & map);

@@ -6,13 +6,13 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/19 10:38:58 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/19 11:57:38 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:31:20 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "GameParams.hpp"
 
-GameParams::GameParams(GameMode::Enum) : _map_path(""){
+GameParams::GameParams() : _map_path(""){
 }
 
 GameParams::GameParams(GameMode::Enum game_mode, Level::Enum level, PlayerColor::Enum color, int enemies_nb, Difficulty::Enum difficulty) : _map_path(""){
@@ -82,4 +82,14 @@ Difficulty::Enum    GameParams::get_difficulty() const {
 
 void                GameParams::set_difficulty(Difficulty::Enum d){
     _difficulty = d;
+}
+
+GameParams   &GameParams::operator=(GameParams const &rhs){
+    _map_path = rhs._map_path;
+    _game_mode = rhs._game_mode;
+    _brawl_enemy_nb = rhs._brawl_enemy_nb;
+    _level = rhs._level;
+    _color = rhs._color;
+    _difficulty = rhs._difficulty;
+    return *this;
 }

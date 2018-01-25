@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 14:52:23 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/19 11:57:26 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:29:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 class GameParams {
 	
 	public:
-		GameParams(GameMode::Enum);
         GameParams(GameMode::Enum game_mode, Level::Enum level, PlayerColor::Enum color, int enemies_nb, Difficulty::Enum difficulty);
         GameParams(GameParams const & gp);
 		~GameParams();
@@ -37,8 +36,10 @@ class GameParams {
         Difficulty::Enum    get_difficulty() const ;
         void                set_difficulty(Difficulty::Enum);
 
-    private:
+
+        GameParams   &operator=(GameParams const &rhs);
 		GameParams();
+    private:
         std::string         _map_path;
         GameMode::Enum      _game_mode;
         int                 _brawl_enemy_nb;

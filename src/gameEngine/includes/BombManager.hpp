@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:20:33 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/06 22:30:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 11:43:55 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ class BombManager {
 		~BombManager();
 
 		void			update(void);
+
+		BombManager(void);
+		BombManager(BombManager const &);
+		BombManager   &operator=(BombManager const &rhs);
 	private:
 		void                        spawn_bomb(void *p);
 		void                        bomb_explodes(void *p);

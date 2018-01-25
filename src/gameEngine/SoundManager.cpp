@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:34:49 by lfourque          #+#    #+#             */
-/*   Updated: 2017/12/16 18:29:36 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:42:03 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,15 @@ void    SoundManager::setEffectsVolume(void * v) {
 void    SoundManager::setMusicVolume(void * v) {
     musicVolume = *static_cast<float*>(v);
     updateVolume();
+}
+
+
+SoundManager::SoundManager(SoundManager const &s) : masterVolume(s.masterVolume), musicVolume(s.musicVolume), effectsVolume(s.effectsVolume) {
+}
+
+SoundManager   &SoundManager::operator=(SoundManager const &rhs){
+    masterVolume = rhs.masterVolume;
+    musicVolume = rhs.musicVolume;
+    effectsVolume = rhs.effectsVolume;
+    return *this;
 }

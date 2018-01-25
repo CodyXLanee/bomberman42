@@ -23,6 +23,9 @@ class PlayerManager {
         void                Register(void);
         void                unRegister(void);
 
+        PlayerManager(PlayerManager const &);
+        PlayerManager   &operator=(PlayerManager const &rhs);
+
 private:
 
     Player                  *_human_player;

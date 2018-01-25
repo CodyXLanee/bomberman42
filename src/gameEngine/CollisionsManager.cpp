@@ -270,3 +270,11 @@ void			CollisionsManager::gestionSlipBidirection(glm::vec2 &, IGameEntity const 
 {
 
 }
+
+CollisionsManager::CollisionsManager(CollisionsManager const &c) :
+_last_frame_time_point(c._last_frame_time_point){
+}
+CollisionsManager   &CollisionsManager::operator=(CollisionsManager const &rhs){
+	_last_frame_time_point = rhs._last_frame_time_point;
+	return *this;
+}

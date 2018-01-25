@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 13:24:20 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/24 16:45:29 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:34:09 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,4 +125,22 @@ void    BombManager::update(void){
         _entityList->insert(_entityList->end(), _flames_to_add->begin(), _flames_to_add->end());
         _flames_to_add->clear();
     }
+}
+
+
+
+
+BombManager::BombManager(void) : 
+_map(new Map()), _entityList(new std::vector<IGameEntity *>()), _flames_to_add(new std::vector<IGameEntity *>()) {
+}
+
+BombManager::BombManager(BombManager const &bm) : 
+_map(bm._map), _entityList(bm._entityList), _flames_to_add(new std::vector<IGameEntity *>()) {
+}
+
+BombManager   &BombManager::operator=(BombManager const &rhs){
+    _map = rhs._map;
+    _entityList = rhs._entityList;
+    _flames_to_add = rhs._flames_to_add;
+    return *this;
 }

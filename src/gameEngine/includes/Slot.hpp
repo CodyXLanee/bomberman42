@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Slot.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 14:59:59 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/12 15:36:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:15:37 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,10 @@ class Slot {
         std::map<Event::Enum, SDL_Keycode> const                &getKeyMap() const;
 
         Save::Enum                          get_save();
+
+        Slot(void);
+        Slot(Slot const &);
+        Slot   &operator=(Slot const &rhs);
 
     private:
 		Loader						        _loader;

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/24 17:35:22 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:29:25 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -381,4 +381,71 @@ void		GameEngine::pause(void *) {
 
 void		GameEngine::unPause(void *) {
 	_playerManager->Register();
+}
+
+GameEngine::GameEngine(void) : _map(new Map()), 
+_entityList(new std::vector<IGameEntity *>()), 
+_bonusManager(new BonusManager()),
+_enemyManager(new EnemyManager(_entityList, _map)),
+_bombManager(new BombManager(_map, _entityList)), 
+_playerManager(new PlayerManager()),
+_gameParams(),
+_winManager(nullptr),
+_win(false), _active(true) {
+    SEventManager &em = SEventManager::getInstance();
+    em.registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(GameEngine::gameWin));
+    em.registerEvent(Event::GAME_OVER, MEMBER_CALLBACK(GameEngine::gameOver));
+    em.registerEvent(Event::GAME_PAUSE, MEMBER_CALLBACK(GameEngine::pause));
+    em.registerEvent(Event::GAME_UNPAUSE, MEMBER_CALLBACK(GameEngine::unPause));
+	
+	if (_gameParams.get_game_mode() == GameMode::BRAWL){
+		loadMap("maps/brawl_0.json");
+		placeBrawlPlayers(_gameParams.get_color());
+	}
+	else if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
+	{
+		loadMap(std::string("maps/campaign/" + std::to_string(_gameParams.get_level() + 1) + ".json").c_str());
+	}
+
+}
+
+GameEngine::GameEngine(GameEngine const &g) : _map(g._map),
+_entityList(g._entityList),
+_bonusManager(g._bonusManager),
+_enemyManager(g._enemyManager),
+_bombManager(g._bombManager),
+_playerManager(g._playerManager),
+_gameParams(g._gameParams),
+_winManager(g._winManager),
+_win(g._win), _active(g._active) {
+    SEventManager &em = SEventManager::getInstance();
+    em.registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(GameEngine::gameWin));
+    em.registerEvent(Event::GAME_OVER, MEMBER_CALLBACK(GameEngine::gameOver));
+    em.registerEvent(Event::GAME_PAUSE, MEMBER_CALLBACK(GameEngine::pause));
+    em.registerEvent(Event::GAME_UNPAUSE, MEMBER_CALLBACK(GameEngine::unPause));
+	
+	if (_gameParams.get_game_mode() == GameMode::BRAWL){
+		loadMap("maps/brawl_0.json");
+		placeBrawlPlayers(_gameParams.get_color());
+	}
+	else if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)
+	{
+		loadMap(std::string("maps/campaign/" + std::to_string(_gameParams.get_level() + 1) + ".json").c_str());
+	}
+
+}
+GameEngine   &GameEngine::operator=(GameEngine const &rhs){
+	_map = rhs._map;
+	_loader = rhs._loader;
+	_entityList = rhs._entityList;
+	_bonusManager = rhs._bonusManager;
+	_enemyManager = rhs._enemyManager;
+	_collisionsManager = rhs._collisionsManager;
+	_bombManager = rhs._bombManager;
+	_playerManager = rhs._playerManager;
+	_gameParams = rhs._gameParams;
+	_winManager = rhs._winManager;
+	_win = rhs._win;
+	_active = rhs._active;
+	return *this;
 }

@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 19:20:30 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/04 14:31:40 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:14:34 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,4 +148,14 @@ glm::vec2       EnemyManager::updateDirectionBaloon(glm::vec2 direction, glm::ve
         return glm::vec2(0, -1);
     }
     return glm::vec2(0, -1);
+}
+
+EnemyManager::EnemyManager(void) : _entity_list(new std::vector<IGameEntity *>()), _map(new Map()){
+}
+EnemyManager::EnemyManager(EnemyManager const &e) : _entity_list(e._entity_list), _map(e._map){
+}
+EnemyManager   &EnemyManager::operator=(EnemyManager const &rhs){
+    _entity_list = rhs._entity_list;
+    _map = rhs._map;
+	return *this;
 }

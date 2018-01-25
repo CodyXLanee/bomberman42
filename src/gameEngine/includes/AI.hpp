@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 11:28:49 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/22 16:59:36 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 12:25:33 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ class AI {
 
         void    compute(Map const & map, std::vector<IGameEntity *> & entities);
         Player  *getPlayer(void);
+
+        AI(AI const &);
+        AI   &operator=(AI const &rhs);
     private:
 
         AI();

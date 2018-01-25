@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/14 16:19:24 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/14 22:22:36 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 10:43:52 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ public:
     void                    player_move_callback(void *player);
     void	                spawn_flame_callback(void *flame);
 
+
+    Enemy(void);
+    Enemy(Enemy const &);
+    Enemy   &operator=(Enemy const &rhs);
 private:
     EnemyType::Enum _type;
 	glm::vec2		_graphicalDirection;

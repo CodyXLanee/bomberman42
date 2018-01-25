@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:54:09 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/03 16:07:53 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 10:57:44 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,4 +155,45 @@ void        Player::setFrameBeforeDelete(int frame) {
 
 std::chrono::time_point<std::chrono::steady_clock>	Player::getCreationTime(void) const {
 	return _creation_time;
+}
+
+ Player::Player(void) : 
+AGameEntity(glm::vec2(0., 0.), glm::vec2(0., -1.), State::STANDING, 0., Type::PLAYER),
+_player_number(0),
+_max_bomb(1),
+_flame_nb(1),
+_speed_mult(1.f),
+_bomb_count(0),
+_total_bomb_count(0),
+left(false), right(false), up(false), down(false),
+_graphicalDirection(glm::vec2(0,0)),
+_color(PlayerColor::WHITE),
+_creation_time(std::chrono::steady_clock::now()),
+_frameBeforeDelete(0){
+	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Player::bomb_explodes_callback));
+	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Player::spawn_flame_callback));
+	SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Player::enemy_move_callback));
+}
+Player::Player(Player const &p) : 
+AGameEntity(p._position, glm::vec2(0., -1.), State::STANDING, 0., Type::PLAYER),
+_player_number(0),
+_max_bomb(1),
+_flame_nb(1),
+_speed_mult(1.f),
+_bomb_count(0),
+_total_bomb_count(0),
+left(false), right(false), up(false), down(false),
+_graphicalDirection(glm::vec2(0,0)),
+_color(p._color),
+_creation_time(std::chrono::steady_clock::now()),
+_frameBeforeDelete(0){
+	SEventManager::getInstance().registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(Player::bomb_explodes_callback));
+	SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Player::spawn_flame_callback));
+	SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Player::enemy_move_callback));
+}
+
+Player   &Player::operator=(Player const &rhs){
+	_position = rhs._position;
+	_color = rhs._color;
+	return *this;
 }

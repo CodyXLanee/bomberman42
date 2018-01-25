@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:35 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/22 15:42:06 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 10:31:37 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,25 @@ std::chrono::time_point<std::chrono::steady_clock> const       &Bomb::get_creati
 
 const Player                                                   *Bomb::getPlayer(void) const {
     return player;
+}
+
+Bomb::Bomb(void): 
+AGameEntity(glm::vec2(0., 0.), glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), player(nullptr){
+    creation_time = std::chrono::steady_clock::now();
+    ms_before_explode = std::chrono::milliseconds(2000);
+    SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Bomb::explode_if_touched));
+}
+
+Bomb::Bomb(Bomb const &b): 
+AGameEntity(b._position, glm::vec2(0., -1.), State::STANDING, 0., Type::BOMB), player(b.player){
+    creation_time = std::chrono::steady_clock::now();
+    ms_before_explode = std::chrono::milliseconds(2000);
+    SEventManager::getInstance().registerEvent(Event::SPAWN_FLAME, MEMBER_CALLBACK(Bomb::explode_if_touched));
+}
+
+Bomb   &Bomb::operator=(Bomb const &rhs) {
+    player = rhs.player;
+    creation_time = rhs.creation_time;
+    ms_before_explode = rhs.ms_before_explode;
+    return *this;
 }

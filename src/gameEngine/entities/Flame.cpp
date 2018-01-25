@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Flame.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:24:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/22 16:19:44 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/25 10:56:22 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,27 @@ void                Flame::enemy_move_callback(void *enemy){
 
 bool                Flame::is_centered(void) const{
     return _center;
+}
+
+Flame::Flame(void) : 
+AGameEntity(glm::vec2(0., 0.), glm::vec2(0., -1.), State::STANDING, 0., Type::FLAME),
+_center(false){
+    creation_time = std::chrono::steady_clock::now();
+    ms_before_explode = std::chrono::milliseconds(1000);
+    SEventManager::getInstance().registerEvent(Event::PLAYER_MOVE, MEMBER_CALLBACK(Flame::player_move_callback));
+    SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Flame::enemy_move_callback));
+}
+
+Flame::Flame(Flame const &f) : 
+AGameEntity(f._position, glm::vec2(0., -1.), State::STANDING, 0., Type::FLAME),
+_center(f._center){
+    creation_time = std::chrono::steady_clock::now();
+    ms_before_explode = std::chrono::milliseconds(1000);
+    SEventManager::getInstance().registerEvent(Event::PLAYER_MOVE, MEMBER_CALLBACK(Flame::player_move_callback));
+    SEventManager::getInstance().registerEvent(Event::ENEMY_MOVE, MEMBER_CALLBACK(Flame::enemy_move_callback));
+}
+
+Flame   &Flame::operator=(Flame const &rhs){
+    _center = rhs._center;
+    return *this;
 }

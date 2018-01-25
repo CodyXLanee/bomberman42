@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/11 10:02:52 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/11 11:54:23 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 10:32:27 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@ public:
     Bonus(const glm::vec2 & pos, BonusType::Enum type);
     ~Bonus();
     BonusType::Enum     getBonusType(void);
+
+    Bonus(void);
+    Bonus(Bonus const &);
+    Bonus   &operator=(Bonus const &rhs);
 
 private:
     void    playerMoveCallback(void *);

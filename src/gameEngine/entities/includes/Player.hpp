@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 15:45:55 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/03 16:07:42 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 10:48:07 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ public:
 
     std::chrono::time_point<std::chrono::steady_clock>	getCreationTime(void) const;
 
+    Player(void);
+    Player(Player const &);
+    Player   &operator=(Player const &rhs);
 private:
     int         _player_number;
     int         _max_bomb;

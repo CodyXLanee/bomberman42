@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 10:27:23 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/22 15:42:05 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 10:29:03 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ public:
     ~Bomb();
     virtual void    update(void);
 
+    Bomb(void);
+    Bomb(Bomb const &);
+    Bomb   &operator=(Bomb const &rhs);
+    
     int             getFlameNb() const;
 
     std::chrono::milliseconds const                                &get_ms_before_explode(void) const;

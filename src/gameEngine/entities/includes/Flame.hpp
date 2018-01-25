@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:18:42 by egaborea          #+#    #+#             */
-/*   Updated: 2017/12/22 16:17:02 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/25 10:44:27 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ public:
     std::chrono::time_point<std::chrono::steady_clock> const       &get_creation_time(void) const;
 
     bool                                                            is_centered(void) const;
+    
+    Flame(void);
+    Flame(Flame const &);
+    Flame   &operator=(Flame const &rhs);
 
 private:
     void            player_move_callback(void *player);

@@ -545,7 +545,7 @@ void    NuklearGUI::renderLevelSelection() {
     if (nk_begin(ctx, "LEFT PREVIOUS", nk_rect(buttonsXOffset, windowHeight / 2 - optionHeight / 2, optionHeight, optionHeight),
     NK_WINDOW_BORDER |NK_WINDOW_NO_SCROLLBAR ))
     {
-        nk_layout_row_dynamic(ctx, optionHeight - padding.y * 2 - spacing.y * 2, 1);        
+        nk_layout_row_dynamic(ctx, optionHeight - padding.y * 2 - spacing.y * 2, 1);
         if (nk_button_symbol(ctx, NK_SYMBOL_TRIANGLE_LEFT)) {
             if (level > Level::ONE)
             {
@@ -576,6 +576,7 @@ void    NuklearGUI::renderLevelSelection() {
     NK_WINDOW_BORDER |NK_WINDOW_NO_SCROLLBAR ))
     {
         nk_layout_row_dynamic(ctx, imageSize, 1);
+        hover(1);
         if (nk_button_image(ctx, levelImage))
         {
             Menu::Enum  menu = Menu::NONE;
@@ -586,6 +587,7 @@ void    NuklearGUI::renderLevelSelection() {
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 8);
+        hover(2);
         if (nk_button_label(ctx, "Back")) {
             event.raise(Event::END_END_ANIMATION, nullptr);
             Menu::Enum menuEnum = Menu::Enum(Menu::LEVEL_SELECTION);
@@ -597,6 +599,8 @@ void    NuklearGUI::renderLevelSelection() {
         (_starsCampaign[level] >= 1) ? nk_image(ctx, fullStar) : nk_image(ctx, emptyStar);
         (_starsCampaign[level] >= 2) ? nk_image(ctx, fullStar) : nk_image(ctx, emptyStar);
         (_starsCampaign[level] >= 3) ? nk_image(ctx, fullStar) : nk_image(ctx, emptyStar);
+
+        hover(3);
         if (nk_button_label(ctx, "Go !"))
         {
             event.raise(Event::END_END_ANIMATION, nullptr);      
@@ -819,33 +823,48 @@ void    NuklearGUI::renderStartMenu() {
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
         nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(1);
         if (nk_button_label(ctx, "Campaign"))
         {
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum  me = Menu::LEVEL_SELECTION;
             event.raise(Event::GUI_TOGGLE, &me);
         }
 
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1); 
+        hover(2); 
         if (nk_button_label(ctx, "Brawl"))
         {
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum  me = Menu::NEW_BRAWL;
             event.raise(Event::GUI_TOGGLE, &me);
         }
         nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        hover(3);
         if (nk_button_label(ctx, "How to play"))
         {
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum  me = Menu::HOW_TO_PLAY;
             event.raise(Event::GUI_TOGGLE, &me);
         }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(4);
         if (nk_button_label(ctx, "Options"))
         {
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(5);
         if (nk_button_label(ctx, "Reset progression"))
         {
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
             confirmationPopup = true;
         }
         if (confirmationPopup)
@@ -868,16 +887,21 @@ void    NuklearGUI::renderStartMenu() {
                 nk_popup_end(ctx);
             } else confirmationPopup = nk_false;
         }
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(6);
         if (nk_button_label(ctx, "Slot selection"))
         {
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::SELECT_SLOT);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
-   
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(7);
         if (nk_button_label(ctx, "Quit Game"))
         {
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
             event.raise(Event::QUIT_GAME, nullptr);  
         }
     }

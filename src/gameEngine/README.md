@@ -1,9 +1,15 @@
-# Generalities
+# Bomberman42
 
-This files is meant to document the way the "game logic" part of the project works.
-This is all mostly organized around the class "GameEngine" wich is supposed to be the central element that contains all of the other, more specialized, "managers" that only take care of one certain aspect of the general logic.
+This is a 42 school project. The goal was to recreate the original game **bomberman** in 3D. The programming language needed to be **C++** with the **OpenGL** library for the graphical part. The detail in the game was an important part of the final mark.
 
-# GameEngine
+## For developers
+
+If you read that, that's mean you are interested in the project conception. To have an easier navigation throw our folders, we have make a readme in each one to explain one point of interest in correspondence with this folder.
+
+> Here is the **gameEngine folder**! We would explain you **how the game logic works**. All the code in this folder is all mostly organized around the class "GameEngine" wich is supposed to be the central element that contains all of the other, more specialized, "managers" that only take care of one certain aspect of the general logic.
+
+
+## GameEngine
 
 This class is instanciated once per game. It is given on instantiation an instance of GameParams as only parameter.
 
@@ -13,27 +19,27 @@ During the game, GameEngine's only task situated in it's "compute" function that
 
 At the end of the game (whether the player lost or won), GameEngine communicates the proper events to NuklearGUI and SGameManager.
 
-# GameParams
+## GameParams
 
 This class isn't meant to handle any logic. it only serves as a container for the datas GameEngine needs to start a game such as the map_path or the game_mode ...
 
-# Loader
+## Loader
 
 This class reads and uses the rapidJson api to parse a json file. It is used to load maps and slots.
 
-# Slot
+## Slot
 
 This class represents a save slot. It contains the load and save logic as well as the pertinent datas.
 
-# AGameEntity 
+## AGameEntity 
 
 This is the class from wich every game entity (see the entity folder) class inherits.
 
-# SoundManager
+## SoundManager
 
 Pretty self explanatory, it handles all the sounds. Note that this is the only manager that isn't contained as such in the GameEngine.
 
-# AI
+## AI
 
 Contains the logic relative to the AI of a Brawl enemy. Basically the algorithm it follows looks something like this :
 `if I can place a bomb
@@ -41,28 +47,28 @@ Contains the logic relative to the AI of a Brawl enemy. Basically the algorithm 
 else
     run to a safe place`
 
-# PlayerManager
+## PlayerManager
 
 This is the interface beetween the Players (human or AI) and the actual Players game entities. What it mostly does is just propagates the proper events relative to player action like moving or spawning a bomb.
 
-# CollisionManager
+## CollisionManager
 
 Handles the movement of players and enemies according to the datas set by the other managers, while (obviously) taking collisions into account.
 
-# EnemyManager
+## EnemyManager
 
 Handles the movement logic of enemeies as well as what happens when an enemy dies.
 
-# BombManager
+## BombManager
 
 Handles the logic relative to Bomb explosions.
 Bombs set themselves to a certain state when they should explodes, the bomb manager then spawns flames accordingly and destroys the bomb.
 It also deletes flames when they should disapear (similarly to the bombs, it's the Flames that set themselves to a certain state when they should disapear).
 
-# BonusManager
+## BonusManager
 
-Spawns Bonus when a brick breaks and applies it's effect on the player when it is activated.
+Spawns Bonus when a brick breaks and applies it's effect on the player when it is activated. It's here that the probability for each bonus to drop is defined.
 
-# WinManager
+## WinManager
 
 Checks if the game is won. If the game mode is Campaign, it spawns a WinSpot rather than finishing instantly the game once the win ncondition is met.

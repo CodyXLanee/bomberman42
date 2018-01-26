@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/25 15:47:08 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/26 11:32:58 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -954,7 +954,10 @@ void    NuklearGUI::renderCountDown(){
         }    
         
         ctx->style.window.fixed_background = tmp;
-        nk_style_set_font(ctx, &mediumFont->handle); 
+        nk_style_set_font(ctx, &mediumFont->handle);
+        
+        while(!_active_menu.empty())
+            _active_menu.pop();
     }
 
 }

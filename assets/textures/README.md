@@ -6,10 +6,20 @@ This is a 42 school project. The goal was to recreate the original game **bomber
 
 If you read that, that's mean you are interested in the project conception. To have an easier navigation throw our folders, we have make a readme in each one to explain one point of interest in correspondence with this folder.
 
-> Here is the **models folder**! You can found here all 3D objects present in the game.
+> Here is the **textures folder**! There are lot of things to said on it. We would try to be clear.
 
 
-### blenderFiles
-This folder group all models sources. that mean you can make all you want to customize your game
-### obj
-When you have make that you want with sources, you need to export it in an .obj for static objects and in an .fbx for animated objects. You need to put it in this folder with the corresponding name.
+### level[X].png
+It's all pictures that you can see in campaign mode for the level [X]. The idea is to have an overview of what you need to do.
+### 3.png / 2.png / 1.png / GO!.png
+It's that you can see when you start a game.
+### Bombupsprite(HUD).png / Fireupsprite(HUD).png / Skatesprite(HUD).png
+It's all bonus that you can found during a game.
+### Black(_HUD).png / red(_HUD).png / white(_HUD).png / yellow(_HUD).png
+All possible skin for your player during brawl mode.
+### Brawl_bombermans.png
+The top picture in brawl menu.
+### minimal_bomberman_BG.png
+The background of all menu.
+### star_empty.png / star_full.png
+The design of stars in campaign mode.

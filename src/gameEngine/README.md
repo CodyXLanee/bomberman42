@@ -4,7 +4,7 @@ This is a 42 school project. The goal was to recreate the original game **bomber
 
 ## For developers
 
-If you read that, that's mean you are interested in the project conception. To have an easier navigation throw our folders, we have make a readme in each one to explain one point of interest in correspondence with this folder.
+If you read that, that's mean you are interested in the project conception. To have an easier navigation through our folders, we have make a readme in each one to explain one point of interest in correspondence with this folder.
 
 > Here is the **gameEngine folder**! We would explain you **how the game logic works**. All the code in this folder is all mostly organized around the class "GameEngine" wich is supposed to be the central element that contains all of the other, more specialized, "managers" that only take care of one certain aspect of the general logic.
 

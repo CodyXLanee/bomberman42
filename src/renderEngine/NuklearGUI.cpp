@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NuklearGUI.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/26 11:32:58 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/29 16:18:37 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ NuklearGUI::NuklearGUI(Sdl_gl_win & sgw, Camera & camera) :
     ctx->style.button.rounding = 0;
     ctx->style.button.border = 0;
     ctx->style.button.text_hover = black;
+    ctx->style.contextual_button.text_hover = black;
 
 }
 
@@ -121,6 +122,8 @@ void    NuklearGUI::toggle(void *p) {
     else {
         _active_menu.push(*m);
     }
+    UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+    event.raise(Event::UI_AUDIO, &audio);
 }
 
 void    NuklearGUI::setupProportions() {
@@ -265,8 +268,8 @@ void    NuklearGUI::renderKeyBindings() {
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        hover(6);
         nk_spacing(ctx, 1);       
+        hover(6);
         if (nk_button_label(ctx, "Reset to default"))
         {
             displayedKeysMap[Event::HUMAN_PLAYER_UP] = SDLK_w;
@@ -283,8 +286,6 @@ void    NuklearGUI::renderKeyBindings() {
         if (nk_button_label(ctx, "Back"))
         {
             displayedKeysMap = win.getKeyMap();
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::KEY_BINDINGS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
@@ -292,8 +293,6 @@ void    NuklearGUI::renderKeyBindings() {
         if (nk_button_label(ctx, "Apply"))
         {
             event.raise(Event::KEY_MAP_UPDATE, &displayedKeysMap);
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::KEY_BINDINGS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
@@ -339,30 +338,14 @@ void    NuklearGUI::renderOptions() {
     if (nk_begin(ctx, "OPTIONS", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
         NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
     {
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Master volume", NK_TEXT_CENTERED);    
-        if (nk_progress(ctx, &master, 100, NK_MODIFIABLE)) {
-
-        }
-
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Music volume", NK_TEXT_CENTERED);             
-        if (nk_progress(ctx, &music, MIX_MAX_VOLUME, NK_MODIFIABLE)) {
-
-        }
-        
-        nk_layout_row_dynamic(ctx, optionHeight, 2);  
-        nk_label(ctx, "Effects volume", NK_TEXT_CENTERED);             
-        if (nk_progress(ctx, &effects, MIX_MAX_VOLUME, NK_MODIFIABLE)) {
-
-        }
-
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Screen resolution", NK_TEXT_CENTERED);
+        hover(4);
         if (nk_menu_begin_label(ctx, screenResString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth, menuHeight))) {
             nk_layout_row_dynamic(ctx, optionHeight, 1);
-
+            
             for (size_t i = 0; i < modes.size(); ++i) {
+                hover(11 + i);
                 if (nk_menu_item_label(ctx, toString(modes[i]).c_str(), NK_TEXT_CENTERED)) {
                     UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
                     event.raise(Event::UI_AUDIO, &audio);
@@ -373,16 +356,19 @@ void    NuklearGUI::renderOptions() {
         }
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);
-        nk_label(ctx, "Screen mode", NK_TEXT_CENTERED);     
+        nk_label(ctx, "Screen mode", NK_TEXT_CENTERED);  
+        hover(5);   
         if (nk_menu_begin_label(ctx, screenModeString.c_str(), NK_TEXT_CENTERED, nk_vec2(menuWidth, menuHeight))) {
 
             nk_layout_row_dynamic(ctx, optionHeight, 1);
+            hover(6);
             if (nk_menu_item_label(ctx, "WINDOWED", NK_TEXT_CENTERED)) {
                 UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
                 event.raise(Event::UI_AUDIO, &audio);
                 displayedFormat.windowMode = Screen::WindowMode::WINDOWED;
             }
 
+            hover(7);
             if (nk_menu_item_label(ctx, "FULLSCREEN", NK_TEXT_CENTERED)) {
                 UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
                 event.raise(Event::UI_AUDIO, &audio);
@@ -392,30 +378,41 @@ void    NuklearGUI::renderOptions() {
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_label(ctx, "Master volume", NK_TEXT_CENTERED);    
+        hover(1);
+        nk_progress(ctx, &master, 100, NK_MODIFIABLE);
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_label(ctx, "Music volume", NK_TEXT_CENTERED);  
+        hover(2);           
+        nk_progress(ctx, &music, MIX_MAX_VOLUME, NK_MODIFIABLE);
+        
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
+        nk_label(ctx, "Effects volume", NK_TEXT_CENTERED); 
+        hover(3);            
+        nk_progress(ctx, &effects, MIX_MAX_VOLUME, NK_MODIFIABLE);
+
+        nk_layout_row_dynamic(ctx, optionHeight, 2);  
         nk_label(ctx, "Key bindings", NK_TEXT_CENTERED);  
-        hover(1);   
+        hover(8);   
         if (nk_button_label(ctx, "Configure"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::KEY_BINDINGS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);  
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 2); 
-        hover(2);
+        hover(9);
         if (nk_button_label(ctx, "Back"))
         {
             displayedFormat = screenFormat;
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
             master = static_cast<unsigned long>(_masterVolume * 100);
             music = static_cast<unsigned long>(_musicVolume);
             effects = static_cast<unsigned long>(_effectsVolume);
         }
-        hover(3); 
+        hover(10); 
         if (nk_button_label(ctx, "Apply"))
         {
             if (screenFormat.displayMode.w != displayedFormat.displayMode.w
@@ -440,8 +437,6 @@ void    NuklearGUI::renderOptions() {
                 event.raise(Event::EFFECTS_VOLUME_UPDATE, &v);
             }
 
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
@@ -457,8 +452,6 @@ void    NuklearGUI::renderMenu() {
         hover(1);
         if (nk_button_label(ctx, "Resume"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::NONE);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
@@ -467,8 +460,6 @@ void    NuklearGUI::renderMenu() {
         hover(2);
         if (nk_button_label(ctx, "Restart level"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::BASE);
             event.raise(Event::GUI_TOGGLE, &menuEnum);                
             event.raise(Event::RESTART_GAME, nullptr);
@@ -478,8 +469,6 @@ void    NuklearGUI::renderMenu() {
         hover(3);
         if (nk_button_label(ctx, "How to play"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::HOW_TO_PLAY);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
@@ -488,8 +477,6 @@ void    NuklearGUI::renderMenu() {
         hover(4);
         if (nk_button_label(ctx, "Options"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
@@ -498,8 +485,6 @@ void    NuklearGUI::renderMenu() {
         hover(5);
         if (nk_button_label(ctx, "Save"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             /* save */
         }
 
@@ -507,8 +492,6 @@ void    NuklearGUI::renderMenu() {
         hover(6);
         if (nk_button_label(ctx, "Back to main menu"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             event.raise(Event::GAME_FINISH, nullptr);
             event.raise(Event::END_END_ANIMATION, nullptr);
             Menu::Enum menuEnum = Menu::Enum(Menu::START);
@@ -545,12 +528,15 @@ void    NuklearGUI::renderLevelSelection() {
     NK_WINDOW_BORDER |NK_WINDOW_NO_SCROLLBAR ))
     {
         nk_layout_row_dynamic(ctx, optionHeight - padding.y * 2 - spacing.y * 2, 1);
+        hover(1);
         if (nk_button_symbol(ctx, NK_SYMBOL_TRIANGLE_LEFT)) {
             if (level > Level::ONE)
             {
                 level = static_cast<Level::Enum>(level - 1);
                 game_params.set_level(level);
                 levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
+                UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+                event.raise(Event::UI_AUDIO, &audio);
             }
         }        
     }    
@@ -559,13 +545,16 @@ void    NuklearGUI::renderLevelSelection() {
     if (nk_begin(ctx, "RIGHT NEXT", nk_rect(windowWidth - buttonsXOffset - optionHeight, windowHeight / 2 - optionHeight / 2, optionHeight, optionHeight),
     NK_WINDOW_BORDER |NK_WINDOW_NO_SCROLLBAR ))
     {
-        nk_layout_row_dynamic(ctx, optionHeight - padding.y * 2 - spacing.y * 2, 1);        
+        nk_layout_row_dynamic(ctx, optionHeight - padding.y * 2 - spacing.y * 2, 1);   
+        hover(2);
         if (nk_button_symbol(ctx, NK_SYMBOL_TRIANGLE_RIGHT)) {
             if (level < Level::SIX)
             {
                 level = static_cast<Level::Enum>(level + 1);
                 game_params.set_level(level);
                 levelImage = loadImage("assets/textures/level" + std::to_string(level + 1) + ".png", GL_RGBA);
+                UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+                event.raise(Event::UI_AUDIO, &audio);
             }
         }        
     }    
@@ -575,7 +564,7 @@ void    NuklearGUI::renderLevelSelection() {
     NK_WINDOW_BORDER |NK_WINDOW_NO_SCROLLBAR ))
     {
         nk_layout_row_dynamic(ctx, imageSize, 1);
-        hover(1);
+        hover(3);
         if (nk_button_image(ctx, levelImage))
         {
             Menu::Enum  menu = Menu::NONE;
@@ -586,7 +575,7 @@ void    NuklearGUI::renderLevelSelection() {
         }
 
         nk_layout_row_dynamic(ctx, optionHeight, 8);
-        hover(2);
+        hover(4);
         if (nk_button_label(ctx, "Back")) {
             event.raise(Event::END_END_ANIMATION, nullptr);
             Menu::Enum menuEnum = Menu::Enum(Menu::LEVEL_SELECTION);
@@ -599,7 +588,7 @@ void    NuklearGUI::renderLevelSelection() {
         (_starsCampaign[level] >= 2) ? nk_image(ctx, fullStar) : nk_image(ctx, emptyStar);
         (_starsCampaign[level] >= 3) ? nk_image(ctx, fullStar) : nk_image(ctx, emptyStar);
 
-        hover(3);
+        hover(5);
         if (nk_button_label(ctx, "Go !"))
         {
             Menu::Enum  menu = Menu::NONE;
@@ -624,9 +613,7 @@ void    NuklearGUI::renderNewBrawlMenu() {
 
     static GameParams game_params(GameMode::BRAWL, Level::ONE, PlayerColor::WHITE, 1, Difficulty::EASY);
     static struct nk_image  levelImage = loadImage("assets/textures/Brawl_bombermans.png", GL_RGBA);
-
     static struct nk_image  playerImage = loadImage(color_to_image(game_params.get_color()).c_str(), GL_RGBA);    
-
 
     if (nk_begin(ctx, "NEW BRAWL", nk_rect(windowWidth / 2 - menuWidth, windowHeight / 2 - menuHeight / 2, menuWidth * 2, menuHeight),
     NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR)) {
@@ -634,37 +621,32 @@ void    NuklearGUI::renderNewBrawlMenu() {
         nk_layout_row_dynamic(ctx, optionHeight * 4, 1);
         nk_image(ctx, levelImage);
 
-        // nk_layout_row_dynamic(ctx, optionHeight, 2);
-        // nk_label(ctx, "Arena", NK_TEXT_CENTERED);
-        // if (nk_button_label(ctx, std::string("Arena " + std::to_string(game_params.get_level()+ 1)).c_str())) {
-        //     game_params.set_level(game_params.get_level() == Level::THREE ? Level::ONE : static_cast<Level::Enum>(game_params.get_level() + 1));
-        //     levelImage = loadImage("assets/textures/level" + std::to_string(game_params.get_level() + 1) + ".png", GL_RGBA);
-        // }   
-        
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Player", NK_TEXT_CENTERED);
+        hover(1);
         if (nk_button_image_label(ctx, playerImage, toString(game_params.get_color()).c_str(), NK_TEXT_CENTERED)) {
             game_params.set_color(game_params.get_color() == PlayerColor::YELLOW ? PlayerColor::WHITE : static_cast<PlayerColor::Enum>(game_params.get_color() + 1));
             playerImage = loadImage(color_to_image(game_params.get_color()).c_str(), GL_RGBA);
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
         }        
         
         nk_layout_row_dynamic(ctx, optionHeight, 2);
         nk_label(ctx, "Enemies", NK_TEXT_CENTERED);
+        hover(2);
         if (nk_button_label(ctx, std::to_string(game_params.get_brawl_enemy_nb()).c_str())) {
             game_params.set_brawl_enemy_nb(game_params.get_brawl_enemy_nb() + 1);
+            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+            event.raise(Event::UI_AUDIO, &audio);
         }
             
-        // nk_layout_row_dynamic(ctx, optionHeight, 2);
-        // nk_label(ctx, "Difficulty", NK_TEXT_CENTERED);
-        // if (nk_button_label(ctx, toString(game_params.get_difficulty()).c_str())) {
-        //     game_params.set_difficulty(game_params.get_difficulty() == Difficulty::HARD ? Difficulty::EASY : static_cast<Difficulty::Enum>(game_params.get_difficulty() + 1));
-        // }        
-        
-        nk_layout_row_dynamic(ctx, optionHeight, 2);        
+        nk_layout_row_dynamic(ctx, optionHeight, 2);   
+        hover(3);
         if (nk_button_label(ctx, "Back")) {
             Menu::Enum menuEnum = Menu::Enum(Menu::NEW_BRAWL);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }    
+        hover(4);
         if (nk_button_label(ctx, "Go !")) {
             Menu::Enum  menu = Menu::NONE;
             event.raise(Event::GUI_TOGGLE, &menu);
@@ -672,7 +654,6 @@ void    NuklearGUI::renderNewBrawlMenu() {
             _human_player_bonus = glm::ivec3(1, 1, 1);
             event.raise(Event::NEW_GAME, &game_params);
         }   
-
         nk_end(ctx);
     }
 }
@@ -689,6 +670,7 @@ void    NuklearGUI::renderGameOverMenu() {
 
         nk_style_set_font(ctx, &mediumFont->handle);               
         nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(1);
         if (nk_button_label(ctx, "Retry")) {
             Menu::Enum menuEnum = Menu::Enum(Menu::GAME_OVER);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
@@ -696,17 +678,18 @@ void    NuklearGUI::renderGameOverMenu() {
         }       
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(1);
         if (nk_button_label(ctx, "Back to main menu")) {
             event.raise(Event::GAME_FINISH, nullptr);
             Menu::Enum menuEnum = Menu::Enum(Menu::START);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
-            
             event.raise(Event::END_END_ANIMATION, nullptr);
         }
         
         nk_layout_row_dynamic(ctx, optionHeight, 1);
+        hover(1);
         if (nk_button_label(ctx, "Quit game")) {
-            event.raise(Event::QUIT_GAME, nullptr);                     
+            event.raise(Event::QUIT_GAME, nullptr);  
         }  
     }
     nk_end(ctx);
@@ -800,6 +783,7 @@ void    NuklearGUI::renderHowToPlayMenu() {
         
         nk_style_set_font(ctx, &mediumFont->handle);
         nk_layout_row_dynamic(ctx, optionHeight, 4);
+        hover(1);
         if (nk_button_label(ctx, "Back")) {
             Menu::Enum menuEnum = Menu::Enum(Menu::HOW_TO_PLAY);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
@@ -824,8 +808,6 @@ void    NuklearGUI::renderStartMenu() {
         hover(1);
         if (nk_button_label(ctx, "Campaign"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum  me = Menu::LEVEL_SELECTION;
             event.raise(Event::GUI_TOGGLE, &me);
         }
@@ -834,8 +816,6 @@ void    NuklearGUI::renderStartMenu() {
         hover(2); 
         if (nk_button_label(ctx, "Brawl"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum  me = Menu::NEW_BRAWL;
             event.raise(Event::GUI_TOGGLE, &me);
         }
@@ -843,8 +823,6 @@ void    NuklearGUI::renderStartMenu() {
         hover(3);
         if (nk_button_label(ctx, "How to play"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum  me = Menu::HOW_TO_PLAY;
             event.raise(Event::GUI_TOGGLE, &me);
         }
@@ -852,8 +830,6 @@ void    NuklearGUI::renderStartMenu() {
         hover(4);
         if (nk_button_label(ctx, "Options"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::OPTIONS);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
@@ -876,10 +852,14 @@ void    NuklearGUI::renderStartMenu() {
                 if (nk_button_label(ctx, "Yes")) {
                     SGameManager::getInstance().getCurrentSlot().reset_stars_campaign();            
                     confirmationPopup = 0;
+                    UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+                    event.raise(Event::UI_AUDIO, &audio);
                     nk_popup_close(ctx);
                 }
                 if (nk_button_label(ctx, "No")) {
                     confirmationPopup = 0;
+                    UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
+                    event.raise(Event::UI_AUDIO, &audio);
                     nk_popup_close(ctx);
                 }
                 nk_popup_end(ctx);
@@ -889,8 +869,6 @@ void    NuklearGUI::renderStartMenu() {
         hover(6);
         if (nk_button_label(ctx, "Slot selection"))
         {
-            UIAudio::Enum audio = UIAudio::Enum(UIAudio::CLICK);
-            event.raise(Event::UI_AUDIO, &audio);
             Menu::Enum menuEnum = Menu::Enum(Menu::SELECT_SLOT);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
         }
@@ -1111,7 +1089,8 @@ void    NuklearGUI::renderSlot(int n, int progress, std::string date, std::strin
     if (nk_begin(ctx, s.c_str(), nk_rect(windowWidth * xOffset[n] - slotWidth / 2, windowHeight / 2 - slotWidth / 2, slotWidth, slotWidth * 3),
     NK_WINDOW_NO_SCROLLBAR)) {
         nk_style_set_font(ctx, &bigFont->handle);
-        nk_layout_row_dynamic(ctx, optionHeight, 1);  
+        nk_layout_row_dynamic(ctx, optionHeight, 1); 
+        hover(n); 
         if (nk_button_label(ctx, s.c_str())) {
             Save::Enum  slot = static_cast<Save::Enum>(n);
             event.raise(Event::LOAD_SLOT, &slot);

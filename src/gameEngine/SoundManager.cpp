@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:34:49 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/29 17:51:18 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/29 17:55:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,11 @@ SoundManager::SoundManager() : masterVolume(0.0f), musicVolume(MIX_MAX_VOLUME / 
     bonus = Mix_LoadWAV("assets/sounds/pickup_bonus.wav");
     hover = Mix_LoadWAV("assets/sounds/hover.wav");
     click = Mix_LoadWAV("assets/sounds/click2.wav");
-    countdown = Mix_LoadWAV("assets/sounds/countdown.wav");
 
     updateVolume();
     
     SEventManager & event = SEventManager::getInstance();
     event.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SoundManager::playMusic));
-    event.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SoundManager::playCountdown));
     event.registerEvent(Event::RESTART_GAME, MEMBER_CALLBACK(SoundManager::restartMusic));
     event.registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(SoundManager::playWinMusic));
     event.registerEvent(Event::GAME_OVER, MEMBER_CALLBACK(SoundManager::playLoseMusic));
@@ -56,7 +54,6 @@ SoundManager::~SoundManager() {
     Mix_FreeChunk(bonus);
     Mix_FreeChunk(hover);
     Mix_FreeChunk(click);
-    Mix_FreeChunk(countdown);
     Mix_FreeMusic(music);
     Mix_CloseAudio();
 }
@@ -81,10 +78,6 @@ void    SoundManager::playUISound(void *s) {
 
 void    SoundManager::playPickupBonus(void *) {
     Mix_PlayChannel(-1, bonus, 0);
-}
-
-void    SoundManager::playCountdown(void *) {
-    Mix_PlayChannel(-1, countdown, 0);
 }
 
 void    SoundManager::playBoom(void *) {
@@ -126,7 +119,6 @@ void    SoundManager::updateVolume() {
     Mix_VolumeChunk(bonus, masterVolume * effectsVolume);
     Mix_VolumeChunk(hover, masterVolume * effectsVolume);
     Mix_VolumeChunk(click, masterVolume * effectsVolume);
-    Mix_VolumeChunk(countdown, masterVolume * effectsVolume);
 }
 
 void    SoundManager::setMasterVolume(void * v) {

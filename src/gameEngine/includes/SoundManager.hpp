@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:32:15 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/29 17:51:32 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/29 17:54:40 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ class SoundManager
         Mix_Chunk   *bonus;
         Mix_Chunk   *hover;
         Mix_Chunk   *click;
-        Mix_Chunk   *countdown;
 
         Mix_Music   *current_music;
 
@@ -58,7 +57,6 @@ class SoundManager
         void    playMenuMusic(void *);
         void    playBoom(void *);
         void    playPickupBonus(void *);
-        void    playCountdown(void *);
         void    playUISound(void *);
 
         void    playWinMusic(void *);

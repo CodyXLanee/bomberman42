@@ -602,7 +602,6 @@ void    NuklearGUI::renderLevelSelection() {
         hover(3);
         if (nk_button_label(ctx, "Go !"))
         {
-            event.raise(Event::END_END_ANIMATION, nullptr);      
             Menu::Enum  menu = Menu::NONE;
             event.raise(Event::GUI_TOGGLE, &menu);
             _human_player_color = PlayerColor::WHITE;

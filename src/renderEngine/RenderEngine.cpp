@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RenderEngine.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/23 15:47:10 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/29 11:02:36 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ void	RenderEngine::blendedPass(std::vector<IGameEntity *> &entities){
 	meteo->renderRain(shaderManager.getParticlesShader());
 	if (fireParticles.isRunning())
 		fireParticles.draw(shaderManager.getParticlesShader());
-	if (bombParticles.isRunning())
-		bombParticles.draw(shaderManager.getParticlesShader());
+	// if (bombParticles.isRunning())
+	// 	bombParticles.draw(shaderManager.getParticlesShader());
 }
 
 

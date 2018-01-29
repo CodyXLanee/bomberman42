@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/22 14:51:42 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 15:14:41 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/29 10:18:52 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define BOMBPARTICLES_HPP
 
 # include "AParticleSystem.hpp"
+# include <cmath>
 
 # define PARTICLES_BY_BOMB 3
 

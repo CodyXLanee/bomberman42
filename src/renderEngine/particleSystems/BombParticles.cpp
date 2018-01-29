@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BombParticles.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/22 14:55:51 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/04 14:40:28 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/29 10:29:18 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,13 @@ void    BombParticles::update() {
 			continue;
 		}
 		for(auto it = i->second.begin(); it != i->second.end(); it++) {
-			float r = static_cast<float>((rand() % 90)) - 45.f;
+			float r = static_cast<float>((rand() % 60)) - 30.f;
 
 			glm::mat4 transform = glm::mat4();
             transform = glm::translate(transform, *it);
             transform = glm::rotate(transform,glm::radians(-90.0f), glm::vec3(1.f, 0.f, 0.f));
             transform = glm::rotate(transform,glm::radians(r), glm::vec3(0.f, 0.f, 1.f));
-            transform = glm::scale(transform, glm::vec3(0.01f, 0.1f, 1.f));
+            transform = glm::scale(transform, glm::vec3(0.01f, 0.2f, 1.f));
 
 			data.push_back(transform);
 		}
@@ -72,7 +72,7 @@ void    BombParticles::addBombPlace(glm::vec2 pos) {
 	std::vector<glm::vec3> particles;
 	glm::vec3 ori = glm::vec3(pos.x + 0.5f, pos.y + 0.5f, 1.f);
 	for(unsigned int i = 0; i < PARTICLES_BY_BOMB; i++) {
-		particles.push_back(ori + glm::vec3(0.08f, 0.f, 0.59f));
+		particles.push_back(ori + glm::vec3(0.08f, 0.f, 0.50f));
 	}
 	bombPlaces.push_back(std::pair<glm::vec3, std::vector<glm::vec3>>(ori, particles));
 	running = true;

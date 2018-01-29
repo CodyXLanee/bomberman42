@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SoundManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:32:15 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/25 12:41:42 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/29 17:46:23 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <iostream>
 # include <random>
 # include "SEventManager.hpp"
+# include "GameParams.hpp"
 # include "bomberman.hpp"
 
 # define SAMPLE_RATE 44100
@@ -33,8 +34,10 @@ class SoundManager
         Mix_Music   *music;
         Mix_Chunk   *boom;
         Mix_Chunk   *boom2;
+        Mix_Chunk   *bonus;
         Mix_Chunk   *hover;
         Mix_Chunk   *click;
+        Mix_Chunk   *countdown;
 
         float       masterVolume;
         float       musicVolume;
@@ -44,6 +47,8 @@ class SoundManager
 
         void    playMusic(void *);
         void    playBoom(void *);
+        void    playPickupBonus(void *);
+        void    playCountdown(void *);
         void    playUISound(void *);
 
         void    setMasterVolume(void *);

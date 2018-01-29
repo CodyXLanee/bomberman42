@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SGameManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/24 17:36:31 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/29 17:44:20 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void        SGameManager::manage(void) {
     }
     else
     {
+        // NEW_GAME event should raise GameParams
         GameMode::Enum gme = GameMode::Enum(GameMode::CAMPAIGN);
         em.raise(Event::NEW_GAME, &gme);
     }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SoundManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:34:49 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/25 12:42:03 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/29 17:46:00 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,18 @@ SoundManager::SoundManager() : masterVolume(0.0f), musicVolume(MIX_MAX_VOLUME / 
     music = Mix_LoadMUS("assets/sounds/carnivalrides.ogg");
     boom = Mix_LoadWAV("assets/sounds/explosions_explode.wav");
     boom2 = Mix_LoadWAV("assets/sounds/explosions_explodemini.wav");
+    bonus = Mix_LoadWAV("assets/sounds/pickup_bonus.wav");
     hover = Mix_LoadWAV("assets/sounds/hover.wav");
     click = Mix_LoadWAV("assets/sounds/click2.wav");
+    countdown = Mix_LoadWAV("assets/sounds/countdown.wav");
 
     updateVolume();
     
     SEventManager & event = SEventManager::getInstance();
     event.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SoundManager::playMusic));
+    event.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SoundManager::playCountdown));
     event.registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(SoundManager::playBoom));
+    event.registerEvent(Event::BONUS_ACTIVATE, MEMBER_CALLBACK(SoundManager::playPickupBonus));
     event.registerEvent(Event::MASTER_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setMasterVolume));
     event.registerEvent(Event::MUSIC_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setMusicVolume));
     event.registerEvent(Event::EFFECTS_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setEffectsVolume));
@@ -38,8 +42,10 @@ SoundManager::SoundManager() : masterVolume(0.0f), musicVolume(MIX_MAX_VOLUME / 
 SoundManager::~SoundManager() {
     Mix_FreeChunk(boom);
     Mix_FreeChunk(boom2);
+    Mix_FreeChunk(bonus);
     Mix_FreeChunk(hover);
     Mix_FreeChunk(click);
+    Mix_FreeChunk(countdown);
     Mix_FreeMusic(music);
     Mix_CloseAudio();
 }
@@ -54,6 +60,14 @@ void    SoundManager::playUISound(void *s) {
     //delete sound;
 }
 
+void    SoundManager::playPickupBonus(void *) {
+    Mix_PlayChannel(-1, bonus, 0);
+}
+
+void    SoundManager::playCountdown(void *) {
+    Mix_PlayChannel(-1, countdown, 0);
+}
+
 void    SoundManager::playBoom(void *) {
     std::uniform_int_distribution<int> distribution(0,1);
     int b = distribution(randomGenerator);
@@ -64,8 +78,8 @@ void    SoundManager::playBoom(void *) {
 }
 
 void    SoundManager::playMusic(void *p) {
-    GameMode::Enum  mode = *static_cast<GameMode::Enum*>(p);
-    if (mode == GameMode::CAMPAIGN) {
+    GameParams  gp = *static_cast<GameParams*>(p);
+    if (gp.get_game_mode() == GameMode::CAMPAIGN) {
         Mix_PlayMusic(music, -1);
     }
 }
@@ -74,8 +88,10 @@ void    SoundManager::updateVolume() {
     Mix_VolumeMusic(masterVolume * musicVolume);
     Mix_VolumeChunk(boom, masterVolume * effectsVolume);
     Mix_VolumeChunk(boom2, masterVolume * effectsVolume);
+    Mix_VolumeChunk(bonus, masterVolume * effectsVolume);
     Mix_VolumeChunk(hover, masterVolume * effectsVolume);
     Mix_VolumeChunk(click, masterVolume * effectsVolume);
+    Mix_VolumeChunk(countdown, masterVolume * effectsVolume);
 }
 
 void    SoundManager::setMasterVolume(void * v) {

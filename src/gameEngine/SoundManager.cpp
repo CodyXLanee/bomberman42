@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:34:49 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/29 16:47:51 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/29 17:31:14 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,10 @@ void    SoundManager::restartMusic(void *){
 
 void    SoundManager::playMenuMusic(void *){
     // std::cout << menu_music << std::endl;
-    Mix_PlayMusic(menu_music, -1);
+    if (current_music != menu_music){
+        Mix_PlayMusic(menu_music, -1);
+        current_music = menu_music;
+    }
 }
 
 void    SoundManager::updateVolume() {

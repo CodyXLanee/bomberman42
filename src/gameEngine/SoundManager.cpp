@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:34:49 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/25 12:42:03 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/29 16:47:51 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@ SoundManager::SoundManager() : masterVolume(0.0f), musicVolume(MIX_MAX_VOLUME / 
     }
     Mix_AllocateChannels(10);
     
+    menu_music =  Mix_LoadMUS("assets/sounds/LinesOfCode.wav");
+    victory_music =  Mix_LoadMUS("assets/sounds/MainTheme.wav");
+    lose_music =  Mix_LoadMUS("assets/sounds/SeriousCutScene.wav");
+    brawl_music =  Mix_LoadMUS("assets/sounds/FranticLevel.wav");
+    campaign_music =  Mix_LoadMUS("assets/sounds/SwingingLevel.wav");
     music = Mix_LoadMUS("assets/sounds/carnivalrides.ogg");
     boom = Mix_LoadWAV("assets/sounds/explosions_explode.wav");
     boom2 = Mix_LoadWAV("assets/sounds/explosions_explodemini.wav");
@@ -28,11 +33,17 @@ SoundManager::SoundManager() : masterVolume(0.0f), musicVolume(MIX_MAX_VOLUME / 
     
     SEventManager & event = SEventManager::getInstance();
     event.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SoundManager::playMusic));
+    event.registerEvent(Event::RESTART_GAME, MEMBER_CALLBACK(SoundManager::restartMusic));
+    event.registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(SoundManager::playWinMusic));
+    event.registerEvent(Event::GAME_OVER, MEMBER_CALLBACK(SoundManager::playLoseMusic));
+    event.registerEvent(Event::END_END_ANIMATION, MEMBER_CALLBACK(SoundManager::playMenuMusic));
     event.registerEvent(Event::BOMB_EXPLODES, MEMBER_CALLBACK(SoundManager::playBoom));
     event.registerEvent(Event::MASTER_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setMasterVolume));
     event.registerEvent(Event::MUSIC_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setMusicVolume));
     event.registerEvent(Event::EFFECTS_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setEffectsVolume));
     event.registerEvent(Event::UI_AUDIO, MEMBER_CALLBACK(SoundManager::playUISound));
+
+    playMenuMusic(nullptr);
 }
 
 SoundManager::~SoundManager() {
@@ -42,6 +53,14 @@ SoundManager::~SoundManager() {
     Mix_FreeChunk(click);
     Mix_FreeMusic(music);
     Mix_CloseAudio();
+}
+
+void    SoundManager::playWinMusic(void *){
+     Mix_PlayMusic(victory_music, -1);
+}
+
+void    SoundManager::playLoseMusic(void *){
+     Mix_PlayMusic(lose_music, -1);
 }
 
 void    SoundManager::playUISound(void *s) {
@@ -64,10 +83,23 @@ void    SoundManager::playBoom(void *) {
 }
 
 void    SoundManager::playMusic(void *p) {
-    GameMode::Enum  mode = *static_cast<GameMode::Enum*>(p);
-    if (mode == GameMode::CAMPAIGN) {
-        Mix_PlayMusic(music, -1);
+    GameParams  *params = static_cast<GameParams*>(p);
+    if (params->get_game_mode() == GameMode::CAMPAIGN) {
+        current_music = campaign_music;
+        Mix_PlayMusic(campaign_music, -1);
+    } else if (params->get_game_mode() == GameMode::BRAWL) {
+        current_music = brawl_music;
+        Mix_PlayMusic(brawl_music, -1);
     }
+}
+
+void    SoundManager::restartMusic(void *){
+    Mix_PlayMusic(current_music, -1);
+}
+
+void    SoundManager::playMenuMusic(void *){
+    // std::cout << menu_music << std::endl;
+    Mix_PlayMusic(menu_music, -1);
 }
 
 void    SoundManager::updateVolume() {

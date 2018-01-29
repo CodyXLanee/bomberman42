@@ -236,10 +236,13 @@ void    Camera::animationsEnd(void *anim) {
         case Animation::Enum::START:          is_first_animation = false; break;
         case Animation::Enum::GAME_OVER:
         case Animation::Enum::WIN:
-            is_standing_animation = false;
-            position = first_animation_init_pos;
-            yaw = first_animation_init_yaw;
-            pitch = first_animation_init_pitch;
+            if (is_standing_animation)
+            {
+                is_standing_animation = false;
+                position = first_animation_init_pos;
+                yaw = first_animation_init_yaw;
+                pitch = first_animation_init_pitch;
+            }
             break;
         default: break;
     }

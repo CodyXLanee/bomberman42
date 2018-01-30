@@ -77,7 +77,9 @@ namespace Event {
 		ENEMY_COLLIDES,
 
 /* 		std::vector<glm::vec2> * 						*/
-		AIPTR
+		AIPTR,
+/*		Theme::Enum										*/
+		SET_THEME
 	};
 }
 

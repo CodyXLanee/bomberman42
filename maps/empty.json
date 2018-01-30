@@ -9,7 +9,5 @@
 		 [0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0],
 		 [0,	-2,	0,	-2,	0,	-2,	0,	-2,	0,	-2,	0],
 		 [0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0]],
-"models":{
-	"bricks": "assets/models/bricks.obj",
-	"undestroyable": "assets/models/undestroyable.obj"}
+    "theme": 0
 }

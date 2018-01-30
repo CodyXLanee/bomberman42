@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 15:58:49 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/23 10:36:57 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/30 15:18:18 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,10 @@ namespace WinCondition {
 
 namespace Animation {
 	enum Enum {START, WIN, GAME_OVER};
+};
+
+namespace Theme{
+	enum Enum { LAVA, FOREST };
 };
 
 #endif

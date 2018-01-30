@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/30 10:51:46 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/30 15:42:56 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	RenderEngine::normalPass(Map const & map, std::vector<IGameEntity *> &entit
 	renderScene(shaderManager.getMainShader(), map, entities);
 }
 
-void	RenderEngine::blendedPass(std::vector<IGameEntity *> &entities){
+void	RenderEngine::blendedPass(std::vector<IGameEntity *> &entities) {
 	glEnable(GL_BLEND);
 	renderFlames(shaderManager.getFlamesShader(), entities);
 	meteo->renderRain(shaderManager.getParticlesShader());

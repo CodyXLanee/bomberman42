@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/04 14:36:37 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/30 14:55:23 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/30 15:38:30 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ SGameManager::SGameManager() :
     em.registerEvent(Event::NEW_GAME, MEMBER_CALLBACK(SGameManager::new_game));
     em.registerEvent(Event::RESTART_GAME, MEMBER_CALLBACK(SGameManager::restart_game));
     em.registerEvent(Event::GAME_FINISH, MEMBER_CALLBACK(SGameManager::game_finish));
+    em.registerEvent(Event::GAME_WIN, MEMBER_CALLBACK(SGameManager::game_win));
     em.registerEvent(Event::END_END_ANIMATION, MEMBER_CALLBACK(SGameManager::end_end_animation));
 
     em.registerEvent(Event::LOAD_SLOT, MEMBER_CALLBACK(SGameManager::loadSlot));
@@ -131,6 +132,14 @@ void            SGameManager::game_finish(void *){
     _game_is_active = false;
     _post_game_display = true;
 
+
+    Animation::Enum anim = Animation::Enum::WIN;
+    SEventManager::getInstance().raise(Event::START_ANIMATION, &anim);
+    SEventManager::getInstance().raise(Event::GAME_PAUSE, nullptr);
+}
+
+
+void            SGameManager::game_win(void *){
     if (_game->getGameParams().get_game_mode() == GameMode::CAMPAIGN)
     {
         int stars = _game->getStarsCampaign();
@@ -141,9 +150,6 @@ void            SGameManager::game_finish(void *){
             SEventManager::getInstance().raise(Event::UPDATE_ALL_CAMPAIGN_STARS, &ugly_tmp);
         }
     }
-    Animation::Enum anim = Animation::Enum::WIN;
-    SEventManager::getInstance().raise(Event::START_ANIMATION, &anim);
-    SEventManager::getInstance().raise(Event::GAME_PAUSE, nullptr);
 }
 
 // void            SGameManager::newGame(GameMode::Enum gm){

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/30 10:53:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/30 11:00:50 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ ModelManager::ModelManager() {
 	bombUpModel = new Model(directory + "bombUp.obj");
 	speedUpModel = new Model(directory + "speedUp.obj");
 
-	// baloonModel = new Model(directory + "baloon.obj");
 	baloonModel = new Model(directory + "mob.fbx");
 	
 	aiDebug = new Model(directory + "aiDebug.obj");

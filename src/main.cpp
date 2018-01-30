@@ -3,16 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 11:32:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/04 15:00:31 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/30 11:15:57 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SGameManager.hpp"
 
-int main() {
+int main(int, char **av) {
+	if (strcmp(av[0], "./bomberman")) {
+		std::cerr << "You must launch the game from local directory" << std::endl;
+		return 1;
+	}
 	SGameManager &gm = SGameManager::getInstance();
 	gm.manage();
 	return 0;

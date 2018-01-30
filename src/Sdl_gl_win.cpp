@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/29 17:41:49 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/30 10:15:45 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,10 +113,10 @@ void    Sdl_gl_win::eventManager(struct nk_context * nk_ctx) {
     SDL_GetRelativeMouseState(&mouseX,&mouseY);
     nk_input_begin(nk_ctx);
     while (SDL_PollEvent(&events)) {
-        // if (events.window.event == SDL_WINDOWEVENT_CLOSE ||
-        //     (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE)) {
-        //         event.raise(Event::QUIT_GAME, nullptr);
-        // }
+        if (events.window.event == SDL_WINDOWEVENT_CLOSE){ //||
+            // (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE)) {
+                event.raise(Event::QUIT_GAME, nullptr);
+        }
         nk_sdl_handle_event(&events);
         if (events.type == SDL_KEYDOWN) {
             event.raise(Event::KEYDOWN, &events.key.keysym.sym);

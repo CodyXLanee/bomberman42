@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 12:26:16 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/29 16:18:37 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/30 15:07:37 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -710,8 +710,8 @@ void    NuklearGUI::renderBrawlWinMenu() {
         if (nk_button_label(ctx, "Play Again")) {
             Menu::Enum menuEnum = Menu::Enum(Menu::GAME_OVER);
             event.raise(Event::GUI_TOGGLE, &menuEnum);
-            event.raise(Event::RESTART_GAME, nullptr);
             event.raise(Event::END_END_ANIMATION, nullptr);        
+            event.raise(Event::RESTART_GAME, nullptr);
         }       
 
         nk_layout_row_dynamic(ctx, optionHeight, 1);

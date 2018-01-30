@@ -37,6 +37,7 @@ SRC_NAME =	\
 			renderEngine/particleSystems/AParticleSystem.cpp \
 			renderEngine/particleSystems/FireParticles.cpp \
 			renderEngine/particleSystems/BombParticles.cpp \
+			renderEngine/particleSystems/RainParticles.cpp \
 			renderEngine/Shader.cpp \
 			renderEngine/Camera.cpp \
 			renderEngine/Light.cpp \

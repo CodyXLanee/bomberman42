@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/18 13:18:21 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/30 10:15:45 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ Sdl_gl_win::Sdl_gl_win(size_t width, size_t height) : width(width), height(heigh
     
     keyMap[Event::DEBUG_MODE] =     SDLK_TAB;
     keyMap[Event::FOLLOW_PLAYER] =  SDLK_1;
-    keyMap[Event::GUI_BASE_MENU] =  SDLK_LCTRL;
+    keyMap[Event::GUI_BASE_MENU] =  SDLK_ESCAPE;
 
     SEventManager & event = SEventManager::getInstance();
     event.registerEvent(Event::SCREEN_FORMAT_UPDATE, MEMBER_CALLBACK(Sdl_gl_win::updateScreenFormat));
@@ -113,8 +113,8 @@ void    Sdl_gl_win::eventManager(struct nk_context * nk_ctx) {
     SDL_GetRelativeMouseState(&mouseX,&mouseY);
     nk_input_begin(nk_ctx);
     while (SDL_PollEvent(&events)) {
-        if (events.window.event == SDL_WINDOWEVENT_CLOSE ||
-            (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE)) {
+        if (events.window.event == SDL_WINDOWEVENT_CLOSE){ //||
+            // (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE)) {
                 event.raise(Event::QUIT_GAME, nullptr);
         }
         nk_sdl_handle_event(&events);

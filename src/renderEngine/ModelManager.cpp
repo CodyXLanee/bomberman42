@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/30 14:53:52 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/30 15:25:47 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ Model	&ModelManager::getModel(enum model m) const {
 	}
 }
 
-void	ModelManager::setMapTheme(enum theme t) {
+void	ModelManager::setMapTheme(void *p) {
 	delete groundModel;
 	delete wallModel;
 	delete brickModel;
@@ -86,9 +86,10 @@ void	ModelManager::setMapTheme(enum theme t) {
 	delete bombUpModel;
 	delete speedUpModel;
 	delete baloonModel;
+	Theme::Enum t = *static_cast<Theme::Enum * >(p);
 	switch (t) {
-		case LAVA: setThemeLava(); break;
-		case FOREST: setThemeForest(); break;
+		case Theme::LAVA: setThemeLava(); break;
+		case Theme::FOREST: setThemeForest(); break;
 	}
 }
 

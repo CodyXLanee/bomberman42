@@ -10,13 +10,7 @@
             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [-1,-2, 0,-2, 0,-2, 0,-2, 0,-2,-1],
             [-1,-1, 0, 0, 0, 0, 0, 0, 0,-1,-1]],
-    "models":{
-    "bricks": "assets/models/bricks.obj",
-    "undestroyable": "assets/models/undestroyable.obj"},
-    "sun":{
-        "pos":[20.0, 20.0, 20.0],
-        "color":[0.682, 0.356, 0.803]
-    },
+    "theme": 0,
     "win":{
         "condition": 0,
         "spot": [5.0, 0.0]

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:34:49 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/30 17:40:47 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/30 18:33:50 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,13 @@ SoundManager::SoundManager() : masterVolume(0.0f), musicVolume(MIX_MAX_VOLUME / 
     lose_music =  Mix_LoadMUS("assets/sounds/SeriousCutScene.wav");
     brawl_music =  Mix_LoadMUS("assets/sounds/FranticLevel.wav");
     campaign_music =  Mix_LoadMUS("assets/sounds/SwingingLevel.wav");
-    music = Mix_LoadMUS("assets/sounds/carnivalrides.ogg");
+
     boom = Mix_LoadWAV("assets/sounds/explosions_explode.wav");
     boom2 = Mix_LoadWAV("assets/sounds/explosions_explodemini.wav");
     bonus = Mix_LoadWAV("assets/sounds/pickup_bonus.wav");
+    death = Mix_LoadWAV("assets/sounds/death.mp3");
+    death2 = Mix_LoadWAV("assets/sounds/death2.mp3");
+    
     hover = Mix_LoadWAV("assets/sounds/hover.wav");
     click = Mix_LoadWAV("assets/sounds/click2.wav");
 
@@ -44,6 +47,8 @@ SoundManager::SoundManager() : masterVolume(0.0f), musicVolume(MIX_MAX_VOLUME / 
     event.registerEvent(Event::MUSIC_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setMusicVolume));
     event.registerEvent(Event::EFFECTS_VOLUME_UPDATE, MEMBER_CALLBACK(SoundManager::setEffectsVolume));
     event.registerEvent(Event::UI_AUDIO, MEMBER_CALLBACK(SoundManager::playUISound));
+    event.registerEvent(Event::PLAYER_DIES, MEMBER_CALLBACK(SoundManager::playDeath));
+    event.registerEvent(Event::ENEMY_DIES, MEMBER_CALLBACK(SoundManager::playDeath));
 
     playMenuMusic(nullptr);
 }
@@ -54,8 +59,16 @@ SoundManager::~SoundManager() {
     Mix_FreeChunk(bonus);
     Mix_FreeChunk(hover);
     Mix_FreeChunk(click);
-    Mix_FreeMusic(music);
     Mix_CloseAudio();
+}
+
+void    SoundManager::playDeath(void *) {
+    std::uniform_int_distribution<int> distribution(0,1);
+    int b = distribution(randomGenerator);
+    if (b)
+        Mix_PlayChannel(-1, death, 0);
+    else
+        Mix_PlayChannel(-1, death2, 0);
 }
 
 void    SoundManager::playWinMusic(void *){

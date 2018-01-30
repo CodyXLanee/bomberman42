@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:35:00 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/29 11:02:36 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/30 10:51:46 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ void	RenderEngine::renderPlayer(Shader &shader, std::vector<IGameEntity *> const
 		transform = glm::rotate(transform, sign * angle(glm::vec2(0.f, -1.f), graphicalDir), glm::vec3(0.f, 0.f, 1.f));
 
 		data.push_back(transform);
-		Model &model = modelManager.getPlayerModel(player->getPlayerNb());
+		Model &model = modelManager.getPlayerModel(player->getColor());
 		if (numAnim != 3)
 			model.setAnimation(numAnim, fakeTime);
 		else

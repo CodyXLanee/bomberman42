@@ -20,6 +20,7 @@ ModelManager::ModelManager() {
 	playerModel[2] = new Model(directory + "playerRed.fbx");
 	playerModel[3] = new Model(directory + "playerYellow.fbx");
 	
+	SEventManager::getInstance().registerEvent(Event::SET_THEME, MEMBER_CALLBACK(ModelManager::setMapTheme));
 	setThemeLava();
 }
 
@@ -90,6 +91,7 @@ void	ModelManager::setMapTheme(void *p) {
 	switch (t) {
 		case Theme::LAVA: setThemeLava(); break;
 		case Theme::FOREST: setThemeForest(); break;
+		case Theme::ICE: setThemeIce(); break;
 	}
 }
 
@@ -113,10 +115,29 @@ void	ModelManager::setThemeLava() {
 }
 
 void	ModelManager::setThemeForest() {
-	wallModel = new Model(directory + "wall.obj");
-	groundModel = new Model(directory + "groundTile1.obj");
-	brickModel = new Model(directory + "brick.obj");
-	sceneryModel = new Model(directory + "sceneryGround.obj");
+	wallModel = new Model(directory + "wall3.obj");
+	groundModel = new Model(directory + "groundTile3.obj");
+	brickModel = new Model(directory + "brick3.obj");
+	sceneryModel = new Model(directory + "sceneryGround3.obj");
+
+	flameModel = new Model(directory + "flame.obj");
+	bombModel = new Model(directory + "bomb.obj");
+
+	flameUpModel = new Model(directory + "flameUp.obj");
+	bombUpModel = new Model(directory + "bombUp.obj");
+	speedUpModel = new Model(directory + "speedUp.obj");
+
+	baloonModel = new Model(directory + "mob.fbx");
+	
+	aiDebug = new Model(directory + "aiDebug.obj");
+	winSpot = new Model(directory + "winSpot.obj");
+}
+
+void	ModelManager::setThemeIce() {
+	wallModel = new Model(directory + "wall2.obj");
+	groundModel = new Model(directory + "groundTile2.obj");
+	brickModel = new Model(directory + "brick2.obj");
+	sceneryModel = new Model(directory + "sceneryGround2.obj");
 
 	flameModel = new Model(directory + "flame.obj");
 	bombModel = new Model(directory + "bomb.obj");

@@ -68,7 +68,7 @@ namespace Animation {
 };
 
 namespace Theme{
-	enum Enum { LAVA, FOREST };
+	enum Enum { LAVA, FOREST, ICE };
 };
 
 #endif

@@ -14,6 +14,8 @@
 # define MODELMANAGER_HPP
 
 # include "Model.hpp"
+# include "bomberman.hpp"
+# include "SEventManager.hpp"
 
 class ModelManager {
 	public:
@@ -50,6 +52,7 @@ class ModelManager {
 		void		setMapTheme(void *p);
 		void		setThemeLava();
 		void		setThemeForest();
+		void		setThemeIce();
 };
 
 #endif

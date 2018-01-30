@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/30 15:21:34 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/30 17:33:53 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ GameEngine::~GameEngine() {
 void	GameEngine::compute() {
 	// auto start = std::chrono::system_clock::now();
 
-    if (this->_loader.getState() == -1 || !_winManager || !_active)
+    if (this->_loader.getState() == -1 || !_winManager)
         return ;
 
     _playerManager->compute(*_map, *_entityList);
@@ -299,6 +299,9 @@ void					GameEngine::loadMap(const char *path){
 
 void			GameEngine::gameWin(void *)
 {
+	if (!_active)
+		return;
+	_active = false;
 	rapidjson::Value *	stars;
 	int					star_result = 0;
 
@@ -342,6 +345,9 @@ void			GameEngine::gameWin(void *)
 
 void			GameEngine::gameOver(void *)
 {
+	if (!_active)
+		return;
+	_active = false;
 	SEventManager::getInstance().raise(Event::GAME_FINISH, nullptr);
 	Menu::Enum me = Menu::Enum(Menu::GAME_OVER);
     SEventManager::getInstance().raise(Event::GUI_TOGGLE, &me);

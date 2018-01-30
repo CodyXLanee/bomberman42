@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/03 14:55:22 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/30 10:36:32 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,10 @@
 ModelManager::ModelManager() {
 	directory = "assets/models/obj/";
 
-	int i = 0;
-	while(i < 4) {
-		playerModel[i] = new Model(directory + "player.fbx");
-		i++;
-	}
+	playerModel[0] = new Model(directory + "playerWhite.fbx");
+	playerModel[1] = new Model(directory + "playerBlack.fbx");
+	playerModel[2] = new Model(directory + "playerYellow.fbx");
+	playerModel[3] = new Model(directory + "playerRed.fbx");
 
 	wallModel = new Model(directory + "wall.obj");
 	groundModel = new Model(directory + "groundTile1.obj");

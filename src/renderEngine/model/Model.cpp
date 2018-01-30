@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 09:44:16 by tpierron          #+#    #+#             */
-/*   Updated: 2017/12/22 11:02:25 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/30 10:31:09 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@ void	Model::draw(Shader &shader, std::vector<glm::mat4> const & transforms) {
 	shader.setInt("hasSpecularMap", hasSpecularMap);
 	
 	/////////////
-	if (path == "assets/models/obj/player.fbx") {
+	if (strstr(path.c_str(), ".fbx") != nullptr) {
 		material.ambient = glm::vec3(1.f);
 		material.diffuse = glm::vec3(1.f);
 		material.specular = glm::vec3(1.f);

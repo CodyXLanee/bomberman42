@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:32:15 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/29 17:54:40 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/30 17:39:34 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 # include "SEventManager.hpp"
 # include "GameParams.hpp"
 # include "bomberman.hpp"
-# include "GameParams.hpp"
+# include "Bonus.hpp"
+# include "Player.hpp"
 
 # define SAMPLE_RATE 44100
 # define BYTES_PER_OUTPUT_SAMPLE 1024

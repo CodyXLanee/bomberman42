@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:34:49 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/29 17:55:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/01/30 17:40:47 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,10 @@ void    SoundManager::playUISound(void *s) {
     //delete sound;
 }
 
-void    SoundManager::playPickupBonus(void *) {
-    Mix_PlayChannel(-1, bonus, 0);
+void    SoundManager::playPickupBonus(void *p) {
+    std::pair<Bonus*, Player*>  pair = *static_cast<std::pair<Bonus*, Player*>*>(p);
+    if (pair.second->getPlayerNb() == 0)
+        Mix_PlayChannel(-1, bonus, 0);
 }
 
 void    SoundManager::playBoom(void *) {

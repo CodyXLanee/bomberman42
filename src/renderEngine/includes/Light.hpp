@@ -31,6 +31,7 @@ class Light {
 		glm::vec3	getPosition() const;
 		void		setPosition(glm::vec3);
 		glm::vec3	getColor() const;
+		void		setColor(glm::vec3);
 		glm::mat4	getDirectionalLightSpaceMatrix() const;
 		std::vector<glm::mat4>	getOmnidirectionalLightSpaceMatrix() const;
 		void		render(Shader &shader, Camera const &camera) const;

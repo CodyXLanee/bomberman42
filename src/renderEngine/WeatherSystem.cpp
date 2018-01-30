@@ -19,6 +19,7 @@ WeatherSystem::WeatherSystem() {
 
 	init();
 	initClouds();
+	SEventManager::getInstance().registerEvent(Event::SET_THEME, MEMBER_CALLBACK(WeatherSystem::setSunTheme));
 }
 
 WeatherSystem::WeatherSystem(enum time t, bool cloudy, bool rainy)
@@ -156,5 +157,20 @@ void	WeatherSystem::initClouds() {
 		float rX = static_cast<float>((rand() % 200)) / 10.f;
 		float rY = static_cast<float>((rand() % 150)) / 10.f;
 		cloudsPosition.push_back(glm::vec3( -5 - rX, rY + 5, 12.f));
+	}
+}
+
+void	WeatherSystem::setSunTheme(void *p) {
+	Theme::Enum t = *static_cast<Theme::Enum * >(p);
+	switch (t) {
+		case Theme::LAVA:
+			sun->setColor(glm::vec3(1.f, 0.9f, 0.9f));
+			break;
+		case Theme::FOREST:
+			sun->setColor(glm::vec3(0.9f, 1.f, 0.9f));
+			break;
+		case Theme::ICE:
+			sun->setColor(glm::vec3(0.9f, 0.9f, 1.f));
+			break;
 	}
 }

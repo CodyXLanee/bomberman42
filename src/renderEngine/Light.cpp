@@ -101,3 +101,7 @@ void	Light::setShaderVariables(Shader &shader) const {
 void		Light::setPosition(glm::vec3 pos) {
 	position = pos;
 }
+
+void		Light::setColor(glm::vec3 c) {
+	color = c;
+}

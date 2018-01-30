@@ -41,6 +41,8 @@ class WeatherSystem {
 		
 		glm::vec3	const &getLightingValues() const;
 		Light		&getSun() const;
+
+		void		setSunTheme(void *p);
 		
 	private:
 

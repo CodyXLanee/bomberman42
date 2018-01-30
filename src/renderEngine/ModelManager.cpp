@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/30 10:36:32 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/30 11:00:50 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ ModelManager::ModelManager() {
 
 	playerModel[0] = new Model(directory + "playerWhite.fbx");
 	playerModel[1] = new Model(directory + "playerBlack.fbx");
-	playerModel[2] = new Model(directory + "playerYellow.fbx");
-	playerModel[3] = new Model(directory + "playerRed.fbx");
+	playerModel[2] = new Model(directory + "playerRed.fbx");
+	playerModel[3] = new Model(directory + "playerYellow.fbx");
 
 	wallModel = new Model(directory + "wall.obj");
 	groundModel = new Model(directory + "groundTile1.obj");
@@ -32,7 +32,6 @@ ModelManager::ModelManager() {
 	bombUpModel = new Model(directory + "bombUp.obj");
 	speedUpModel = new Model(directory + "speedUp.obj");
 
-	// baloonModel = new Model(directory + "baloon.obj");
 	baloonModel = new Model(directory + "mob.fbx");
 	
 	aiDebug = new Model(directory + "aiDebug.obj");

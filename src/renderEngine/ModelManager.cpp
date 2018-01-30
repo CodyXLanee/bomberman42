@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:22:44 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/30 11:00:50 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/30 14:53:52 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,8 @@ ModelManager::ModelManager() {
 	playerModel[1] = new Model(directory + "playerBlack.fbx");
 	playerModel[2] = new Model(directory + "playerRed.fbx");
 	playerModel[3] = new Model(directory + "playerYellow.fbx");
-
-	wallModel = new Model(directory + "wall.obj");
-	groundModel = new Model(directory + "groundTile1.obj");
-	brickModel = new Model(directory + "brick.obj");
-	sceneryModel = new Model(directory + "sceneryGround.obj");
-
-	flameModel = new Model(directory + "flame.obj");
-	bombModel = new Model(directory + "bomb.obj");
-
-	flameUpModel = new Model(directory + "flameUp.obj");
-	bombUpModel = new Model(directory + "bombUp.obj");
-	speedUpModel = new Model(directory + "speedUp.obj");
-
-	baloonModel = new Model(directory + "mob.fbx");
 	
-	aiDebug = new Model(directory + "aiDebug.obj");
-	winSpot = new Model(directory + "winSpot.obj");
+	setThemeLava();
 }
 
 ModelManager::~ModelManager() {
@@ -86,4 +71,61 @@ Model	&ModelManager::getModel(enum model m) const {
 		case SCENERY: return *sceneryModel; break;
 		case WIN_SPOT: return *winSpot; break;
 	}
+}
+
+void	ModelManager::setMapTheme(enum theme t) {
+	delete groundModel;
+	delete wallModel;
+	delete brickModel;
+	delete bombModel;
+	delete flameModel;
+	delete aiDebug;
+	delete sceneryModel;
+	delete winSpot;
+	delete flameUpModel;
+	delete bombUpModel;
+	delete speedUpModel;
+	delete baloonModel;
+	switch (t) {
+		case LAVA: setThemeLava(); break;
+		case FOREST: setThemeForest(); break;
+	}
+}
+
+void	ModelManager::setThemeLava() {
+	wallModel = new Model(directory + "wall.obj");
+	groundModel = new Model(directory + "groundTile1.obj");
+	brickModel = new Model(directory + "brick.obj");
+	sceneryModel = new Model(directory + "sceneryGround.obj");
+
+	flameModel = new Model(directory + "flame.obj");
+	bombModel = new Model(directory + "bomb.obj");
+
+	flameUpModel = new Model(directory + "flameUp.obj");
+	bombUpModel = new Model(directory + "bombUp.obj");
+	speedUpModel = new Model(directory + "speedUp.obj");
+
+	baloonModel = new Model(directory + "mob.fbx");
+	
+	aiDebug = new Model(directory + "aiDebug.obj");
+	winSpot = new Model(directory + "winSpot.obj");
+}
+
+void	ModelManager::setThemeForest() {
+	wallModel = new Model(directory + "wall.obj");
+	groundModel = new Model(directory + "groundTile1.obj");
+	brickModel = new Model(directory + "brick.obj");
+	sceneryModel = new Model(directory + "sceneryGround.obj");
+
+	flameModel = new Model(directory + "flame.obj");
+	bombModel = new Model(directory + "bomb.obj");
+
+	flameUpModel = new Model(directory + "flameUp.obj");
+	bombUpModel = new Model(directory + "bombUp.obj");
+	speedUpModel = new Model(directory + "speedUp.obj");
+
+	baloonModel = new Model(directory + "mob.fbx");
+	
+	aiDebug = new Model(directory + "aiDebug.obj");
+	winSpot = new Model(directory + "winSpot.obj");
 }

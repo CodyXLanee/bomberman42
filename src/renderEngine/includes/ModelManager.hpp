@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModelManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 11:17:58 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/03 14:50:33 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/30 14:51:09 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 class ModelManager {
 	public:
 		enum model { PLAYER, GROUND, WALL, BRICK, BOMB, FLAME, AIDEBUG, FLAME_UP, BOMB_UP, SPEED_UP, SCENERY, BALOON, WIN_SPOT };
-
-
+		enum theme { LAVA, FOREST };
 
 		ModelManager();
 		~ModelManager();
@@ -48,6 +47,10 @@ class ModelManager {
 		Model		*baloonModel;
 		Model		*sceneryModel;
 		Model		*winSpot;
+
+		void		setMapTheme(theme t);
+		void		setThemeLava();
+		void		setThemeForest();
 };
 
 #endif

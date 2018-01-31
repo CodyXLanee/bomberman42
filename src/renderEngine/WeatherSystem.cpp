@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/30 15:44:28 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/31 09:41:26 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 WeatherSystem::WeatherSystem() {
 	dayTime = MIDDAY;
-	cloudy = false;
+	cloudy = true;
 	rainy = false;
 
 	init();
@@ -134,11 +134,12 @@ void	WeatherSystem::renderCloud(Shader &shader) {
 		(*it).x += offset;
 		glm::mat4 transform = glm::mat4();
 		transform = glm::translate(transform, *it);
+		transform = glm::scale(transform, glm::vec3(4.f, 2.f, 0.f));
 		transform = glm::rotate(transform,glm::radians(90.0f), glm::vec3(1.f, 0.f, 0.f));
 		data.push_back(transform);
-		if ((*it).x > 20.f) {
-			float rX = static_cast<float>((rand() % 200)) / 10.f;
-			float rY = static_cast<float>((rand() % 150)) / 10.f;
+	if ((*it).x > 40.f) {
+			float rX = static_cast<float>((rand() % 400)) / 10.f;
+			float rY = static_cast<float>((rand() % 300)) / 10.f;
 			(*it) = glm::vec3( -5 - rX, rY + 5, 12.f);
 		}
 	}
@@ -147,7 +148,6 @@ void	WeatherSystem::renderCloud(Shader &shader) {
 }
 
 void	WeatherSystem::renderRain(Shader &shader) {
-	// (void)shader;
 	rain.draw(shader);
 }
 

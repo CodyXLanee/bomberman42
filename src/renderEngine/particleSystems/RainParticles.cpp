@@ -6,23 +6,23 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/22 11:52:27 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/31 09:43:51 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/31 10:36:53 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RainParticles.hpp"
 
 RainParticles::RainParticles() {
-	running = true;
+	running = false;
 	type = RAIN;
     particleNbr = 1000;
     oriPos = glm::vec3(-10.f, -5.f, 5.f);
-    for(unsigned int i = 0; i < particleNbr; i++) {
-        float r1 = static_cast<float>((rand() % 300)) / 10.f;
-        float r2 = static_cast<float>((rand() % 300)) / 10.f;
-        float r3 = static_cast<float>((rand() % 300)) / 10.f;
-        positions.push_back(oriPos + glm::vec3(r1, r2, r3));
-    }
+    // for(unsigned int i = 0; i < particleNbr; i++) {
+    //     float r1 = static_cast<float>((rand() % 300)) / 10.f;
+    //     float r2 = static_cast<float>((rand() % 300)) / 10.f;
+    //     float r3 = static_cast<float>((rand() % 300)) / 10.f;
+    //     positions.push_back(oriPos + glm::vec3(r1, r2, r3));
+    // }
 	createBuffers();
     setInstanceBuffer();
 }
@@ -75,4 +75,18 @@ void    RainParticles::update() {
 		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * data.size(), &data[0], GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
+}
+
+void	RainParticles::startRain() {
+	running = true;
+	for(unsigned int i = 0; i < particleNbr; i++) {
+        float r1 = static_cast<float>((rand() % 300)) / 10.f;
+        float r2 = static_cast<float>((rand() % 300)) / 10.f;
+        float r3 = static_cast<float>((rand() % 300)) / 10.f;
+        positions.push_back(oriPos + glm::vec3(r1, r2, r3));
+    }
+}
+
+void	RainParticles::stopRain() {
+	running = false;
 }

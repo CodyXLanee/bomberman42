@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GameEngine.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/30 17:33:53 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/01/31 10:50:19 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ _win(false), _active(true) {
 	
 	if (_gameParams.get_game_mode() == GameMode::BRAWL){
 		loadMap("maps/brawl_0.json");
+		Theme::Enum t = static_cast<Theme::Enum>(rand() % 3);
+		em.raise(Event::SET_THEME, &t);
 		placeBrawlPlayers(_gameParams.get_color());
 	}
 	else if (_gameParams.get_game_mode() == GameMode::CAMPAIGN)

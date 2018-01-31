@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 09:26:10 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/31 09:41:26 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/01/31 10:38:37 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 WeatherSystem::WeatherSystem() {
 	dayTime = MIDDAY;
-	cloudy = true;
+	cloudy = false;
 	rainy = false;
 
 	init();
@@ -107,16 +107,6 @@ void	WeatherSystem::stopCloud(void*) {
 
 }
 
-void	WeatherSystem::startRain(void*) {
-	rainy = true;
-	// rain->start();
-}
-
-void	WeatherSystem::stopRain(void*) {
-	rainy = false;
-	// rain->stop();
-}
-
 glm::vec3 const &WeatherSystem::getLightingValues() const {
 	return lightingValues;
 }
@@ -148,7 +138,8 @@ void	WeatherSystem::renderCloud(Shader &shader) {
 }
 
 void	WeatherSystem::renderRain(Shader &shader) {
-	rain.draw(shader);
+	if (rainy)
+		rain.draw(shader);
 }
 
 void	WeatherSystem::initClouds() {
@@ -165,12 +156,21 @@ void	WeatherSystem::setSunTheme(void *p) {
 	switch (t) {
 		case Theme::LAVA:
 			sun->setColor(glm::vec3(1.f, 0.9f, 0.9f));
+			cloudy = false;
+			rainy = false;
+			rain.stopRain();
 			break;
 		case Theme::FOREST:
 			sun->setColor(glm::vec3(0.9f, 1.f, 0.9f));
+			cloudy = true;
+			rainy = true;
+			rain.startRain();
 			break;
 		case Theme::ICE:
 			sun->setColor(glm::vec3(0.9f, 0.9f, 1.f));
+			cloudy = false;
+			rainy = false;
+			rain.stopRain();
 			break;
 	}
 }

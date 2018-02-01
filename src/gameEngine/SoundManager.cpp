@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/07 14:34:49 by lfourque          #+#    #+#             */
-/*   Updated: 2018/01/30 18:33:50 by lfourque         ###   ########.fr       */
+/*   Updated: 2018/02/01 15:20:00 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ SoundManager::SoundManager() : masterVolume(0.0f), musicVolume(MIX_MAX_VOLUME / 
     boom = Mix_LoadWAV("assets/sounds/explosions_explode.wav");
     boom2 = Mix_LoadWAV("assets/sounds/explosions_explodemini.wav");
     bonus = Mix_LoadWAV("assets/sounds/pickup_bonus.wav");
-    death = Mix_LoadWAV("assets/sounds/death.mp3");
-    death2 = Mix_LoadWAV("assets/sounds/death2.mp3");
+    death = Mix_LoadWAV("assets/sounds/death.wav");
+    death2 = Mix_LoadWAV("assets/sounds/death2.wav");
     
     hover = Mix_LoadWAV("assets/sounds/hover.wav");
     click = Mix_LoadWAV("assets/sounds/click2.wav");
@@ -59,6 +59,8 @@ SoundManager::~SoundManager() {
     Mix_FreeChunk(bonus);
     Mix_FreeChunk(hover);
     Mix_FreeChunk(click);
+    Mix_FreeChunk(death);
+    Mix_FreeChunk(death2);
     Mix_CloseAudio();
 }
 
@@ -134,6 +136,8 @@ void    SoundManager::updateVolume() {
     Mix_VolumeChunk(bonus, masterVolume * effectsVolume);
     Mix_VolumeChunk(hover, masterVolume * effectsVolume);
     Mix_VolumeChunk(click, masterVolume * effectsVolume);
+    Mix_VolumeChunk(death, masterVolume * effectsVolume);
+    Mix_VolumeChunk(death2, masterVolume * effectsVolume);
 }
 
 void    SoundManager::setMasterVolume(void * v) {

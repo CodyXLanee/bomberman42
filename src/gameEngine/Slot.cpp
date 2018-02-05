@@ -6,7 +6,7 @@
 /*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/16 16:23:25 by egaborea          #+#    #+#             */
-/*   Updated: 2018/01/25 12:24:15 by egaborea         ###   ########.fr       */
+/*   Updated: 2018/02/05 11:00:46 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,8 @@ void                                Slot::reset_stars_campaign() {
     for (int i = 0; i < 6; ++i)
         set_stars_campaign(i, 0);
     save();
+
+    SEventManager::getInstance().raise(Event::UPDATE_ALL_CAMPAIGN_STARS, &_stars_campaign);
 }
 
 void                                Slot::use(){

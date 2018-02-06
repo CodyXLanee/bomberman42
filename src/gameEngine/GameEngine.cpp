@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GameEngine.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: egaborea <egaborea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/23 16:14:09 by tpierron          #+#    #+#             */
-/*   Updated: 2018/01/31 10:50:19 by tpierron         ###   ########.fr       */
+/*   Updated: 2018/02/06 10:28:07 by egaborea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,7 +374,7 @@ int 			GameEngine::getStarsCampaign(void)
 					star_result = 3;
 				else if (stars[0][1].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][1].GetInt())
 					star_result = 2;
-				else if (stars[0][2].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][2].GetInt())
+				else// if (stars[0][2].IsInt() && static_cast<Player*>(*i)->getTotalBombCount() <= stars[0][2].GetInt())
 					star_result = 1;
 			}
 

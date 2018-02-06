@@ -164,7 +164,7 @@ void            PlayerManager::humanEndSpawnBomb(void *){
 
 void            PlayerManager::playerDies(void *p){
     if (static_cast<Player *>(p)->getState() != State::DYING){
-        std::cout << "Player n = " << static_cast<Player *>(p)->getPlayerNb() << " dies after " << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - static_cast<Player *>(p)->getCreationTime()).count() << " seconds alive." << std::endl;
+        // std::cout << "Player n = " << static_cast<Player *>(p)->getPlayerNb() << " dies after " << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - static_cast<Player *>(p)->getCreationTime()).count() << " seconds alive." << std::endl;
         static_cast<Player *>(p)->setState(State::DYING);
         if (static_cast<Player *>(p)->getPlayerNb() == 0 && _active) {
             SEventManager::getInstance().raise(Event::GAME_OVER, nullptr);

@@ -18,6 +18,7 @@ void			CollisionsManager::moves(Map const & map, std::vector<IGameEntity *> &ent
 					static_cast<Player*>(*i)->setFrameBeforeDelete(static_cast<Player*>(*i)->getFrameBeforeDelete() + 1);
 					if (static_cast<Player*>(*i)->getFrameBeforeDelete() >= 150)
 					{
+						delete static_cast<Player*>(*i);
 						entityList.erase(i);
 						i--;
 						continue;

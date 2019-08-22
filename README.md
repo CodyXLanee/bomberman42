@@ -1,9 +1,11 @@
 # Bomberman42
 
-This is a 42 school project. The goal was to recreate the original game **bomberman** in 3D. The programming language needed to be **C++** with the **OpenGL** library for the graphical part. The detail in the game was an important part of the final mark.
+This is a 42 school project. The goal was to recreate the original game **bomberman** in 3D. The programming language needed to be **C++** with the **OpenGL** library for the graphical part. The polishing of the game was an important part of the final mark.  
+
+[Video Demo](https://www.youtube.com/watch?v=9QKVq1cepiE)
 
 
-### Autors
+### Authors
 
 - [BOSSI Adrien](https://github.com/abossi)
 - [FOURQUET Louis](https://github.com/4quet)
